@@ -1,0 +1,36 @@
+import { LucideIcon } from "lucide-react";
+import { Link } from "react-router-dom";
+
+interface RoleCardProps {
+  title: string;
+  description: string;
+  icon: LucideIcon;
+  href: string;
+  colorClass: string;
+}
+
+export const RoleCard = ({ title, description, icon: Icon, href, colorClass }: RoleCardProps) => {
+  return (
+    <Link
+      to={href}
+      className="group flex flex-col p-6 bg-card rounded-xl shadow-card hover:shadow-card-hover transition-all duration-300 border border-border hover:border-primary/20 hover:-translate-y-1"
+    >
+      <div className={`w-14 h-14 rounded-xl ${colorClass} flex items-center justify-center mb-4 group-hover:scale-105 transition-transform duration-300`}>
+        <Icon className="w-7 h-7 text-primary-foreground" />
+      </div>
+      <h3 className="text-lg font-semibold text-foreground mb-2">{title}</h3>
+      <p className="text-sm text-muted-foreground mb-4 flex-1">{description}</p>
+      <div className="flex items-center text-primary font-medium text-sm group-hover:gap-2 transition-all duration-300">
+        Enter Portal
+        <svg
+          className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform duration-300"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+      </div>
+    </Link>
+  );
+};
