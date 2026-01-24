@@ -84,7 +84,7 @@ const HostDashboard = () => {
 
   useEffect(() => {
     if (!loading && !isHost) {
-      navigate("/host/login");
+      navigate("/sys-admin-x7k9");
     }
   }, [loading, isHost, navigate]);
 
@@ -248,7 +248,7 @@ const HostDashboard = () => {
 
   const handleLogout = async () => {
     await signOut();
-    navigate("/host/login");
+    navigate("/sys-admin-x7k9");
   };
 
   const filteredSchools = schools.filter(school =>

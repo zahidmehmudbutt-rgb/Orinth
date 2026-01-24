@@ -69,7 +69,7 @@ const HostLogin = () => {
         description: "Welcome to the Host Dashboard.",
       });
 
-      navigate("/host/dashboard");
+      navigate("/sys-admin-x7k9/dashboard");
     } catch (error) {
       toast({
         variant: "destructive",
