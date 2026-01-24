@@ -70,7 +70,7 @@ const ManagePrincipal = () => {
 
   useEffect(() => {
     if (!loading && !isHost) {
-      navigate("/host/login");
+      navigate("/sys-admin-x7k9");
     }
   }, [loading, isHost, navigate]);
 
@@ -201,7 +201,18 @@ const ManagePrincipal = () => {
           is_active: true,
         });
 
-      if (roleError) throw roleError;
+      if (roleError) {
+        // Check if this is the single-principal constraint violation
+        if (roleError.message?.includes('already has an active principal')) {
+          toast({
+            variant: "destructive",
+            title: "Cannot Assign Principal",
+            description: "This school already has an active principal. Please deactivate the current principal before assigning a new one.",
+          });
+          return;
+        }
+        throw roleError;
+      }
 
       toast({
         title: "Success",
@@ -213,10 +224,17 @@ const ManagePrincipal = () => {
       fetchPrincipal();
     } catch (error: any) {
       console.error('Error creating principal:', error);
+      // Provide user-friendly error messages
+      let errorMessage = error.message || "Failed to assign principal.";
+      if (errorMessage.includes('already has an active principal')) {
+        errorMessage = "This school already has an active principal. Deactivate the existing principal first.";
+      } else if (errorMessage.includes('duplicate key') || errorMessage.includes('unique constraint')) {
+        errorMessage = "A user with this email already exists.";
+      }
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message || "Failed to assign principal.",
+        description: errorMessage,
       });
     } finally {
       setIsCreatingPrincipal(false);
@@ -270,7 +288,7 @@ const ManagePrincipal = () => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => navigate("/host/dashboard")}
+            onClick={() => navigate("/sys-admin-x7k9/dashboard")}
             className="text-slate-400 hover:text-white hover:bg-slate-700"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />

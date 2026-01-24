@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 // Student
 import StudentLogin from "./pages/student/StudentLogin";
@@ -49,28 +50,56 @@ const App = () => (
           
           {/* Student Routes */}
           <Route path="/student/login" element={<StudentLogin />} />
-          <Route path="/student/dashboard" element={<StudentDashboard />} />
+          <Route path="/student/dashboard" element={
+            <ProtectedRoute requiredRole="student">
+              <StudentDashboard />
+            </ProtectedRoute>
+          } />
           
           {/* Teacher Routes */}
           <Route path="/teacher/login" element={<TeacherLogin />} />
-          <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
+          <Route path="/teacher/dashboard" element={
+            <ProtectedRoute requiredRole="teacher">
+              <TeacherDashboard />
+            </ProtectedRoute>
+          } />
           
           {/* Class Teacher Routes */}
           <Route path="/class-teacher/login" element={<ClassTeacherLogin />} />
-          <Route path="/class-teacher/dashboard" element={<ClassTeacherDashboard />} />
+          <Route path="/class-teacher/dashboard" element={
+            <ProtectedRoute requiredRole="class_teacher">
+              <ClassTeacherDashboard />
+            </ProtectedRoute>
+          } />
           
           {/* Coordinator Routes */}
           <Route path="/coordinator/login" element={<CoordinatorLogin />} />
-          <Route path="/coordinator/dashboard" element={<CoordinatorDashboard />} />
+          <Route path="/coordinator/dashboard" element={
+            <ProtectedRoute requiredRole="coordinator">
+              <CoordinatorDashboard />
+            </ProtectedRoute>
+          } />
           
           {/* Principal Routes */}
           <Route path="/principal/login" element={<PrincipalLogin />} />
-          <Route path="/principal/dashboard" element={<PrincipalDashboard />} />
+          <Route path="/principal/dashboard" element={
+            <ProtectedRoute requiredRole="principal">
+              <PrincipalDashboard />
+            </ProtectedRoute>
+          } />
           
           {/* Host Routes - Hidden, not linked anywhere */}
           <Route path="/sys-admin-x7k9" element={<HostLogin />} />
-          <Route path="/sys-admin-x7k9/dashboard" element={<HostDashboard />} />
-          <Route path="/sys-admin-x7k9/school/:schoolId/principal" element={<ManagePrincipal />} />
+          <Route path="/sys-admin-x7k9/dashboard" element={
+            <ProtectedRoute requiredRole="host">
+              <HostDashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/sys-admin-x7k9/school/:schoolId/principal" element={
+            <ProtectedRoute requiredRole="host">
+              <ManagePrincipal />
+            </ProtectedRoute>
+          } />
           
           {/* Auth Routes */}
           <Route path="/auth/forgot-password" element={<ForgotPassword />} />
