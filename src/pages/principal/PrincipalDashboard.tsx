@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bell, LogOut, UserPlus, Users, Crown, BarChart3, Trash2, Settings } from "lucide-react";
+import { Bell, LogOut, UserPlus, Users, Crown, BarChart3, Trash2, Settings, Sparkles, BookOpen, GraduationCap } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,22 +18,23 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import AccountSettings from "@/components/account/AccountSettings";
+import { OnboardingChecklist } from "@/components/onboarding/OnboardingChecklist";
+import { WelcomeBanner } from "@/components/onboarding/WelcomeBanner";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { LoadingButton } from "@/components/ui/LoadingButton";
 
 const principalData = {
   name: "Prof. Dr. Muhammad Arif",
 };
 
-const sectionHeads = [
-  { id: 1, name: "Dr. Rashid Mahmood", email: "rashid@school.edu.pk", section: "Middle Section (6-8)" },
-  { id: 2, name: "Ms. Saima Noor", email: "saima@school.edu.pk", section: "Primary Section (1-5)" },
-  { id: 3, name: "Mr. Khalid Mehmood", email: "khalid@school.edu.pk", section: "Secondary Section (9-10)" },
-];
+// Mock empty state for demo - in real app this would come from database
+const sectionHeads: Array<{ id: number; name: string; email: string; section: string }> = [];
 
 const schoolStats = [
-  { label: "Total Students", value: "5,234", change: "+12%" },
-  { label: "Total Teachers", value: "187", change: "+5%" },
-  { label: "Classes", value: "120", change: "+8%" },
-  { label: "Average Attendance", value: "92%", change: "+2%" },
+  { label: "Total Students", value: "0", change: "-" },
+  { label: "Total Teachers", value: "0", change: "-" },
+  { label: "Classes", value: "0", change: "-" },
+  { label: "Average Attendance", value: "-", change: "-" },
 ];
 
 const PrincipalDashboard = () => {
@@ -42,39 +43,80 @@ const PrincipalDashboard = () => {
   const [newCoordinatorEmail, setNewCoordinatorEmail] = useState("");
   const [newCoordinatorPassword, setNewCoordinatorPassword] = useState("");
   const [newCoordinatorSection, setNewCoordinatorSection] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  // Onboarding checklist items
+  const checklistItems = [
+    {
+      id: "profile",
+      label: "Complete your profile",
+      description: "Add your contact information and photo",
+      completed: true,
+      onClick: () => setActiveTab("account"),
+    },
+    {
+      id: "coordinator",
+      label: "Add your first Section Head",
+      description: "Assign coordinators to manage different sections",
+      completed: sectionHeads.length > 0,
+      onClick: () => setActiveTab("staff"),
+    },
+    {
+      id: "review",
+      label: "Review school settings",
+      description: "Configure academic year and school details",
+      completed: false,
+    },
+  ];
 
   const handleLogout = () => {
     navigate("/");
   };
 
-  const handleAddCoordinator = () => {
+  const handleAddCoordinator = async () => {
     if (!newCoordinatorName.trim() || !newCoordinatorEmail.trim() || !newCoordinatorPassword.trim()) {
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Please fill all required fields",
+        title: "Missing Information",
+        description: "Please fill in the name, email, and password fields.",
       });
       return;
     }
-    
-    toast({
-      title: "Section Head Added",
-      description: `${newCoordinatorName} has been added as Section Head.`,
-    });
-    setNewCoordinatorName("");
-    setNewCoordinatorEmail("");
-    setNewCoordinatorPassword("");
-    setNewCoordinatorSection("");
+
+    setIsSubmitting(true);
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      toast({
+        title: "Section Head Added",
+        description: `${newCoordinatorName} has been added successfully. They can now log in with the provided credentials.`,
+      });
+      setNewCoordinatorName("");
+      setNewCoordinatorEmail("");
+      setNewCoordinatorPassword("");
+      setNewCoordinatorSection("");
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Something went wrong",
+        description: "Could not add the section head. Please try again.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleRemoveCoordinator = (name: string) => {
     toast({
       title: "Section Head Removed",
-      description: `${name} has been removed.`,
+      description: `${name} has been removed from the system.`,
     });
   };
+
+  const showOnboarding = sectionHeads.length === 0;
 
   return (
     <div className="min-h-screen bg-gradient-hero">
@@ -101,6 +143,23 @@ const PrincipalDashboard = () => {
       </header>
 
       <main className="container mx-auto px-4 py-6">
+        {/* Welcome Banner for new principals */}
+        {showOnboarding && (
+          <WelcomeBanner
+            icon={Sparkles}
+            title="Welcome to Your School Dashboard!"
+            description="Let's get your school set up. Follow the checklist below to configure your school management system."
+            tips={[
+              "Start by adding Section Heads who will manage teachers",
+              "Each Section Head can then add Teachers and Class Teachers",
+              "You can view all school analytics once data starts flowing in",
+            ]}
+            accentColor="bg-role-principal"
+            storageKey="principal-welcome-dismissed"
+            className="mb-6"
+          />
+        )}
+
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="w-full max-w-lg mx-auto grid grid-cols-3 mb-8 bg-card shadow-card">
             <TabsTrigger value="staff" className="flex items-center gap-2 data-[state=active]:bg-role-principal data-[state=active]:text-primary-foreground">
@@ -133,6 +192,7 @@ const PrincipalDashboard = () => {
                       placeholder="Enter full name"
                       value={newCoordinatorName}
                       onChange={(e) => setNewCoordinatorName(e.target.value)}
+                      disabled={isSubmitting}
                     />
                   </div>
                   
@@ -143,6 +203,7 @@ const PrincipalDashboard = () => {
                       placeholder="Enter email address"
                       value={newCoordinatorEmail}
                       onChange={(e) => setNewCoordinatorEmail(e.target.value)}
+                      disabled={isSubmitting}
                     />
                   </div>
                   
@@ -153,6 +214,7 @@ const PrincipalDashboard = () => {
                       placeholder="Set initial password"
                       value={newCoordinatorPassword}
                       onChange={(e) => setNewCoordinatorPassword(e.target.value)}
+                      disabled={isSubmitting}
                     />
                   </div>
                   
@@ -162,60 +224,82 @@ const PrincipalDashboard = () => {
                       placeholder="e.g., Primary Section (1-5)"
                       value={newCoordinatorSection}
                       onChange={(e) => setNewCoordinatorSection(e.target.value)}
+                      disabled={isSubmitting}
                     />
                   </div>
                   
-                  <Button 
+                  <LoadingButton 
                     className="w-full bg-role-principal text-primary-foreground hover:opacity-90"
                     onClick={handleAddCoordinator}
+                    loading={isSubmitting}
+                    loadingText="Adding..."
                   >
                     Add Section Head
-                  </Button>
+                  </LoadingButton>
                 </div>
               </div>
 
-              {/* Section Heads List */}
+              {/* Section Heads List or Onboarding */}
               <div>
-                <h2 className="text-xl font-bold text-foreground mb-4">Section Heads</h2>
-                
-                <div className="space-y-3">
-                  {sectionHeads.map((head) => (
-                    <div key={head.id} className="bg-card rounded-xl p-4 shadow-card border border-border">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <p className="font-semibold text-foreground">{head.name}</p>
-                          <p className="text-sm text-muted-foreground">{head.email}</p>
-                          <p className="text-xs text-primary mt-1">{head.section}</p>
+                {showOnboarding ? (
+                  <OnboardingChecklist
+                    title="Getting Started"
+                    subtitle="Complete these steps to set up your school"
+                    items={checklistItems}
+                  />
+                ) : (
+                  <>
+                    <h2 className="text-xl font-bold text-foreground mb-4">Section Heads</h2>
+                    <div className="space-y-3">
+                      {sectionHeads.map((head) => (
+                        <div key={head.id} className="bg-card rounded-xl p-4 shadow-card border border-border">
+                          <div className="flex items-start justify-between">
+                            <div>
+                              <p className="font-semibold text-foreground">{head.name}</p>
+                              <p className="text-sm text-muted-foreground">{head.email}</p>
+                              <p className="text-xs text-primary mt-1">{head.section}</p>
+                            </div>
+                            
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10">
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Remove Section Head?</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    Are you sure you want to remove {head.name}? This is a critical action and cannot be undone.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction 
+                                    className="bg-destructive text-destructive-foreground"
+                                    onClick={() => handleRemoveCoordinator(head.name)}
+                                  >
+                                    Remove
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </div>
                         </div>
-                        
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10">
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Remove Section Head?</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                Are you sure you want to remove {head.name}? This is a critical action and cannot be undone.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction 
-                                className="bg-destructive text-destructive-foreground"
-                                onClick={() => handleRemoveCoordinator(head.name)}
-                              >
-                                Remove
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
-                      </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  </>
+                )}
+
+                {!showOnboarding && sectionHeads.length === 0 && (
+                  <EmptyState
+                    icon={Users}
+                    title="No Section Heads Yet"
+                    description="Add your first section head to start organizing your school staff hierarchy."
+                    actionLabel="Add Section Head"
+                    onAction={() => document.querySelector<HTMLInputElement>('input[placeholder="Enter full name"]')?.focus()}
+                  />
+                )}
               </div>
             </div>
           </TabsContent>
@@ -229,32 +313,30 @@ const PrincipalDashboard = () => {
                   <p className="text-sm text-muted-foreground mb-1">{stat.label}</p>
                   <div className="flex items-end gap-2">
                     <span className="text-3xl font-bold text-foreground">{stat.value}</span>
-                    <span className="text-sm text-success mb-1">{stat.change}</span>
+                    <span className="text-sm text-muted-foreground mb-1">{stat.change}</span>
                   </div>
                 </div>
               ))}
             </div>
 
-            {/* Simple Charts Placeholder */}
+            {/* Empty state for charts */}
             <div className="grid lg:grid-cols-2 gap-8">
               <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                 <h3 className="font-semibold text-foreground mb-4">Attendance Trend</h3>
-                <div className="h-48 flex items-center justify-center text-muted-foreground bg-secondary/30 rounded-lg">
-                  <BarChart3 className="w-12 h-12 opacity-50" />
-                </div>
-                <p className="text-sm text-muted-foreground text-center mt-4">
-                  Detailed charts will be available after backend integration
-                </p>
+                <EmptyState
+                  icon={BarChart3}
+                  title="No Data Yet"
+                  description="Attendance charts will appear here once teachers start marking daily attendance."
+                />
               </div>
               
               <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                 <h3 className="font-semibold text-foreground mb-4">Homework Completion Rate</h3>
-                <div className="h-48 flex items-center justify-center text-muted-foreground bg-secondary/30 rounded-lg">
-                  <BarChart3 className="w-12 h-12 opacity-50" />
-                </div>
-                <p className="text-sm text-muted-foreground text-center mt-4">
-                  Detailed charts will be available after backend integration
-                </p>
+                <EmptyState
+                  icon={BookOpen}
+                  title="No Data Yet"
+                  description="Homework statistics will appear here once teachers start assigning homework."
+                />
               </div>
             </div>
           </TabsContent>

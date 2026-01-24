@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bell, LogOut, UserPlus, Users, Trash2, Edit, BookMarked, Settings } from "lucide-react";
+import { Bell, LogOut, UserPlus, Users, Trash2, Edit, BookMarked, Settings, Sparkles } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,24 +18,26 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import AccountSettings from "@/components/account/AccountSettings";
+import { WelcomeBanner } from "@/components/onboarding/WelcomeBanner";
+import { OnboardingChecklist } from "@/components/onboarding/OnboardingChecklist";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { LoadingButton } from "@/components/ui/LoadingButton";
 
 const coordinatorData = {
   name: "Dr. Rashid Mahmood",
   section: "Middle Section (6-8)",
 };
 
-const staff = [
-  { id: 1, name: "Mr. Imran Ahmed", email: "imran@school.edu.pk", role: "Teacher", subject: "Mathematics" },
-  { id: 2, name: "Ms. Ayesha Khan", email: "ayesha@school.edu.pk", role: "Class Teacher", class: "Grade 9-A" },
-  { id: 3, name: "Mr. Hassan Ali", email: "hassan@school.edu.pk", role: "Teacher", subject: "Physics" },
-  { id: 4, name: "Ms. Fatima Zahra", email: "fatima@school.edu.pk", role: "Class Teacher", class: "Grade 8-B" },
-];
+// Mock empty state - in real app this comes from database
+const staff: Array<{ id: number; name: string; email: string; role: string; subject?: string; class?: string }> = [];
 
 const CoordinatorDashboard = () => {
+  const [activeTab, setActiveTab] = useState("staff");
   const [newTeacherName, setNewTeacherName] = useState("");
   const [newTeacherEmail, setNewTeacherEmail] = useState("");
   const [newTeacherPassword, setNewTeacherPassword] = useState("");
   const [teacherType, setTeacherType] = useState("teacher");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -43,23 +45,35 @@ const CoordinatorDashboard = () => {
     navigate("/");
   };
 
-  const handleAddTeacher = () => {
+  const handleAddTeacher = async () => {
     if (!newTeacherName.trim() || !newTeacherEmail.trim() || !newTeacherPassword.trim()) {
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Please fill all required fields",
+        title: "Missing Information",
+        description: "Please fill in all required fields: name, email, and password.",
       });
       return;
     }
-    
-    toast({
-      title: "Staff Added",
-      description: `${newTeacherName} has been added successfully. They will be required to complete their profile on first login.`,
-    });
-    setNewTeacherName("");
-    setNewTeacherEmail("");
-    setNewTeacherPassword("");
+
+    setIsSubmitting(true);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      toast({
+        title: "Staff Added",
+        description: `${newTeacherName} has been added successfully. They will be required to complete their profile on first login.`,
+      });
+      setNewTeacherName("");
+      setNewTeacherEmail("");
+      setNewTeacherPassword("");
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Something went wrong",
+        description: "Could not add staff member. Please try again.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleRemoveStaff = (staffName: string) => {
@@ -68,6 +82,33 @@ const CoordinatorDashboard = () => {
       description: `${staffName} has been removed from the section.`,
     });
   };
+
+  const hasStaff = staff.length > 0;
+
+  // Onboarding checklist
+  const checklistItems = [
+    {
+      id: "profile",
+      label: "Complete your profile",
+      description: "Add your contact information",
+      completed: true,
+      onClick: () => setActiveTab("account"),
+    },
+    {
+      id: "teacher",
+      label: "Add your first teacher",
+      description: "Add teachers to your section",
+      completed: hasStaff && staff.some(s => s.role === "Teacher"),
+      onClick: () => setActiveTab("staff"),
+    },
+    {
+      id: "class-teacher",
+      label: "Assign a class teacher",
+      description: "Add class teachers to manage classes",
+      completed: hasStaff && staff.some(s => s.role === "Class Teacher"),
+      onClick: () => setActiveTab("staff"),
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-hero">
@@ -94,7 +135,24 @@ const CoordinatorDashboard = () => {
       </header>
 
       <main className="container mx-auto px-4 py-6">
-        <Tabs defaultValue="staff" className="w-full">
+        {/* Welcome Banner */}
+        {!hasStaff && (
+          <WelcomeBanner
+            icon={Sparkles}
+            title="Welcome to Your Section Dashboard!"
+            description="As a Section Head, you manage teachers and class teachers in your section. Start by adding staff members who will handle classes and students."
+            tips={[
+              "Add Teachers who will create homework and grade students",
+              "Add Class Teachers who will manage student attendance",
+              "You cannot manage principals or students directly",
+            ]}
+            accentColor="bg-role-coordinator"
+            storageKey="coordinator-welcome-dismissed"
+            className="mb-6"
+          />
+        )}
+
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="w-full max-w-md mx-auto grid grid-cols-2 mb-8 bg-card shadow-card">
             <TabsTrigger value="staff" className="flex items-center gap-2 data-[state=active]:bg-role-coordinator data-[state=active]:text-primary-foreground">
               <Users className="w-4 h-4" />
@@ -127,6 +185,7 @@ const CoordinatorDashboard = () => {
                           checked={teacherType === "teacher"}
                           onChange={() => setTeacherType("teacher")}
                           className="w-4 h-4"
+                          disabled={isSubmitting}
                         />
                         <span className="text-foreground">Teacher</span>
                       </label>
@@ -138,6 +197,7 @@ const CoordinatorDashboard = () => {
                           checked={teacherType === "class-teacher"}
                           onChange={() => setTeacherType("class-teacher")}
                           className="w-4 h-4"
+                          disabled={isSubmitting}
                         />
                         <span className="text-foreground">Class Teacher</span>
                       </label>
@@ -150,6 +210,7 @@ const CoordinatorDashboard = () => {
                       placeholder="Enter full name"
                       value={newTeacherName}
                       onChange={(e) => setNewTeacherName(e.target.value)}
+                      disabled={isSubmitting}
                     />
                   </div>
                   
@@ -160,6 +221,7 @@ const CoordinatorDashboard = () => {
                       placeholder="Enter email address"
                       value={newTeacherEmail}
                       onChange={(e) => setNewTeacherEmail(e.target.value)}
+                      disabled={isSubmitting}
                     />
                   </div>
                   
@@ -170,6 +232,7 @@ const CoordinatorDashboard = () => {
                       placeholder="Set initial password"
                       value={newTeacherPassword}
                       onChange={(e) => setNewTeacherPassword(e.target.value)}
+                      disabled={isSubmitting}
                     />
                   </div>
                   
@@ -177,75 +240,97 @@ const CoordinatorDashboard = () => {
                     📝 Staff will be required to complete their profile (address, phone, WhatsApp) on first login.
                   </p>
                   
-                  <Button 
+                  <LoadingButton 
                     className="w-full bg-role-coordinator text-primary-foreground hover:opacity-90"
                     onClick={handleAddTeacher}
+                    loading={isSubmitting}
+                    loadingText="Adding..."
                   >
                     Add Staff
-                  </Button>
+                  </LoadingButton>
                 </div>
               </div>
 
-              {/* Staff List */}
+              {/* Staff List or Onboarding */}
               <div>
-                <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-                  <Users className="w-5 h-5 text-role-coordinator" />
-                  Section Staff ({staff.length})
-                </h2>
-                
-                <div className="space-y-3">
-                  {staff.map((member) => (
-                    <div key={member.id} className="bg-card rounded-xl p-4 shadow-card border border-border">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <p className="font-semibold text-foreground">{member.name}</p>
-                            <span className={`px-2 py-0.5 rounded text-xs font-medium ${
-                              member.role === "Teacher" ? 'bg-role-teacher/10 text-role-teacher' : 'bg-role-class-teacher/10 text-role-class-teacher'
-                            }`}>
-                              {member.role}
-                            </span>
-                          </div>
-                          <p className="text-sm text-muted-foreground">{member.email}</p>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            {member.subject || member.class}
-                          </p>
-                        </div>
-                        
-                        <div className="flex gap-2">
-                          <Button variant="ghost" size="icon" className="text-primary hover:bg-primary/10">
-                            <Edit className="w-4 h-4" />
-                          </Button>
-                          
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10">
-                                <Trash2 className="w-4 h-4" />
+                {!hasStaff ? (
+                  <OnboardingChecklist
+                    title="Getting Started"
+                    subtitle="Complete these steps to set up your section"
+                    items={checklistItems}
+                  />
+                ) : (
+                  <>
+                    <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+                      <Users className="w-5 h-5 text-role-coordinator" />
+                      Section Staff ({staff.length})
+                    </h2>
+                    
+                    <div className="space-y-3">
+                      {staff.map((member) => (
+                        <div key={member.id} className="bg-card rounded-xl p-4 shadow-card border border-border">
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <p className="font-semibold text-foreground">{member.name}</p>
+                                <span className={`px-2 py-0.5 rounded text-xs font-medium ${
+                                  member.role === "Teacher" ? 'bg-role-teacher/10 text-role-teacher' : 'bg-role-class-teacher/10 text-role-class-teacher'
+                                }`}>
+                                  {member.role}
+                                </span>
+                              </div>
+                              <p className="text-sm text-muted-foreground">{member.email}</p>
+                              <p className="text-xs text-muted-foreground mt-1">
+                                {member.subject || member.class}
+                              </p>
+                            </div>
+                            
+                            <div className="flex gap-2">
+                              <Button variant="ghost" size="icon" className="text-primary hover:bg-primary/10">
+                                <Edit className="w-4 h-4" />
                               </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>Remove Staff Member?</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  Are you sure you want to remove {member.name}? This action cannot be undone.
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction 
-                                  className="bg-destructive text-destructive-foreground"
-                                  onClick={() => handleRemoveStaff(member.name)}
-                                >
-                                  Remove
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
+                              
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10">
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Remove Staff Member?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      Are you sure you want to remove {member.name}? This action cannot be undone.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction 
+                                      className="bg-destructive text-destructive-foreground"
+                                      onClick={() => handleRemoveStaff(member.name)}
+                                    >
+                                      Remove
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            </div>
+                          </div>
                         </div>
-                      </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  </>
+                )}
+
+                {hasStaff && staff.length === 0 && (
+                  <EmptyState
+                    icon={Users}
+                    title="No Staff Members Yet"
+                    description="Add your first teacher or class teacher to get started."
+                    actionLabel="Add Staff"
+                    onAction={() => document.querySelector<HTMLInputElement>('input[placeholder="Enter full name"]')?.focus()}
+                  />
+                )}
               </div>
             </div>
           </TabsContent>
