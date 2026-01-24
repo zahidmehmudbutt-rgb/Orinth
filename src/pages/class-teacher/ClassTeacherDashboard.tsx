@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { GraduationCap, Bell, LogOut, Calendar, UserPlus, Users, Trash2, Printer } from "lucide-react";
+import { GraduationCap, Bell, LogOut, Calendar, UserPlus, Users, Trash2, Printer, Settings } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +18,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
+import AccountSettings from "@/components/account/AccountSettings";
 
 const classTeacherData = {
   name: "Ms. Ayesha Khan",
@@ -108,7 +109,7 @@ const ClassTeacherDashboard = () => {
 
       <main className="container mx-auto px-4 py-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="w-full max-w-md mx-auto grid grid-cols-2 mb-8 bg-card shadow-card">
+          <TabsList className="w-full max-w-lg mx-auto grid grid-cols-3 mb-8 bg-card shadow-card">
             <TabsTrigger value="attendance" className="flex items-center gap-2 data-[state=active]:bg-role-class-teacher data-[state=active]:text-primary-foreground">
               <Calendar className="w-4 h-4" />
               Attendance
@@ -116,6 +117,10 @@ const ClassTeacherDashboard = () => {
             <TabsTrigger value="students" className="flex items-center gap-2 data-[state=active]:bg-role-class-teacher data-[state=active]:text-primary-foreground">
               <Users className="w-4 h-4" />
               Students
+            </TabsTrigger>
+            <TabsTrigger value="account" className="flex items-center gap-2 data-[state=active]:bg-role-class-teacher data-[state=active]:text-primary-foreground">
+              <Settings className="w-4 h-4" />
+              Account
             </TabsTrigger>
           </TabsList>
 
@@ -255,6 +260,17 @@ const ClassTeacherDashboard = () => {
                   ))}
                 </div>
               </div>
+            </div>
+          </TabsContent>
+
+          {/* Account Tab */}
+          <TabsContent value="account" className="animate-fade-in">
+            <div className="max-w-2xl mx-auto">
+              <div className="mb-6">
+                <h2 className="text-xl font-bold text-foreground mb-2">Account Settings</h2>
+                <p className="text-muted-foreground text-sm">Manage your profile and security settings</p>
+              </div>
+              <AccountSettings roleColor="bg-role-class-teacher" />
             </div>
           </TabsContent>
         </Tabs>

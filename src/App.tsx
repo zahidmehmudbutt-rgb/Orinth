@@ -26,6 +26,16 @@ import CoordinatorDashboard from "./pages/coordinator/CoordinatorDashboard";
 import PrincipalLogin from "./pages/principal/PrincipalLogin";
 import PrincipalDashboard from "./pages/principal/PrincipalDashboard";
 
+// Host (Hidden - Not linked anywhere)
+import HostLogin from "./pages/host/HostLogin";
+import HostDashboard from "./pages/host/HostDashboard";
+import ManagePrincipal from "./pages/host/ManagePrincipal";
+
+// Auth
+import ForgotPassword from "./pages/auth/ForgotPassword";
+import ResetPassword from "./pages/auth/ResetPassword";
+import VerifyEmail from "./pages/auth/VerifyEmail";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -56,6 +66,16 @@ const App = () => (
           {/* Principal Routes */}
           <Route path="/principal/login" element={<PrincipalLogin />} />
           <Route path="/principal/dashboard" element={<PrincipalDashboard />} />
+          
+          {/* Host Routes - Hidden, not linked anywhere */}
+          <Route path="/sys-admin-x7k9" element={<HostLogin />} />
+          <Route path="/sys-admin-x7k9/dashboard" element={<HostDashboard />} />
+          <Route path="/sys-admin-x7k9/school/:schoolId/principal" element={<ManagePrincipal />} />
+          
+          {/* Auth Routes */}
+          <Route path="/auth/forgot-password" element={<ForgotPassword />} />
+          <Route path="/auth/reset-password" element={<ResetPassword />} />
+          <Route path="/auth/verify-email" element={<VerifyEmail />} />
           
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />
