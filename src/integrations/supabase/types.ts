@@ -581,6 +581,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_school_active_user_count: {
+        Args: { _school_id: string }
+        Returns: number
+      }
       get_user_school_id: { Args: { _user_id: string }; Returns: string }
       has_role: {
         Args: {
@@ -594,6 +598,10 @@ export type Database = {
         Returns: boolean
       }
       school_has_active_principal: {
+        Args: { _school_id: string }
+        Returns: boolean
+      }
+      school_has_active_users: {
         Args: { _school_id: string }
         Returns: boolean
       }
