@@ -221,6 +221,23 @@ const HostDashboard = () => {
 
   const handleToggleSchoolStatus = async (school: School) => {
     try {
+      // SECURITY: If deactivating, check for active users first (soft-delete policy)
+      if (school.is_active) {
+        const { data: userCount, error: countError } = await supabase
+          .rpc('get_school_active_user_count', { _school_id: school.id });
+
+        if (countError) throw countError;
+
+        if (userCount && userCount > 0) {
+          toast({
+            variant: "destructive",
+            title: "Cannot Deactivate School",
+            description: `This school has ${userCount} active user(s). Please deactivate all users (Principal, Coordinators, Teachers, etc.) before deactivating the school.`,
+          });
+          return;
+        }
+      }
+
       const { error } = await supabase
         .from('schools')
         .update({ is_active: !school.is_active })
