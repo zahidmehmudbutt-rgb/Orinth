@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bell, LogOut, UserPlus, Users, Crown, BarChart3, Trash2, Settings, Sparkles, BookOpen, GraduationCap, Plus, School } from "lucide-react";
+import { Bell, LogOut, UserPlus, Users, Crown, BarChart3, Trash2, Settings, Sparkles, BookOpen, GraduationCap, Plus, School, Globe } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,6 +23,7 @@ import { OnboardingChecklist } from "@/components/onboarding/OnboardingChecklist
 import { WelcomeBanner } from "@/components/onboarding/WelcomeBanner";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { LoadingButton } from "@/components/ui/LoadingButton";
+import { SchoolSettingsForm } from "@/components/school/SchoolSettingsForm";
 import { supabase } from "@/integrations/supabase/client";
 
 interface PrincipalData {
@@ -563,7 +564,7 @@ const PrincipalDashboard = () => {
         )}
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="w-full max-w-2xl mx-auto grid grid-cols-4 mb-8 bg-card shadow-card">
+          <TabsList className="w-full max-w-3xl mx-auto grid grid-cols-5 mb-8 bg-card shadow-card">
             <TabsTrigger value="staff" className="flex items-center gap-2 data-[state=active]:bg-role-principal data-[state=active]:text-primary-foreground">
               <Users className="w-4 h-4" />
               <span className="hidden sm:inline">Staff</span>
@@ -575,6 +576,10 @@ const PrincipalDashboard = () => {
             <TabsTrigger value="analytics" className="flex items-center gap-2 data-[state=active]:bg-role-principal data-[state=active]:text-primary-foreground">
               <BarChart3 className="w-4 h-4" />
               <span className="hidden sm:inline">Analytics</span>
+            </TabsTrigger>
+            <TabsTrigger value="school" className="flex items-center gap-2 data-[state=active]:bg-role-principal data-[state=active]:text-primary-foreground">
+              <Globe className="w-4 h-4" />
+              <span className="hidden sm:inline">Public Page</span>
             </TabsTrigger>
             <TabsTrigger value="account" className="flex items-center gap-2 data-[state=active]:bg-role-principal data-[state=active]:text-primary-foreground">
               <Settings className="w-4 h-4" />
@@ -932,6 +937,19 @@ const PrincipalDashboard = () => {
           </TabsContent>
 
           {/* Account Tab */}
+          {/* School Public Page Tab */}
+          <TabsContent value="school" className="animate-fade-in">
+            <div className="max-w-3xl mx-auto">
+              <div className="mb-6">
+                <h2 className="text-xl font-bold text-foreground mb-2">School Public Page</h2>
+                <p className="text-muted-foreground text-sm">Customize your school's public homepage that visitors can see</p>
+              </div>
+              {principalData?.schoolId && (
+                <SchoolSettingsForm schoolId={principalData.schoolId} />
+              )}
+            </div>
+          </TabsContent>
+
           <TabsContent value="account" className="animate-fade-in">
             <div className="max-w-2xl mx-auto">
               <div className="mb-6">

@@ -41,6 +41,9 @@ import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPassword from "./pages/auth/ResetPassword";
 import VerifyEmail from "./pages/auth/VerifyEmail";
 
+// Public
+import SchoolPublicPage from "./pages/public/SchoolPublicPage";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -117,7 +120,10 @@ const App = () => (
           <Route path="/auth/forgot-password" element={<ForgotPassword />} />
           <Route path="/auth/reset-password" element={<ResetPassword />} />
           <Route path="/auth/verify-email" element={<VerifyEmail />} />
-          
+
+          {/* Public School Page */}
+          <Route path="/school/:schoolSlug" element={<SchoolPublicPage />} />
+
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />
         </Routes>
