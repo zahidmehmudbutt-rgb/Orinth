@@ -1,73 +1,124 @@
-# Welcome to your Lovable project
+# School Smart Pakistan
 
-## Project info
+A comprehensive school management system designed for Pakistani schools.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Live Demo
 
-## How can I edit this code?
+**URL**: https://school-smart-pakistan.vercel.app/
 
-There are several ways of editing your application.
+## Features
 
-**Use Lovable**
+### User Roles (7 Types)
+- **Host** - Platform administrator managing multiple schools
+- **Principal** - School administrator managing coordinators and staff
+- **Coordinator** - Section head managing teachers
+- **Class Teacher** - Manages students and attendance for their class
+- **Teacher** - Creates homework and grades submissions
+- **Student** - Views homework, submits assignments, checks attendance
+- **Parent** - Monitors child's academic progress
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+### Core Features
+- Multi-tenant architecture (multiple schools)
+- Role-based access control with RLS policies
+- Student attendance tracking
+- Homework management with file uploads
+- Grading system (0-10 marks)
+- School notices and announcements
+- Parent dashboard for monitoring children
 
-Changes made via Lovable will be committed automatically to this repo.
+## Tech Stack
 
-**Use your preferred IDE**
+- **Frontend**: React + TypeScript + Vite
+- **UI**: Tailwind CSS + shadcn/ui
+- **Backend**: Supabase (PostgreSQL + Auth + Storage)
+- **Hosting**: Vercel
+- **Email**: Resend (configured, integration pending)
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## Getting Started
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Prerequisites
+- Node.js 18+
+- npm or yarn
+- Supabase account
 
-Follow these steps:
+### Installation
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+```bash
+# Clone the repository
+git clone https://github.com/khuzaimabutt/school-smart-pakistan.git
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# Navigate to project directory
+cd school-smart-pakistan
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Install dependencies
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Copy environment variables
+cp .env.example .env
+
+# Update .env with your Supabase credentials
+
+# Start development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### Environment Variables
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```env
+VITE_SUPABASE_PROJECT_ID="your-project-id"
+VITE_SUPABASE_PUBLISHABLE_KEY="your-anon-key"
+VITE_SUPABASE_URL="https://your-project-id.supabase.co"
+VITE_RESEND_API_KEY="your-resend-api-key"
+```
 
-**Use GitHub Codespaces**
+## Demo Accounts
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+| Role | Login | Password |
+|------|-------|----------|
+| Host | ikrma434@gmail.com | Khuzaimaqwe123$ |
+| Principal | principal@demo.com | Demo123$ |
+| Coordinator | coordinator@demo.com | Demo123$ |
+| Class Teacher | classteacher@demo.com | Demo123$ |
+| Teacher | teacher@demo.com | Demo123$ |
+| Student | DEMO001 | Demo123$ |
+| Parent | parent@demo.com | Demo123$ |
 
-## What technologies are used for this project?
+## Project Structure
 
-This project is built with:
+```
+src/
+├── components/     # Reusable UI components
+├── hooks/          # Custom React hooks
+├── integrations/   # Supabase client and types
+├── lib/            # Utility functions
+└── pages/          # Page components by role
+    ├── host/
+    ├── principal/
+    ├── coordinator/
+    ├── class-teacher/
+    ├── teacher/
+    ├── student/
+    └── parent/
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Database Schema
 
-## How can I deploy this project?
+- `schools` - School information
+- `profiles` - User profiles
+- `user_roles` - Role assignments
+- `classes` - Class/section data
+- `students` - Student records
+- `teacher_classes` - Teacher-class-subject assignments
+- `homework` - Homework assignments
+- `homework_submissions` - Student submissions with grades
+- `attendance` - Daily attendance records
+- `notices` - School announcements
+- `parent_students` - Parent-child relationships
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+## License
 
-## Can I connect a custom domain to my Lovable project?
+MIT License
 
-Yes, you can!
+## Author
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Khuzaima Butt - [@khuzaimabutt](https://github.com/khuzaimabutt)

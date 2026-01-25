@@ -11,12 +11,12 @@ export const Footer = () => {
                 <GraduationCap className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="font-bold">School Portal</h3>
-                <p className="text-xs opacity-80">Education Hub</p>
+                <h3 className="font-bold">School Smart Pakistan</h3>
+                <p className="text-xs opacity-80">School Management System</p>
               </div>
             </div>
             <p className="text-sm opacity-80">
-              Providing quality education and fostering student success.
+              Complete school management solution for Pakistani schools.
             </p>
           </div>
           
@@ -48,7 +48,7 @@ export const Footer = () => {
         </div>
         
         <div className="border-t border-primary-foreground/20 mt-8 pt-8 text-center text-sm opacity-80">
-          © 2026 School Portal. All rights reserved.
+          © 2026 School Smart Pakistan. All rights reserved.
         </div>
       </div>
     </footer>

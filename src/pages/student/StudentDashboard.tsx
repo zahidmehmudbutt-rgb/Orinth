@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { GraduationCap, Bell, LogOut, BookOpen, Calendar, BarChart3, Megaphone, Clock, Upload, CheckCircle, AlertCircle, Settings, Sparkles } from "lucide-react";
+import { GraduationCap, Bell, LogOut, BookOpen, Calendar, BarChart3, Megaphone, Clock, Upload, CheckCircle, AlertCircle, Settings, Sparkles, FileText, Download } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -9,44 +9,417 @@ import AccountSettings from "@/components/account/AccountSettings";
 import { WelcomeBanner } from "@/components/onboarding/WelcomeBanner";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { LoadingButton } from "@/components/ui/LoadingButton";
+import { supabase } from "@/integrations/supabase/client";
 
-// Mock data - in real app this comes from database
-const studentData = {
-  name: "Ahmed Khan",
-  id: "STU-2024-001",
-  class: "Grade 9-A",
-};
+interface StudentData {
+  id: string;
+  studentId: string;
+  name: string;
+  className: string;
+  classId: string;
+}
 
-const subjects: Array<{ name: string; code: string; teacher: string; pending: number }> = [];
-const homeworks: Array<{ id: number; subject: string; title: string; dueDate: string; status: string }> = [];
-const attendanceData = {
-  present: 0,
-  absent: 0,
-  percentage: 0,
-};
-const recentAttendance: Array<{ date: string; day: string; status: string }> = [];
-const marks: Array<{ subject: string; homeworkMarks: number; maxMarks: number }> = [];
-const notices: Array<{ id: number; title: string; date: string; content: string }> = [];
+interface Subject {
+  name: string;
+  code: string;
+  teacher: string;
+  pending: number;
+}
+
+interface Homework {
+  id: string;
+  subject: string;
+  title: string;
+  description: string;
+  dueDate: string;
+  status: "pending" | "submitted" | "graded";
+  marks?: number;
+  remarks?: string;
+  fileUrl?: string;
+  fileName?: string;
+}
+
+interface AttendanceRecord {
+  date: string;
+  day: string;
+  status: "present" | "absent";
+}
+
+interface Mark {
+  subject: string;
+  title: string;
+  marks: number;
+  maxMarks: number;
+  remarks?: string;
+}
+
+interface Notice {
+  id: string;
+  title: string;
+  date: string;
+  content: string;
+}
 
 const StudentDashboard = () => {
   const [activeTab, setActiveTab] = useState("homework");
-  const [uploadingId, setUploadingId] = useState<number | null>(null);
+  const [uploadingId, setUploadingId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [studentData, setStudentData] = useState<StudentData | null>(null);
+  const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [homeworks, setHomeworks] = useState<Homework[]>([]);
+  const [attendanceData, setAttendanceData] = useState({ present: 0, absent: 0, percentage: 0 });
+  const [recentAttendance, setRecentAttendance] = useState<AttendanceRecord[]>([]);
+  const [marks, setMarks] = useState<Mark[]>([]);
+  const [notices, setNotices] = useState<Notice[]>([]);
+  const fileInputRefs = useRef<{ [key: string]: HTMLInputElement | null }>({});
+
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleLogout = () => {
+  useEffect(() => {
+    fetchStudentData();
+  }, []);
+
+  const fetchStudentData = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        navigate("/student/login");
+        return;
+      }
+
+      // Get student record
+      const { data: student, error: studentError } = await supabase
+        .from("students")
+        .select(`
+          id,
+          student_id,
+          full_name,
+          class_id,
+          classes (
+            id,
+            name,
+            section
+          )
+        `)
+        .eq("user_id", user.id)
+        .single();
+
+      if (studentError || !student) {
+        console.error("Error fetching student:", studentError);
+        return;
+      }
+
+      const classInfo = student.classes as { id: string; name: string; section: string } | null;
+
+      setStudentData({
+        id: student.id,
+        studentId: student.student_id,
+        name: student.full_name,
+        className: classInfo ? `${classInfo.name}-${classInfo.section}` : "Not Assigned",
+        classId: student.class_id,
+      });
+
+      // Fetch all data in parallel
+      await Promise.all([
+        fetchSubjectsAndHomework(student.class_id, student.id),
+        fetchAttendance(student.id),
+        fetchNotices(student.class_id),
+      ]);
+
+    } catch (error) {
+      console.error("Error:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to load dashboard data.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchSubjectsAndHomework = async (classId: string, studentId: string) => {
+    // Get teachers and subjects for this class
+    const { data: teacherClasses } = await supabase
+      .from("teacher_classes")
+      .select(`
+        subject,
+        teacher_id,
+        profiles!teacher_classes_teacher_id_fkey (full_name)
+      `)
+      .eq("class_id", classId);
+
+    // Get homework for this class
+    const { data: homeworkData } = await supabase
+      .from("homework")
+      .select(`
+        id,
+        title,
+        description,
+        subject,
+        due_date,
+        teacher_id,
+        profiles!homework_teacher_id_fkey (full_name)
+      `)
+      .eq("class_id", classId)
+      .order("due_date", { ascending: true });
+
+    // Get student's submissions
+    const { data: submissions } = await supabase
+      .from("homework_submissions")
+      .select("homework_id, submitted_at, marks, remarks, file_url, file_name")
+      .eq("student_id", studentId);
+
+    const submissionMap = new Map(
+      submissions?.map(s => [s.homework_id, s]) || []
+    );
+
+    // Build subjects with pending count
+    const subjectMap = new Map<string, Subject>();
+    teacherClasses?.forEach(tc => {
+      const profile = tc.profiles as { full_name: string } | null;
+      if (!subjectMap.has(tc.subject)) {
+        subjectMap.set(tc.subject, {
+          name: tc.subject,
+          code: tc.subject.substring(0, 3).toUpperCase(),
+          teacher: profile?.full_name || "Unknown",
+          pending: 0,
+        });
+      }
+    });
+
+    // Process homework
+    const processedHomework: Homework[] = [];
+    const marksData: Mark[] = [];
+
+    homeworkData?.forEach(hw => {
+      const submission = submissionMap.get(hw.id);
+      const isPastDue = new Date(hw.due_date) < new Date();
+
+      let status: "pending" | "submitted" | "graded" = "pending";
+      if (submission?.marks !== null && submission?.marks !== undefined) {
+        status = "graded";
+      } else if (submission?.submitted_at) {
+        status = "submitted";
+      }
+
+      processedHomework.push({
+        id: hw.id,
+        subject: hw.subject,
+        title: hw.title,
+        description: hw.description || "",
+        dueDate: new Date(hw.due_date).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        }),
+        status,
+        marks: submission?.marks,
+        remarks: submission?.remarks,
+        fileUrl: submission?.file_url,
+        fileName: submission?.file_name,
+      });
+
+      // Update pending count
+      if (status === "pending" && !isPastDue) {
+        const subject = subjectMap.get(hw.subject);
+        if (subject) {
+          subject.pending++;
+        }
+      }
+
+      // Add to marks if graded
+      if (status === "graded" && submission?.marks !== undefined) {
+        marksData.push({
+          subject: hw.subject,
+          title: hw.title,
+          marks: submission.marks,
+          maxMarks: 10,
+          remarks: submission.remarks,
+        });
+      }
+    });
+
+    setSubjects(Array.from(subjectMap.values()));
+    setHomeworks(processedHomework);
+    setMarks(marksData);
+  };
+
+  const fetchAttendance = async (studentId: string) => {
+    const { data: attendanceRecords } = await supabase
+      .from("attendance")
+      .select("date, is_present")
+      .eq("student_id", studentId)
+      .order("date", { ascending: false })
+      .limit(30);
+
+    if (attendanceRecords && attendanceRecords.length > 0) {
+      const present = attendanceRecords.filter(r => r.is_present).length;
+      const absent = attendanceRecords.filter(r => !r.is_present).length;
+      const total = present + absent;
+
+      setAttendanceData({
+        present,
+        absent,
+        percentage: total > 0 ? Math.round((present / total) * 100) : 0,
+      });
+
+      setRecentAttendance(
+        attendanceRecords.slice(0, 14).map(r => ({
+          date: new Date(r.date).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+          }),
+          day: new Date(r.date).toLocaleDateString("en-US", { weekday: "long" }),
+          status: r.is_present ? "present" : "absent",
+        }))
+      );
+    }
+  };
+
+  const fetchNotices = async (classId: string) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    // Get student's school_id
+    const { data: student } = await supabase
+      .from("students")
+      .select("school_id")
+      .eq("user_id", user.id)
+      .single();
+
+    if (!student) return;
+
+    const { data: noticesData } = await supabase
+      .from("notices")
+      .select("id, title, content, created_at")
+      .eq("school_id", student.school_id)
+      .or(`target_class_id.is.null,target_class_id.eq.${classId}`)
+      .or("target_role.is.null,target_role.eq.student")
+      .order("created_at", { ascending: false })
+      .limit(10);
+
+    if (noticesData) {
+      setNotices(
+        noticesData.map(n => ({
+          id: n.id,
+          title: n.title,
+          content: n.content,
+          date: new Date(n.created_at).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          }),
+        }))
+      );
+    }
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
     navigate("/");
   };
 
-  const handleUpload = async (homeworkId: number) => {
+  const handleFileSelect = (homeworkId: string) => {
+    const input = fileInputRefs.current[homeworkId];
+    if (input) {
+      input.click();
+    }
+  };
+
+  const handleUpload = async (homeworkId: string, file: File) => {
+    if (!studentData) return;
+
+    // Validate file
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    const allowedTypes = ["application/pdf", "image/jpeg", "image/png", "image/gif", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
+
+    if (file.size > maxSize) {
+      toast({
+        variant: "destructive",
+        title: "File Too Large",
+        description: "Maximum file size is 10MB.",
+      });
+      return;
+    }
+
+    if (!allowedTypes.includes(file.type)) {
+      toast({
+        variant: "destructive",
+        title: "Invalid File Type",
+        description: "Please upload PDF, Word, or image files only.",
+      });
+      return;
+    }
+
     setUploadingId(homeworkId);
+
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Upload file to Supabase Storage
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${homeworkId}_${Date.now()}.${fileExt}`;
+      const filePath = `${studentData.id}/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("homework-files")
+        .upload(filePath, file);
+
+      if (uploadError) {
+        console.error("Upload error:", uploadError);
+        throw uploadError;
+      }
+
+      // Get public URL
+      const { data: urlData } = supabase.storage
+        .from("homework-files")
+        .getPublicUrl(filePath);
+
+      // Check if submission exists
+      const { data: existingSubmission } = await supabase
+        .from("homework_submissions")
+        .select("id")
+        .eq("homework_id", homeworkId)
+        .eq("student_id", studentData.id)
+        .single();
+
+      if (existingSubmission) {
+        // Update existing submission
+        const { error: updateError } = await supabase
+          .from("homework_submissions")
+          .update({
+            file_url: urlData.publicUrl,
+            file_name: file.name,
+            submitted_at: new Date().toISOString(),
+          })
+          .eq("id", existingSubmission.id);
+
+        if (updateError) throw updateError;
+      } else {
+        // Create new submission
+        const { error: insertError } = await supabase
+          .from("homework_submissions")
+          .insert({
+            homework_id: homeworkId,
+            student_id: studentData.id,
+            file_url: urlData.publicUrl,
+            file_name: file.name,
+            submitted_at: new Date().toISOString(),
+          });
+
+        if (insertError) throw insertError;
+      }
+
       toast({
         title: "Homework Submitted",
         description: "Your homework has been submitted successfully.",
       });
+
+      // Refresh homework list
+      await fetchSubjectsAndHomework(studentData.classId, studentData.id);
+
     } catch (error) {
+      console.error("Upload error:", error);
       toast({
         variant: "destructive",
         title: "Upload Failed",
@@ -57,11 +430,23 @@ const StudentDashboard = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
   const hasSubjects = subjects.length > 0;
   const hasHomework = homeworks.length > 0;
   const hasAttendance = recentAttendance.length > 0;
   const hasMarks = marks.length > 0;
   const hasNotices = notices.length > 0;
+  const pendingHomework = homeworks.filter(h => h.status === "pending");
 
   return (
     <div className="min-h-screen bg-gradient-hero">
@@ -74,10 +459,11 @@ const StudentDashboard = () => {
             </div>
             <div>
               <h1 className="text-lg font-bold">Student Dashboard</h1>
-              <p className="text-xs opacity-80">Welcome back, {studentData.name}! 👋</p>
+              <p className="text-xs opacity-80">Welcome back, {studentData?.name}!</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
+            <span className="hidden sm:inline text-sm opacity-80">{studentData?.className}</span>
             <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/20">
               <Bell className="w-5 h-5" />
             </Button>
@@ -152,7 +538,7 @@ const StudentDashboard = () => {
                   <h2 className="text-xl font-bold text-foreground mb-2">Your Subjects</h2>
                   <p className="text-muted-foreground text-sm">{subjects.length} subjects enrolled</p>
                 </div>
-                
+
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
                   {subjects.map((subject) => (
                     <div key={subject.code} className="bg-card rounded-xl p-5 shadow-card border border-border hover:shadow-card-hover transition-shadow">
@@ -166,11 +552,11 @@ const StudentDashboard = () => {
                       <p className="text-sm text-muted-foreground mb-3">Teacher: {subject.teacher}</p>
                       {subject.pending > 0 ? (
                         <div className="bg-warning/10 text-warning px-3 py-1.5 rounded-lg text-sm font-medium">
-                          ● {subject.pending} homework pending
+                          {subject.pending} homework pending
                         </div>
                       ) : (
                         <div className="bg-success/10 text-success px-3 py-1.5 rounded-lg text-sm font-medium">
-                          ✓ All caught up!
+                          All caught up!
                         </div>
                       )}
                     </div>
@@ -180,7 +566,7 @@ const StudentDashboard = () => {
                 <div className="mb-6">
                   <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
                     <Clock className="w-5 h-5 text-primary" />
-                    Pending Homework
+                    All Homework ({homeworks.length})
                   </h2>
                 </div>
 
@@ -193,7 +579,11 @@ const StudentDashboard = () => {
                             <h3 className="font-semibold text-foreground">{hw.title}</h3>
                             <p className="text-sm text-muted-foreground">{hw.subject}</p>
                           </div>
-                          {hw.status === "submitted" ? (
+                          {hw.status === "graded" ? (
+                            <span className="inline-flex items-center gap-1 bg-primary/10 text-primary px-2 py-1 rounded-lg text-xs font-medium">
+                              <BarChart3 className="w-3 h-3" /> {hw.marks}/10
+                            </span>
+                          ) : hw.status === "submitted" ? (
                             <span className="inline-flex items-center gap-1 bg-success/10 text-success px-2 py-1 rounded-lg text-xs font-medium">
                               <CheckCircle className="w-3 h-3" /> Submitted
                             </span>
@@ -203,17 +593,46 @@ const StudentDashboard = () => {
                             </span>
                           )}
                         </div>
+
+                        {hw.description && (
+                          <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{hw.description}</p>
+                        )}
+
                         <p className="text-sm text-muted-foreground mb-4">Due: {hw.dueDate}</p>
+
+                        {hw.remarks && (
+                          <p className="text-sm text-primary mb-3 italic">"{hw.remarks}"</p>
+                        )}
+
+                        {hw.fileName && (
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
+                            <FileText className="w-4 h-4" />
+                            <span className="truncate">{hw.fileName}</span>
+                          </div>
+                        )}
+
                         {hw.status === "pending" && (
-                          <LoadingButton 
-                            className="w-full bg-gradient-primary text-primary-foreground shadow-button"
-                            onClick={() => handleUpload(hw.id)}
-                            loading={uploadingId === hw.id}
-                            loadingText="Uploading..."
-                          >
-                            <Upload className="w-4 h-4 mr-2" />
-                            Upload Answer
-                          </LoadingButton>
+                          <>
+                            <input
+                              type="file"
+                              ref={(el) => (fileInputRefs.current[hw.id] = el)}
+                              className="hidden"
+                              accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) handleUpload(hw.id, file);
+                              }}
+                            />
+                            <LoadingButton
+                              className="w-full bg-gradient-primary text-primary-foreground shadow-button"
+                              onClick={() => handleFileSelect(hw.id)}
+                              loading={uploadingId === hw.id}
+                              loadingText="Uploading..."
+                            >
+                              <Upload className="w-4 h-4 mr-2" />
+                              Upload Answer
+                            </LoadingButton>
+                          </>
                         )}
                       </div>
                     ))}
@@ -222,8 +641,8 @@ const StudentDashboard = () => {
                   <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                     <EmptyState
                       icon={CheckCircle}
-                      title="All Caught Up!"
-                      description="You have no pending homework. Keep up the great work!"
+                      title="No Homework Yet"
+                      description="Your teachers haven't assigned any homework yet."
                     />
                   </div>
                 )}
@@ -295,9 +714,9 @@ const StudentDashboard = () => {
 
                 <h2 className="text-xl font-bold text-foreground mb-4">Daily Attendance Record</h2>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {recentAttendance.map((record) => (
+                  {recentAttendance.map((record, index) => (
                     <div
-                      key={record.date}
+                      key={index}
                       className={`bg-card rounded-xl p-4 shadow-card border border-border flex items-center justify-between ${
                         record.status === "absent" ? "border-destructive/30" : ""
                       }`}
@@ -313,7 +732,7 @@ const StudentDashboard = () => {
                             : "bg-destructive text-destructive-foreground"
                         }`}
                       >
-                        {record.status === "present" ? "✓ Present" : "✗ Absent"}
+                        {record.status === "present" ? "Present" : "Absent"}
                       </span>
                     </div>
                   ))}
@@ -340,23 +759,25 @@ const StudentDashboard = () => {
                 </div>
 
                 <div className="grid sm:grid-cols-2 gap-4">
-                  {marks.map((mark) => (
-                    <div key={mark.subject} className="bg-card rounded-xl p-5 shadow-card border border-border">
+                  {marks.map((mark, index) => (
+                    <div key={index} className="bg-card rounded-xl p-5 shadow-card border border-border">
                       <div className="flex justify-between items-start mb-4">
-                        <h3 className="font-semibold text-foreground">{mark.subject}</h3>
+                        <div>
+                          <h3 className="font-semibold text-foreground">{mark.title}</h3>
+                          <p className="text-sm text-muted-foreground">{mark.subject}</p>
+                        </div>
                         <BarChart3 className="w-5 h-5 text-primary" />
                       </div>
                       <div className="mb-3">
                         <div className="flex justify-between text-sm mb-1">
-                          <span className="text-muted-foreground">Homework Marks</span>
-                          <span className="font-semibold text-primary">{mark.homeworkMarks}/{mark.maxMarks}</span>
+                          <span className="text-muted-foreground">Score</span>
+                          <span className="font-semibold text-primary">{mark.marks}/{mark.maxMarks}</span>
                         </div>
-                        <Progress value={(mark.homeworkMarks / mark.maxMarks) * 100} className="h-3" />
+                        <Progress value={(mark.marks / mark.maxMarks) * 100} className="h-3" />
                       </div>
-                      <div className="text-right">
-                        <span className="text-2xl font-bold text-foreground">{mark.homeworkMarks}</span>
-                        <span className="text-muted-foreground text-sm">/{mark.maxMarks}</span>
-                      </div>
+                      {mark.remarks && (
+                        <p className="text-sm text-muted-foreground italic">"{mark.remarks}"</p>
+                      )}
                     </div>
                   ))}
                 </div>

@@ -68,10 +68,10 @@ const Index = () => {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="animate-fade-in">
               <h1 className="text-4xl lg:text-5xl font-bold text-foreground mb-6">
-                Your <span className="text-primary">School Portal</span> Awaits
+                Welcome to <span className="text-primary">School Smart Pakistan</span>
               </h1>
               <p className="text-lg text-muted-foreground mb-8 max-w-lg">
-                Access homework, track attendance, view marks, and stay connected with your school. Simple, fast, and works everywhere.
+                Complete school management system for Pakistani schools. Manage homework, attendance, marks, and stay connected. Simple, fast, and works everywhere.
               </p>
               <div className="flex flex-wrap gap-4">
                 <a
