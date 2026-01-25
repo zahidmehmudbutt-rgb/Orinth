@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { GraduationCap, Mail, Lock, ArrowLeft, BookMarked } from "lucide-react";
+import { GraduationCap, Mail, Lock, ArrowLeft, BookMarked, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { signIn, hasRole } from "@/lib/auth";
 
 const CoordinatorLogin = () => {
   const [email, setEmail] = useState("");
@@ -15,7 +16,7 @@ const CoordinatorLogin = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!email.trim() || !password.trim()) {
       toast({
         variant: "destructive",
@@ -26,15 +27,62 @@ const CoordinatorLogin = () => {
     }
 
     setIsLoading(true);
-    
-    setTimeout(() => {
-      setIsLoading(false);
+
+    try {
+      const { data, error } = await signIn(email, password);
+
+      if (error) {
+        toast({
+          variant: "destructive",
+          title: "Login Failed",
+          description: "Invalid email or password. Please try again.",
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      if (!data.user) {
+        toast({
+          variant: "destructive",
+          title: "Login Failed",
+          description: "Unable to authenticate. Please try again.",
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      // Verify user has coordinator role
+      const isCoordinator = await hasRole(data.user.id, 'coordinator');
+
+      if (!isCoordinator) {
+        toast({
+          variant: "destructive",
+          title: "Access Denied",
+          description: "You do not have permission to access the Coordinator dashboard.",
+        });
+        setIsLoading(false);
+        return;
+      }
+
       toast({
         title: "Login Successful",
         description: "Welcome to your dashboard!",
       });
+
       navigate("/coordinator/dashboard");
-    }, 1000);
+    } catch (error) {
+      if (import.meta.env.DEV) {
+        console.error('Login error:', error);
+      }
+
+      toast({
+        variant: "destructive",
+        title: "Login Failed",
+        description: "Invalid email or password. Please try again.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -59,7 +107,7 @@ const CoordinatorLogin = () => {
             <ArrowLeft className="w-4 h-4" />
             Back to Home
           </Link>
-          
+
           <div className="bg-card rounded-2xl shadow-card-hover p-8 border border-border">
             <div className="text-center mb-8">
               <div className="w-16 h-16 bg-role-coordinator rounded-xl flex items-center justify-center mx-auto mb-4">
@@ -81,6 +129,7 @@ const CoordinatorLogin = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="pl-10 h-12"
+                    disabled={isLoading}
                   />
                 </div>
               </div>
@@ -96,6 +145,7 @@ const CoordinatorLogin = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="pl-10 h-12"
+                    disabled={isLoading}
                   />
                 </div>
               </div>
@@ -105,7 +155,14 @@ const CoordinatorLogin = () => {
                 className="w-full h-12 bg-role-coordinator text-primary-foreground font-medium hover:opacity-90"
                 disabled={isLoading}
               >
-                {isLoading ? "Signing in..." : "Sign In"}
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Signing in...
+                  </>
+                ) : (
+                  "Sign In"
+                )}
               </Button>
             </form>
 

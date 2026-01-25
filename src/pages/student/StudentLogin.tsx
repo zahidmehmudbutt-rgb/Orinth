@@ -17,7 +17,7 @@ const StudentLogin = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!studentId.trim() || !password.trim()) {
       toast({
         variant: "destructive",
@@ -28,39 +28,48 @@ const StudentLogin = () => {
     }
 
     setIsLoading(true);
-    
+
     try {
-      // First, look up the student by student_id to get their email
+      // Step 1: Look up the student by student_id to get their user_id
       const { data: studentData, error: studentError } = await supabase
         .from('students')
-        .select('user_id, profiles:user_id(email)')
+        .select('user_id')
         .eq('student_id', studentId.trim())
         .maybeSingle();
 
       if (studentError) {
+        console.error('Student lookup error:', studentError);
         throw new Error("Unable to verify student credentials");
       }
 
       if (!studentData || !studentData.user_id) {
-        throw new Error("Invalid credentials");
+        throw new Error("Invalid Student ID");
       }
 
-      // Handle the nested profile data
-      const profileData = Array.isArray(studentData.profiles) 
-        ? studentData.profiles[0] 
-        : studentData.profiles;
-      
+      // Step 2: Get the profile to find the email
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('email')
+        .eq('id', studentData.user_id)
+        .maybeSingle();
+
+      if (profileError) {
+        console.error('Profile lookup error:', profileError);
+        throw new Error("Unable to verify student credentials");
+      }
+
       if (!profileData?.email) {
-        throw new Error("Invalid credentials");
+        throw new Error("Student account not properly configured");
       }
 
-      // Authenticate with email and password
+      // Step 3: Authenticate with email and password
       const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
         email: profileData.email,
         password: password,
       });
 
       if (authError) {
+        console.error('Auth error:', authError);
         throw new Error("Invalid credentials");
       }
 
@@ -68,9 +77,9 @@ const StudentLogin = () => {
         throw new Error("Authentication failed");
       }
 
-      // Verify the user has the 'student' role
+      // Step 4: Verify the user has the 'student' role
       const isStudent = await hasRole(authData.user.id, 'student');
-      
+
       if (!isStudent) {
         // Sign out if not a student
         await supabase.auth.signOut();
@@ -81,19 +90,19 @@ const StudentLogin = () => {
         title: "Login Successful",
         description: "Welcome to your dashboard!",
       });
-      
+
       navigate("/student/dashboard");
-    } catch (error) {
+    } catch (error: any) {
       // Log detailed error in development only
       if (import.meta.env.DEV) {
         console.error('Login error:', error);
       }
-      
+
       // Show generic error message to prevent information disclosure
       toast({
         variant: "destructive",
         title: "Login Failed",
-        description: "Invalid Student ID or Password. Please try again.",
+        description: error.message || "Invalid Student ID or Password. Please try again.",
       });
     } finally {
       setIsLoading(false);
@@ -127,7 +136,7 @@ const StudentLogin = () => {
             <ArrowLeft className="w-4 h-4" />
             Back to Home
           </Link>
-          
+
           <div className="bg-card rounded-2xl shadow-card-hover p-8 border border-border">
             <div className="text-center mb-8">
               <div className="w-16 h-16 bg-role-student rounded-xl flex items-center justify-center mx-auto mb-4">
@@ -193,8 +202,8 @@ const StudentLogin = () => {
                 First time? Your password is the same as your Student ID
               </p>
               <p className="text-center">
-                <Link 
-                  to="/auth/forgot-password" 
+                <Link
+                  to="/auth/forgot-password"
                   className="text-sm text-primary hover:underline"
                 >
                   Forgot Password?
