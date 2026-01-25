@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { GraduationCap, LogOut, BookOpen, Calendar, BarChart3, Megaphone, Clock, Upload, CheckCircle, AlertCircle, Settings, Sparkles, FileText, Download } from "lucide-react";
 import { NotificationCenter } from "@/components/notifications/NotificationCenter";
+import { GroupChat } from "@/components/chat";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -465,6 +466,7 @@ const StudentDashboard = () => {
           </div>
           <div className="flex items-center gap-3">
             <span className="hidden sm:inline text-sm opacity-80">{studentData?.className}</span>
+            <GroupChat triggerClassName="text-primary-foreground hover:bg-primary-foreground/20" />
             <NotificationCenter className="text-primary-foreground hover:bg-primary-foreground/20" />
             <Button
               variant="ghost"

@@ -15,6 +15,7 @@ import {
   Loader2
 } from "lucide-react";
 import { NotificationCenter } from "@/components/notifications/NotificationCenter";
+import { GroupChat } from "@/components/chat";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -250,6 +251,7 @@ const ParentDashboard = () => {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <GroupChat />
             <NotificationCenter />
             <Button variant="outline" size="sm" onClick={handleLogout}>
               <LogOut className="w-4 h-4 mr-2" />

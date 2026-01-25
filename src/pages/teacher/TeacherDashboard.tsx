@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bell, LogOut, BookOpen, Plus, Users, Settings, Sparkles, ClipboardList, FileText, ExternalLink, Check, X } from "lucide-react";
+import { LogOut, BookOpen, Plus, Users, Settings, Sparkles, ClipboardList, FileText, ExternalLink, Check, X } from "lucide-react";
+import { NotificationCenter } from "@/components/notifications/NotificationCenter";
+import { GroupChat } from "@/components/chat";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -452,9 +454,8 @@ const TeacherDashboard = () => {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/20">
-              <Bell className="w-5 h-5" />
-            </Button>
+            <GroupChat triggerClassName="text-primary-foreground hover:bg-primary-foreground/20" />
+            <NotificationCenter className="text-primary-foreground hover:bg-primary-foreground/20" />
             <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/20" onClick={handleLogout}>
               <LogOut className="w-5 h-5" />
             </Button>

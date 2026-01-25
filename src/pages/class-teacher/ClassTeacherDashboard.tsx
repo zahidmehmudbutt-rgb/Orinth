@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bell, LogOut, Calendar, UserPlus, Users, Trash2, Printer, Settings, Sparkles, Loader2, RefreshCw, Check, X } from "lucide-react";
+import { LogOut, Calendar, UserPlus, Users, Trash2, Printer, Settings, Sparkles, Loader2, RefreshCw, Check, X } from "lucide-react";
+import { NotificationCenter } from "@/components/notifications/NotificationCenter";
+import { GroupChat } from "@/components/chat";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -416,9 +418,13 @@ const ClassTeacherDashboard = () => {
                 <p className="text-xs opacity-80">{profile?.full_name || "Class Teacher"}</p>
               </div>
             </div>
-            <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/20" onClick={handleLogout}>
-              <LogOut className="w-5 h-5" />
-            </Button>
+            <div className="flex items-center gap-3">
+              <GroupChat triggerClassName="text-primary-foreground hover:bg-primary-foreground/20" />
+              <NotificationCenter className="text-primary-foreground hover:bg-primary-foreground/20" />
+              <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/20" onClick={handleLogout}>
+                <LogOut className="w-5 h-5" />
+              </Button>
+            </div>
           </div>
         </header>
         <main className="container mx-auto px-4 py-6">
@@ -458,9 +464,8 @@ const ClassTeacherDashboard = () => {
             >
               <RefreshCw className="w-5 h-5" />
             </Button>
-            <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/20">
-              <Bell className="w-5 h-5" />
-            </Button>
+            <GroupChat triggerClassName="text-primary-foreground hover:bg-primary-foreground/20" />
+            <NotificationCenter className="text-primary-foreground hover:bg-primary-foreground/20" />
             <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/20" onClick={handleLogout}>
               <LogOut className="w-5 h-5" />
             </Button>
