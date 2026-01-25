@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bell, LogOut, UserPlus, Users, Trash2, Edit, BookMarked, Settings, Sparkles } from "lucide-react";
+import { Bell, LogOut, UserPlus, Users, Trash2, Edit, BookMarked, Settings, Sparkles, Loader2, RefreshCw, GraduationCap } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,32 +16,144 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
+import { signOut } from "@/lib/auth";
+import { supabase } from "@/integrations/supabase/client";
 import AccountSettings from "@/components/account/AccountSettings";
 import { WelcomeBanner } from "@/components/onboarding/WelcomeBanner";
 import { OnboardingChecklist } from "@/components/onboarding/OnboardingChecklist";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { LoadingButton } from "@/components/ui/LoadingButton";
 
-const coordinatorData = {
-  name: "Dr. Rashid Mahmood",
-  section: "Middle Section (6-8)",
-};
+interface StaffMember {
+  id: string;
+  user_id: string;
+  full_name: string;
+  email: string | null;
+  role: "teacher" | "class_teacher";
+  phone: string | null;
+  is_active: boolean;
+}
 
-// Mock empty state - in real app this comes from database
-const staff: Array<{ id: number; name: string; email: string; role: string; subject?: string; class?: string }> = [];
+interface ClassInfo {
+  id: string;
+  name: string;
+  section: string | null;
+}
 
 const CoordinatorDashboard = () => {
   const [activeTab, setActiveTab] = useState("staff");
   const [newTeacherName, setNewTeacherName] = useState("");
   const [newTeacherEmail, setNewTeacherEmail] = useState("");
   const [newTeacherPassword, setNewTeacherPassword] = useState("");
-  const [teacherType, setTeacherType] = useState("teacher");
+  const [teacherType, setTeacherType] = useState<"teacher" | "class_teacher">("teacher");
+  const [selectedClassId, setSelectedClassId] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [staff, setStaff] = useState<StaffMember[]>([]);
+  const [classes, setClasses] = useState<ClassInfo[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user, profile, isCoordinator, loading } = useAuth();
 
-  const handleLogout = () => {
+  // Redirect if not coordinator
+  useEffect(() => {
+    if (!loading && !isCoordinator) {
+      navigate("/");
+    }
+  }, [loading, isCoordinator, navigate]);
+
+  // Load staff and classes
+  useEffect(() => {
+    if (profile?.school_id) {
+      loadStaff();
+      loadClasses();
+    }
+  }, [profile?.school_id]);
+
+  const loadStaff = async () => {
+    if (!profile?.school_id) return;
+
+    setIsLoading(true);
+    try {
+      // Get all teachers and class_teachers in this school
+      const { data: roleData, error: roleError } = await supabase
+        .from('user_roles')
+        .select('id, user_id, role, is_active, school_id')
+        .eq('school_id', profile.school_id)
+        .in('role', ['teacher', 'class_teacher']);
+
+      if (roleError) throw roleError;
+
+      if (!roleData || roleData.length === 0) {
+        setStaff([]);
+        setIsLoading(false);
+        return;
+      }
+
+      // Get profile info for these users
+      const userIds = roleData.map(r => r.user_id);
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('id, full_name, email, phone')
+        .in('id', userIds);
+
+      if (profileError) throw profileError;
+
+      // Combine role and profile data
+      const staffList: StaffMember[] = roleData.map(role => {
+        const userProfile = profileData?.find(p => p.id === role.user_id);
+        return {
+          id: role.id,
+          user_id: role.user_id,
+          full_name: userProfile?.full_name || 'Unknown',
+          email: userProfile?.email || null,
+          role: role.role as "teacher" | "class_teacher",
+          phone: userProfile?.phone || null,
+          is_active: role.is_active,
+        };
+      });
+
+      setStaff(staffList.filter(s => s.is_active));
+    } catch (error) {
+      console.error('Error loading staff:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to load staff members.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const loadClasses = async () => {
+    if (!profile?.school_id) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('classes')
+        .select('id, name, section')
+        .eq('school_id', profile.school_id)
+        .order('name');
+
+      if (error) throw error;
+      setClasses(data || []);
+    } catch (error) {
+      console.error('Error loading classes:', error);
+    }
+  };
+
+  const handleLogout = async () => {
+    await signOut();
     navigate("/");
   };
 
@@ -55,35 +167,137 @@ const CoordinatorDashboard = () => {
       return;
     }
 
+    if (teacherType === "class_teacher" && !selectedClassId) {
+      toast({
+        variant: "destructive",
+        title: "Missing Class",
+        description: "Please select a class for the class teacher.",
+      });
+      return;
+    }
+
+    if (!profile?.school_id) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "School information not found.",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Sign up the new user
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: newTeacherEmail.trim(),
+        password: newTeacherPassword,
+        options: {
+          data: {
+            full_name: newTeacherName.trim(),
+          },
+        },
+      });
+
+      if (authError) throw authError;
+      if (!authData.user) throw new Error("User creation failed");
+
+      // Create profile for the new user
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .insert({
+          id: authData.user.id,
+          full_name: newTeacherName.trim(),
+          email: newTeacherEmail.trim(),
+          school_id: profile.school_id,
+          first_login_complete: false,
+        });
+
+      if (profileError) throw profileError;
+
+      // Assign the role
+      const { error: roleError } = await supabase
+        .from('user_roles')
+        .insert({
+          user_id: authData.user.id,
+          role: teacherType,
+          school_id: profile.school_id,
+          is_active: true,
+        });
+
+      if (roleError) throw roleError;
+
+      // If class teacher, assign to the class
+      if (teacherType === "class_teacher" && selectedClassId) {
+        const { error: classError } = await supabase
+          .from('classes')
+          .update({ class_teacher_id: authData.user.id })
+          .eq('id', selectedClassId);
+
+        if (classError) {
+          console.error('Error assigning class teacher to class:', classError);
+        }
+      }
+
       toast({
         title: "Staff Added",
-        description: `${newTeacherName} has been added successfully. They will be required to complete their profile on first login.`,
+        description: `${newTeacherName} has been added as a ${teacherType === "class_teacher" ? "Class Teacher" : "Teacher"}. They will receive an email to verify their account.`,
       });
+
+      // Clear form and refresh staff list
       setNewTeacherName("");
       setNewTeacherEmail("");
       setNewTeacherPassword("");
-    } catch (error) {
+      setSelectedClassId("");
+      loadStaff();
+    } catch (error: any) {
+      console.error('Error adding staff:', error);
       toast({
         variant: "destructive",
-        title: "Something went wrong",
-        description: "Could not add staff member. Please try again.",
+        title: "Error Adding Staff",
+        description: error.message || "Could not add staff member. Please try again.",
       });
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleRemoveStaff = (staffName: string) => {
-    toast({
-      title: "Staff Removed",
-      description: `${staffName} has been removed from the section.`,
-    });
+  const handleRemoveStaff = async (staffMember: StaffMember) => {
+    try {
+      // Deactivate the user role (soft delete)
+      const { error } = await supabase
+        .from('user_roles')
+        .update({ is_active: false })
+        .eq('id', staffMember.id);
+
+      if (error) throw error;
+
+      // If class teacher, remove from class assignment
+      if (staffMember.role === "class_teacher") {
+        await supabase
+          .from('classes')
+          .update({ class_teacher_id: null })
+          .eq('class_teacher_id', staffMember.user_id);
+      }
+
+      toast({
+        title: "Staff Removed",
+        description: `${staffMember.full_name} has been removed from your section.`,
+      });
+
+      loadStaff();
+    } catch (error: any) {
+      console.error('Error removing staff:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message || "Could not remove staff member.",
+      });
+    }
   };
 
   const hasStaff = staff.length > 0;
+  const teacherCount = staff.filter(s => s.role === "teacher").length;
+  const classTeacherCount = staff.filter(s => s.role === "class_teacher").length;
 
   // Onboarding checklist
   const checklistItems = [
@@ -91,24 +305,32 @@ const CoordinatorDashboard = () => {
       id: "profile",
       label: "Complete your profile",
       description: "Add your contact information",
-      completed: true,
+      completed: profile?.first_login_complete || false,
       onClick: () => setActiveTab("account"),
     },
     {
       id: "teacher",
       label: "Add your first teacher",
       description: "Add teachers to your section",
-      completed: hasStaff && staff.some(s => s.role === "Teacher"),
+      completed: teacherCount > 0,
       onClick: () => setActiveTab("staff"),
     },
     {
       id: "class-teacher",
       label: "Assign a class teacher",
       description: "Add class teachers to manage classes",
-      completed: hasStaff && staff.some(s => s.role === "Class Teacher"),
+      completed: classTeacherCount > 0,
       onClick: () => setActiveTab("staff"),
     },
   ];
+
+  if (loading || isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-role-coordinator" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-hero">
@@ -120,10 +342,18 @@ const CoordinatorDashboard = () => {
             </div>
             <div>
               <h1 className="text-lg font-bold">Section Head Dashboard</h1>
-              <p className="text-xs opacity-80">{coordinatorData.name} • {coordinatorData.section}</p>
+              <p className="text-xs opacity-80">{profile?.full_name || "Coordinator"}</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={loadStaff}
+              className="text-primary-foreground hover:bg-primary-foreground/20"
+            >
+              <RefreshCw className="w-5 h-5" />
+            </Button>
             <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/20">
               <Bell className="w-5 h-5" />
             </Button>
@@ -152,6 +382,43 @@ const CoordinatorDashboard = () => {
           />
         )}
 
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <div className="bg-card rounded-xl p-4 shadow-card border border-border">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-role-teacher/10 rounded-lg flex items-center justify-center">
+                <GraduationCap className="w-5 h-5 text-role-teacher" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-foreground">{teacherCount}</p>
+                <p className="text-sm text-muted-foreground">Teachers</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-card rounded-xl p-4 shadow-card border border-border">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-role-class-teacher/10 rounded-lg flex items-center justify-center">
+                <Users className="w-5 h-5 text-role-class-teacher" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-foreground">{classTeacherCount}</p>
+                <p className="text-sm text-muted-foreground">Class Teachers</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-card rounded-xl p-4 shadow-card border border-border">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                <BookMarked className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-foreground">{classes.length}</p>
+                <p className="text-sm text-muted-foreground">Classes</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="w-full max-w-md mx-auto grid grid-cols-2 mb-8 bg-card shadow-card">
             <TabsTrigger value="staff" className="flex items-center gap-2 data-[state=active]:bg-role-coordinator data-[state=active]:text-primary-foreground">
@@ -172,7 +439,7 @@ const CoordinatorDashboard = () => {
                   <UserPlus className="w-5 h-5 text-role-coordinator" />
                   Add New Staff
                 </h2>
-                
+
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <Label>Staff Type</Label>
@@ -183,7 +450,10 @@ const CoordinatorDashboard = () => {
                           name="staffType"
                           value="teacher"
                           checked={teacherType === "teacher"}
-                          onChange={() => setTeacherType("teacher")}
+                          onChange={() => {
+                            setTeacherType("teacher");
+                            setSelectedClassId("");
+                          }}
                           className="w-4 h-4"
                           disabled={isSubmitting}
                         />
@@ -193,9 +463,9 @@ const CoordinatorDashboard = () => {
                         <input
                           type="radio"
                           name="staffType"
-                          value="class-teacher"
-                          checked={teacherType === "class-teacher"}
-                          onChange={() => setTeacherType("class-teacher")}
+                          value="class_teacher"
+                          checked={teacherType === "class_teacher"}
+                          onChange={() => setTeacherType("class_teacher")}
                           className="w-4 h-4"
                           disabled={isSubmitting}
                         />
@@ -203,7 +473,28 @@ const CoordinatorDashboard = () => {
                       </label>
                     </div>
                   </div>
-                  
+
+                  {teacherType === "class_teacher" && (
+                    <div className="space-y-2">
+                      <Label>Assign to Class</Label>
+                      <Select value={selectedClassId} onValueChange={setSelectedClassId} disabled={isSubmitting}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a class" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {classes.map((cls) => (
+                            <SelectItem key={cls.id} value={cls.id}>
+                              {cls.name}{cls.section ? ` - ${cls.section}` : ''}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      {classes.length === 0 && (
+                        <p className="text-xs text-muted-foreground">No classes available. Ask your principal to create classes first.</p>
+                      )}
+                    </div>
+                  )}
+
                   <div className="space-y-2">
                     <Label>Full Name</Label>
                     <Input
@@ -213,7 +504,7 @@ const CoordinatorDashboard = () => {
                       disabled={isSubmitting}
                     />
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Label>Email</Label>
                     <Input
@@ -224,7 +515,7 @@ const CoordinatorDashboard = () => {
                       disabled={isSubmitting}
                     />
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Label>Password</Label>
                     <Input
@@ -235,12 +526,12 @@ const CoordinatorDashboard = () => {
                       disabled={isSubmitting}
                     />
                   </div>
-                  
+
                   <p className="text-sm text-muted-foreground bg-secondary/50 p-3 rounded-lg">
-                    📝 Staff will be required to complete their profile (address, phone, WhatsApp) on first login.
+                    Staff will be required to complete their profile (address, phone, WhatsApp) on first login.
                   </p>
-                  
-                  <LoadingButton 
+
+                  <LoadingButton
                     className="w-full bg-role-coordinator text-primary-foreground hover:opacity-90"
                     onClick={handleAddTeacher}
                     loading={isSubmitting}
@@ -265,31 +556,27 @@ const CoordinatorDashboard = () => {
                       <Users className="w-5 h-5 text-role-coordinator" />
                       Section Staff ({staff.length})
                     </h2>
-                    
+
                     <div className="space-y-3">
                       {staff.map((member) => (
                         <div key={member.id} className="bg-card rounded-xl p-4 shadow-card border border-border">
                           <div className="flex items-start justify-between">
                             <div className="flex-1">
                               <div className="flex items-center gap-2 mb-1">
-                                <p className="font-semibold text-foreground">{member.name}</p>
+                                <p className="font-semibold text-foreground">{member.full_name}</p>
                                 <span className={`px-2 py-0.5 rounded text-xs font-medium ${
-                                  member.role === "Teacher" ? 'bg-role-teacher/10 text-role-teacher' : 'bg-role-class-teacher/10 text-role-class-teacher'
+                                  member.role === "teacher" ? 'bg-role-teacher/10 text-role-teacher' : 'bg-role-class-teacher/10 text-role-class-teacher'
                                 }`}>
-                                  {member.role}
+                                  {member.role === "teacher" ? "Teacher" : "Class Teacher"}
                                 </span>
                               </div>
-                              <p className="text-sm text-muted-foreground">{member.email}</p>
-                              <p className="text-xs text-muted-foreground mt-1">
-                                {member.subject || member.class}
-                              </p>
+                              <p className="text-sm text-muted-foreground">{member.email || 'No email'}</p>
+                              {member.phone && (
+                                <p className="text-xs text-muted-foreground mt-1">{member.phone}</p>
+                              )}
                             </div>
-                            
+
                             <div className="flex gap-2">
-                              <Button variant="ghost" size="icon" className="text-primary hover:bg-primary/10">
-                                <Edit className="w-4 h-4" />
-                              </Button>
-                              
                               <AlertDialog>
                                 <AlertDialogTrigger asChild>
                                   <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10">
@@ -300,14 +587,14 @@ const CoordinatorDashboard = () => {
                                   <AlertDialogHeader>
                                     <AlertDialogTitle>Remove Staff Member?</AlertDialogTitle>
                                     <AlertDialogDescription>
-                                      Are you sure you want to remove {member.name}? This action cannot be undone.
+                                      Are you sure you want to remove {member.full_name}? This action will deactivate their account.
                                     </AlertDialogDescription>
                                   </AlertDialogHeader>
                                   <AlertDialogFooter>
                                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction 
+                                    <AlertDialogAction
                                       className="bg-destructive text-destructive-foreground"
-                                      onClick={() => handleRemoveStaff(member.name)}
+                                      onClick={() => handleRemoveStaff(member)}
                                     >
                                       Remove
                                     </AlertDialogAction>
@@ -320,16 +607,6 @@ const CoordinatorDashboard = () => {
                       ))}
                     </div>
                   </>
-                )}
-
-                {hasStaff && staff.length === 0 && (
-                  <EmptyState
-                    icon={Users}
-                    title="No Staff Members Yet"
-                    description="Add your first teacher or class teacher to get started."
-                    actionLabel="Add Staff"
-                    onAction={() => document.querySelector<HTMLInputElement>('input[placeholder="Enter full name"]')?.focus()}
-                  />
                 )}
               </div>
             </div>
