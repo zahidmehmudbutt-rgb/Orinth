@@ -14,6 +14,7 @@ import {
   FileText,
   Loader2
 } from "lucide-react";
+import { NotificationCenter } from "@/components/notifications/NotificationCenter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -248,10 +249,13 @@ const ParentDashboard = () => {
               <p className="text-xs text-gray-500">Welcome, {profile?.full_name}</p>
             </div>
           </div>
-          <Button variant="outline" size="sm" onClick={handleLogout}>
-            <LogOut className="w-4 h-4 mr-2" />
-            Logout
-          </Button>
+          <div className="flex items-center gap-2">
+            <NotificationCenter />
+            <Button variant="outline" size="sm" onClick={handleLogout}>
+              <LogOut className="w-4 h-4 mr-2" />
+              Logout
+            </Button>
+          </div>
         </div>
       </header>
 
