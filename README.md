@@ -75,13 +75,14 @@ VITE_RESEND_API_KEY="your-resend-api-key"
 
 | Role | Login | Password |
 |------|-------|----------|
-| Host | ikrma434@gmail.com | Khuzaimaqwe123$ |
 | Principal | principal@demo.com | Demo123$ |
 | Coordinator | coordinator@demo.com | Demo123$ |
 | Class Teacher | classteacher@demo.com | Demo123$ |
 | Teacher | teacher@demo.com | Demo123$ |
 | Student | DEMO001 | Demo123$ |
 | Parent | parent@demo.com | Demo123$ |
+
+> **Note**: Host access is restricted to platform administrators only.
 
 ## Project Structure
 
