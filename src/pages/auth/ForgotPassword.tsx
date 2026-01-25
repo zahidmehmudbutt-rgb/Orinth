@@ -33,10 +33,15 @@ const ForgotPassword = () => {
       });
 
       if (error) {
+        // Log detailed error in development only
+        if (import.meta.env.DEV) {
+          console.error('Password reset error:', error);
+        }
+        // Show generic message to prevent email enumeration attacks
         toast({
           variant: "destructive",
           title: "Error",
-          description: error.message,
+          description: "Unable to send reset link. Please check your email and try again.",
         });
         setIsLoading(false);
         return;
