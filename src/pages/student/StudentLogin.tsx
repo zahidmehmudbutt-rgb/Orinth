@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { GraduationCap, User, Lock, ArrowLeft } from "lucide-react";
+import { GraduationCap, User, Lock, ArrowLeft, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { hasRole } from "@/lib/auth";
 
 const StudentLogin = () => {
   const [studentId, setStudentId] = useState("");
@@ -27,16 +29,75 @@ const StudentLogin = () => {
 
     setIsLoading(true);
     
-    // Simulate login - in production this would call the backend
-    setTimeout(() => {
-      setIsLoading(false);
-      // Mock successful login
+    try {
+      // First, look up the student by student_id to get their email
+      const { data: studentData, error: studentError } = await supabase
+        .from('students')
+        .select('user_id, profiles:user_id(email)')
+        .eq('student_id', studentId.trim())
+        .maybeSingle();
+
+      if (studentError) {
+        throw new Error("Unable to verify student credentials");
+      }
+
+      if (!studentData || !studentData.user_id) {
+        throw new Error("Invalid credentials");
+      }
+
+      // Handle the nested profile data
+      const profileData = Array.isArray(studentData.profiles) 
+        ? studentData.profiles[0] 
+        : studentData.profiles;
+      
+      if (!profileData?.email) {
+        throw new Error("Invalid credentials");
+      }
+
+      // Authenticate with email and password
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+        email: profileData.email,
+        password: password,
+      });
+
+      if (authError) {
+        throw new Error("Invalid credentials");
+      }
+
+      if (!authData.user) {
+        throw new Error("Authentication failed");
+      }
+
+      // Verify the user has the 'student' role
+      const isStudent = await hasRole(authData.user.id, 'student');
+      
+      if (!isStudent) {
+        // Sign out if not a student
+        await supabase.auth.signOut();
+        throw new Error("Access denied");
+      }
+
       toast({
         title: "Login Successful",
         description: "Welcome to your dashboard!",
       });
+      
       navigate("/student/dashboard");
-    }, 1000);
+    } catch (error) {
+      // Log detailed error in development only
+      if (import.meta.env.DEV) {
+        console.error('Login error:', error);
+      }
+      
+      // Show generic error message to prevent information disclosure
+      toast({
+        variant: "destructive",
+        title: "Login Failed",
+        description: "Invalid Student ID or Password. Please try again.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -90,6 +151,7 @@ const StudentLogin = () => {
                     value={studentId}
                     onChange={(e) => setStudentId(e.target.value)}
                     className="pl-10 h-12"
+                    disabled={isLoading}
                   />
                 </div>
               </div>
@@ -105,6 +167,7 @@ const StudentLogin = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="pl-10 h-12"
+                    disabled={isLoading}
                   />
                 </div>
               </div>
@@ -114,13 +177,30 @@ const StudentLogin = () => {
                 className="w-full h-12 bg-gradient-primary text-primary-foreground font-medium shadow-button hover:opacity-90"
                 disabled={isLoading}
               >
-                {isLoading ? "Signing in..." : "Sign In"}
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Signing in...
+                  </>
+                ) : (
+                  "Sign In"
+                )}
               </Button>
             </form>
 
-            <p className="text-center text-sm text-muted-foreground mt-6">
-              First time? Your password is the same as your Student ID
-            </p>
+            <div className="mt-6 space-y-2">
+              <p className="text-center text-sm text-muted-foreground">
+                First time? Your password is the same as your Student ID
+              </p>
+              <p className="text-center">
+                <Link 
+                  to="/auth/forgot-password" 
+                  className="text-sm text-primary hover:underline"
+                >
+                  Forgot Password?
+                </Link>
+              </p>
+            </div>
           </div>
         </div>
       </main>

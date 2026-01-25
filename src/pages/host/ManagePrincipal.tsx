@@ -222,15 +222,24 @@ const ManagePrincipal = () => {
       setNewPrincipal({ fullName: "", email: "", password: "" });
       setShowNewPrincipalForm(false);
       fetchPrincipal();
-    } catch (error: any) {
-      console.error('Error creating principal:', error);
-      // Provide user-friendly error messages
-      let errorMessage = error.message || "Failed to assign principal.";
-      if (errorMessage.includes('already has an active principal')) {
-        errorMessage = "This school already has an active principal. Deactivate the existing principal first.";
-      } else if (errorMessage.includes('duplicate key') || errorMessage.includes('unique constraint')) {
-        errorMessage = "A user with this email already exists.";
+    } catch (error: unknown) {
+      // Log detailed error in development only
+      if (import.meta.env.DEV) {
+        console.error('Error creating principal:', error);
       }
+      
+      // Map to user-friendly error messages without exposing internal details
+      let errorMessage = "Failed to assign principal. Please try again.";
+      const errorText = error instanceof Error ? error.message : String(error);
+      
+      if (errorText.includes('already has an active principal')) {
+        errorMessage = "This school already has an active principal. Deactivate the existing principal first.";
+      } else if (errorText.includes('duplicate key') || errorText.includes('unique constraint') || errorText.includes('already registered')) {
+        errorMessage = "An account with this email already exists.";
+      } else if (errorText.includes('invalid email') || errorText.includes('email')) {
+        errorMessage = "Please enter a valid email address.";
+      }
+      
       toast({
         variant: "destructive",
         title: "Error",
@@ -258,12 +267,15 @@ const ManagePrincipal = () => {
       });
 
       setPrincipal(prev => prev ? { ...prev, is_active: !prev.is_active } : null);
-    } catch (error: any) {
-      console.error('Error toggling principal status:', error);
+    } catch (error: unknown) {
+      // Log detailed error in development only
+      if (import.meta.env.DEV) {
+        console.error('Error toggling principal status:', error);
+      }
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message || "Failed to update principal status.",
+        description: "Failed to update principal status. Please try again.",
       });
     }
   };

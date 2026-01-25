@@ -78,10 +78,15 @@ const ResetPassword = () => {
       });
 
       if (error) {
+        // Log detailed error in development only
+        if (import.meta.env.DEV) {
+          console.error('Password update error:', error);
+        }
+        // Show generic message without exposing internal error details
         toast({
           variant: "destructive",
           title: "Error",
-          description: error.message,
+          description: "Unable to update password. Please try again or request a new reset link.",
         });
         setIsLoading(false);
         return;
