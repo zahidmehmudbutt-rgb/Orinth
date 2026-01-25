@@ -12,10 +12,12 @@ import {
   XCircle,
   Clock,
   FileText,
-  Loader2
+  Loader2,
+  Settings
 } from "lucide-react";
 import { NotificationCenter } from "@/components/notifications/NotificationCenter";
 import { GroupChat } from "@/components/chat";
+import { EmailPreferences } from "@/components/account/EmailPreferences";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -320,7 +322,7 @@ const ParentDashboard = () => {
 
             {/* Tabs */}
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="grid w-full grid-cols-3 mb-6">
+              <TabsList className="grid w-full grid-cols-4 mb-6">
                 <TabsTrigger value="academics" className="flex items-center gap-2">
                   <BookOpen className="w-4 h-4" />
                   Academics
@@ -332,6 +334,10 @@ const ParentDashboard = () => {
                 <TabsTrigger value="notices" className="flex items-center gap-2">
                   <Bell className="w-4 h-4" />
                   Notices
+                </TabsTrigger>
+                <TabsTrigger value="settings" className="flex items-center gap-2">
+                  <Settings className="w-4 h-4" />
+                  Settings
                 </TabsTrigger>
               </TabsList>
 
@@ -521,6 +527,13 @@ const ParentDashboard = () => {
                     )}
                   </CardContent>
                 </Card>
+              </TabsContent>
+
+              {/* Settings Tab */}
+              <TabsContent value="settings">
+                <div className="max-w-2xl mx-auto">
+                  <EmailPreferences />
+                </div>
               </TabsContent>
             </Tabs>
           </>

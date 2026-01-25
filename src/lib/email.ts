@@ -1,11 +1,123 @@
-// Email service using Resend API
-// Note: In production, email sending should be done via Supabase Edge Functions
-// For now, we'll create the email templates and helper functions
+// Email service using Resend API via Supabase Edge Functions
+import { supabase } from "@/integrations/supabase/client";
 
 export interface EmailTemplate {
   to: string;
   subject: string;
   html: string;
+}
+
+// Send email via Supabase Edge Function
+export async function sendEmail(template: EmailTemplate): Promise<boolean> {
+  try {
+    const { data, error } = await supabase.functions.invoke("send-email", {
+      body: {
+        to: template.to,
+        subject: template.subject,
+        html: template.html,
+      },
+    });
+
+    if (error) {
+      console.error("Error sending email:", error);
+      return false;
+    }
+
+    return data?.success || false;
+  } catch (error) {
+    console.error("Failed to send email:", error);
+    return false;
+  }
+}
+
+// Process pending emails from queue (call this from a cron job or edge function)
+export async function processPendingEmails(): Promise<{ sent: number; failed: number }> {
+  const result = { sent: 0, failed: 0 };
+
+  try {
+    // Fetch pending emails
+    const { data: pendingEmails, error: fetchError } = await supabase
+      .from("email_queue")
+      .select("*")
+      .eq("status", "pending")
+      .lt("retry_count", 3)
+      .order("created_at", { ascending: true })
+      .limit(50);
+
+    if (fetchError || !pendingEmails) {
+      console.error("Error fetching pending emails:", fetchError);
+      return result;
+    }
+
+    for (const email of pendingEmails) {
+      const html = generateEmailHtml(email.template_type, email.template_data);
+
+      const success = await sendEmail({
+        to: email.to_email,
+        subject: email.subject,
+        html,
+      });
+
+      if (success) {
+        await supabase
+          .from("email_queue")
+          .update({ status: "sent", sent_at: new Date().toISOString() })
+          .eq("id", email.id);
+        result.sent++;
+      } else {
+        await supabase
+          .from("email_queue")
+          .update({
+            retry_count: email.retry_count + 1,
+            status: email.retry_count >= 2 ? "failed" : "pending",
+            error_message: "Failed to send"
+          })
+          .eq("id", email.id);
+        result.failed++;
+      }
+    }
+  } catch (error) {
+    console.error("Error processing emails:", error);
+  }
+
+  return result;
+}
+
+// Generate HTML from template type and data
+function generateEmailHtml(templateType: string, data: Record<string, any>): string {
+  switch (templateType) {
+    case "homework_assigned":
+      return homeworkAssignedEmail(
+        data.to_email || "",
+        data.parent_name,
+        data.student_name,
+        data.homework_title,
+        data.subject,
+        data.due_date,
+        data.teacher_name
+      ).html;
+    case "attendance_alert":
+      return attendanceAlertEmail(
+        data.to_email || "",
+        data.parent_name,
+        data.student_name,
+        data.date,
+        data.class_name
+      ).html;
+    case "grades_published":
+      return gradesPublishedEmail(
+        data.to_email || "",
+        data.parent_name,
+        data.student_name,
+        data.homework_title,
+        data.subject,
+        data.marks,
+        data.max_marks || 10,
+        data.remarks
+      ).html;
+    default:
+      return `<p>Notification from School Smart Pakistan</p>`;
+  }
 }
 
 // Email template for homework assigned
