@@ -2,7 +2,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { RoleCard } from "@/components/RoleCard";
 import { StatsCard } from "@/components/StatsCard";
-import { Users, BookOpen, GraduationCap, Award, UserCheck, BookMarked, Crown, Building } from "lucide-react";
+import { Users, BookOpen, GraduationCap, Award, UserCheck, BookMarked, Crown, Building, UserPlus } from "lucide-react";
 import heroImage from "@/assets/hero-classroom.jpg";
 
 const roles = [
@@ -40,6 +40,13 @@ const roles = [
     icon: Crown,
     href: "/principal/login",
     colorClass: "bg-role-principal",
+  },
+  {
+    title: "Parent",
+    description: "Monitor your child's academics, attendance, and progress",
+    icon: UserPlus,
+    href: "/parent/login",
+    colorClass: "bg-purple-600",
   },
 ];
 
@@ -106,7 +113,7 @@ const Index = () => {
             </p>
           </div>
           
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 max-w-7xl mx-auto">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {roles.map((role) => (
               <RoleCard key={role.title} {...role} />
             ))}

@@ -27,6 +27,10 @@ import CoordinatorDashboard from "./pages/coordinator/CoordinatorDashboard";
 import PrincipalLogin from "./pages/principal/PrincipalLogin";
 import PrincipalDashboard from "./pages/principal/PrincipalDashboard";
 
+// Parent
+import ParentLogin from "./pages/parent/ParentLogin";
+import ParentDashboard from "./pages/parent/ParentDashboard";
+
 // Host (Hidden - Not linked anywhere)
 import HostLogin from "./pages/host/HostLogin";
 import HostDashboard from "./pages/host/HostDashboard";
@@ -87,7 +91,15 @@ const App = () => (
               <PrincipalDashboard />
             </ProtectedRoute>
           } />
-          
+
+          {/* Parent Routes */}
+          <Route path="/parent/login" element={<ParentLogin />} />
+          <Route path="/parent/dashboard" element={
+            <ProtectedRoute requiredRole="parent">
+              <ParentDashboard />
+            </ProtectedRoute>
+          } />
+
           {/* Host Routes - Hidden, not linked anywhere */}
           <Route path="/sys-admin-x7k9" element={<HostLogin />} />
           <Route path="/sys-admin-x7k9/dashboard" element={
