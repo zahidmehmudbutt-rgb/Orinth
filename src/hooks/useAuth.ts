@@ -77,7 +77,10 @@ export function useAuth() {
         isParent: hasRole('parent'),
       }));
     } catch (error) {
-      console.error('Error loading user data:', error);
+      // Only log in development to prevent information leakage
+      if (import.meta.env.DEV) {
+        console.error('Error loading user data:', error);
+      }
       setState(prev => ({ ...prev, loading: false }));
     }
   }, []);

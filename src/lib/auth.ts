@@ -37,7 +37,10 @@ export async function getUserRoles(userId: string): Promise<UserRole[]> {
     .eq('is_active', true);
   
   if (error) {
-    console.error('Error fetching user roles:', error);
+    // Only log in development to prevent information leakage
+    if (import.meta.env.DEV) {
+      console.error('Error fetching user roles:', error);
+    }
     return [];
   }
   
@@ -57,7 +60,10 @@ export async function getUserProfile(userId: string): Promise<UserProfile | null
     .single();
   
   if (error) {
-    console.error('Error fetching user profile:', error);
+    // Only log in development to prevent information leakage
+    if (import.meta.env.DEV) {
+      console.error('Error fetching user profile:', error);
+    }
     return null;
   }
   
