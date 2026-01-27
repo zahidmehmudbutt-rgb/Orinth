@@ -134,45 +134,49 @@ const PrincipalDashboard = () => {
   };
 
   const fetchCoordinators = async (schoolId: string) => {
+    // Fetch coordinators - use separate query for profiles since FK may not exist
     const { data } = await supabase
       .from("user_roles")
-      .select(`
-        user_id,
-        profiles!user_roles_user_id_fkey (id, full_name, email)
-      `)
+      .select("user_id")
       .eq("school_id", schoolId)
       .eq("role", "coordinator")
       .eq("is_active", true);
 
-    if (data) {
+    if (data && data.length > 0) {
+      const userIds = data.map(d => d.user_id);
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("id, full_name, email")
+        .in("id", userIds);
+
       setSectionHeads(
-        data.map((d) => {
-          const profile = d.profiles as { id: string; full_name: string; email: string } | null;
-          return {
-            id: profile?.id || d.user_id,
-            name: profile?.full_name || "Unknown",
-            email: profile?.email || "",
-          };
-        })
+        (profiles || []).map((p) => ({
+          id: p.id,
+          name: p.full_name || "Unknown",
+          email: p.email || "",
+        }))
       );
+    } else {
+      setSectionHeads([]);
     }
   };
 
   const fetchClasses = async (schoolId: string) => {
     const { data } = await supabase
       .from("classes")
-      .select(`
-        id,
-        name,
-        section,
-        class_teacher_id,
-        profiles!classes_class_teacher_id_fkey (full_name)
-      `)
+      .select("id, name, section, class_teacher_id")
       .eq("school_id", schoolId)
       .order("name");
 
     if (data) {
-      // Get student counts for each class
+      // Get class teacher names separately
+      const teacherIds = data.map(c => c.class_teacher_id).filter(Boolean);
+      const { data: teacherProfiles } = teacherIds.length > 0 
+        ? await supabase.from("profiles").select("id, full_name").in("id", teacherIds)
+        : { data: [] };
+      
+      const teacherMap = new Map((teacherProfiles || []).map(p => [p.id, p.full_name]));
+
       const classesWithCounts = await Promise.all(
         data.map(async (cls) => {
           const { count } = await supabase
@@ -180,13 +184,12 @@ const PrincipalDashboard = () => {
             .select("id", { count: "exact", head: true })
             .eq("class_id", cls.id);
 
-          const teacherProfile = cls.profiles as { full_name: string } | null;
           return {
             id: cls.id,
             name: cls.name,
             section: cls.section || "",
             classTeacherId: cls.class_teacher_id,
-            classTeacherName: teacherProfile?.full_name || null,
+            classTeacherName: cls.class_teacher_id ? teacherMap.get(cls.class_teacher_id) || null : null,
             studentCount: count || 0,
           };
         })
@@ -198,27 +201,25 @@ const PrincipalDashboard = () => {
   const fetchTeachers = async (schoolId: string) => {
     const { data } = await supabase
       .from("user_roles")
-      .select(`
-        user_id,
-        profiles!user_roles_user_id_fkey (id, full_name, email)
-      `)
+      .select("user_id")
       .eq("school_id", schoolId)
       .in("role", ["teacher", "class_teacher"])
       .eq("is_active", true);
 
-    if (data) {
-      const uniqueTeachers = new Map();
-      data.forEach((d) => {
-        const profile = d.profiles as { id: string; full_name: string; email: string } | null;
-        if (profile && !uniqueTeachers.has(profile.id)) {
-          uniqueTeachers.set(profile.id, {
-            id: profile.id,
-            name: profile.full_name,
-            email: profile.email,
-          });
-        }
-      });
-      setTeachers(Array.from(uniqueTeachers.values()));
+    if (data && data.length > 0) {
+      const userIds = [...new Set(data.map(d => d.user_id))];
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("id, full_name, email")
+        .in("id", userIds);
+
+      setTeachers((profiles || []).map(p => ({
+        id: p.id,
+        name: p.full_name || "Unknown",
+        email: p.email || "",
+      })));
+    } else {
+      setTeachers([]);
     }
   };
 

@@ -65,7 +65,7 @@ interface Notice {
 const ParentDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user, profile, isLoading: authLoading } = useAuth();
+  const { user, profile, loading: authLoading } = useAuth();
 
   const [children, setChildren] = useState<Child[]>([]);
   const [selectedChild, setSelectedChild] = useState<Child | null>(null);

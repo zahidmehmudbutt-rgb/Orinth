@@ -1,4 +1,7 @@
-import { supabase } from "@/integrations/supabase/client";
+// Chat functionality - Placeholder implementation
+// NOTE: Chat tables (chat_rooms, chat_room_members, chat_messages) are not yet created in the database
+// This file provides type definitions and stub functions for future implementation
+
 import { RealtimeChannel } from "@supabase/supabase-js";
 
 export interface ChatRoom {
@@ -37,245 +40,60 @@ export interface ChatRoomMember {
   last_read_at: string;
 }
 
-// Get all chat rooms for the current user
+// Stub implementations - Chat feature requires database tables to be created
+// These functions return empty results until chat tables are added to the database
+
 export async function getChatRooms(): Promise<ChatRoom[]> {
-  try {
-    const { data: memberships, error: memberError } = await supabase
-      .from("chat_room_members")
-      .select("room_id, last_read_at");
-
-    if (memberError) {
-      console.error("Error fetching memberships:", memberError);
-      return [];
-    }
-
-    if (!memberships || memberships.length === 0) {
-      return [];
-    }
-
-    const roomIds = memberships.map((m) => m.room_id);
-    const { data: rooms, error: roomError } = await supabase
-      .from("chat_rooms")
-      .select("*")
-      .in("id", roomIds)
-      .eq("is_active", true)
-      .order("name");
-
-    if (roomError) {
-      console.error("Error fetching rooms:", roomError);
-      return [];
-    }
-
-    // Get unread counts for each room
-    const roomsWithUnread = await Promise.all(
-      (rooms || []).map(async (room) => {
-        const membership = memberships.find((m) => m.room_id === room.id);
-        const lastReadAt = membership?.last_read_at || room.created_at;
-
-        const { count } = await supabase
-          .from("chat_messages")
-          .select("*", { count: "exact", head: true })
-          .eq("room_id", room.id)
-          .gt("created_at", lastReadAt);
-
-        return {
-          ...room,
-          unread_count: count || 0,
-        };
-      })
-    );
-
-    return roomsWithUnread as ChatRoom[];
-  } catch (error) {
-    console.error("Error getting chat rooms:", error);
-    return [];
-  }
+  console.warn("Chat feature not yet implemented - chat tables not created");
+  return [];
 }
 
-// Get messages for a chat room
 export async function getChatMessages(
-  roomId: string,
-  limit: number = 50,
-  before?: string
+  _roomId: string,
+  _limit: number = 50,
+  _before?: string
 ): Promise<ChatMessage[]> {
-  try {
-    let query = supabase
-      .from("chat_messages")
-      .select(
-        `
-        *,
-        sender:profiles!chat_messages_sender_id_fkey(full_name, email)
-      `
-      )
-      .eq("room_id", roomId)
-      .eq("is_deleted", false)
-      .order("created_at", { ascending: false })
-      .limit(limit);
-
-    if (before) {
-      query = query.lt("created_at", before);
-    }
-
-    const { data, error } = await query;
-
-    if (error) {
-      console.error("Error fetching messages:", error);
-      return [];
-    }
-
-    // Reverse to get chronological order
-    return ((data || []) as ChatMessage[]).reverse();
-  } catch (error) {
-    console.error("Error getting messages:", error);
-    return [];
-  }
+  console.warn("Chat feature not yet implemented - chat tables not created");
+  return [];
 }
 
-// Send a message to a chat room
 export async function sendMessage(
-  roomId: string,
-  message: string,
-  messageType: "text" | "image" | "file" = "text",
-  fileUrl?: string,
-  fileName?: string
+  _roomId: string,
+  _message: string,
+  _messageType: "text" | "image" | "file" = "text",
+  _fileUrl?: string,
+  _fileName?: string
 ): Promise<ChatMessage | null> {
-  try {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) return null;
-
-    const { data, error } = await supabase
-      .from("chat_messages")
-      .insert({
-        room_id: roomId,
-        sender_id: user.id,
-        message,
-        message_type: messageType,
-        file_url: fileUrl || null,
-        file_name: fileName || null,
-      })
-      .select(
-        `
-        *,
-        sender:profiles!chat_messages_sender_id_fkey(full_name, email)
-      `
-      )
-      .single();
-
-    if (error) {
-      console.error("Error sending message:", error);
-      return null;
-    }
-
-    return data as ChatMessage;
-  } catch (error) {
-    console.error("Error sending message:", error);
-    return null;
-  }
+  console.warn("Chat feature not yet implemented - chat tables not created");
+  return null;
 }
 
-// Update last read timestamp for a room
-export async function markRoomAsRead(roomId: string): Promise<boolean> {
-  try {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) return false;
-
-    const { error } = await supabase
-      .from("chat_room_members")
-      .update({ last_read_at: new Date().toISOString() })
-      .eq("room_id", roomId)
-      .eq("user_id", user.id);
-
-    if (error) {
-      console.error("Error marking room as read:", error);
-      return false;
-    }
-
-    return true;
-  } catch (error) {
-    console.error("Error marking room as read:", error);
-    return false;
-  }
+export async function markRoomAsRead(_roomId: string): Promise<boolean> {
+  console.warn("Chat feature not yet implemented - chat tables not created");
+  return false;
 }
 
-// Subscribe to new messages in a room
 export function subscribeToMessages(
-  roomId: string,
-  onMessage: (message: ChatMessage) => void
-): RealtimeChannel {
-  const channel = supabase
-    .channel(`room:${roomId}`)
-    .on(
-      "postgres_changes",
-      {
-        event: "INSERT",
-        schema: "public",
-        table: "chat_messages",
-        filter: `room_id=eq.${roomId}`,
-      },
-      async (payload) => {
-        // Fetch the full message with sender info
-        const { data } = await supabase
-          .from("chat_messages")
-          .select(
-            `
-            *,
-            sender:profiles!chat_messages_sender_id_fkey(full_name, email)
-          `
-          )
-          .eq("id", payload.new.id)
-          .single();
-
-        if (data) {
-          onMessage(data as ChatMessage);
-        }
-      }
-    )
-    .subscribe();
-
-  return channel;
+  _roomId: string,
+  _onMessage: (message: ChatMessage) => void
+): RealtimeChannel | null {
+  console.warn("Chat feature not yet implemented - chat tables not created");
+  return null;
 }
 
-// Unsubscribe from a channel
-export function unsubscribeFromMessages(channel: RealtimeChannel) {
-  supabase.removeChannel(channel);
+export function unsubscribeFromMessages(channel: RealtimeChannel | null) {
+  if (channel) {
+    console.warn("Chat feature not yet implemented");
+  }
 }
 
-// Get room members
-export async function getRoomMembers(roomId: string): Promise<
+export async function getRoomMembers(_roomId: string): Promise<
   Array<{
     user_id: string;
     role: string;
     full_name: string;
   }>
 > {
-  try {
-    const { data, error } = await supabase
-      .from("chat_room_members")
-      .select(
-        `
-        user_id,
-        role,
-        profiles:user_id(full_name)
-      `
-      )
-      .eq("room_id", roomId);
-
-    if (error) {
-      console.error("Error fetching room members:", error);
-      return [];
-    }
-
-    return (data || []).map((m: any) => ({
-      user_id: m.user_id,
-      role: m.role,
-      full_name: m.profiles?.full_name || "Unknown",
-    }));
-  } catch (error) {
-    console.error("Error getting room members:", error);
-    return [];
-  }
+  console.warn("Chat feature not yet implemented - chat tables not created");
+  return [];
 }
