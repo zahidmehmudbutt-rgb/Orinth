@@ -248,10 +248,10 @@ const TeacherDashboard = () => {
 
       if (!students) return;
 
-      // Get submissions for this homework
+      // Get submissions for this homework (only select columns that exist)
       const { data: submissionData } = await supabase
         .from("homework_submissions")
-        .select("id, student_id, submitted_at, file_url, file_name, marks, remarks")
+        .select("id, student_id, submitted_at, marks, remarks")
         .eq("homework_id", gradingHomeworkId);
 
       const submissionMap = new Map(
@@ -265,8 +265,8 @@ const TeacherDashboard = () => {
           studentName: student.full_name,
           studentCode: student.student_id,
           submittedAt: submission?.submitted_at || null,
-          fileUrl: submission?.file_url || null,
-          fileName: submission?.file_name || null,
+          fileUrl: null, // file_url column doesn't exist yet
+          fileName: null, // file_name column doesn't exist yet
           marks: submission?.marks ?? null,
           remarks: submission?.remarks || null,
           submissionId: submission?.id || null,

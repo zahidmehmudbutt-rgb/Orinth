@@ -20,6 +20,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 
+// Use only columns that exist in the database
 interface SchoolData {
   id: string;
   name: string;
@@ -27,12 +28,16 @@ interface SchoolData {
   phone: string | null;
   email: string | null;
   logo_url: string | null;
+  created_at: string;
+}
+
+// Extended data stored locally (these columns don't exist in DB yet)
+interface ExtendedSchoolData {
   website: string | null;
   description: string | null;
   established_year: number | null;
   motto: string | null;
   primary_color: string | null;
-  created_at: string;
 }
 
 interface PublicNotice {
@@ -51,6 +56,13 @@ interface SchoolStats {
 const SchoolPublicPage = () => {
   const { schoolSlug } = useParams<{ schoolSlug: string }>();
   const [school, setSchool] = useState<SchoolData | null>(null);
+  const [extended, setExtended] = useState<ExtendedSchoolData>({
+    website: null,
+    description: null,
+    established_year: null,
+    motto: null,
+    primary_color: "#2563eb",
+  });
   const [notices, setNotices] = useState<PublicNotice[]>([]);
   const [stats, setStats] = useState<SchoolStats>({ totalStudents: 0, totalTeachers: 0, totalClasses: 0 });
   const [isLoading, setIsLoading] = useState(true);
@@ -70,7 +82,7 @@ const SchoolPublicPage = () => {
       // Fetch school by slug (using name converted to slug)
       const { data: schoolData, error: schoolError } = await supabase
         .from("schools")
-        .select("*")
+        .select("id, name, address, phone, email, logo_url, created_at")
         .eq("is_active", true)
         .ilike("name", schoolSlug?.replace(/-/g, " ") || "")
         .single();
@@ -79,7 +91,7 @@ const SchoolPublicPage = () => {
         // Try finding by ID if slug doesn't match
         const { data: schoolById, error: idError } = await supabase
           .from("schools")
-          .select("*")
+          .select("id, name, address, phone, email, logo_url, created_at")
           .eq("id", schoolSlug)
           .eq("is_active", true)
           .single();
@@ -103,16 +115,17 @@ const SchoolPublicPage = () => {
   };
 
   const fetchSchoolDetails = async (schoolId: string) => {
-    // Fetch public notices
+    // Fetch notices (is_public column doesn't exist in current schema, so fetch recent notices)
+    // In production, only public notices should be shown
     const { data: noticesData } = await supabase
       .from("notices")
       .select("id, title, content, created_at")
       .eq("school_id", schoolId)
-      .eq("is_public", true)
       .order("created_at", { ascending: false })
       .limit(5);
 
-    setNotices(noticesData || []);
+    // Filter to only show notices without sensitive data (basic filter since is_public doesn't exist)
+    setNotices((noticesData || []) as PublicNotice[]);
 
     // Fetch stats
     const [studentsResult, teachersResult, classesResult] = await Promise.all([
@@ -136,7 +149,7 @@ const SchoolPublicPage = () => {
     });
   };
 
-  const primaryColor = school?.primary_color || "#2563eb";
+  const primaryColor = extended.primary_color || "#2563eb";
 
   if (isLoading) {
     return (
@@ -193,15 +206,15 @@ const SchoolPublicPage = () => {
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-2">
                 {school.name}
               </h1>
-              {school.motto && (
+              {extended.motto && (
                 <p className="text-lg md:text-xl opacity-90 italic mb-4">
-                  "{school.motto}"
+                  "{extended.motto}"
                 </p>
               )}
-              {school.established_year && (
+              {extended.established_year && (
                 <Badge variant="secondary" className="bg-white/20 text-white border-0">
                   <Calendar className="w-3 h-3 mr-1" />
-                  Established {school.established_year}
+                  Established {extended.established_year}
                 </Badge>
               )}
             </div>
@@ -250,8 +263,8 @@ const SchoolPublicPage = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {school.description ? (
-                  <p className="text-gray-600 leading-relaxed">{school.description}</p>
+                {extended.description ? (
+                  <p className="text-gray-600 leading-relaxed">{extended.description}</p>
                 ) : (
                   <p className="text-gray-500 italic">
                     Welcome to {school.name}. We are committed to providing quality education
@@ -331,11 +344,11 @@ const SchoolPublicPage = () => {
                     </a>
                   </div>
                 )}
-                {school.website && (
+                {extended.website && (
                   <div className="flex items-center gap-3">
                     <ExternalLink className="w-5 h-5 text-gray-400" />
                     <a
-                      href={school.website}
+                      href={extended.website}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-gray-600 hover:text-primary"

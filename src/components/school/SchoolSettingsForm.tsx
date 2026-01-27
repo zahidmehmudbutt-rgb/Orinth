@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { LoadingButton } from "@/components/ui/LoadingButton";
 
+// Only use columns that exist in the schools table
 interface SchoolSettings {
   id: string;
   name: string;
@@ -16,11 +17,6 @@ interface SchoolSettings {
   phone: string | null;
   email: string | null;
   logo_url: string | null;
-  website: string | null;
-  description: string | null;
-  established_year: number | null;
-  motto: string | null;
-  primary_color: string | null;
 }
 
 interface SchoolSettingsFormProps {
@@ -39,8 +35,44 @@ const colorPresets = [
   { name: "Indigo", value: "#4f46e5" },
 ];
 
+// Extended settings stored locally until database columns are added
+interface ExtendedSettings {
+  website: string | null;
+  description: string | null;
+  established_year: number | null;
+  motto: string | null;
+  primary_color: string | null;
+}
+
+function loadExtendedSettings(schoolId: string): ExtendedSettings {
+  try {
+    const stored = localStorage.getItem(`school_settings_${schoolId}`);
+    if (stored) {
+      return JSON.parse(stored);
+    }
+  } catch (e) {
+    console.warn("Failed to load extended settings");
+  }
+  return {
+    website: null,
+    description: null,
+    established_year: null,
+    motto: null,
+    primary_color: "#2563eb",
+  };
+}
+
+function saveExtendedSettings(schoolId: string, settings: ExtendedSettings): void {
+  try {
+    localStorage.setItem(`school_settings_${schoolId}`, JSON.stringify(settings));
+  } catch (e) {
+    console.warn("Failed to save extended settings");
+  }
+}
+
 export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProps) {
   const [settings, setSettings] = useState<SchoolSettings | null>(null);
+  const [extended, setExtended] = useState<ExtendedSettings>(loadExtendedSettings(schoolId));
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -54,12 +86,13 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
     try {
       const { data, error } = await supabase
         .from("schools")
-        .select("id, name, address, phone, email, logo_url, website, description, established_year, motto, primary_color")
+        .select("id, name, address, phone, email, logo_url")
         .eq("id", schoolId)
         .single();
 
       if (error) throw error;
       setSettings(data);
+      setExtended(loadExtendedSettings(schoolId));
     } catch (error) {
       console.error("Error fetching settings:", error);
       toast({
@@ -72,17 +105,20 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
     }
   };
 
-  const handleChange = (field: keyof SchoolSettings, value: string | number | null) => {
+  const handleChange = (field: keyof SchoolSettings, value: string | null) => {
     if (!settings) return;
     setSettings({ ...settings, [field]: value });
+  };
+
+  const handleExtendedChange = (field: keyof ExtendedSettings, value: string | number | null) => {
+    setExtended({ ...extended, [field]: value });
   };
 
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !settings) return;
 
-    // Validate file
-    const maxSize = 2 * 1024 * 1024; // 2MB
+    const maxSize = 2 * 1024 * 1024;
     const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
 
     if (file.size > maxSize) {
@@ -143,6 +179,7 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
     setIsSaving(true);
 
     try {
+      // Save core settings to database
       const { error } = await supabase
         .from("schools")
         .update({
@@ -150,15 +187,13 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
           phone: settings.phone,
           email: settings.email,
           logo_url: settings.logo_url,
-          website: settings.website,
-          description: settings.description,
-          established_year: settings.established_year,
-          motto: settings.motto,
-          primary_color: settings.primary_color,
         })
         .eq("id", schoolId);
 
       if (error) throw error;
+
+      // Save extended settings to localStorage
+      saveExtendedSettings(schoolId, extended);
 
       toast({
         title: "Settings Saved",
@@ -250,8 +285,8 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
                 id="established_year"
                 type="number"
                 placeholder="e.g., 1995"
-                value={settings.established_year || ""}
-                onChange={(e) => handleChange("established_year", e.target.value ? parseInt(e.target.value) : null)}
+                value={extended.established_year || ""}
+                onChange={(e) => handleExtendedChange("established_year", e.target.value ? parseInt(e.target.value) : null)}
               />
             </div>
           </div>
@@ -261,8 +296,8 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
             <Input
               id="motto"
               placeholder="e.g., Excellence in Education"
-              value={settings.motto || ""}
-              onChange={(e) => handleChange("motto", e.target.value || null)}
+              value={extended.motto || ""}
+              onChange={(e) => handleExtendedChange("motto", e.target.value || null)}
             />
           </div>
 
@@ -272,8 +307,8 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
               id="description"
               placeholder="Tell visitors about your school..."
               rows={4}
-              value={settings.description || ""}
-              onChange={(e) => handleChange("description", e.target.value || null)}
+              value={extended.description || ""}
+              onChange={(e) => handleExtendedChange("description", e.target.value || null)}
             />
           </div>
         </CardContent>
@@ -326,8 +361,8 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
               id="website"
               type="url"
               placeholder="https://www.school.edu.pk"
-              value={settings.website || ""}
-              onChange={(e) => handleChange("website", e.target.value || null)}
+              value={extended.website || ""}
+              onChange={(e) => handleExtendedChange("website", e.target.value || null)}
             />
           </div>
         </CardContent>
@@ -385,9 +420,9 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
               {colorPresets.map((color) => (
                 <button
                   key={color.value}
-                  onClick={() => handleChange("primary_color", color.value)}
+                  onClick={() => handleExtendedChange("primary_color", color.value)}
                   className={`w-10 h-10 rounded-lg border-2 transition-all ${
-                    settings.primary_color === color.value
+                    extended.primary_color === color.value
                       ? "border-foreground scale-110"
                       : "border-transparent hover:scale-105"
                   }`}
@@ -398,8 +433,8 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
               <div className="flex items-center gap-2">
                 <Input
                   type="color"
-                  value={settings.primary_color || "#2563eb"}
-                  onChange={(e) => handleChange("primary_color", e.target.value)}
+                  value={extended.primary_color || "#2563eb"}
+                  onChange={(e) => handleExtendedChange("primary_color", e.target.value)}
                   className="w-10 h-10 p-1 cursor-pointer"
                 />
                 <span className="text-sm text-muted-foreground">Custom</span>

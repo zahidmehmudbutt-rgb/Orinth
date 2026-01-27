@@ -1,11 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Mail, Bell, Calendar, GraduationCap, Megaphone, Save } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 import { LoadingButton } from "@/components/ui/LoadingButton";
+
+// NOTE: Email preferences are stored locally until email_preferences table is created
+// This provides a UI-ready component for future database integration
 
 interface EmailPreferencesData {
   homework_notifications: boolean;
@@ -14,51 +16,37 @@ interface EmailPreferencesData {
   notice_notifications: boolean;
 }
 
-export function EmailPreferences() {
-  const [preferences, setPreferences] = useState<EmailPreferencesData>({
+const STORAGE_KEY = "email_preferences";
+
+function loadFromStorage(): EmailPreferencesData {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      return JSON.parse(stored);
+    }
+  } catch (error) {
+    console.warn("Failed to load email preferences from storage");
+  }
+  return {
     homework_notifications: true,
     attendance_notifications: true,
     grades_notifications: true,
     notice_notifications: true,
-  });
-  const [isLoading, setIsLoading] = useState(true);
+  };
+}
+
+function saveToStorage(prefs: EmailPreferencesData): void {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
+  } catch (error) {
+    console.warn("Failed to save email preferences to storage");
+  }
+}
+
+export function EmailPreferences() {
+  const [preferences, setPreferences] = useState<EmailPreferencesData>(loadFromStorage);
   const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
-
-  useEffect(() => {
-    loadPreferences();
-  }, []);
-
-  const loadPreferences = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { data, error } = await supabase
-        .from("email_preferences")
-        .select("*")
-        .eq("user_id", user.id)
-        .single();
-
-      if (error && error.code !== "PGRST116") {
-        console.error("Error loading preferences:", error);
-        return;
-      }
-
-      if (data) {
-        setPreferences({
-          homework_notifications: data.homework_notifications,
-          attendance_notifications: data.attendance_notifications,
-          grades_notifications: data.grades_notifications,
-          notice_notifications: data.notice_notifications,
-        });
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const handleToggle = (key: keyof EmailPreferencesData) => {
     setPreferences((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -67,19 +55,9 @@ export function EmailPreferences() {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { error } = await supabase
-        .from("email_preferences")
-        .upsert({
-          user_id: user.id,
-          ...preferences,
-          updated_at: new Date().toISOString(),
-        }, { onConflict: "user_id" });
-
-      if (error) throw error;
-
+      // Save to localStorage for now (email_preferences table not yet created)
+      saveToStorage(preferences);
+      
       toast({
         title: "Preferences Saved",
         description: "Your email notification preferences have been updated.",
@@ -95,18 +73,6 @@ export function EmailPreferences() {
       setIsSaving(false);
     }
   };
-
-  if (isLoading) {
-    return (
-      <Card>
-        <CardContent className="pt-6">
-          <div className="flex items-center justify-center py-8">
-            <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
 
   return (
     <Card>

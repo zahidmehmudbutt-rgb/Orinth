@@ -214,40 +214,31 @@ export type Database = {
       homework_submissions: {
         Row: {
           created_at: string
-          file_name: string | null
-          file_url: string | null
           homework_id: string
           id: string
           marks: number | null
           remarks: string | null
           student_id: string
-          submission_text: string | null
           submitted_at: string | null
           updated_at: string
         }
         Insert: {
           created_at?: string
-          file_name?: string | null
-          file_url?: string | null
           homework_id: string
           id?: string
           marks?: number | null
           remarks?: string | null
           student_id: string
-          submission_text?: string | null
           submitted_at?: string | null
           updated_at?: string
         }
         Update: {
           created_at?: string
-          file_name?: string | null
-          file_url?: string | null
           homework_id?: string
           id?: string
           marks?: number | null
           remarks?: string | null
           student_id?: string
-          submission_text?: string | null
           submitted_at?: string | null
           updated_at?: string
         }

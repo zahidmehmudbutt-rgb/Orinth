@@ -1,4 +1,6 @@
-import { supabase } from "@/integrations/supabase/client";
+// Notifications service
+// NOTE: notifications table is not yet created - functions are stubbed
+// These functions provide the interface for future implementation
 
 export type NotificationType =
   | 'homework_assigned'
@@ -15,7 +17,7 @@ export interface Notification {
   type: NotificationType;
   title: string;
   message: string;
-  data: Record<string, any>;
+  data: Record<string, unknown>;
   is_read: boolean;
   email_sent: boolean;
   created_at: string;
@@ -27,217 +29,72 @@ export interface CreateNotificationParams {
   type: NotificationType;
   title: string;
   message: string;
-  data?: Record<string, any>;
+  data?: Record<string, unknown>;
 }
 
-// Create a notification for a user
-export async function createNotification(params: CreateNotificationParams): Promise<string | null> {
-  try {
-    const { data, error } = await supabase
-      .from('notifications')
-      .insert({
-        user_id: params.userId,
-        school_id: params.schoolId || null,
-        type: params.type,
-        title: params.title,
-        message: params.message,
-        data: params.data || {},
-      })
-      .select('id')
-      .single();
-
-    if (error) {
-      console.error('Error creating notification:', error);
-      return null;
-    }
-
-    return data?.id || null;
-  } catch (error) {
-    console.error('Error creating notification:', error);
-    return null;
-  }
+// Create a notification for a user (stubbed - notifications table not created)
+export async function createNotification(_params: CreateNotificationParams): Promise<string | null> {
+  console.warn("Notification creation not available - notifications table not created");
+  return null;
 }
 
-// Get notifications for the current user
-export async function getNotifications(limit: number = 20): Promise<Notification[]> {
-  try {
-    const { data, error } = await supabase
-      .from('notifications')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(limit);
-
-    if (error) {
-      console.error('Error fetching notifications:', error);
-      return [];
-    }
-
-    return (data || []) as Notification[];
-  } catch (error) {
-    console.error('Error fetching notifications:', error);
-    return [];
-  }
+// Get notifications for the current user (stubbed)
+export async function getNotifications(_limit: number = 20): Promise<Notification[]> {
+  console.warn("Notifications not available - notifications table not created");
+  return [];
 }
 
-// Get unread notification count
+// Get unread notification count (stubbed)
 export async function getUnreadCount(): Promise<number> {
-  try {
-    const { count, error } = await supabase
-      .from('notifications')
-      .select('*', { count: 'exact', head: true })
-      .eq('is_read', false);
-
-    if (error) {
-      console.error('Error fetching unread count:', error);
-      return 0;
-    }
-
-    return count || 0;
-  } catch (error) {
-    console.error('Error fetching unread count:', error);
-    return 0;
-  }
+  console.warn("Notification count not available - notifications table not created");
+  return 0;
 }
 
-// Mark a notification as read
-export async function markAsRead(notificationId: string): Promise<boolean> {
-  try {
-    const { error } = await supabase
-      .from('notifications')
-      .update({ is_read: true })
-      .eq('id', notificationId);
-
-    if (error) {
-      console.error('Error marking notification as read:', error);
-      return false;
-    }
-
-    return true;
-  } catch (error) {
-    console.error('Error marking notification as read:', error);
-    return false;
-  }
+// Mark a notification as read (stubbed)
+export async function markAsRead(_notificationId: string): Promise<boolean> {
+  console.warn("Mark as read not available - notifications table not created");
+  return false;
 }
 
-// Mark all notifications as read
+// Mark all notifications as read (stubbed)
 export async function markAllAsRead(): Promise<boolean> {
-  try {
-    const { error } = await supabase
-      .from('notifications')
-      .update({ is_read: true })
-      .eq('is_read', false);
-
-    if (error) {
-      console.error('Error marking all notifications as read:', error);
-      return false;
-    }
-
-    return true;
-  } catch (error) {
-    console.error('Error marking all notifications as read:', error);
-    return false;
-  }
+  console.warn("Mark all as read not available - notifications table not created");
+  return false;
 }
 
 // Helper functions to create specific notification types
 
 export async function notifyHomeworkAssigned(
-  studentUserId: string,
-  parentUserId: string | null,
-  schoolId: string,
-  homeworkTitle: string,
-  subject: string,
-  dueDate: string
+  _studentUserId: string,
+  _parentUserId: string | null,
+  _schoolId: string,
+  _homeworkTitle: string,
+  _subject: string,
+  _dueDate: string
 ) {
-  const message = `New homework "${homeworkTitle}" has been assigned in ${subject}. Due: ${dueDate}`;
-
-  // Notify student
-  await createNotification({
-    userId: studentUserId,
-    schoolId,
-    type: 'homework_assigned',
-    title: 'New Homework Assigned',
-    message,
-    data: { homeworkTitle, subject, dueDate },
-  });
-
-  // Notify parent if linked
-  if (parentUserId) {
-    await createNotification({
-      userId: parentUserId,
-      schoolId,
-      type: 'homework_assigned',
-      title: 'New Homework for Your Child',
-      message,
-      data: { homeworkTitle, subject, dueDate },
-    });
-  }
+  console.warn("Homework notification not available - notifications table not created");
 }
 
 export async function notifyAttendanceAbsent(
-  studentUserId: string,
-  parentUserId: string | null,
-  schoolId: string,
-  studentName: string,
-  date: string,
-  className: string
+  _studentUserId: string,
+  _parentUserId: string | null,
+  _schoolId: string,
+  _studentName: string,
+  _date: string,
+  _className: string
 ) {
-  const message = `${studentName} was marked absent on ${date} in ${className}`;
-
-  // Notify student
-  await createNotification({
-    userId: studentUserId,
-    schoolId,
-    type: 'attendance_alert',
-    title: 'Attendance Alert',
-    message,
-    data: { studentName, date, className },
-  });
-
-  // Notify parent if linked
-  if (parentUserId) {
-    await createNotification({
-      userId: parentUserId,
-      schoolId,
-      type: 'attendance_alert',
-      title: 'Your Child Was Absent',
-      message,
-      data: { studentName, date, className },
-    });
-  }
+  console.warn("Attendance notification not available - notifications table not created");
 }
 
 export async function notifyGradesPublished(
-  studentUserId: string,
-  parentUserId: string | null,
-  schoolId: string,
-  homeworkTitle: string,
-  subject: string,
-  marks: number,
-  maxMarks: number,
-  remarks: string | null
+  _studentUserId: string,
+  _parentUserId: string | null,
+  _schoolId: string,
+  _homeworkTitle: string,
+  _subject: string,
+  _marks: number,
+  _maxMarks: number,
+  _remarks: string | null
 ) {
-  const message = `Grades published for "${homeworkTitle}" in ${subject}: ${marks}/${maxMarks}`;
-
-  // Notify student
-  await createNotification({
-    userId: studentUserId,
-    schoolId,
-    type: 'grades_published',
-    title: 'Grades Published',
-    message,
-    data: { homeworkTitle, subject, marks, maxMarks, remarks },
-  });
-
-  // Notify parent if linked
-  if (parentUserId) {
-    await createNotification({
-      userId: parentUserId,
-      schoolId,
-      type: 'grades_published',
-      title: 'Your Child\'s Grades Published',
-      message,
-      data: { homeworkTitle, subject, marks, maxMarks, remarks },
-    });
-  }
+  console.warn("Grades notification not available - notifications table not created");
 }

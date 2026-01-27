@@ -142,35 +142,30 @@ const StudentDashboard = () => {
   };
 
   const fetchSubjectsAndHomework = async (classId: string, studentId: string) => {
-    // Get teachers and subjects for this class
+    // Get teacher classes - fetch without FK join
     const { data: teacherClasses } = await supabase
       .from("teacher_classes")
-      .select(`
-        subject,
-        teacher_id,
-        profiles!teacher_classes_teacher_id_fkey (full_name)
-      `)
+      .select("subject, teacher_id")
       .eq("class_id", classId);
 
-    // Get homework for this class
+    // Get teacher names separately
+    const teacherIds = [...new Set((teacherClasses || []).map(tc => tc.teacher_id))];
+    const { data: teacherProfiles } = teacherIds.length > 0
+      ? await supabase.from("profiles").select("id, full_name").in("id", teacherIds)
+      : { data: [] };
+    const teacherMap = new Map((teacherProfiles || []).map(p => [p.id, p.full_name]));
+
+    // Get homework for this class - fetch without FK join
     const { data: homeworkData } = await supabase
       .from("homework")
-      .select(`
-        id,
-        title,
-        description,
-        subject,
-        due_date,
-        teacher_id,
-        profiles!homework_teacher_id_fkey (full_name)
-      `)
+      .select("id, title, description, subject, due_date, teacher_id")
       .eq("class_id", classId)
       .order("due_date", { ascending: true });
 
-    // Get student's submissions
+    // Get student's submissions (only select columns that exist in the table)
     const { data: submissions } = await supabase
       .from("homework_submissions")
-      .select("homework_id, submitted_at, marks, remarks, file_url, file_name")
+      .select("homework_id, submitted_at, marks, remarks")
       .eq("student_id", studentId);
 
     const submissionMap = new Map(
@@ -180,12 +175,12 @@ const StudentDashboard = () => {
     // Build subjects with pending count
     const subjectMap = new Map<string, Subject>();
     teacherClasses?.forEach(tc => {
-      const profile = tc.profiles as { full_name: string } | null;
+      const teacherName = teacherMap.get(tc.teacher_id) || "Unknown";
       if (!subjectMap.has(tc.subject)) {
         subjectMap.set(tc.subject, {
           name: tc.subject,
           code: tc.subject.substring(0, 3).toUpperCase(),
-          teacher: profile?.full_name || "Unknown",
+          teacher: teacherName,
           pending: 0,
         });
       }
@@ -219,8 +214,8 @@ const StudentDashboard = () => {
         status,
         marks: submission?.marks,
         remarks: submission?.remarks,
-        fileUrl: submission?.file_url,
-        fileName: submission?.file_name,
+        fileUrl: undefined, // file_url column doesn't exist yet
+        fileName: undefined, // file_name column doesn't exist yet
       });
 
       // Update pending count
