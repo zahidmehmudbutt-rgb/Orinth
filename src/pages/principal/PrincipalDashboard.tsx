@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bell, LogOut, UserPlus, Users, Crown, BarChart3, Trash2, Settings, Sparkles, BookOpen, GraduationCap, Plus, School, Globe } from "lucide-react";
+import { Bell, LogOut, UserPlus, Users, Crown, BarChart3, Trash2, Settings, Sparkles, GraduationCap, School, Globe, BookOpen } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -76,11 +76,6 @@ const PrincipalDashboard = () => {
   const [newCoordinatorSection, setNewCoordinatorSection] = useState("");
   const [isSubmittingCoordinator, setIsSubmittingCoordinator] = useState(false);
 
-  // Add class form
-  const [newClassName, setNewClassName] = useState("");
-  const [newClassSection, setNewClassSection] = useState("");
-  const [newClassTeacherId, setNewClassTeacherId] = useState("");
-  const [isSubmittingClass, setIsSubmittingClass] = useState(false);
 
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -370,119 +365,6 @@ const PrincipalDashboard = () => {
     }
   };
 
-  const handleAddClass = async () => {
-    if (!newClassName.trim() || !newClassSection.trim()) {
-      toast({
-        variant: "destructive",
-        title: "Missing Information",
-        description: "Please enter class name and section.",
-      });
-      return;
-    }
-
-    if (!principalData) return;
-
-    setIsSubmittingClass(true);
-    try {
-      const { error } = await supabase.from("classes").insert({
-        school_id: principalData.schoolId,
-        name: newClassName.trim(),
-        section: newClassSection.trim().toUpperCase(),
-        class_teacher_id: newClassTeacherId || null,
-      });
-
-      if (error) throw error;
-
-      toast({
-        title: "Class Created",
-        description: `${newClassName}-${newClassSection} has been created successfully.`,
-      });
-
-      // Reset form and refresh
-      setNewClassName("");
-      setNewClassSection("");
-      setNewClassTeacherId("");
-      await fetchClasses(principalData.schoolId);
-      await fetchStats(principalData.schoolId);
-    } catch (error: any) {
-      console.error("Error:", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: error.message || "Could not create the class.",
-      });
-    } finally {
-      setIsSubmittingClass(false);
-    }
-  };
-
-  const handleDeleteClass = async (classId: string, className: string) => {
-    try {
-      // Check if class has students
-      const { count } = await supabase
-        .from("students")
-        .select("id", { count: "exact", head: true })
-        .eq("class_id", classId);
-
-      if (count && count > 0) {
-        toast({
-          variant: "destructive",
-          title: "Cannot Delete",
-          description: `${className} has ${count} students. Remove students first.`,
-        });
-        return;
-      }
-
-      const { error } = await supabase
-        .from("classes")
-        .delete()
-        .eq("id", classId);
-
-      if (error) throw error;
-
-      toast({
-        title: "Class Deleted",
-        description: `${className} has been deleted.`,
-      });
-
-      if (principalData) {
-        await fetchClasses(principalData.schoolId);
-        await fetchStats(principalData.schoolId);
-      }
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Could not delete the class.",
-      });
-    }
-  };
-
-  const handleAssignClassTeacher = async (classId: string, teacherId: string) => {
-    try {
-      const { error } = await supabase
-        .from("classes")
-        .update({ class_teacher_id: teacherId || null })
-        .eq("id", classId);
-
-      if (error) throw error;
-
-      toast({
-        title: "Class Teacher Updated",
-        description: "Class teacher assignment has been updated.",
-      });
-
-      if (principalData) {
-        await fetchClasses(principalData.schoolId);
-      }
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Could not update class teacher.",
-      });
-    }
-  };
 
   // Onboarding checklist items
   const checklistItems = [
@@ -496,16 +378,9 @@ const PrincipalDashboard = () => {
     {
       id: "coordinator",
       label: "Add your first Section Head",
-      description: "Assign coordinators to manage teachers",
+      description: "Assign coordinators to manage teachers and classes",
       completed: sectionHeads.length > 0,
       onClick: () => setActiveTab("staff"),
-    },
-    {
-      id: "classes",
-      label: "Create classes",
-      description: "Set up classes and sections",
-      completed: classes.length > 0,
-      onClick: () => setActiveTab("classes"),
     },
   ];
 
@@ -718,146 +593,51 @@ const PrincipalDashboard = () => {
             </div>
           </TabsContent>
 
-          {/* Classes Tab */}
+          {/* Classes Tab - Read Only View */}
           <TabsContent value="classes" className="animate-fade-in">
-            <div className="grid lg:grid-cols-2 gap-8">
-              {/* Add Class Form */}
-              <div className="bg-card rounded-xl p-6 shadow-card border border-border">
-                <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
-                  <Plus className="w-5 h-5 text-role-principal" />
-                  Create New Class
-                </h2>
-
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label>Class Name</Label>
-                    <Input
-                      placeholder="e.g., Class 10, Grade 5"
-                      value={newClassName}
-                      onChange={(e) => setNewClassName(e.target.value)}
-                      disabled={isSubmittingClass}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>Section</Label>
-                    <Input
-                      placeholder="e.g., A, B, C"
-                      value={newClassSection}
-                      onChange={(e) => setNewClassSection(e.target.value)}
-                      disabled={isSubmittingClass}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>Class Teacher (Optional)</Label>
-                    <Select
-                      value={newClassTeacherId}
-                      onValueChange={setNewClassTeacherId}
-                      disabled={isSubmittingClass}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Assign later" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="">Assign later</SelectItem>
-                        {teachers.map((teacher) => (
-                          <SelectItem key={teacher.id} value={teacher.id}>
-                            {teacher.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <LoadingButton
-                    className="w-full bg-role-principal text-primary-foreground hover:opacity-90"
-                    onClick={handleAddClass}
-                    loading={isSubmittingClass}
-                    loadingText="Creating..."
-                  >
-                    Create Class
-                  </LoadingButton>
+            <div className="max-w-4xl mx-auto">
+              <div className="bg-card rounded-xl p-6 shadow-card border border-border mb-6">
+                <div className="flex items-center gap-3 text-muted-foreground">
+                  <School className="w-5 h-5" />
+                  <p className="text-sm">
+                    Classes are managed by Section Heads / Coordinators. This is a read-only overview.
+                  </p>
                 </div>
               </div>
 
-              {/* Classes List */}
-              <div>
-                <h2 className="text-xl font-bold text-foreground mb-4">
-                  All Classes ({classes.length})
-                </h2>
-                {classes.length > 0 ? (
-                  <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2">
-                    {classes.map((cls) => (
-                      <div key={cls.id} className="bg-card rounded-xl p-4 shadow-card border border-border">
-                        <div className="flex items-start justify-between mb-3">
-                          <div>
-                            <p className="font-semibold text-foreground text-lg">
-                              {cls.name}-{cls.section}
-                            </p>
-                            <p className="text-sm text-muted-foreground">
-                              {cls.studentCount} students
-                            </p>
-                          </div>
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10">
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>Delete Class?</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  Are you sure you want to delete {cls.name}-{cls.section}?
-                                  {cls.studentCount > 0 && " This class has students."}
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction
-                                  className="bg-destructive text-destructive-foreground"
-                                  onClick={() => handleDeleteClass(cls.id, `${cls.name}-${cls.section}`)}
-                                >
-                                  Delete
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label className="text-xs">Class Teacher</Label>
-                          <Select
-                            value={cls.classTeacherId || ""}
-                            onValueChange={(value) => handleAssignClassTeacher(cls.id, value)}
-                          >
-                            <SelectTrigger className="h-9">
-                              <SelectValue placeholder="Not assigned" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="">Not assigned</SelectItem>
-                              {teachers.map((teacher) => (
-                                <SelectItem key={teacher.id} value={teacher.id}>
-                                  {teacher.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
+              <h2 className="text-xl font-bold text-foreground mb-4">
+                All Classes ({classes.length})
+              </h2>
+              {classes.length > 0 ? (
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {classes.map((cls) => (
+                    <div key={cls.id} className="bg-card rounded-xl p-4 shadow-card border border-border">
+                      <div className="mb-3">
+                        <p className="font-semibold text-foreground text-lg">
+                          {cls.name}-{cls.section}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {cls.studentCount} students
+                        </p>
                       </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="bg-card rounded-xl p-6 shadow-card border border-border">
-                    <EmptyState
-                      icon={School}
-                      title="No Classes Yet"
-                      description="Create your first class to get started with student enrollment."
-                    />
-                  </div>
-                )}
-              </div>
+                      <div className="pt-3 border-t border-border">
+                        <p className="text-xs text-muted-foreground mb-1">Class Teacher</p>
+                        <p className="text-sm font-medium text-foreground">
+                          {cls.classTeacherName || "Not assigned"}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="bg-card rounded-xl p-6 shadow-card border border-border">
+                  <EmptyState
+                    icon={School}
+                    title="No Classes Yet"
+                    description="Classes will appear here once your Section Heads create them."
+                  />
+                </div>
+              )}
             </div>
           </TabsContent>
 
