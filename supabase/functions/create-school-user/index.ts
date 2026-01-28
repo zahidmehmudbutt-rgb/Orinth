@@ -103,21 +103,25 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // Check if user is a host
+    // Check if user is a host OR a principal
     const { data: hostRole } = await supabaseUser
       .from('user_roles')
-      .select('id')
+      .select('id, role, school_id')
       .eq('user_id', user.id)
-      .eq('role', 'host')
+      .in('role', ['host', 'principal'])
       .eq('is_active', true)
       .single();
 
     if (!hostRole) {
       return new Response(
-        JSON.stringify({ success: false, error: "Only hosts can create school users" }),
+        JSON.stringify({ success: false, error: "Only hosts or principals can create school users" }),
         { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
+
+    const isHost = hostRole.role === 'host';
+    const isPrincipal = hostRole.role === 'principal';
+    const callerSchoolId = hostRole.school_id;
 
     // Use service role for admin operations
     const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey, {
@@ -158,7 +162,23 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // For principal role, check if one already exists
+    // Principals can only create users in their own school
+    if (isPrincipal && callerSchoolId !== schoolId) {
+      return new Response(
+        JSON.stringify({ success: false, error: "You can only create users in your own school" }),
+        { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // Principals can only create certain roles (not host or principal)
+    if (isPrincipal && role === 'principal') {
+      return new Response(
+        JSON.stringify({ success: false, error: "Principals cannot create principal accounts" }),
+        { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // For principal role, check if one already exists (only hosts can create principals)
     if (role === 'principal') {
       const { data: existingPrincipal } = await supabaseAdmin
         .from('user_roles')

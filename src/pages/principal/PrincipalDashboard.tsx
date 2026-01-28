@@ -280,40 +280,47 @@ const PrincipalDashboard = () => {
       return;
     }
 
+    if (newCoordinatorPassword.length < 8) {
+      toast({
+        variant: "destructive",
+        title: "Password Too Short",
+        description: "Password must be at least 8 characters.",
+      });
+      return;
+    }
+
     if (!principalData) return;
 
     setIsSubmittingCoordinator(true);
     try {
-      // Create user in Supabase Auth
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: newCoordinatorEmail,
-        password: newCoordinatorPassword,
-        options: {
-          data: {
-            full_name: newCoordinatorName,
+      // Get current session token
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error("Not authenticated");
+
+      // Call edge function to create user (uses service role, won't switch sessions)
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-school-user`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${session.access_token}`,
           },
-        },
-      });
+          body: JSON.stringify({
+            email: newCoordinatorEmail.toLowerCase().trim(),
+            password: newCoordinatorPassword,
+            fullName: newCoordinatorName.trim(),
+            role: "coordinator",
+            schoolId: principalData.schoolId,
+          }),
+        }
+      );
 
-      if (authError) throw authError;
-      if (!authData.user) throw new Error("Failed to create user");
+      const result = await response.json();
 
-      // Update profile with school_id
-      await supabase
-        .from("profiles")
-        .update({
-          full_name: newCoordinatorName,
-          school_id: principalData.schoolId,
-        })
-        .eq("id", authData.user.id);
-
-      // Assign coordinator role
-      await supabase.from("user_roles").insert({
-        user_id: authData.user.id,
-        school_id: principalData.schoolId,
-        role: "coordinator",
-        is_active: true,
-      });
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || "Failed to create coordinator");
+      }
 
       toast({
         title: "Section Head Added",
