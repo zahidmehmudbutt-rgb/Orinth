@@ -1,1 +1,4 @@
 project_id = "zgilmzrlsleznzthqxdu"
+
+[functions.create-school-user]
+verify_jwt = false
