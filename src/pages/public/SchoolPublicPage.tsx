@@ -5,22 +5,18 @@ import {
   MapPin,
   Phone,
   Mail,
-  Calendar,
   Users,
   BookOpen,
   Award,
-  Clock,
   Megaphone,
   ChevronRight,
   School,
-  ExternalLink,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
+import { generateSlug, slugToName } from "@/lib/utils/slug";
 
-// Use only columns that exist in the database
 interface SchoolData {
   id: string;
   name: string;
@@ -29,15 +25,6 @@ interface SchoolData {
   email: string | null;
   logo_url: string | null;
   created_at: string;
-}
-
-// Extended data stored locally (these columns don't exist in DB yet)
-interface ExtendedSchoolData {
-  website: string | null;
-  description: string | null;
-  established_year: number | null;
-  motto: string | null;
-  primary_color: string | null;
 }
 
 interface PublicNotice {
@@ -56,13 +43,6 @@ interface SchoolStats {
 const SchoolPublicPage = () => {
   const { schoolSlug } = useParams<{ schoolSlug: string }>();
   const [school, setSchool] = useState<SchoolData | null>(null);
-  const [extended, setExtended] = useState<ExtendedSchoolData>({
-    website: null,
-    description: null,
-    established_year: null,
-    motto: null,
-    primary_color: "#2563eb",
-  });
   const [notices, setNotices] = useState<PublicNotice[]>([]);
   const [stats, setStats] = useState<SchoolStats>({ totalStudents: 0, totalTeachers: 0, totalClasses: 0 });
   const [isLoading, setIsLoading] = useState(true);
@@ -79,16 +59,19 @@ const SchoolPublicPage = () => {
       setIsLoading(true);
       setError(null);
 
-      // Fetch school by slug (using name converted to slug)
-      const { data: schoolData, error: schoolError } = await supabase
+      // First, fetch all active schools and match by slug
+      const { data: allSchools, error: schoolsError } = await supabase
         .from("schools")
         .select("id, name, address, phone, email, logo_url, created_at")
-        .eq("is_active", true)
-        .ilike("name", schoolSlug?.replace(/-/g, " ") || "")
-        .single();
+        .eq("is_active", true);
 
-      if (schoolError) {
-        // Try finding by ID if slug doesn't match
+      if (schoolsError) throw schoolsError;
+
+      // Find school by matching slug
+      const matchedSchool = allSchools?.find(s => generateSlug(s.name) === schoolSlug);
+
+      if (!matchedSchool) {
+        // Try by ID as fallback
         const { data: schoolById, error: idError } = await supabase
           .from("schools")
           .select("id, name, address, phone, email, logo_url, created_at")
@@ -96,15 +79,15 @@ const SchoolPublicPage = () => {
           .eq("is_active", true)
           .single();
 
-        if (idError) {
+        if (idError || !schoolById) {
           setError("School not found");
           return;
         }
         setSchool(schoolById);
         await fetchSchoolDetails(schoolById.id);
       } else {
-        setSchool(schoolData);
-        await fetchSchoolDetails(schoolData.id);
+        setSchool(matchedSchool);
+        await fetchSchoolDetails(matchedSchool.id);
       }
     } catch (err) {
       console.error("Error fetching school:", err);
@@ -115,16 +98,15 @@ const SchoolPublicPage = () => {
   };
 
   const fetchSchoolDetails = async (schoolId: string) => {
-    // Fetch notices (is_public column doesn't exist in current schema, so fetch recent notices)
-    // In production, only public notices should be shown
+    // Fetch public notices
     const { data: noticesData } = await supabase
       .from("notices")
       .select("id, title, content, created_at")
       .eq("school_id", schoolId)
+      .is("target_class_id", null) // Only school-wide notices
       .order("created_at", { ascending: false })
       .limit(5);
 
-    // Filter to only show notices without sensitive data (basic filter since is_public doesn't exist)
     setNotices((noticesData || []) as PublicNotice[]);
 
     // Fetch stats
@@ -149,14 +131,12 @@ const SchoolPublicPage = () => {
     });
   };
 
-  const primaryColor = extended.primary_color || "#2563eb";
-
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-500">Loading school information...</p>
+          <p className="text-muted-foreground">Loading school information...</p>
         </div>
       </div>
     );
@@ -164,12 +144,12 @@ const SchoolPublicPage = () => {
 
   if (error || !school) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <Card className="max-w-md mx-4">
           <CardContent className="pt-6 text-center">
-            <School className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h2 className="text-xl font-bold text-gray-900 mb-2">School Not Found</h2>
-            <p className="text-gray-500 mb-6">
+            <School className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+            <h2 className="text-xl font-bold text-foreground mb-2">School Not Found</h2>
+            <p className="text-muted-foreground mb-6">
               The school you're looking for doesn't exist or is no longer active.
             </p>
             <Link to="/">
@@ -182,13 +162,10 @@ const SchoolPublicPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <header
-        className="relative text-white py-16 md:py-24"
-        style={{ backgroundColor: primaryColor }}
-      >
-        <div className="absolute inset-0 bg-black/20"></div>
+      <header className="relative bg-primary text-primary-foreground py-16 md:py-24">
+        <div className="absolute inset-0 bg-black/10"></div>
         <div className="container mx-auto px-4 relative z-10">
           <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8">
             {school.logo_url ? (
@@ -206,17 +183,9 @@ const SchoolPublicPage = () => {
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-2">
                 {school.name}
               </h1>
-              {extended.motto && (
-                <p className="text-lg md:text-xl opacity-90 italic mb-4">
-                  "{extended.motto}"
-                </p>
-              )}
-              {extended.established_year && (
-                <Badge variant="secondary" className="bg-white/20 text-white border-0">
-                  <Calendar className="w-3 h-3 mr-1" />
-                  Established {extended.established_year}
-                </Badge>
-              )}
+              <p className="text-lg opacity-90">
+                Welcome to our school portal
+              </p>
             </div>
           </div>
         </div>
@@ -227,23 +196,23 @@ const SchoolPublicPage = () => {
         <div className="grid grid-cols-3 gap-4">
           <Card className="text-center">
             <CardContent className="pt-6">
-              <Users className="w-8 h-8 mx-auto mb-2" style={{ color: primaryColor }} />
-              <p className="text-2xl md:text-3xl font-bold text-gray-900">{stats.totalStudents}</p>
-              <p className="text-sm text-gray-500">Students</p>
+              <Users className="w-8 h-8 mx-auto mb-2 text-primary" />
+              <p className="text-2xl md:text-3xl font-bold text-foreground">{stats.totalStudents}</p>
+              <p className="text-sm text-muted-foreground">Students</p>
             </CardContent>
           </Card>
           <Card className="text-center">
             <CardContent className="pt-6">
-              <BookOpen className="w-8 h-8 mx-auto mb-2" style={{ color: primaryColor }} />
-              <p className="text-2xl md:text-3xl font-bold text-gray-900">{stats.totalTeachers}</p>
-              <p className="text-sm text-gray-500">Teachers</p>
+              <BookOpen className="w-8 h-8 mx-auto mb-2 text-primary" />
+              <p className="text-2xl md:text-3xl font-bold text-foreground">{stats.totalTeachers}</p>
+              <p className="text-sm text-muted-foreground">Teachers</p>
             </CardContent>
           </Card>
           <Card className="text-center">
             <CardContent className="pt-6">
-              <Award className="w-8 h-8 mx-auto mb-2" style={{ color: primaryColor }} />
-              <p className="text-2xl md:text-3xl font-bold text-gray-900">{stats.totalClasses}</p>
-              <p className="text-sm text-gray-500">Classes</p>
+              <Award className="w-8 h-8 mx-auto mb-2 text-primary" />
+              <p className="text-2xl md:text-3xl font-bold text-foreground">{stats.totalClasses}</p>
+              <p className="text-sm text-muted-foreground">Classes</p>
             </CardContent>
           </Card>
         </div>
@@ -258,19 +227,15 @@ const SchoolPublicPage = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <School className="w-5 h-5" style={{ color: primaryColor }} />
+                  <School className="w-5 h-5 text-primary" />
                   About Our School
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {extended.description ? (
-                  <p className="text-gray-600 leading-relaxed">{extended.description}</p>
-                ) : (
-                  <p className="text-gray-500 italic">
-                    Welcome to {school.name}. We are committed to providing quality education
-                    and nurturing the next generation of leaders.
-                  </p>
-                )}
+                <p className="text-muted-foreground leading-relaxed">
+                  Welcome to {school.name}. We are committed to providing quality education
+                  and nurturing the next generation of leaders.
+                </p>
               </CardContent>
             </Card>
 
@@ -278,13 +243,13 @@ const SchoolPublicPage = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Megaphone className="w-5 h-5" style={{ color: primaryColor }} />
+                  <Megaphone className="w-5 h-5 text-primary" />
                   Latest Announcements
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 {notices.length === 0 ? (
-                  <p className="text-gray-500 text-center py-8">
+                  <p className="text-muted-foreground text-center py-8">
                     No public announcements at this time.
                   </p>
                 ) : (
@@ -292,17 +257,16 @@ const SchoolPublicPage = () => {
                     {notices.map((notice) => (
                       <div
                         key={notice.id}
-                        className="border-l-4 pl-4 py-2"
-                        style={{ borderColor: primaryColor }}
+                        className="border-l-4 border-primary pl-4 py-2"
                       >
                         <div className="flex items-start justify-between gap-4">
                           <div>
-                            <h3 className="font-semibold text-gray-900">{notice.title}</h3>
-                            <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+                            <h3 className="font-semibold text-foreground">{notice.title}</h3>
+                            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
                               {notice.content}
                             </p>
                           </div>
-                          <span className="text-xs text-gray-400 whitespace-nowrap">
+                          <span className="text-xs text-muted-foreground whitespace-nowrap">
                             {formatDate(notice.created_at)}
                           </span>
                         </div>
@@ -324,36 +288,23 @@ const SchoolPublicPage = () => {
               <CardContent className="space-y-4">
                 {school.address && (
                   <div className="flex items-start gap-3">
-                    <MapPin className="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-600">{school.address}</span>
+                    <MapPin className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5" />
+                    <span className="text-muted-foreground">{school.address}</span>
                   </div>
                 )}
                 {school.phone && (
                   <div className="flex items-center gap-3">
-                    <Phone className="w-5 h-5 text-gray-400" />
-                    <a href={`tel:${school.phone}`} className="text-gray-600 hover:text-primary">
+                    <Phone className="w-5 h-5 text-muted-foreground" />
+                    <a href={`tel:${school.phone}`} className="text-muted-foreground hover:text-primary">
                       {school.phone}
                     </a>
                   </div>
                 )}
                 {school.email && (
                   <div className="flex items-center gap-3">
-                    <Mail className="w-5 h-5 text-gray-400" />
-                    <a href={`mailto:${school.email}`} className="text-gray-600 hover:text-primary">
+                    <Mail className="w-5 h-5 text-muted-foreground" />
+                    <a href={`mailto:${school.email}`} className="text-muted-foreground hover:text-primary">
                       {school.email}
-                    </a>
-                  </div>
-                )}
-                {extended.website && (
-                  <div className="flex items-center gap-3">
-                    <ExternalLink className="w-5 h-5 text-gray-400" />
-                    <a
-                      href={extended.website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-gray-600 hover:text-primary"
-                    >
-                      Visit Website
                     </a>
                   </div>
                 )}
@@ -391,14 +342,14 @@ const SchoolPublicPage = () => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-8 mt-12">
+      <footer className="bg-foreground text-background py-8 mt-12">
         <div className="container mx-auto px-4 text-center">
-          <p className="text-gray-400">
+          <p className="opacity-80">
             &copy; {new Date().getFullYear()} {school.name}. All rights reserved.
           </p>
-          <p className="text-gray-500 text-sm mt-2">
+          <p className="opacity-60 text-sm mt-2">
             Powered by{" "}
-            <Link to="/" className="text-primary hover:underline">
+            <Link to="/" className="hover:underline">
               School Smart Pakistan
             </Link>
           </p>
