@@ -340,25 +340,24 @@ const ParentDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-hero">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
+      <header className="w-full bg-role-parent text-primary-foreground sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
-              <Users className="w-6 h-6 text-white" />
+            <div className="w-10 h-10 bg-primary-foreground/20 rounded-lg flex items-center justify-center">
+              <Users className="w-6 h-6" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-gray-900">Parent Dashboard</h1>
-              <p className="text-xs text-gray-500">Welcome, {profile?.full_name}</p>
+              <h1 className="text-lg font-bold">Parent Dashboard</h1>
+              <p className="text-xs text-primary-foreground/80">Welcome, {profile?.full_name}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <GroupChat />
-            <NotificationCenter />
-            <Button variant="outline" size="sm" onClick={handleLogout}>
-              <LogOut className="w-4 h-4 mr-2" />
-              Logout
+            <GroupChat triggerClassName="text-primary-foreground hover:bg-primary-foreground/20" />
+            <NotificationCenter className="text-primary-foreground hover:bg-primary-foreground/20" />
+            <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/20" onClick={handleLogout}>
+              <LogOut className="w-5 h-5" />
             </Button>
           </div>
         </div>

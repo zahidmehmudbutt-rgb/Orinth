@@ -49,6 +49,7 @@
     --role-class-teacher: 280 80% 55%;
     --role-coordinator: 142 76% 36%;
     --role-principal: 215 25% 27%;
+    --role-parent: 270 70% 50%;
 
     /* Borders and inputs */
     --border: 200 20% 90%;
@@ -185,6 +186,10 @@
   
   .bg-role-principal {
     background-color: hsl(var(--role-principal));
+  }
+
+  .bg-role-parent {
+    background-color: hsl(var(--role-parent));
   }
 
   /* Status badges */
