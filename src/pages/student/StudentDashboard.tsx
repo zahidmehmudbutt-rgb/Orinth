@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { GraduationCap, LogOut, BookOpen, Calendar, BarChart3, Megaphone, Clock, Upload, CheckCircle, AlertCircle, Settings, Sparkles, FileText, Download, Award } from "lucide-react";
+import { GraduationCap, LogOut, BookOpen, Calendar, BarChart3, Megaphone, Clock, Upload, CheckCircle, AlertCircle, Settings, Sparkles, FileText, Download, Award, Printer } from "lucide-react";
 import { NotificationCenter } from "@/components/notifications/NotificationCenter";
 import { GroupChat } from "@/components/chat";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -944,8 +944,19 @@ const StudentDashboard = () => {
               </div>
             ) : (
               <div className="max-w-4xl mx-auto">
+                {/* Print Button */}
+                <div className="flex justify-end mb-4 print:hidden">
+                  <Button
+                    variant="outline"
+                    onClick={() => window.print()}
+                    className="gap-2"
+                  >
+                    <Printer className="w-4 h-4" />
+                    Print Result Card
+                  </Button>
+                </div>
                 {/* Result Card / Certificate */}
-                <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-lg shadow-xl border-4 border-double border-slate-300 overflow-hidden">
+                <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-lg shadow-xl border-4 border-double border-slate-300 overflow-hidden print:shadow-none print:border-2">
                   {/* Certificate Header */}
                   <div className="bg-gradient-to-r from-indigo-900 via-purple-900 to-indigo-900 text-white px-8 py-6 text-center relative">
                     <div className="absolute top-0 left-0 w-full h-full opacity-10">

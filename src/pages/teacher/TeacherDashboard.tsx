@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { LogOut, BookOpen, Plus, Users, Settings, Sparkles, ClipboardList, FileText, ExternalLink, Check, X, Award, Calendar, Save } from "lucide-react";
+import { LogOut, BookOpen, Plus, Users, Settings, Sparkles, ClipboardList, FileText, ExternalLink, Check, X, Award, Calendar, Save, Pencil, Trash2 } from "lucide-react";
 import { NotificationCenter } from "@/components/notifications/NotificationCenter";
 import { GroupChat } from "@/components/chat";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -101,6 +101,9 @@ const TeacherDashboard = () => {
   const [savingMark, setSavingMark] = useState<string | null>(null);
   const [isBulkSaving, setIsBulkSaving] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [editingExamId, setEditingExamId] = useState<string | null>(null);
+  const [deletingExamId, setDeletingExamId] = useState<string | null>(null);
+  const [isUpdatingExam, setIsUpdatingExam] = useState(false);
 
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -931,6 +934,131 @@ const TeacherDashboard = () => {
     }));
   };
 
+  const handleEditExam = (examId: string) => {
+    const exam = recentExams.find(e => e.id === examId);
+    if (!exam) return;
+
+    // Populate form with exam data
+    setResultsClassId(exam.classId);
+    setResultsSubject(exam.subject);
+    setExamType(exam.examType);
+    setExamTitle(exam.title);
+    setMaxMarks(String(exam.maxMarks));
+    // Convert display date back to input format
+    const date = new Date(exam.examDate);
+    const formattedDate = date.toISOString().split('T')[0];
+    setExamDate(formattedDate);
+    setEditingExamId(examId);
+    setSelectedExamId("");
+  };
+
+  const handleUpdateExam = async () => {
+    if (!editingExamId || !resultsClassId || !resultsSubject || !examTitle || !maxMarks || !examDate) {
+      toast({
+        variant: "destructive",
+        title: "Missing Fields",
+        description: "Please fill in all required fields.",
+      });
+      return;
+    }
+
+    const maxMarksNum = parseInt(maxMarks);
+    if (isNaN(maxMarksNum) || maxMarksNum < 1 || maxMarksNum > 1000) {
+      toast({
+        variant: "destructive",
+        title: "Invalid Max Marks",
+        description: "Max marks must be between 1 and 1000.",
+      });
+      return;
+    }
+
+    setIsUpdatingExam(true);
+
+    try {
+      const { error } = await supabase
+        .from("exam_results")
+        .update({
+          class_id: resultsClassId,
+          subject: resultsSubject,
+          exam_type: examType,
+          title: examTitle,
+          max_marks: maxMarksNum,
+          exam_date: examDate,
+        })
+        .eq("id", editingExamId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Exam Updated",
+        description: "Exam details have been updated successfully.",
+      });
+
+      // Reset form
+      setEditingExamId(null);
+      setExamTitle("");
+      setMaxMarks("100");
+      setExamDate("");
+
+      await fetchExams();
+
+    } catch (error) {
+      if (import.meta.env.DEV) console.error("Error updating exam:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to update exam. Please try again.",
+      });
+    } finally {
+      setIsUpdatingExam(false);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingExamId(null);
+    setExamTitle("");
+    setMaxMarks("100");
+    setExamDate("");
+    setResultsClassId("");
+    setResultsSubject("");
+  };
+
+  const handleDeleteExam = async (examId: string) => {
+    setDeletingExamId(examId);
+
+    try {
+      // Delete exam (cascade will delete marks)
+      const { error } = await supabase
+        .from("exam_results")
+        .delete()
+        .eq("id", examId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Exam Deleted",
+        description: "Exam and all associated marks have been deleted.",
+      });
+
+      // Clear selection if deleted exam was selected
+      if (selectedExamId === examId) {
+        setSelectedExamId("");
+      }
+
+      await fetchExams();
+
+    } catch (error) {
+      if (import.meta.env.DEV) console.error("Error deleting exam:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to delete exam. Please try again.",
+      });
+    } finally {
+      setDeletingExamId(null);
+    }
+  };
+
   // getExamTypeBadgeColor imported from @/utils/exam
 
   const uniqueClasses = Array.from(
@@ -1374,12 +1502,29 @@ const TeacherDashboard = () => {
               </div>
             ) : (
               <div className="space-y-8">
-                {/* Create Exam Form */}
-                <div className="bg-card rounded-xl p-6 shadow-card border border-border">
-                  <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
-                    <Plus className="w-5 h-5 text-role-teacher" />
-                    Create New Exam / Test
-                  </h2>
+                {/* Create/Edit Exam Form */}
+                <div className={`bg-card rounded-xl p-6 shadow-card border ${editingExamId ? 'border-role-teacher ring-2 ring-role-teacher/20' : 'border-border'}`}>
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
+                      {editingExamId ? (
+                        <>
+                          <Pencil className="w-5 h-5 text-role-teacher" />
+                          Edit Exam
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="w-5 h-5 text-role-teacher" />
+                          Create New Exam / Test
+                        </>
+                      )}
+                    </h2>
+                    {editingExamId && (
+                      <Button variant="ghost" size="sm" onClick={handleCancelEdit}>
+                        <X className="w-4 h-4 mr-1" />
+                        Cancel
+                      </Button>
+                    )}
+                  </div>
 
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <div className="space-y-2">
@@ -1477,16 +1622,30 @@ const TeacherDashboard = () => {
                     </div>
                   </div>
 
-                  <div className="mt-6">
+                  <div className="mt-6 flex gap-3">
                     <LoadingButton
                       className="bg-role-teacher text-primary-foreground hover:opacity-90"
-                      onClick={handleCreateExam}
-                      loading={isCreatingExam}
-                      loadingText="Creating..."
+                      onClick={editingExamId ? handleUpdateExam : handleCreateExam}
+                      loading={isCreatingExam || isUpdatingExam}
+                      loadingText={editingExamId ? "Updating..." : "Creating..."}
                     >
-                      <Plus className="w-4 h-4 mr-2" />
-                      Create Exam
+                      {editingExamId ? (
+                        <>
+                          <Check className="w-4 h-4 mr-2" />
+                          Update Exam
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="w-4 h-4 mr-2" />
+                          Create Exam
+                        </>
+                      )}
                     </LoadingButton>
+                    {editingExamId && (
+                      <Button variant="outline" onClick={handleCancelEdit}>
+                        Cancel
+                      </Button>
+                    )}
                   </div>
                 </div>
 
@@ -1513,18 +1672,29 @@ const TeacherDashboard = () => {
                       {recentExams.map((exam) => (
                         <div
                           key={exam.id}
-                          className={`border rounded-lg p-4 cursor-pointer transition-all hover:shadow-md ${
+                          className={`border rounded-lg p-4 transition-all hover:shadow-md ${
                             selectedExamId === exam.id ? "border-role-teacher ring-2 ring-role-teacher/20" : "border-border"
                           }`}
-                          onClick={() => setSelectedExamId(exam.id)}
                         >
                           <div className="flex justify-between items-start mb-2">
-                            <h3 className="font-semibold text-foreground">{exam.title}</h3>
-                            <span className={`text-xs px-2 py-1 rounded-full ${getExamTypeBadgeColor(exam.examType)}`}>
-                              {exam.examType === 'weekly_daily' ? 'Weekly' : exam.examType === 'monthly_midterm' ? 'Monthly' : 'Semester'}
-                            </span>
+                            <h3
+                              className="font-semibold text-foreground cursor-pointer hover:text-role-teacher"
+                              onClick={() => setSelectedExamId(exam.id)}
+                            >
+                              {exam.title}
+                            </h3>
+                            <div className="flex items-center gap-2">
+                              <span className={`text-xs px-2 py-1 rounded-full ${getExamTypeBadgeColor(exam.examType)}`}>
+                                {exam.examType === 'weekly_daily' ? 'Weekly' : exam.examType === 'monthly_midterm' ? 'Monthly' : 'Semester'}
+                              </span>
+                            </div>
                           </div>
-                          <p className="text-sm text-muted-foreground mb-1">{exam.subject} - {exam.className}</p>
+                          <p
+                            className="text-sm text-muted-foreground mb-1 cursor-pointer"
+                            onClick={() => setSelectedExamId(exam.id)}
+                          >
+                            {exam.subject} - {exam.className}
+                          </p>
                           <p className="text-xs text-muted-foreground mb-3 flex items-center gap-1">
                             <Calendar className="w-3 h-3" />
                             {exam.examDate}
@@ -1542,6 +1712,40 @@ const TeacherDashboard = () => {
                               className="h-full bg-role-teacher rounded-full transition-all"
                               style={{ width: `${exam.totalStudents > 0 ? (exam.markedCount / exam.totalStudents) * 100 : 0}%` }}
                             />
+                          </div>
+                          {/* Edit/Delete Actions */}
+                          <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-border">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleEditExam(exam.id);
+                              }}
+                              className="text-muted-foreground hover:text-foreground"
+                            >
+                              <Pencil className="w-4 h-4 mr-1" />
+                              Edit
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (confirm(`Are you sure you want to delete "${exam.title}"? This will also delete all student marks for this exam.`)) {
+                                  handleDeleteExam(exam.id);
+                                }
+                              }}
+                              disabled={deletingExamId === exam.id}
+                              className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                            >
+                              {deletingExamId === exam.id ? (
+                                <span className="animate-spin">⏳</span>
+                              ) : (
+                                <Trash2 className="w-4 h-4 mr-1" />
+                              )}
+                              Delete
+                            </Button>
                           </div>
                         </div>
                       ))}

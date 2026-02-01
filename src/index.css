@@ -204,8 +204,52 @@
   .status-present {
     @apply bg-success text-success-foreground;
   }
-  
+
   .status-absent {
     @apply bg-destructive text-destructive-foreground;
+  }
+}
+
+/* Print styles for Result Cards */
+@media print {
+  /* Hide navigation, headers, and non-essential elements */
+  header,
+  nav,
+  .print\\:hidden,
+  [data-radix-scroll-area-viewport],
+  button:not(.print-visible),
+  .tabs-list,
+  [role="tablist"] {
+    display: none !important;
+  }
+
+  /* Reset page margins */
+  @page {
+    margin: 0.5in;
+    size: A4;
+  }
+
+  /* Make body full width */
+  body {
+    background: white !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Ensure certificate fills the page nicely */
+  .max-w-4xl {
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+
+  /* Preserve background colors in print */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Hide scrollbars */
+  ::-webkit-scrollbar {
+    display: none !important;
   }
 }
