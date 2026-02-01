@@ -576,6 +576,121 @@ export type Database = {
           },
         ]
       }
+      exam_results: {
+        Row: {
+          id: string
+          school_id: string
+          class_id: string
+          teacher_id: string
+          subject: string
+          title: string
+          description: string | null
+          exam_type: Database["public"]["Enums"]["exam_type"]
+          max_marks: number
+          exam_date: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          school_id: string
+          class_id: string
+          teacher_id: string
+          subject: string
+          title: string
+          description?: string | null
+          exam_type?: Database["public"]["Enums"]["exam_type"]
+          max_marks: number
+          exam_date: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          school_id?: string
+          class_id?: string
+          teacher_id?: string
+          subject?: string
+          title?: string
+          description?: string | null
+          exam_type?: Database["public"]["Enums"]["exam_type"]
+          max_marks?: number
+          exam_date?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exam_results_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exam_results_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exam_results_teacher_id_fkey"
+            columns: ["teacher_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      student_exam_marks: {
+        Row: {
+          id: string
+          exam_id: string
+          student_id: string
+          marks_obtained: number | null
+          remarks: string | null
+          is_absent: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          exam_id: string
+          student_id: string
+          marks_obtained?: number | null
+          remarks?: string | null
+          is_absent?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          exam_id?: string
+          student_id?: string
+          marks_obtained?: number | null
+          remarks?: string | null
+          is_absent?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_exam_marks_exam_id_fkey"
+            columns: ["exam_id"]
+            isOneToOne: false
+            referencedRelation: "exam_results"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "student_exam_marks_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -615,6 +730,10 @@ export type Database = {
         | "teacher"
         | "student"
         | "parent"
+      exam_type:
+        | "weekly_daily"
+        | "monthly_midterm"
+        | "semester_final"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -750,6 +869,11 @@ export const Constants = {
         "teacher",
         "student",
         "parent",
+      ],
+      exam_type: [
+        "weekly_daily",
+        "monthly_midterm",
+        "semester_final",
       ],
     },
   },
