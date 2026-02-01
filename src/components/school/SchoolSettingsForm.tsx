@@ -277,7 +277,7 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
                 disabled
                 className="bg-muted"
               />
-              <p className="text-xs text-muted-foreground mt-1">Contact host to change school name</p>
+              <p className="text-xs text-muted-foreground mt-1">School name cannot be changed from settings</p>
             </div>
             <div>
               <Label htmlFor="established_year">Established Year</Label>

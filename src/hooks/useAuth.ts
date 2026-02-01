@@ -9,7 +9,6 @@ interface AuthState {
   roles: UserRole[];
   profile: UserProfile | null;
   loading: boolean;
-  isHost: boolean;
   isPrincipal: boolean;
   isCoordinator: boolean;
   isClassTeacher: boolean;
@@ -25,7 +24,6 @@ export function useAuth() {
     roles: [],
     profile: null,
     loading: true,
-    isHost: false,
     isPrincipal: false,
     isCoordinator: false,
     isClassTeacher: false,
@@ -43,7 +41,6 @@ export function useAuth() {
         roles: [],
         profile: null,
         loading: false,
-        isHost: false,
         isPrincipal: false,
         isCoordinator: false,
         isClassTeacher: false,
@@ -68,7 +65,6 @@ export function useAuth() {
         roles,
         profile,
         loading: false,
-        isHost: hasRole('host'),
         isPrincipal: hasRole('principal'),
         isCoordinator: hasRole('coordinator'),
         isClassTeacher: hasRole('class_teacher'),

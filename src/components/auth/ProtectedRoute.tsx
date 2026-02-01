@@ -16,11 +16,10 @@ interface ProtectedRouteProps {
  */
 const ProtectedRoute = ({ children, requiredRole, redirectTo }: ProtectedRouteProps) => {
   const navigate = useNavigate();
-  const { user, roles, loading, isHost, isPrincipal, isCoordinator, isClassTeacher, isTeacher, isStudent, isParent } = useAuth();
+  const { user, roles, loading, isPrincipal, isCoordinator, isClassTeacher, isTeacher, isStudent, isParent } = useAuth();
 
   // Map roles to their boolean flags
   const roleCheckMap: Record<AppRole, boolean> = {
-    host: isHost,
     principal: isPrincipal,
     coordinator: isCoordinator,
     class_teacher: isClassTeacher,
@@ -31,7 +30,6 @@ const ProtectedRoute = ({ children, requiredRole, redirectTo }: ProtectedRoutePr
 
   // Map roles to their login pages
   const loginPageMap: Record<AppRole, string> = {
-    host: "/sys-admin-x7k9",
     principal: "/principal/login",
     coordinator: "/coordinator/login",
     class_teacher: "/class-teacher/login",

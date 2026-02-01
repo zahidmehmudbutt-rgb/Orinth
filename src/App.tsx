@@ -31,11 +31,6 @@ import PrincipalDashboard from "./pages/principal/PrincipalDashboard";
 import ParentLogin from "./pages/parent/ParentLogin";
 import ParentDashboard from "./pages/parent/ParentDashboard";
 
-// Host (Hidden - Not linked anywhere)
-import HostLogin from "./pages/host/HostLogin";
-import HostDashboard from "./pages/host/HostDashboard";
-import ManagePrincipal from "./pages/host/ManagePrincipal";
-
 // Auth
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPassword from "./pages/auth/ResetPassword";
@@ -103,19 +98,6 @@ const App = () => (
             </ProtectedRoute>
           } />
 
-          {/* Host Routes - Hidden, not linked anywhere */}
-          <Route path="/sys-admin-x7k9" element={<HostLogin />} />
-          <Route path="/sys-admin-x7k9/dashboard" element={
-            <ProtectedRoute requiredRole="host">
-              <HostDashboard />
-            </ProtectedRoute>
-          } />
-          <Route path="/sys-admin-x7k9/school/:schoolId/principal" element={
-            <ProtectedRoute requiredRole="host">
-              <ManagePrincipal />
-            </ProtectedRoute>
-          } />
-          
           {/* Auth Routes */}
           <Route path="/auth/forgot-password" element={<ForgotPassword />} />
           <Route path="/auth/reset-password" element={<ResetPassword />} />

@@ -1,7 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 
-export type AppRole = 'host' | 'principal' | 'coordinator' | 'class_teacher' | 'teacher' | 'student' | 'parent';
+export type AppRole = 'principal' | 'coordinator' | 'class_teacher' | 'teacher' | 'student' | 'parent';
 
 export interface UserRole {
   id: string;
