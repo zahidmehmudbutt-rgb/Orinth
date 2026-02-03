@@ -3,8 +3,8 @@ import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
 // Get environment variables with fallbacks to prevent crashes
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://zgilmzrlsleznzthqxdu.supabase.co';
-const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpnaWxtenJsc2xlem56dGhxeGR1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5ODYzNjYsImV4cCI6MjA4NDU2MjM2Nn0.xyVqQ-bi88Py1oBzgxoweVtzzQKOrHWMAaKkykfGLMk';
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://opphbdjjkudhrvkutjhn.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9wcGhiZGpqa3VkaHJ2a3V0amhuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkzNjA1NzUsImV4cCI6MjA4NDkzNjU3NX0.ljYXRFWPndFY2J83U_m7WvN2TvDq2J47ZAOAsSwAtJk';
 
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
