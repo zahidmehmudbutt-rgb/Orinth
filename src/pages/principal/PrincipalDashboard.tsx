@@ -293,33 +293,30 @@ const PrincipalDashboard = () => {
 
     setIsSubmittingCoordinator(true);
     try {
-      // Get current session token
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) throw new Error("Not authenticated");
+      // Use the edge function to create the user (preserves current session)
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData.session?.access_token;
 
-      // Call edge function to create user (uses service role, won't switch sessions)
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-school-user`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${session.access_token}`,
-          },
-          body: JSON.stringify({
-            email: newCoordinatorEmail.toLowerCase().trim(),
-            password: newCoordinatorPassword,
-            fullName: newCoordinatorName.trim(),
-            role: "coordinator",
-            schoolId: principalData.schoolId,
-          }),
-        }
-      );
+      if (!accessToken) {
+        throw new Error("Not authenticated");
+      }
 
-      const result = await response.json();
+      const response = await supabase.functions.invoke('create-school-user', {
+        body: {
+          email: newCoordinatorEmail.toLowerCase().trim(),
+          password: newCoordinatorPassword,
+          fullName: newCoordinatorName.trim(),
+          role: 'coordinator',
+          schoolId: principalData.schoolId,
+        },
+      });
 
-      if (!response.ok || !result.success) {
-        throw new Error(result.error || "Failed to create coordinator");
+      if (response.error) {
+        throw new Error(response.error.message || "Failed to create user");
+      }
+
+      if (!response.data?.success) {
+        throw new Error(response.data?.error || "Failed to create user");
       }
 
       toast({

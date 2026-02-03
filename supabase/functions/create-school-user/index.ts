@@ -103,25 +103,27 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // Check if user is a host OR a principal
-    const { data: hostRole } = await supabaseUser
+    // Check if user is a host, principal, coordinator, or class_teacher
+    const { data: callerRole } = await supabaseUser
       .from('user_roles')
       .select('id, role, school_id')
       .eq('user_id', user.id)
-      .in('role', ['host', 'principal'])
+      .in('role', ['host', 'principal', 'coordinator', 'class_teacher'])
       .eq('is_active', true)
       .single();
 
-    if (!hostRole) {
+    if (!callerRole) {
       return new Response(
-        JSON.stringify({ success: false, error: "Only hosts or principals can create school users" }),
+        JSON.stringify({ success: false, error: "You do not have permission to create users" }),
         { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
 
-    const isHost = hostRole.role === 'host';
-    const isPrincipal = hostRole.role === 'principal';
-    const callerSchoolId = hostRole.school_id;
+    const isHost = callerRole.role === 'host';
+    const isPrincipal = callerRole.role === 'principal';
+    const isCoordinator = callerRole.role === 'coordinator';
+    const isClassTeacher = callerRole.role === 'class_teacher';
+    const callerSchoolId = callerRole.school_id;
 
     // Use service role for admin operations
     const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey, {
@@ -162,8 +164,8 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // Principals can only create users in their own school
-    if (isPrincipal && callerSchoolId !== schoolId) {
+    // Non-host users can only create users in their own school
+    if (!isHost && callerSchoolId !== schoolId) {
       return new Response(
         JSON.stringify({ success: false, error: "You can only create users in your own school" }),
         { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } }
@@ -174,6 +176,22 @@ const handler = async (req: Request): Promise<Response> => {
     if (isPrincipal && role === 'principal') {
       return new Response(
         JSON.stringify({ success: false, error: "Principals cannot create principal accounts" }),
+        { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // Coordinators can only create teacher and class_teacher roles
+    if (isCoordinator && !['teacher', 'class_teacher'].includes(role)) {
+      return new Response(
+        JSON.stringify({ success: false, error: "Coordinators can only create teacher and class teacher accounts" }),
+        { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // Class teachers can only create student accounts
+    if (isClassTeacher && role !== 'student') {
+      return new Response(
+        JSON.stringify({ success: false, error: "Class teachers can only create student accounts" }),
         { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }

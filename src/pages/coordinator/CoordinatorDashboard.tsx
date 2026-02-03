@@ -187,50 +187,32 @@ const CoordinatorDashboard = () => {
 
     setIsSubmitting(true);
     try {
-      // Sign up the new user
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: newTeacherEmail.trim(),
-        password: newTeacherPassword,
-        options: {
-          data: {
-            full_name: newTeacherName.trim(),
-          },
+      // Use the edge function to create the user (preserves current session)
+      const response = await supabase.functions.invoke('create-school-user', {
+        body: {
+          email: newTeacherEmail.toLowerCase().trim(),
+          password: newTeacherPassword,
+          fullName: newTeacherName.trim(),
+          role: teacherType,
+          schoolId: profile.school_id,
         },
       });
 
-      if (authError) throw authError;
-      if (!authData.user) throw new Error("User creation failed");
+      if (response.error) {
+        throw new Error(response.error.message || "Failed to create user");
+      }
 
-      // Create profile for the new user
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .insert({
-          id: authData.user.id,
-          full_name: newTeacherName.trim(),
-          email: newTeacherEmail.trim(),
-          school_id: profile.school_id,
-          first_login_complete: false,
-        });
+      if (!response.data?.success) {
+        throw new Error(response.data?.error || "Failed to create user");
+      }
 
-      if (profileError) throw profileError;
-
-      // Assign the role
-      const { error: roleError } = await supabase
-        .from('user_roles')
-        .insert({
-          user_id: authData.user.id,
-          role: teacherType,
-          school_id: profile.school_id,
-          is_active: true,
-        });
-
-      if (roleError) throw roleError;
+      const userId = response.data.userId;
 
       // If class teacher, assign to the class
-      if (teacherType === "class_teacher" && selectedClassId) {
+      if (teacherType === "class_teacher" && selectedClassId && userId) {
         const { error: classError } = await supabase
           .from('classes')
-          .update({ class_teacher_id: authData.user.id })
+          .update({ class_teacher_id: userId })
           .eq('id', selectedClassId);
 
         if (classError) {
@@ -240,7 +222,7 @@ const CoordinatorDashboard = () => {
 
       toast({
         title: "Staff Added",
-        description: `${newTeacherName} has been added as a ${teacherType === "class_teacher" ? "Class Teacher" : "Teacher"}. They will receive an email to verify their account.`,
+        description: `${newTeacherName} has been added as a ${teacherType === "class_teacher" ? "Class Teacher" : "Teacher"}.`,
       });
 
       // Clear form and refresh staff list

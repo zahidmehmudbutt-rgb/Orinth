@@ -209,36 +209,27 @@ const ClassTeacherDashboard = () => {
         return;
       }
 
-      // Create auth user for the student
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: `${newStudentId.trim().toLowerCase()}@student.school`,
-        password: newStudentId.trim(),
-        options: {
-          data: {
-            full_name: newStudentName.trim(),
-          },
+      // Use the edge function to create the user (preserves current session)
+      const studentEmail = `${newStudentId.trim().toLowerCase()}@student.school`;
+      const response = await supabase.functions.invoke('create-school-user', {
+        body: {
+          email: studentEmail,
+          password: newStudentId.trim(),
+          fullName: newStudentName.trim(),
+          role: 'student',
+          schoolId: profile.school_id,
         },
       });
 
-      if (authError) throw authError;
-
-      // Create profile
-      if (authData.user) {
-        await supabase.from('profiles').insert({
-          id: authData.user.id,
-          full_name: newStudentName.trim(),
-          school_id: profile.school_id,
-          first_login_complete: false,
-        });
-
-        // Assign student role
-        await supabase.from('user_roles').insert({
-          user_id: authData.user.id,
-          role: 'student',
-          school_id: profile.school_id,
-          is_active: true,
-        });
+      if (response.error) {
+        throw new Error(response.error.message || "Failed to create student account");
       }
+
+      if (!response.data?.success) {
+        throw new Error(response.data?.error || "Failed to create student account");
+      }
+
+      const userId = response.data.userId;
 
       // Create student record
       const { error: studentError } = await supabase
@@ -248,7 +239,7 @@ const ClassTeacherDashboard = () => {
           full_name: newStudentName.trim(),
           class_id: assignedClass.id,
           school_id: profile.school_id,
-          user_id: authData.user?.id || null,
+          user_id: userId || null,
         });
 
       if (studentError) throw studentError;
