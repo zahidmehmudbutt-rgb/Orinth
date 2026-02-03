@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { signIn, hasRole } from "@/lib/auth";
+import { signIn, signOut, hasRole } from "@/lib/auth";
 
 const ClassTeacherLogin = () => {
   const [email, setEmail] = useState("");
@@ -55,6 +55,7 @@ const ClassTeacherLogin = () => {
       const isClassTeacher = await hasRole(data.user.id, 'class_teacher');
 
       if (!isClassTeacher) {
+        await signOut(); // Sign out user who doesn't have the correct role
         toast({
           variant: "destructive",
           title: "Access Denied",
