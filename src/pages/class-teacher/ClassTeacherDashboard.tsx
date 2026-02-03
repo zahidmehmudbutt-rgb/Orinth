@@ -211,10 +211,16 @@ const ClassTeacherDashboard = () => {
 
       // Use the edge function to create the user (preserves current session)
       const studentEmail = `${newStudentId.trim().toLowerCase()}@student.school`;
+      // Ensure password is at least 8 characters (edge function requirement)
+      const studentIdTrimmed = newStudentId.trim();
+      const studentPassword = studentIdTrimmed.length >= 8
+        ? studentIdTrimmed
+        : studentIdTrimmed.padEnd(8, '0');
+
       const response = await supabase.functions.invoke('create-school-user', {
         body: {
           email: studentEmail,
-          password: newStudentId.trim(),
+          password: studentPassword,
           fullName: newStudentName.trim(),
           role: 'student',
           schoolId: profile.school_id,
@@ -246,7 +252,7 @@ const ClassTeacherDashboard = () => {
 
       toast({
         title: "Student Added",
-        description: `${newStudentName} (${newStudentId}) has been added. Login: ID as both username and password.`,
+        description: `${newStudentName} has been added. Login email: ${studentEmail}, Password: ${studentPassword}`,
       });
 
       setNewStudentName("");
@@ -639,7 +645,7 @@ const ClassTeacherDashboard = () => {
                   </div>
 
                   <p className="text-sm text-muted-foreground bg-secondary/50 p-3 rounded-lg">
-                    Login ID and Password will be set to the Student ID automatically.
+                    Login email: studentid@student.school. Password: Student ID (padded to 8 chars if shorter).
                   </p>
 
                   <LoadingButton

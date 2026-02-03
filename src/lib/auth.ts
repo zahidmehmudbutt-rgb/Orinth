@@ -83,18 +83,3 @@ export async function signOut() {
   const { error } = await supabase.auth.signOut();
   return { error };
 }
-
-export async function signUp(email: string, password: string, fullName: string) {
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      data: {
-        full_name: fullName,
-      },
-      emailRedirectTo: window.location.origin,
-    },
-  });
-  
-  return { data, error };
-}

@@ -167,6 +167,15 @@ const CoordinatorDashboard = () => {
       return;
     }
 
+    if (newTeacherPassword.length < 8) {
+      toast({
+        variant: "destructive",
+        title: "Password Too Short",
+        description: "Password must be at least 8 characters.",
+      });
+      return;
+    }
+
     if (teacherType === "class_teacher" && !selectedClassId) {
       toast({
         variant: "destructive",
@@ -187,6 +196,33 @@ const CoordinatorDashboard = () => {
 
     setIsSubmitting(true);
     try {
+      // Check if class already has a teacher assigned
+      if (teacherType === "class_teacher" && selectedClassId) {
+        const { data: existingClass } = await supabase
+          .from('classes')
+          .select('class_teacher_id, name, section')
+          .eq('id', selectedClassId)
+          .single();
+
+        if (existingClass?.class_teacher_id) {
+          // Get existing teacher name
+          const { data: existingTeacher } = await supabase
+            .from('profiles')
+            .select('full_name')
+            .eq('id', existingClass.class_teacher_id)
+            .single();
+
+          const className = `${existingClass.name}${existingClass.section ? ` - ${existingClass.section}` : ''}`;
+          toast({
+            variant: "destructive",
+            title: "Class Already Has a Teacher",
+            description: `${className} is already assigned to ${existingTeacher?.full_name || 'another teacher'}. Please remove them first or select a different class.`,
+          });
+          setIsSubmitting(false);
+          return;
+        }
+      }
+
       // Use the edge function to create the user (preserves current session)
       const response = await supabase.functions.invoke('create-school-user', {
         body: {
@@ -216,7 +252,18 @@ const CoordinatorDashboard = () => {
           .eq('id', selectedClassId);
 
         if (classError) {
-          console.error('Error assigning class teacher to class:', classError);
+          // User was created but class assignment failed - notify user
+          toast({
+            variant: "destructive",
+            title: "Partial Success",
+            description: `${newTeacherName} was created but could not be assigned to the class. Please assign them manually.`,
+          });
+          setNewTeacherName("");
+          setNewTeacherEmail("");
+          setNewTeacherPassword("");
+          setSelectedClassId("");
+          loadStaff();
+          return;
         }
       }
 
