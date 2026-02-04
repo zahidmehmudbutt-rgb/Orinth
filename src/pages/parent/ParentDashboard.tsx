@@ -124,14 +124,16 @@ const ParentDashboard = () => {
 
         if (error) throw error;
 
-        const childrenData: Child[] = (data as ParentStudentJoinResult[] || []).map((item) => ({
-          id: item.students.id,
-          full_name: item.students.full_name,
-          student_id: item.students.student_id,
-          class_id: item.students.class_id,
-          class_name: item.students.classes?.name,
-          section: item.students.classes?.section,
-        }));
+        const childrenData: Child[] = (data as ParentStudentJoinResult[] || [])
+          .filter((item) => item.students != null)
+          .map((item) => ({
+            id: item.students.id,
+            full_name: item.students.full_name,
+            student_id: item.students.student_id,
+            class_id: item.students.class_id,
+            class_name: item.students.classes?.name,
+            section: item.students.classes?.section,
+          }));
 
         setChildren(childrenData);
         if (childrenData.length > 0) {

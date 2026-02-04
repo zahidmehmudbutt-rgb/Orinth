@@ -36,7 +36,7 @@ const ProtectedRoute = ({ children, requiredRole, redirectTo }: ProtectedRoutePr
     class_teacher: "/class-teacher/login",
     teacher: "/teacher/login",
     student: "/student/login",
-    parent: "/", // Parent login page (can be updated later)
+    parent: "/parent/login",
   };
 
   const hasRequiredRole = roleCheckMap[requiredRole];

@@ -173,6 +173,7 @@ const CoordinatorDashboard = () => {
 
   // Class subjects state
   const [classSubjects, setClassSubjects] = useState<ClassSubject[]>([]);
+  const [allClassSubjects, setAllClassSubjects] = useState<{class_id: string; subject_id: string}[]>([]);
   const [selectedClassForSubjects, setSelectedClassForSubjects] = useState("");
   const [showAssignSubjectsDialog, setShowAssignSubjectsDialog] = useState(false);
   const [selectedSubjectsToAssign, setSelectedSubjectsToAssign] = useState<string[]>([]);
@@ -211,6 +212,7 @@ const CoordinatorDashboard = () => {
       loadStaff(),
       loadTeacherAssignments(),
       loadCustomSections(),
+      loadAllClassSubjects(),
     ]);
     setIsLoading(false);
   };
@@ -469,6 +471,24 @@ const CoordinatorDashboard = () => {
       setTeacherAssignments(assignmentsWithNames);
     } catch (error) {
       console.error('Error loading assignments:', error);
+    }
+  };
+
+  const loadAllClassSubjects = async () => {
+    if (!profile?.school_id) return;
+    try {
+      const classIds = classes.map(c => c.id);
+      if (classIds.length === 0) return;
+
+      const { data, error } = await supabase
+        .from('class_subjects')
+        .select('class_id, subject_id')
+        .in('class_id', classIds);
+
+      if (error) throw error;
+      setAllClassSubjects(data || []);
+    } catch (error) {
+      console.error('Error loading all class subjects:', error);
     }
   };
 
@@ -736,6 +756,7 @@ const CoordinatorDashboard = () => {
       setSelectedClassForSubjects("");
       setSelectedSubjectsToAssign([]);
       loadClasses();
+      loadAllClassSubjects();
     } catch (error) {
       toast({
         variant: "destructive",
@@ -970,10 +991,11 @@ const CoordinatorDashboard = () => {
     const cls = classes.find(c => c.id === classId);
     if (!cls) return subjects;
 
-    // Get subjects assigned to this class
-    return subjects.filter(s =>
-      classSubjects.some(cs => cs.class_id === classId && cs.subject_id === s.id)
+    // Get subjects assigned to this class from the full list
+    const filtered = subjects.filter(s =>
+      allClassSubjects.some(cs => cs.class_id === classId && cs.subject_id === s.id)
     );
+    return filtered.length > 0 ? filtered : subjects;
   };
 
   if (loading || isLoading) {

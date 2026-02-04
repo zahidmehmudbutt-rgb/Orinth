@@ -575,6 +575,7 @@ const TeacherDashboard = () => {
             day: "numeric",
             year: "numeric",
           }),
+          rawExamDate: exam.exam_date,
           className: classData ? `${classData.name}-${classData.section}` : "Unknown",
           classId: exam.class_id,
           markedCount: markCounts.get(exam.id) || 0,
@@ -973,10 +974,8 @@ const TeacherDashboard = () => {
     setExamType(exam.examType);
     setExamTitle(exam.title);
     setMaxMarks(String(exam.maxMarks));
-    // Convert display date back to input format
-    const date = new Date(exam.examDate);
-    const formattedDate = date.toISOString().split('T')[0];
-    setExamDate(formattedDate);
+    // Use raw date for the input field
+    setExamDate(exam.rawExamDate);
     setEditingExamId(examId);
     setSelectedExamId("");
   };

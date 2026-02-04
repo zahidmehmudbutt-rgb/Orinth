@@ -22,6 +22,7 @@ export interface ExamItem {
   examType: ExamType;
   maxMarks: number;
   examDate: string;
+  rawExamDate: string;
   className: string;
   classId: string;
   markedCount: number;
