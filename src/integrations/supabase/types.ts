@@ -172,6 +172,35 @@ export type Database = {
           },
         ]
       }
+      custom_sections: {
+        Row: {
+          id: string
+          school_id: string
+          name: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          school_id: string
+          name: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          school_id?: string
+          name?: string
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "custom_sections_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       classes: {
         Row: {
           class_teacher_id: string | null

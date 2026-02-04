@@ -130,8 +130,8 @@ const CLASS_NAMES = [
   "Class 6", "Class 7", "Class 8", "Class 9", "Class 10"
 ];
 
-// Section options
-const SECTIONS = ["A", "B", "C", "D", "E", "F"];
+// Default sections seeded for new schools
+const DEFAULT_SECTIONS = ["A", "B", "C", "D", "E", "F"];
 
 // Common subjects
 const COMMON_SUBJECTS = [
@@ -158,6 +158,11 @@ const CoordinatorDashboard = () => {
   const [newClassName, setNewClassName] = useState("");
   const [newClassSections, setNewClassSections] = useState<string[]>(["A"]);
   const [showAddClassDialog, setShowAddClassDialog] = useState(false);
+
+  // Custom sections state
+  const [customSections, setCustomSections] = useState<string[]>([]);
+  const [newSectionName, setNewSectionName] = useState("");
+  const [showManageSectionsDialog, setShowManageSectionsDialog] = useState(false);
 
   // Subjects state
   const [subjects, setSubjects] = useState<Subject[]>([]);
@@ -205,8 +210,120 @@ const CoordinatorDashboard = () => {
       loadSubjects(),
       loadStaff(),
       loadTeacherAssignments(),
+      loadCustomSections(),
     ]);
     setIsLoading(false);
+  };
+
+  const loadCustomSections = async () => {
+    if (!profile?.school_id) return;
+    try {
+      const { data, error } = await supabase
+        .from('custom_sections')
+        .select('name')
+        .eq('school_id', profile.school_id)
+        .order('created_at');
+
+      if (error) throw error;
+
+      if (!data || data.length === 0) {
+        // Seed default sections for this school
+        const defaults = DEFAULT_SECTIONS.map(name => ({
+          school_id: profile.school_id,
+          name,
+        }));
+        const { error: seedError } = await supabase
+          .from('custom_sections')
+          .insert(defaults);
+
+        if (!seedError) {
+          setCustomSections(DEFAULT_SECTIONS);
+        }
+      } else {
+        setCustomSections(data.map(s => s.name));
+      }
+    } catch (error) {
+      console.error("Error loading custom sections:", error);
+    }
+  };
+
+  const handleAddCustomSection = async () => {
+    const trimmed = newSectionName.trim();
+    if (!trimmed || !profile?.school_id) return;
+
+    if (customSections.includes(trimmed)) {
+      toast({
+        variant: "destructive",
+        title: "Duplicate Section",
+        description: `Section "${trimmed}" already exists.`,
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('custom_sections')
+        .insert({ school_id: profile.school_id, name: trimmed });
+
+      if (error) throw error;
+
+      setCustomSections([...customSections, trimmed]);
+      setNewSectionName("");
+      toast({
+        title: "Section Added",
+        description: `Section "${trimmed}" has been created.`,
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to add section.",
+      });
+    }
+  };
+
+  const handleDeleteCustomSection = async (sectionName: string) => {
+    if (!profile?.school_id) return;
+
+    // Check if section is in use by any class
+    const { count } = await supabase
+      .from('classes')
+      .select('id', { count: 'exact', head: true })
+      .eq('school_id', profile.school_id)
+      .eq('section', sectionName);
+
+    if (count && count > 0) {
+      toast({
+        variant: "destructive",
+        title: "Cannot Delete",
+        description: `Section "${sectionName}" is used by ${count} class(es). Remove those classes first.`,
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('custom_sections')
+        .delete()
+        .eq('school_id', profile.school_id)
+        .eq('name', sectionName);
+
+      if (error) throw error;
+
+      setCustomSections(customSections.filter(s => s !== sectionName));
+      // Also remove from selected sections in add class dialog if present
+      setNewClassSections(newClassSections.filter(s => s !== sectionName));
+      toast({
+        title: "Section Deleted",
+        description: `Section "${sectionName}" has been removed.`,
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to delete section.",
+      });
+    }
   };
 
   const loadClasses = async () => {
@@ -987,13 +1104,83 @@ const CoordinatorDashboard = () => {
           <TabsContent value="classes" className="animate-fade-in">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold text-foreground">Classes & Sections</h2>
-              <Dialog open={showAddClassDialog} onOpenChange={setShowAddClassDialog}>
-                <DialogTrigger asChild>
-                  <Button className="bg-role-coordinator text-primary-foreground">
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add Class
-                  </Button>
-                </DialogTrigger>
+              <div className="flex gap-2">
+                {/* Manage Sections Dialog */}
+                <Dialog open={showManageSectionsDialog} onOpenChange={setShowManageSectionsDialog}>
+                  <DialogTrigger asChild>
+                    <Button variant="outline">
+                      <Edit2 className="w-4 h-4 mr-2" />
+                      Manage Sections
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Manage Section Names</DialogTitle>
+                      <DialogDescription>
+                        Add or remove section names. These will be available when creating new classes.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                      <div className="flex gap-2">
+                        <Input
+                          placeholder="New section name (e.g. G, Morning, Red)"
+                          value={newSectionName}
+                          onChange={(e) => setNewSectionName(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                              handleAddCustomSection();
+                            }
+                          }}
+                        />
+                        <Button
+                          onClick={handleAddCustomSection}
+                          className="bg-role-coordinator text-primary-foreground shrink-0"
+                          disabled={!newSectionName.trim()}
+                        >
+                          <Plus className="w-4 h-4 mr-1" />
+                          Add
+                        </Button>
+                      </div>
+                      {customSections.length === 0 ? (
+                        <p className="text-sm text-muted-foreground text-center py-4">
+                          No sections defined. Add your first section above.
+                        </p>
+                      ) : (
+                        <div className="flex flex-wrap gap-2">
+                          {customSections.map(section => (
+                            <span
+                              key={section}
+                              className="inline-flex items-center gap-1 px-3 py-1.5 bg-muted rounded-full text-sm font-medium"
+                            >
+                              {section}
+                              <button
+                                onClick={() => handleDeleteCustomSection(section)}
+                                className="ml-1 text-muted-foreground hover:text-destructive transition-colors"
+                                title={`Delete section ${section}`}
+                              >
+                                <X className="w-3.5 h-3.5" />
+                              </button>
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    <DialogFooter>
+                      <Button variant="outline" onClick={() => setShowManageSectionsDialog(false)}>
+                        Done
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+                {/* Add Class Dialog */}
+                <Dialog open={showAddClassDialog} onOpenChange={setShowAddClassDialog}>
+                  <DialogTrigger asChild>
+                    <Button className="bg-role-coordinator text-primary-foreground">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Add Class
+                    </Button>
+                  </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
                     <DialogTitle>Create New Class</DialogTitle>
@@ -1017,23 +1204,29 @@ const CoordinatorDashboard = () => {
                     </div>
                     <div className="space-y-2">
                       <Label>Sections</Label>
-                      <div className="flex flex-wrap gap-2">
-                        {SECTIONS.map(section => (
-                          <label key={section} className="flex items-center gap-2 cursor-pointer">
-                            <Checkbox
-                              checked={newClassSections.includes(section)}
-                              onCheckedChange={(checked) => {
-                                if (checked) {
-                                  setNewClassSections([...newClassSections, section]);
-                                } else {
-                                  setNewClassSections(newClassSections.filter(s => s !== section));
-                                }
-                              }}
-                            />
-                            <span>Section {section}</span>
-                          </label>
-                        ))}
-                      </div>
+                      {customSections.length === 0 ? (
+                        <p className="text-sm text-muted-foreground">
+                          No sections defined. Use "Manage Sections" to add section names first.
+                        </p>
+                      ) : (
+                        <div className="flex flex-wrap gap-2">
+                          {customSections.map(section => (
+                            <label key={section} className="flex items-center gap-2 cursor-pointer">
+                              <Checkbox
+                                checked={newClassSections.includes(section)}
+                                onCheckedChange={(checked) => {
+                                  if (checked) {
+                                    setNewClassSections([...newClassSections, section]);
+                                  } else {
+                                    setNewClassSections(newClassSections.filter(s => s !== section));
+                                  }
+                                }}
+                              />
+                              <span>Section {section}</span>
+                            </label>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
                   <DialogFooter>
@@ -1050,6 +1243,7 @@ const CoordinatorDashboard = () => {
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
+              </div>
             </div>
 
             {classes.length === 0 ? (
