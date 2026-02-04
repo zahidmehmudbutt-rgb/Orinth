@@ -86,35 +86,59 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
-    
-    // Create client with user's token to verify they're a host
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    const anonKey = Deno.env.get("SUPABASE_ANON_KEY");
+
+    if (!supabaseUrl || !serviceRoleKey || !anonKey) {
+      console.error("Missing environment variables");
+      return new Response(
+        JSON.stringify({ success: false, error: "Server configuration error" }),
+        { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // Create client with user's token to verify their identity
     const supabaseUser = createClient(supabaseUrl, anonKey, {
       global: { headers: { Authorization: authHeader } },
     });
-    
+
     const { data: { user }, error: authError } = await supabaseUser.auth.getUser();
     if (authError || !user) {
+      console.error("Auth error:", authError);
       return new Response(
-        JSON.stringify({ success: false, error: "Unauthorized" }),
+        JSON.stringify({ success: false, error: "Invalid or expired authentication token" }),
         { status: 401, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
 
+    // Use service role to check user roles (bypasses RLS)
+    const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    });
+
     // Check if user is a host, principal, coordinator, or class_teacher
-    const { data: callerRole } = await supabaseUser
+    const { data: callerRoles, error: roleError } = await supabaseAdmin
       .from('user_roles')
       .select('id, role, school_id')
       .eq('user_id', user.id)
       .in('role', ['host', 'principal', 'coordinator', 'class_teacher'])
       .eq('is_active', true)
-      .single();
+      .limit(1);
+
+    if (roleError) {
+      console.error("Role query error:", roleError);
+      return new Response(
+        JSON.stringify({ success: false, error: "Failed to verify permissions" }),
+        { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    const callerRole = callerRoles && callerRoles.length > 0 ? callerRoles[0] : null;
 
     if (!callerRole) {
       return new Response(
-        JSON.stringify({ success: false, error: "You do not have permission to create users" }),
+        JSON.stringify({ success: false, error: "You do not have permission to create users. Required role: principal, coordinator, or class_teacher." }),
         { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
@@ -124,11 +148,6 @@ const handler = async (req: Request): Promise<Response> => {
     const isCoordinator = callerRole.role === 'coordinator';
     const isClassTeacher = callerRole.role === 'class_teacher';
     const callerSchoolId = callerRole.school_id;
-
-    // Use service role for admin operations
-    const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey, {
-      auth: { autoRefreshToken: false, persistSession: false },
-    });
 
     let body: CreateUserRequest;
     try {
@@ -250,7 +269,7 @@ const handler = async (req: Request): Promise<Response> => {
       .eq('id', userId);
 
     // Create the role
-    const { error: roleError } = await supabaseAdmin
+    const { error: insertRoleError } = await supabaseAdmin
       .from('user_roles')
       .insert({
         user_id: userId,
@@ -259,7 +278,7 @@ const handler = async (req: Request): Promise<Response> => {
         is_active: true,
       });
 
-    if (roleError) {
+    if (insertRoleError) {
       // Rollback user creation
       await supabaseAdmin.auth.admin.deleteUser(userId);
       return new Response(

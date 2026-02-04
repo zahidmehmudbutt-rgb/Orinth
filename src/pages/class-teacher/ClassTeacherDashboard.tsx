@@ -227,8 +227,13 @@ const ClassTeacherDashboard = () => {
         },
       });
 
+      // Handle edge function errors
       if (response.error) {
-        throw new Error(response.error.message || "Failed to create student account");
+        // Try to extract error message from the response
+        const errorData = response.error.context?.body ?
+          JSON.parse(new TextDecoder().decode(response.error.context.body)) : null;
+        const errorMessage = errorData?.error || response.error.message || "Failed to create student account";
+        throw new Error(errorMessage);
       }
 
       if (!response.data?.success) {

@@ -691,6 +691,89 @@ export type Database = {
           },
         ]
       }
+      subjects: {
+        Row: {
+          id: string
+          school_id: string
+          name: string
+          code: string | null
+          description: string | null
+          is_active: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          school_id: string
+          name: string
+          code?: string | null
+          description?: string | null
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          school_id?: string
+          name?: string
+          code?: string | null
+          description?: string | null
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subjects_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      class_subjects: {
+        Row: {
+          id: string
+          class_id: string
+          subject_id: string
+          periods_per_week: number | null
+          is_mandatory: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          class_id: string
+          subject_id: string
+          periods_per_week?: number | null
+          is_mandatory?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          class_id?: string
+          subject_id?: string
+          periods_per_week?: number | null
+          is_mandatory?: boolean
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "class_subjects_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "class_subjects_subject_id_fkey"
+            columns: ["subject_id"]
+            isOneToOne: false
+            referencedRelation: "subjects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
