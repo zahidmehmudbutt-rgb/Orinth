@@ -43,6 +43,20 @@ interface Child {
   section?: string;
 }
 
+interface ParentStudentJoinResult {
+  student_id: string;
+  students: {
+    id: string;
+    full_name: string;
+    student_id: string;
+    class_id: string;
+    classes: {
+      name: string;
+      section: string | null;
+    } | null;
+  };
+}
+
 interface Homework {
   id: string;
   title: string;
@@ -110,7 +124,7 @@ const ParentDashboard = () => {
 
         if (error) throw error;
 
-        const childrenData: Child[] = (data || []).map((item: any) => ({
+        const childrenData: Child[] = (data as ParentStudentJoinResult[] || []).map((item) => ({
           id: item.students.id,
           full_name: item.students.full_name,
           student_id: item.students.student_id,
@@ -136,7 +150,7 @@ const ParentDashboard = () => {
     };
 
     fetchChildren();
-  }, [user]);
+  }, [user, toast]);
 
   // Fetch homework for selected child
   useEffect(() => {

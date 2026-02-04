@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { LogOut, Calendar, UserPlus, Users, Trash2, Printer, Settings, Sparkles, Loader2, RefreshCw, Check, X } from "lucide-react";
+import { LogOut, Calendar, UserPlus, Users, Trash2, Printer, Settings, Sparkles, Loader2, RefreshCw, Check, X, Megaphone, BarChart3 } from "lucide-react";
 import { NotificationCenter } from "@/components/notifications/NotificationCenter";
 import { GroupChat } from "@/components/chat";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -28,6 +28,12 @@ import { WelcomeBanner } from "@/components/onboarding/WelcomeBanner";
 import { OnboardingChecklist } from "@/components/onboarding/OnboardingChecklist";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { LoadingButton } from "@/components/ui/LoadingButton";
+import { sendBulkAbsenceNotifications, getSchoolNotificationStatus } from "@/lib/notifications";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import AnnouncementManager from "@/components/announcements/AnnouncementManager";
+import AnalyticsDashboard from "@/components/analytics/AnalyticsDashboard";
+import ChangePassword from "@/components/account/ChangePassword";
+import LoginHistory from "@/components/account/LoginHistory";
 
 interface Student {
   id: string;
@@ -263,12 +269,12 @@ const ClassTeacherDashboard = () => {
       setNewStudentName("");
       setNewStudentId("");
       loadStudents();
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error adding student:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message || "Could not add the student. Please try again.",
+        description: error instanceof Error ? error.message : "Could not add the student. Please try again.",
       });
     } finally {
       setIsSubmitting(false);
@@ -300,12 +306,12 @@ const ClassTeacherDashboard = () => {
       });
 
       loadStudents();
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error removing student:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message || "Could not remove the student.",
+        description: error instanceof Error ? error.message : "Could not remove the student.",
       });
     }
   };
@@ -356,13 +362,41 @@ const ClassTeacherDashboard = () => {
         description: "Today's attendance has been saved successfully.",
       });
 
+      // SMS/WhatsApp notifications - disabled for now, enable when needed
+      // const notificationStatus = await getSchoolNotificationStatus(profile.school_id);
+      // if (notificationStatus.enabled) {
+      //   const absentStudents = attendance
+      //     .filter(a => !a.is_present)
+      //     .map(a => {
+      //       const student = students.find(s => s.id === a.student_id);
+      //       return {
+      //         studentId: a.student_id,
+      //         studentName: student?.full_name || "Student",
+      //         className: `${assignedClass.name}${assignedClass.section ? `-${assignedClass.section}` : ""}`,
+      //       };
+      //     });
+      //   if (absentStudents.length > 0) {
+      //     const notifyResult = await sendBulkAbsenceNotifications(
+      //       profile.school_id,
+      //       absentStudents,
+      //       today
+      //     );
+      //     if (notifyResult.sent > 0) {
+      //       toast({
+      //         title: "Parents Notified",
+      //         description: `${notifyResult.sent} parent(s) notified about absent students.`,
+      //       });
+      //     }
+      //   }
+      // }
+
       loadTodayAttendance();
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error saving attendance:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message || "Could not save attendance. Please try again.",
+        description: error instanceof Error ? error.message : "Could not save attendance. Please try again.",
       });
     } finally {
       setIsSavingAttendance(false);
@@ -421,6 +455,7 @@ const ClassTeacherDashboard = () => {
               </div>
             </div>
             <div className="flex items-center gap-3">
+              <ThemeToggle />
               <GroupChat triggerClassName="text-primary-foreground hover:bg-primary-foreground/20" />
               <NotificationCenter className="text-primary-foreground hover:bg-primary-foreground/20" />
               <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/20" onClick={handleLogout}>
@@ -466,6 +501,7 @@ const ClassTeacherDashboard = () => {
             >
               <RefreshCw className="w-5 h-5" />
             </Button>
+            <ThemeToggle />
             <GroupChat triggerClassName="text-primary-foreground hover:bg-primary-foreground/20" />
             <NotificationCenter className="text-primary-foreground hover:bg-primary-foreground/20" />
             <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/20" onClick={handleLogout}>
@@ -531,18 +567,26 @@ const ClassTeacherDashboard = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="w-full max-w-lg mx-auto grid grid-cols-3 mb-8 bg-card shadow-card">
+          <TabsList className="w-full max-w-2xl mx-auto grid grid-cols-5 mb-8 bg-card shadow-card">
             <TabsTrigger value="attendance" className="flex items-center gap-2 data-[state=active]:bg-role-class-teacher data-[state=active]:text-primary-foreground">
               <Calendar className="w-4 h-4" />
-              Attendance
+              <span className="hidden sm:inline">Attendance</span>
             </TabsTrigger>
             <TabsTrigger value="students" className="flex items-center gap-2 data-[state=active]:bg-role-class-teacher data-[state=active]:text-primary-foreground">
               <Users className="w-4 h-4" />
-              Students
+              <span className="hidden sm:inline">Students</span>
+            </TabsTrigger>
+            <TabsTrigger value="announcements" className="flex items-center gap-2 data-[state=active]:bg-role-class-teacher data-[state=active]:text-primary-foreground">
+              <Megaphone className="w-4 h-4" />
+              <span className="hidden sm:inline">Announce</span>
+            </TabsTrigger>
+            <TabsTrigger value="analytics" className="flex items-center gap-2 data-[state=active]:bg-role-class-teacher data-[state=active]:text-primary-foreground">
+              <BarChart3 className="w-4 h-4" />
+              <span className="hidden sm:inline">Analytics</span>
             </TabsTrigger>
             <TabsTrigger value="account" className="flex items-center gap-2 data-[state=active]:bg-role-class-teacher data-[state=active]:text-primary-foreground">
               <Settings className="w-4 h-4" />
-              Account
+              <span className="hidden sm:inline">Account</span>
             </TabsTrigger>
           </TabsList>
 
@@ -723,14 +767,37 @@ const ClassTeacherDashboard = () => {
             </div>
           </TabsContent>
 
+          {/* Announcements Tab */}
+          <TabsContent value="announcements" className="animate-fade-in">
+            <div className="max-w-4xl mx-auto">
+              {profile?.school_id && (
+                <AnnouncementManager schoolId={profile.school_id} />
+              )}
+            </div>
+          </TabsContent>
+
+          {/* Analytics Tab */}
+          <TabsContent value="analytics" className="animate-fade-in">
+            <h2 className="text-xl font-bold text-foreground mb-6">Class Analytics</h2>
+            {profile?.school_id && assignedClass && (
+              <AnalyticsDashboard
+                schoolId={profile.school_id}
+                role="class_teacher"
+                classId={assignedClass.id}
+              />
+            )}
+          </TabsContent>
+
           {/* Account Tab */}
           <TabsContent value="account" className="animate-fade-in">
-            <div className="max-w-2xl mx-auto">
+            <div className="max-w-2xl mx-auto space-y-6">
               <div className="mb-6">
                 <h2 className="text-xl font-bold text-foreground mb-2">Account Settings</h2>
                 <p className="text-muted-foreground text-sm">Manage your profile and security settings</p>
               </div>
               <AccountSettings roleColor="bg-role-class-teacher" />
+              <ChangePassword />
+              <LoginHistory />
             </div>
           </TabsContent>
         </Tabs>

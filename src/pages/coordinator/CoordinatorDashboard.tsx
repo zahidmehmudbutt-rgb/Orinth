@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {
   Bell, LogOut, UserPlus, Users, Trash2, BookMarked, Settings,
   Sparkles, Loader2, RefreshCw, GraduationCap, School, BookOpen,
-  Plus, Edit2, Check, X, Link2
+  Plus, Edit2, Check, X, Link2, Megaphone, BarChart3
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -45,6 +45,11 @@ import AccountSettings from "@/components/account/AccountSettings";
 import { WelcomeBanner } from "@/components/onboarding/WelcomeBanner";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { LoadingButton } from "@/components/ui/LoadingButton";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import AnnouncementManager from "@/components/announcements/AnnouncementManager";
+import AnalyticsDashboard from "@/components/analytics/AnalyticsDashboard";
+import ChangePassword from "@/components/account/ChangePassword";
+import LoginHistory from "@/components/account/LoginHistory";
 
 // Interfaces
 interface StaffMember {
@@ -92,6 +97,30 @@ interface TeacherAssignment {
   class_name?: string;
   class_section?: string | null;
   subject: string;
+}
+
+// Types for Supabase joined queries
+interface TeacherClassJoinResult {
+  id: string;
+  teacher_id: string;
+  class_id: string;
+  subject: string;
+  classes: {
+    name: string;
+    section: string | null;
+    school_id: string;
+  };
+}
+
+interface ClassSubjectJoinResult {
+  id: string;
+  class_id: string;
+  subject_id: string;
+  periods_per_week: number | null;
+  is_mandatory: boolean;
+  subjects: {
+    name: string;
+  } | null;
 }
 
 // Class name options
@@ -166,6 +195,7 @@ const CoordinatorDashboard = () => {
     if (profile?.school_id) {
       loadAllData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile?.school_id]);
 
   const loadAllData = async () => {
@@ -301,7 +331,7 @@ const CoordinatorDashboard = () => {
       if (error) throw error;
 
       // Get teacher names
-      const assignmentsWithNames = await Promise.all((data || []).map(async (assignment: any) => {
+      const assignmentsWithNames = await Promise.all((data as TeacherClassJoinResult[] || []).map(async (assignment) => {
         const { data: teacherProfile } = await supabase
           .from('profiles')
           .select('full_name')
@@ -337,7 +367,7 @@ const CoordinatorDashboard = () => {
 
       if (error) throw error;
 
-      const subjectsWithNames = (data || []).map((cs: any) => ({
+      const subjectsWithNames = (data as ClassSubjectJoinResult[] || []).map((cs) => ({
         ...cs,
         subject_name: cs.subjects?.name || 'Unknown',
       }));
@@ -396,11 +426,11 @@ const CoordinatorDashboard = () => {
       setNewClassSections(["A"]);
       setShowAddClassDialog(false);
       loadClasses();
-    } catch (error: any) {
+    } catch (error) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message || "Failed to create classes.",
+        description: error instanceof Error ? error.message : "Failed to create classes.",
       });
     } finally {
       setIsSubmitting(false);
@@ -422,11 +452,11 @@ const CoordinatorDashboard = () => {
       });
 
       loadClasses();
-    } catch (error: any) {
+    } catch (error) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message || "Failed to delete class.",
+        description: error instanceof Error ? error.message : "Failed to delete class.",
       });
     }
   };
@@ -471,11 +501,11 @@ const CoordinatorDashboard = () => {
       setNewSubjectCode("");
       setShowAddSubjectDialog(false);
       loadSubjects();
-    } catch (error: any) {
+    } catch (error) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message || "Failed to add subject.",
+        description: error instanceof Error ? error.message : "Failed to add subject.",
       });
     } finally {
       setIsSubmitting(false);
@@ -504,11 +534,11 @@ const CoordinatorDashboard = () => {
       });
 
       loadSubjects();
-    } catch (error: any) {
+    } catch (error) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message || "Failed to add subjects.",
+        description: error instanceof Error ? error.message : "Failed to add subjects.",
       });
     } finally {
       setIsSubmitting(false);
@@ -530,11 +560,11 @@ const CoordinatorDashboard = () => {
       });
 
       loadSubjects();
-    } catch (error: any) {
+    } catch (error) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message || "Failed to remove subject.",
+        description: error instanceof Error ? error.message : "Failed to remove subject.",
       });
     }
   };
@@ -589,11 +619,11 @@ const CoordinatorDashboard = () => {
       setSelectedClassForSubjects("");
       setSelectedSubjectsToAssign([]);
       loadClasses();
-    } catch (error: any) {
+    } catch (error) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message || "Failed to assign subjects.",
+        description: error instanceof Error ? error.message : "Failed to assign subjects.",
       });
     } finally {
       setIsSubmitting(false);
@@ -639,11 +669,11 @@ const CoordinatorDashboard = () => {
       setAssignTeacherSubject("");
       setAssignTeacherId("");
       loadTeacherAssignments();
-    } catch (error: any) {
+    } catch (error) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message || "Failed to assign teacher.",
+        description: error instanceof Error ? error.message : "Failed to assign teacher.",
       });
     } finally {
       setIsSubmitting(false);
@@ -665,11 +695,11 @@ const CoordinatorDashboard = () => {
       });
 
       loadTeacherAssignments();
-    } catch (error: any) {
+    } catch (error) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message || "Failed to remove assignment.",
+        description: error instanceof Error ? error.message : "Failed to remove assignment.",
       });
     }
   };
@@ -773,11 +803,11 @@ const CoordinatorDashboard = () => {
       setSelectedClassIdForTeacher("");
       loadStaff();
       loadClasses();
-    } catch (error: any) {
+    } catch (error) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message || "Failed to add staff.",
+        description: error instanceof Error ? error.message : "Failed to add staff.",
       });
     } finally {
       setIsSubmitting(false);
@@ -805,11 +835,11 @@ const CoordinatorDashboard = () => {
 
       loadStaff();
       loadClasses();
-    } catch (error: any) {
+    } catch (error) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message || "Failed to remove staff.",
+        description: error instanceof Error ? error.message : "Failed to remove staff.",
       });
     }
   };
@@ -852,6 +882,7 @@ const CoordinatorDashboard = () => {
             </div>
           </div>
           <div className="flex items-center gap-3">
+            <ThemeToggle />
             <Button
               variant="ghost"
               size="icon"
@@ -921,7 +952,7 @@ const CoordinatorDashboard = () => {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="w-full max-w-2xl mx-auto grid grid-cols-5 mb-8 bg-card shadow-card">
+          <TabsList className="w-full max-w-4xl mx-auto grid grid-cols-7 mb-8 bg-card shadow-card">
             <TabsTrigger value="classes" className="text-xs sm:text-sm data-[state=active]:bg-role-coordinator data-[state=active]:text-primary-foreground">
               <School className="w-4 h-4 mr-1 hidden sm:inline" />
               Classes
@@ -937,6 +968,14 @@ const CoordinatorDashboard = () => {
             <TabsTrigger value="staff" className="text-xs sm:text-sm data-[state=active]:bg-role-coordinator data-[state=active]:text-primary-foreground">
               <Users className="w-4 h-4 mr-1 hidden sm:inline" />
               Staff
+            </TabsTrigger>
+            <TabsTrigger value="announcements" className="text-xs sm:text-sm data-[state=active]:bg-role-coordinator data-[state=active]:text-primary-foreground">
+              <Megaphone className="w-4 h-4 mr-1 hidden sm:inline" />
+              Announce
+            </TabsTrigger>
+            <TabsTrigger value="analytics" className="text-xs sm:text-sm data-[state=active]:bg-role-coordinator data-[state=active]:text-primary-foreground">
+              <BarChart3 className="w-4 h-4 mr-1 hidden sm:inline" />
+              Analytics
             </TabsTrigger>
             <TabsTrigger value="account" className="text-xs sm:text-sm data-[state=active]:bg-role-coordinator data-[state=active]:text-primary-foreground">
               <Settings className="w-4 h-4 mr-1 hidden sm:inline" />
@@ -1558,14 +1597,33 @@ const CoordinatorDashboard = () => {
             </div>
           </TabsContent>
 
+          {/* ANNOUNCEMENTS TAB */}
+          <TabsContent value="announcements" className="animate-fade-in">
+            <div className="max-w-4xl mx-auto">
+              {profile?.school_id && (
+                <AnnouncementManager schoolId={profile.school_id} />
+              )}
+            </div>
+          </TabsContent>
+
+          {/* ANALYTICS TAB */}
+          <TabsContent value="analytics" className="animate-fade-in">
+            <h2 className="text-xl font-bold text-foreground mb-6">Section Analytics</h2>
+            {profile?.school_id && (
+              <AnalyticsDashboard schoolId={profile.school_id} role="coordinator" />
+            )}
+          </TabsContent>
+
           {/* ACCOUNT TAB */}
           <TabsContent value="account" className="animate-fade-in">
-            <div className="max-w-2xl mx-auto">
+            <div className="max-w-2xl mx-auto space-y-6">
               <div className="mb-6">
                 <h2 className="text-xl font-bold text-foreground mb-2">Account Settings</h2>
                 <p className="text-muted-foreground text-sm">Manage your profile and security settings</p>
               </div>
               <AccountSettings roleColor="bg-role-coordinator" />
+              <ChangePassword />
+              <LoginHistory />
             </div>
           </TabsContent>
         </Tabs>

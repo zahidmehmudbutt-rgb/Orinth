@@ -1,41 +1,60 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { GraduationCap, Mail, Lock, ArrowLeft, UserCheck, Loader2 } from "lucide-react";
+import { GraduationCap, Mail, Lock, ArrowLeft, UserCheck, Loader2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { signIn, signOut, hasRole } from "@/lib/auth";
+import { validateEmail, validatePassword, parseAuthError } from "@/lib/validation";
 
 const ClassTeacherLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const handleEmailChange = (value: string) => {
+    setEmail(value);
+    setEmailError("");
+  };
+
+  const handlePasswordChange = (value: string) => {
+    setPassword(value);
+    setPasswordError("");
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!email.trim() || !password.trim()) {
-      toast({
-        variant: "destructive",
-        title: "Validation Error",
-        description: "Please enter both Email and Password",
-      });
+    // Validate email
+    const emailValidation = validateEmail(email);
+    if (!emailValidation.valid) {
+      setEmailError(emailValidation.error || "Invalid email");
+      return;
+    }
+
+    // Validate password
+    const passwordValidation = validatePassword(password);
+    if (!passwordValidation.valid) {
+      setPasswordError(passwordValidation.error || "Invalid password");
       return;
     }
 
     setIsLoading(true);
 
     try {
-      const { data, error } = await signIn(email, password);
+      const { data, error } = await signIn(email.trim().toLowerCase(), password);
 
       if (error) {
+        const errorMessage = parseAuthError(error);
         toast({
           variant: "destructive",
           title: "Login Failed",
-          description: "Invalid email or password. Please try again.",
+          description: errorMessage,
         });
         setIsLoading(false);
         return;
@@ -55,19 +74,19 @@ const ClassTeacherLogin = () => {
       const isClassTeacher = await hasRole(data.user.id, 'class_teacher');
 
       if (!isClassTeacher) {
-        await signOut(); // Sign out user who doesn't have the correct role
+        await signOut();
         toast({
           variant: "destructive",
           title: "Access Denied",
-          description: "You do not have permission to access the Class Teacher dashboard.",
+          description: "This account does not have Class Teacher access. Please use the correct login portal for your role.",
         });
         setIsLoading(false);
         return;
       }
 
       toast({
-        title: "Login Successful",
-        description: "Welcome to your dashboard!",
+        title: "Welcome Back!",
+        description: "Redirecting to your dashboard...",
       });
 
       navigate("/class-teacher/dashboard");
@@ -78,8 +97,8 @@ const ClassTeacherLogin = () => {
 
       toast({
         variant: "destructive",
-        title: "Login Failed",
-        description: "Invalid email or password. Please try again.",
+        title: "Connection Error",
+        description: "Unable to connect to the server. Please check your internet connection.",
       });
     } finally {
       setIsLoading(false);
@@ -128,15 +147,30 @@ const ClassTeacherLogin = () => {
                     type="email"
                     placeholder="Enter your Email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10 h-12"
+                    onChange={(e) => handleEmailChange(e.target.value)}
+                    className={`pl-10 h-12 ${emailError ? 'border-destructive focus-visible:ring-destructive' : ''}`}
                     disabled={isLoading}
+                    autoComplete="email"
                   />
                 </div>
+                {emailError && (
+                  <p className="text-sm text-destructive flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3" />
+                    {emailError}
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="password">Password</Label>
+                  <Link
+                    to="/auth/forgot-password"
+                    className="text-sm text-primary hover:underline"
+                  >
+                    Forgot Password?
+                  </Link>
+                </div>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <Input
@@ -144,11 +178,18 @@ const ClassTeacherLogin = () => {
                     type="password"
                     placeholder="Enter your Password"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10 h-12"
+                    onChange={(e) => handlePasswordChange(e.target.value)}
+                    className={`pl-10 h-12 ${passwordError ? 'border-destructive focus-visible:ring-destructive' : ''}`}
                     disabled={isLoading}
+                    autoComplete="current-password"
                   />
                 </div>
+                {passwordError && (
+                  <p className="text-sm text-destructive flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3" />
+                    {passwordError}
+                  </p>
+                )}
               </div>
 
               <Button

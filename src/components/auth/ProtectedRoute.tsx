@@ -1,6 +1,7 @@
 import { useEffect, ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import { Loader2, ShieldAlert } from "lucide-react";
 import type { AppRole } from "@/lib/auth";
 
@@ -48,11 +49,13 @@ const ProtectedRoute = ({ children, requiredRole, redirectTo }: ProtectedRoutePr
         navigate(loginPage, { replace: true });
         return;
       }
-      
+
       // If logged in but doesn't have the required role
       if (!hasRequiredRole) {
         // For security, sign them out if trying to access wrong role's dashboard
-        navigate(loginPage, { replace: true });
+        supabase.auth.signOut().then(() => {
+          navigate(loginPage, { replace: true });
+        });
       }
     }
   }, [loading, user, hasRequiredRole, navigate, loginPage]);

@@ -58,6 +58,59 @@ export type Database = {
           },
         ]
       }
+      announcements: {
+        Row: {
+          id: string
+          school_id: string | null
+          created_by: string | null
+          title: string
+          content: string
+          priority: "low" | "normal" | "high" | "urgent"
+          target_audience: string[]
+          target_classes: string[] | null
+          is_pinned: boolean
+          expires_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          school_id?: string | null
+          created_by?: string | null
+          title: string
+          content: string
+          priority?: "low" | "normal" | "high" | "urgent"
+          target_audience?: string[]
+          target_classes?: string[] | null
+          is_pinned?: boolean
+          expires_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          school_id?: string | null
+          created_by?: string | null
+          title?: string
+          content?: string
+          priority?: "low" | "normal" | "high" | "urgent"
+          target_audience?: string[]
+          target_classes?: string[] | null
+          is_pinned?: boolean
+          expires_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "announcements_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       attendance: {
         Row: {
           class_id: string
@@ -259,6 +312,54 @@ export type Database = {
           },
         ]
       }
+      login_history: {
+        Row: {
+          id: string
+          user_id: string
+          login_at: string
+          ip_address: string | null
+          user_agent: string | null
+          device_type: string | null
+          browser: string | null
+          os: string | null
+          location_country: string | null
+          location_city: string | null
+          login_status: "success" | "failed" | "blocked"
+          failure_reason: string | null
+          session_id: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          login_at?: string
+          ip_address?: string | null
+          user_agent?: string | null
+          device_type?: string | null
+          browser?: string | null
+          os?: string | null
+          location_country?: string | null
+          location_city?: string | null
+          login_status?: "success" | "failed" | "blocked"
+          failure_reason?: string | null
+          session_id?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          login_at?: string
+          ip_address?: string | null
+          user_agent?: string | null
+          device_type?: string | null
+          browser?: string | null
+          os?: string | null
+          location_country?: string | null
+          location_city?: string | null
+          login_status?: "success" | "failed" | "blocked"
+          failure_reason?: string | null
+          session_id?: string | null
+        }
+        Relationships: []
+      }
       notices: {
         Row: {
           content: string
@@ -421,6 +522,69 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      two_factor_auth: {
+        Row: {
+          id: string
+          user_id: string
+          is_enabled: boolean
+          secret_key: string | null
+          backup_codes: string[] | null
+          last_used_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          is_enabled?: boolean
+          secret_key?: string | null
+          backup_codes?: string[] | null
+          last_used_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          is_enabled?: boolean
+          secret_key?: string | null
+          backup_codes?: string[] | null
+          last_used_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_preferences: {
+        Row: {
+          id: string
+          user_id: string
+          theme: "light" | "dark" | "system"
+          session_timeout_minutes: number
+          email_notifications: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          theme?: "light" | "dark" | "system"
+          session_timeout_minutes?: number
+          email_notifications?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          theme?: "light" | "dark" | "system"
+          session_timeout_minutes?: number
+          email_notifications?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       schools: {
         Row: {
@@ -770,6 +934,364 @@ export type Database = {
             columns: ["subject_id"]
             isOneToOne: false
             referencedRelation: "subjects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notification_preferences: {
+        Row: {
+          id: string
+          user_id: string
+          school_id: string
+          sms_enabled: boolean
+          whatsapp_enabled: boolean
+          absence_alerts: boolean
+          low_marks_alerts: boolean
+          homework_alerts: boolean
+          notice_alerts: boolean
+          low_marks_threshold: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          school_id: string
+          sms_enabled?: boolean
+          whatsapp_enabled?: boolean
+          absence_alerts?: boolean
+          low_marks_alerts?: boolean
+          homework_alerts?: boolean
+          notice_alerts?: boolean
+          low_marks_threshold?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          school_id?: string
+          sms_enabled?: boolean
+          whatsapp_enabled?: boolean
+          absence_alerts?: boolean
+          low_marks_alerts?: boolean
+          homework_alerts?: boolean
+          notice_alerts?: boolean
+          low_marks_threshold?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_preferences_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notification_logs: {
+        Row: {
+          id: string
+          school_id: string
+          parent_id: string
+          student_id: string | null
+          notification_type: string
+          channel: string
+          recipient_phone: string
+          message: string
+          status: string
+          external_id: string | null
+          error_message: string | null
+          metadata: Json | null
+          created_at: string
+          sent_at: string | null
+        }
+        Insert: {
+          id?: string
+          school_id: string
+          parent_id: string
+          student_id?: string | null
+          notification_type: string
+          channel: string
+          recipient_phone: string
+          message: string
+          status?: string
+          external_id?: string | null
+          error_message?: string | null
+          metadata?: Json | null
+          created_at?: string
+          sent_at?: string | null
+        }
+        Update: {
+          id?: string
+          school_id?: string
+          parent_id?: string
+          student_id?: string | null
+          notification_type?: string
+          channel?: string
+          recipient_phone?: string
+          message?: string
+          status?: string
+          external_id?: string | null
+          error_message?: string | null
+          metadata?: Json | null
+          created_at?: string
+          sent_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_logs_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notification_logs_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      school_notification_settings: {
+        Row: {
+          id: string
+          school_id: string
+          sms_provider: string | null
+          sms_enabled: boolean
+          whatsapp_enabled: boolean
+          twilio_account_sid: string | null
+          twilio_auth_token: string | null
+          twilio_phone_number: string | null
+          twilio_whatsapp_number: string | null
+          daily_sms_limit: number | null
+          sms_sent_today: number | null
+          last_reset_date: string | null
+          absence_message_template: string | null
+          low_marks_message_template: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          school_id: string
+          sms_provider?: string | null
+          sms_enabled?: boolean
+          whatsapp_enabled?: boolean
+          twilio_account_sid?: string | null
+          twilio_auth_token?: string | null
+          twilio_phone_number?: string | null
+          twilio_whatsapp_number?: string | null
+          daily_sms_limit?: number | null
+          sms_sent_today?: number | null
+          last_reset_date?: string | null
+          absence_message_template?: string | null
+          low_marks_message_template?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          school_id?: string
+          sms_provider?: string | null
+          sms_enabled?: boolean
+          whatsapp_enabled?: boolean
+          twilio_account_sid?: string | null
+          twilio_auth_token?: string | null
+          twilio_phone_number?: string | null
+          twilio_whatsapp_number?: string | null
+          daily_sms_limit?: number | null
+          sms_sent_today?: number | null
+          last_reset_date?: string | null
+          absence_message_template?: string | null
+          low_marks_message_template?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "school_notification_settings_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: true
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          id: string
+          user_id: string
+          school_id: string | null
+          type: "homework_assigned" | "attendance_alert" | "grades_published" | "notice" | "welcome" | "general"
+          title: string
+          message: string
+          data: Json
+          is_read: boolean
+          email_sent: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          school_id?: string | null
+          type: "homework_assigned" | "attendance_alert" | "grades_published" | "notice" | "welcome" | "general"
+          title: string
+          message: string
+          data?: Json
+          is_read?: boolean
+          email_sent?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          school_id?: string | null
+          type?: "homework_assigned" | "attendance_alert" | "grades_published" | "notice" | "welcome" | "general"
+          title?: string
+          message?: string
+          data?: Json
+          is_read?: boolean
+          email_sent?: boolean
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_rooms: {
+        Row: {
+          id: string
+          class_id: string
+          school_id: string
+          name: string
+          description: string | null
+          is_active: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          class_id: string
+          school_id: string
+          name: string
+          description?: string | null
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          class_id?: string
+          school_id?: string
+          name?: string
+          description?: string | null
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_rooms_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: true
+            referencedRelation: "classes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chat_rooms_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_messages: {
+        Row: {
+          id: string
+          room_id: string
+          sender_id: string
+          message: string
+          message_type: "text" | "image" | "file" | "system"
+          file_url: string | null
+          file_name: string | null
+          is_deleted: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          room_id: string
+          sender_id: string
+          message: string
+          message_type?: "text" | "image" | "file" | "system"
+          file_url?: string | null
+          file_name?: string | null
+          is_deleted?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          room_id?: string
+          sender_id?: string
+          message?: string
+          message_type?: "text" | "image" | "file" | "system"
+          file_url?: string | null
+          file_name?: string | null
+          is_deleted?: boolean
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "chat_rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_room_members: {
+        Row: {
+          id: string
+          room_id: string
+          user_id: string
+          role: "teacher" | "class_teacher" | "student" | "parent"
+          joined_at: string
+          last_read_at: string
+        }
+        Insert: {
+          id?: string
+          room_id: string
+          user_id: string
+          role: "teacher" | "class_teacher" | "student" | "parent"
+          joined_at?: string
+          last_read_at?: string
+        }
+        Update: {
+          id?: string
+          room_id?: string
+          user_id?: string
+          role?: "teacher" | "class_teacher" | "student" | "parent"
+          joined_at?: string
+          last_read_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_room_members_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "chat_rooms"
             referencedColumns: ["id"]
           },
         ]

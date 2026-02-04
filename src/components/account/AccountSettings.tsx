@@ -118,12 +118,12 @@ const AccountSettings = ({ roleColor = "bg-primary" }: AccountSettingsProps) => 
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error changing password:", error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message || "Failed to change password.",
+        description: error instanceof Error ? error.message : "Failed to change password.",
       });
     } finally {
       setIsUpdatingPassword(false);

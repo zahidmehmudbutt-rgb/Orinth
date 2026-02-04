@@ -18,6 +18,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { ExamType, ExamItem, StudentMarkEntry } from "@/types/exam";
 import { EXAM_TYPE_LABELS } from "@/types/exam";
 import { getExamTypeBadgeColor } from "@/utils/exam";
+import { sendLowMarksNotification, getSchoolNotificationStatus } from "@/lib/notifications";
 
 interface TeacherData {
   id: string;
@@ -317,10 +318,10 @@ const TeacherDashboard = () => {
 
       if (!students) return;
 
-      // Get submissions for this homework (only select columns that exist)
+      // Get submissions for this homework
       const { data: submissionData } = await supabase
         .from("homework_submissions")
-        .select("id, student_id, submitted_at, marks, remarks")
+        .select("id, student_id, submitted_at, marks, remarks, file_url, file_name")
         .eq("homework_id", gradingHomeworkId);
 
       const submissionMap = new Map(
@@ -334,8 +335,8 @@ const TeacherDashboard = () => {
           studentName: student.full_name,
           studentCode: student.student_id,
           submittedAt: submission?.submitted_at || null,
-          fileUrl: null, // file_url column doesn't exist yet
-          fileName: null, // file_name column doesn't exist yet
+          fileUrl: submission?.file_url || null,
+          fileName: submission?.file_name || null,
           marks: submission?.marks ?? null,
           remarks: submission?.remarks || null,
           submissionId: submission?.id || null,
@@ -895,6 +896,34 @@ const TeacherDashboard = () => {
           description: `Successfully saved marks for ${successCount} student${successCount > 1 ? 's' : ''}.${errorCount > 0 ? ` (${errorCount} failed)` : ''}`,
         });
         setHasUnsavedChanges(false);
+
+        // SMS/WhatsApp notifications for low marks - disabled for now, enable when needed
+        // if (teacherData?.schoolId) {
+        //   const notificationStatus = await getSchoolNotificationStatus(teacherData.schoolId);
+        //   if (notificationStatus.enabled) {
+        //     const PASSING_THRESHOLD = 40;
+        //     const lowMarksStudents = marksToUpdate.filter(m => {
+        //       if (m.isAbsent || m.marksObtained === null) return false;
+        //       const percentage = (m.marksObtained / exam.maxMarks) * 100;
+        //       return percentage < PASSING_THRESHOLD;
+        //     });
+        //     let notificationsSent = 0;
+        //     for (const lowStudent of lowMarksStudents) {
+        //       const studentData = studentMarks.find(s => s.studentId === lowStudent.studentId);
+        //       if (studentData) {
+        //         const result = await sendLowMarksNotification(
+        //           teacherData.schoolId, lowStudent.studentId, studentData.studentName,
+        //           `${exam.className}${exam.classSection ? `-${exam.classSection}` : ''}`,
+        //           exam.subject, exam.title, lowStudent.marksObtained || 0, exam.maxMarks
+        //         );
+        //         if (result.success) notificationsSent++;
+        //       }
+        //     }
+        //     if (notificationsSent > 0) {
+        //       toast({ title: "Parents Notified", description: `${notificationsSent} parent(s) notified about low marks.` });
+        //     }
+        //   }
+        // }
       }
 
       if (errorCount > 0 && successCount === 0) {

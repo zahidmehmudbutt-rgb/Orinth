@@ -72,11 +72,11 @@ const FirstLoginSetup = ({ onComplete }: FirstLoginSetupProps) => {
       });
 
       setStep(2);
-    } catch (error: any) {
+    } catch (error) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message || "Failed to set password.",
+        description: error instanceof Error ? error.message : "Failed to set password.",
       });
     } finally {
       setIsLoading(false);

@@ -1,29 +1,47 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { GraduationCap, User, Lock, ArrowLeft, Loader2 } from "lucide-react";
+import { GraduationCap, User, Lock, ArrowLeft, Loader2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { hasRole } from "@/lib/auth";
+import { hasRole, signIn } from "@/lib/auth";
+import { validateStudentId, validatePassword, parseAuthError } from "@/lib/validation";
 
 const StudentLogin = () => {
   const [studentId, setStudentId] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [studentIdError, setStudentIdError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const handleStudentIdChange = (value: string) => {
+    setStudentId(value);
+    setStudentIdError("");
+  };
+
+  const handlePasswordChange = (value: string) => {
+    setPassword(value);
+    setPasswordError("");
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!studentId.trim() || !password.trim()) {
-      toast({
-        variant: "destructive",
-        title: "Validation Error",
-        description: "Please enter both Student ID and Password",
-      });
+    // Validate student ID
+    const studentIdValidation = validateStudentId(studentId);
+    if (!studentIdValidation.valid) {
+      setStudentIdError(studentIdValidation.error || "Invalid Student ID");
+      return;
+    }
+
+    // Validate password
+    const passwordValidation = validatePassword(password);
+    if (!passwordValidation.valid) {
+      setPasswordError(passwordValidation.error || "Invalid password");
       return;
     }
 
@@ -38,12 +56,26 @@ const StudentLogin = () => {
         .maybeSingle();
 
       if (studentError) {
-        console.error('Student lookup error:', studentError);
-        throw new Error("Unable to verify student credentials");
+        if (import.meta.env.DEV) {
+          console.error('Student lookup error:', studentError);
+        }
+        toast({
+          variant: "destructive",
+          title: "Login Failed",
+          description: "Unable to verify student credentials. Please try again.",
+        });
+        setIsLoading(false);
+        return;
       }
 
       if (!studentData || !studentData.user_id) {
-        throw new Error("Invalid Student ID");
+        toast({
+          variant: "destructive",
+          title: "Login Failed",
+          description: "Student ID not found. Please check your ID and try again.",
+        });
+        setIsLoading(false);
+        return;
       }
 
       // Step 2: Get the profile to find the email
@@ -53,56 +85,78 @@ const StudentLogin = () => {
         .eq('id', studentData.user_id)
         .maybeSingle();
 
-      if (profileError) {
-        console.error('Profile lookup error:', profileError);
-        throw new Error("Unable to verify student credentials");
+      if (profileError || !profileData?.email) {
+        if (import.meta.env.DEV) {
+          console.error('Profile lookup error:', profileError);
+        }
+        toast({
+          variant: "destructive",
+          title: "Account Error",
+          description: "Student account not properly configured. Please contact school administration.",
+        });
+        setIsLoading(false);
+        return;
       }
 
-      if (!profileData?.email) {
-        throw new Error("Student account not properly configured");
-      }
-
-      // Step 3: Authenticate with email and password
-      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-        email: profileData.email,
-        password: password,
-      });
+      // Step 3: Authenticate with email and password (uses centralized auth for login logging)
+      const { data: authData, error: authError } = await signIn(
+        profileData.email,
+        password
+      );
 
       if (authError) {
-        console.error('Auth error:', authError);
-        throw new Error("Invalid credentials");
+        if (import.meta.env.DEV) {
+          console.error('Auth error:', authError);
+        }
+        const errorMessage = parseAuthError(authError);
+        toast({
+          variant: "destructive",
+          title: "Login Failed",
+          description: errorMessage,
+        });
+        setIsLoading(false);
+        return;
       }
 
       if (!authData.user) {
-        throw new Error("Authentication failed");
+        toast({
+          variant: "destructive",
+          title: "Login Failed",
+          description: "Unable to authenticate. Please try again.",
+        });
+        setIsLoading(false);
+        return;
       }
 
       // Step 4: Verify the user has the 'student' role
       const isStudent = await hasRole(authData.user.id, 'student');
 
       if (!isStudent) {
-        // Sign out if not a student
         await supabase.auth.signOut();
-        throw new Error("Access denied");
+        toast({
+          variant: "destructive",
+          title: "Access Denied",
+          description: "This account does not have Student access. Please use the correct login portal for your role.",
+        });
+        setIsLoading(false);
+        return;
       }
 
       toast({
-        title: "Login Successful",
-        description: "Welcome to your dashboard!",
+        title: "Welcome Back!",
+        description: "Redirecting to your dashboard...",
       });
 
       navigate("/student/dashboard");
-    } catch (error: any) {
-      // Log detailed error in development only
+    } catch (error) {
       if (import.meta.env.DEV) {
         console.error('Login error:', error);
       }
 
-      // Show generic error message to prevent information disclosure
       toast({
         variant: "destructive",
-        title: "Login Failed",
-        description: error.message || "Invalid Student ID or Password. Please try again.",
+        title: "Connection Error",
+        description: "Unable to connect to the server. Please check your internet connection.",
       });
     } finally {
       setIsLoading(false);
@@ -158,15 +212,30 @@ const StudentLogin = () => {
                     type="text"
                     placeholder="Enter your Student ID"
                     value={studentId}
-                    onChange={(e) => setStudentId(e.target.value)}
-                    className="pl-10 h-12"
+                    onChange={(e) => handleStudentIdChange(e.target.value)}
+                    className={`pl-10 h-12 ${studentIdError ? 'border-destructive focus-visible:ring-destructive' : ''}`}
                     disabled={isLoading}
+                    autoComplete="username"
                   />
                 </div>
+                {studentIdError && (
+                  <p className="text-sm text-destructive flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3" />
+                    {studentIdError}
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="password">Password</Label>
+                  <Link
+                    to="/auth/forgot-password"
+                    className="text-sm text-primary hover:underline"
+                  >
+                    Forgot Password?
+                  </Link>
+                </div>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <Input
@@ -174,11 +243,18 @@ const StudentLogin = () => {
                     type="password"
                     placeholder="Enter your Password"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10 h-12"
+                    onChange={(e) => handlePasswordChange(e.target.value)}
+                    className={`pl-10 h-12 ${passwordError ? 'border-destructive focus-visible:ring-destructive' : ''}`}
                     disabled={isLoading}
+                    autoComplete="current-password"
                   />
                 </div>
+                {passwordError && (
+                  <p className="text-sm text-destructive flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3" />
+                    {passwordError}
+                  </p>
+                )}
               </div>
 
               <Button
@@ -197,19 +273,9 @@ const StudentLogin = () => {
               </Button>
             </form>
 
-            <div className="mt-6 space-y-2">
-              <p className="text-center text-sm text-muted-foreground">
-                First time? Your password is the same as your Student ID
-              </p>
-              <p className="text-center">
-                <Link
-                  to="/auth/forgot-password"
-                  className="text-sm text-primary hover:underline"
-                >
-                  Forgot Password?
-                </Link>
-              </p>
-            </div>
+            <p className="text-center text-sm text-muted-foreground mt-6">
+              First time? Your password is the same as your Student ID
+            </p>
           </div>
         </div>
       </main>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bell, LogOut, UserPlus, Users, Crown, BarChart3, Trash2, Settings, Sparkles, GraduationCap, School, Globe, BookOpen } from "lucide-react";
+import { Bell, LogOut, UserPlus, Users, Crown, BarChart3, Trash2, Settings, Sparkles, GraduationCap, School, Globe, BookOpen, MessageSquare, Megaphone } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,6 +24,13 @@ import { WelcomeBanner } from "@/components/onboarding/WelcomeBanner";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { LoadingButton } from "@/components/ui/LoadingButton";
 import { SchoolSettingsForm } from "@/components/school/SchoolSettingsForm";
+import { NotificationSettings } from "@/components/notifications/NotificationSettings";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import AnnouncementManager from "@/components/announcements/AnnouncementManager";
+import AnalyticsDashboard from "@/components/analytics/AnalyticsDashboard";
+import ChangePassword from "@/components/account/ChangePassword";
+import LoginHistory from "@/components/account/LoginHistory";
+import TwoFactorAuth from "@/components/account/TwoFactorAuth";
 import { supabase } from "@/integrations/supabase/client";
 
 interface PrincipalData {
@@ -335,12 +342,12 @@ const PrincipalDashboard = () => {
       setNewCoordinatorPassword("");
       setNewCoordinatorSection("");
       await fetchCoordinators(principalData.schoolId);
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error:", error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message || "Could not add the section head.",
+        description: error instanceof Error ? error.message : "Could not add the section head.",
       });
     } finally {
       setIsSubmittingCoordinator(false);
@@ -420,6 +427,7 @@ const PrincipalDashboard = () => {
             </div>
           </div>
           <div className="flex items-center gap-3">
+            <ThemeToggle />
             <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/20">
               <Bell className="w-5 h-5" />
             </Button>
@@ -449,7 +457,7 @@ const PrincipalDashboard = () => {
         )}
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="w-full max-w-3xl mx-auto grid grid-cols-5 mb-8 bg-card shadow-card">
+          <TabsList className="w-full max-w-4xl mx-auto grid grid-cols-6 mb-8 bg-card shadow-card">
             <TabsTrigger value="staff" className="flex items-center gap-2 data-[state=active]:bg-role-principal data-[state=active]:text-primary-foreground">
               <Users className="w-4 h-4" />
               <span className="hidden sm:inline">Staff</span>
@@ -457,6 +465,10 @@ const PrincipalDashboard = () => {
             <TabsTrigger value="classes" className="flex items-center gap-2 data-[state=active]:bg-role-principal data-[state=active]:text-primary-foreground">
               <School className="w-4 h-4" />
               <span className="hidden sm:inline">Classes</span>
+            </TabsTrigger>
+            <TabsTrigger value="announcements" className="flex items-center gap-2 data-[state=active]:bg-role-principal data-[state=active]:text-primary-foreground">
+              <Megaphone className="w-4 h-4" />
+              <span className="hidden sm:inline">Announce</span>
             </TabsTrigger>
             <TabsTrigger value="analytics" className="flex items-center gap-2 data-[state=active]:bg-role-principal data-[state=active]:text-primary-foreground">
               <BarChart3 className="w-4 h-4" />
@@ -650,83 +662,33 @@ const PrincipalDashboard = () => {
             </div>
           </TabsContent>
 
-          {/* Analytics Tab */}
-          <TabsContent value="analytics" className="animate-fade-in">
-            <h2 className="text-xl font-bold text-foreground mb-6">School Analytics Overview</h2>
-
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-              <div className="bg-card rounded-xl p-5 shadow-card border border-border">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-                    <GraduationCap className="w-5 h-5 text-primary" />
-                  </div>
-                  <p className="text-sm text-muted-foreground">Total Students</p>
-                </div>
-                <span className="text-3xl font-bold text-foreground">{schoolStats.totalStudents}</span>
-              </div>
-
-              <div className="bg-card rounded-xl p-5 shadow-card border border-border">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 bg-role-teacher/10 rounded-lg flex items-center justify-center">
-                    <Users className="w-5 h-5 text-role-teacher" />
-                  </div>
-                  <p className="text-sm text-muted-foreground">Total Teachers</p>
-                </div>
-                <span className="text-3xl font-bold text-foreground">{schoolStats.totalTeachers}</span>
-              </div>
-
-              <div className="bg-card rounded-xl p-5 shadow-card border border-border">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 bg-role-principal/10 rounded-lg flex items-center justify-center">
-                    <School className="w-5 h-5 text-role-principal" />
-                  </div>
-                  <p className="text-sm text-muted-foreground">Classes</p>
-                </div>
-                <span className="text-3xl font-bold text-foreground">{schoolStats.totalClasses}</span>
-              </div>
-
-              <div className="bg-card rounded-xl p-5 shadow-card border border-border">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 bg-success/10 rounded-lg flex items-center justify-center">
-                    <BarChart3 className="w-5 h-5 text-success" />
-                  </div>
-                  <p className="text-sm text-muted-foreground">Avg. Attendance</p>
-                </div>
-                <span className="text-3xl font-bold text-foreground">
-                  {schoolStats.avgAttendance > 0 ? `${schoolStats.avgAttendance}%` : "-"}
-                </span>
-              </div>
-            </div>
-
-            {/* Charts placeholder */}
-            <div className="grid lg:grid-cols-2 gap-8">
-              <div className="bg-card rounded-xl p-6 shadow-card border border-border">
-                <h3 className="font-semibold text-foreground mb-4">Attendance Trend</h3>
-                {schoolStats.avgAttendance > 0 ? (
-                  <div className="h-48 flex items-center justify-center text-muted-foreground">
-                    Chart visualization coming soon
-                  </div>
-                ) : (
-                  <EmptyState
-                    icon={BarChart3}
-                    title="No Data Yet"
-                    description="Attendance charts will appear here once teachers start marking daily attendance."
-                  />
-                )}
-              </div>
-
-              <div className="bg-card rounded-xl p-6 shadow-card border border-border">
-                <h3 className="font-semibold text-foreground mb-4">Homework Completion Rate</h3>
-                <EmptyState
-                  icon={BookOpen}
-                  title="No Data Yet"
-                  description="Homework statistics will appear here once teachers start assigning homework."
-                />
-              </div>
+          {/* Announcements Tab */}
+          <TabsContent value="announcements" className="animate-fade-in">
+            <div className="max-w-4xl mx-auto">
+              {principalData?.schoolId && (
+                <AnnouncementManager schoolId={principalData.schoolId} />
+              )}
             </div>
           </TabsContent>
 
-          {/* Account Tab */}
+          {/* Analytics Tab */}
+          <TabsContent value="analytics" className="animate-fade-in">
+            <h2 className="text-xl font-bold text-foreground mb-6">School Analytics Overview</h2>
+            {principalData?.schoolId && (
+              <AnalyticsDashboard schoolId={principalData.schoolId} role="principal" />
+            )}
+          </TabsContent>
+
+          {/* Notifications Tab - Hidden for now, enable when needed
+          <TabsContent value="notifications" className="animate-fade-in">
+            <div className="max-w-4xl mx-auto">
+              {principalData?.schoolId && (
+                <NotificationSettings schoolId={principalData.schoolId} />
+              )}
+            </div>
+          </TabsContent>
+          */}
+
           {/* School Public Page Tab */}
           <TabsContent value="school" className="animate-fade-in">
             <div className="max-w-3xl mx-auto">
@@ -741,12 +703,15 @@ const PrincipalDashboard = () => {
           </TabsContent>
 
           <TabsContent value="account" className="animate-fade-in">
-            <div className="max-w-2xl mx-auto">
+            <div className="max-w-2xl mx-auto space-y-6">
               <div className="mb-6">
                 <h2 className="text-xl font-bold text-foreground mb-2">Account Settings</h2>
                 <p className="text-muted-foreground text-sm">Manage your profile and security settings</p>
               </div>
               <AccountSettings roleColor="bg-role-principal" />
+              <ChangePassword />
+              <TwoFactorAuth />
+              <LoginHistory />
             </div>
           </TabsContent>
         </Tabs>

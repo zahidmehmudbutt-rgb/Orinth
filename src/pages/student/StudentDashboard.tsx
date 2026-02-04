@@ -170,10 +170,10 @@ const StudentDashboard = () => {
       .eq("class_id", classId)
       .order("due_date", { ascending: true });
 
-    // Get student's submissions (only select columns that exist in the table)
+    // Get student's submissions
     const { data: submissions } = await supabase
       .from("homework_submissions")
-      .select("homework_id, submitted_at, marks, remarks")
+      .select("homework_id, submitted_at, marks, remarks, file_url, file_name")
       .eq("student_id", studentId);
 
     const submissionMap = new Map(
@@ -222,8 +222,8 @@ const StudentDashboard = () => {
         status,
         marks: submission?.marks,
         remarks: submission?.remarks,
-        fileUrl: undefined, // file_url column doesn't exist yet
-        fileName: undefined, // file_name column doesn't exist yet
+        fileUrl: submission?.file_url || undefined,
+        fileName: submission?.file_name || undefined,
       });
 
       // Update pending count
