@@ -91,7 +91,7 @@ export default function AnnouncementManager({ schoolId }: AnnouncementManagerPro
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to delete announcement.",
+        description: "Could not delete the announcement. Check your connection and try again.",
       });
     } finally {
       setDeleteId(null);

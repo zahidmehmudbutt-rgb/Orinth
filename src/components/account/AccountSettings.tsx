@@ -66,7 +66,7 @@ const AccountSettings = ({ roleColor = "bg-primary" }: AccountSettingsProps) => 
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to update profile. Please try again.",
+        description: "Could not update your profile. Check your connection and try again.",
       });
     } finally {
       setIsUpdatingProfile(false);
@@ -123,7 +123,7 @@ const AccountSettings = ({ roleColor = "bg-primary" }: AccountSettingsProps) => 
       toast({
         variant: "destructive",
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to change password.",
+        description: error instanceof Error ? error.message : "Could not change your password. Your session may have expired.",
       });
     } finally {
       setIsUpdatingPassword(false);

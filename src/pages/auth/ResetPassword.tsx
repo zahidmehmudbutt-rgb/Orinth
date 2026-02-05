@@ -86,7 +86,7 @@ const ResetPassword = () => {
         toast({
           variant: "destructive",
           title: "Error",
-          description: "Unable to update password. Please try again or request a new reset link.",
+          description: "Could not update your password. The reset link may have expired — request a new one.",
         });
         setIsLoading(false);
         return;
@@ -107,7 +107,7 @@ const ResetPassword = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "An unexpected error occurred. Please try again.",
+        description: "Could not connect to the server. Check your internet connection.",
       });
     } finally {
       setIsLoading(false);

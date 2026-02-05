@@ -146,7 +146,7 @@ export default function TwoFactorAuth() {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to enable 2FA. Please try again.",
+        description: "Could not enable 2FA. Your session may have expired — try logging in again.",
       });
     } finally {
       setProcessing(false);
@@ -184,7 +184,7 @@ export default function TwoFactorAuth() {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to disable 2FA. Please try again.",
+        description: "Could not disable 2FA. Your session may have expired — try logging in again.",
       });
     } finally {
       setProcessing(false);

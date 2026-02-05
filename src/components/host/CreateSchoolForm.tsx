@@ -75,7 +75,7 @@ export function CreateSchoolForm({ onCreated, onCancel }: CreateSchoolFormProps)
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to create school.",
+        description: "Could not create the school. Ensure all required fields are filled.",
       });
     } finally {
       setIsCreating(false);

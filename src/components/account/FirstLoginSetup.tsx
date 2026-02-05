@@ -111,7 +111,7 @@ const FirstLoginSetup = ({ onComplete }: FirstLoginSetupProps) => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to save profile. Please try again.",
+        description: "Could not save your profile. Check your connection and try again.",
       });
     } finally {
       setIsLoading(false);

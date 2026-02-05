@@ -142,7 +142,7 @@ const StudentDashboard = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to load dashboard data.",
+        description: "Could not load your dashboard. Check your connection and refresh the page.",
       });
     } finally {
       setLoading(false);
@@ -335,7 +335,7 @@ const StudentDashboard = () => {
         toast({
           variant: "destructive",
           title: "Error",
-          description: "Failed to load exam results.",
+          description: "Could not load your exam results. Check your connection and try again.",
         });
         return;
       }
@@ -387,7 +387,7 @@ const StudentDashboard = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "An unexpected error occurred while loading exam results.",
+        description: "Could not process exam results. Refresh the page to try again.",
       });
     }
   };
@@ -501,7 +501,7 @@ const StudentDashboard = () => {
       toast({
         variant: "destructive",
         title: "Upload Failed",
-        description: "Could not submit homework. Please try again.",
+        description: "Could not upload your homework. Check that the file is under 10MB and try again.",
       });
     } finally {
       setUploadingId(null);

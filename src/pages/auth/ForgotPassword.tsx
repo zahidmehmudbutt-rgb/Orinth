@@ -41,7 +41,7 @@ const ForgotPassword = () => {
         toast({
           variant: "destructive",
           title: "Error",
-          description: "Unable to send reset link. Please check your email and try again.",
+          description: "Could not send the reset link. Verify your email address and try again.",
         });
         setIsLoading(false);
         return;
@@ -56,7 +56,7 @@ const ForgotPassword = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "An unexpected error occurred. Please try again.",
+        description: "Could not connect to the server. Check your internet connection.",
       });
     } finally {
       setIsLoading(false);

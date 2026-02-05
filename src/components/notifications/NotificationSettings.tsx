@@ -126,7 +126,7 @@ export function NotificationSettings({ schoolId }: NotificationSettingsProps) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to save notification settings.",
+        description: "Could not save notification settings. Check your connection and try again.",
       });
     } finally {
       setIsSaving(false);

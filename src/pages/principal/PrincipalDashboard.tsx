@@ -128,7 +128,7 @@ const PrincipalDashboard = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to load dashboard data.",
+        description: "Could not load dashboard data. Check your connection and refresh the page.",
       });
     } finally {
       setLoading(false);
@@ -347,7 +347,7 @@ const PrincipalDashboard = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: error instanceof Error ? error.message : "Could not add the section head.",
+        description: error instanceof Error ? error.message : "Could not add the section head. The email may already be in use.",
       });
     } finally {
       setIsSubmittingCoordinator(false);
@@ -376,7 +376,7 @@ const PrincipalDashboard = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Could not remove the section head.",
+        description: "Could not remove the section head. They may have active assignments.",
       });
     }
   };

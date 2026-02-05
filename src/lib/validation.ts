@@ -208,7 +208,7 @@ export function parseAuthError(error: { message?: string; status?: number; code?
 
   // Server error
   if (error.status && error.status >= 500) {
-    return "Server error. Please try again later.";
+    return "The server encountered an error. Please wait a moment and try again.";
   }
 
   // Default message (don't expose technical details)
@@ -255,5 +255,5 @@ export function parseDbError(error: { message?: string; code?: string; details?:
     return "Record not found.";
   }
 
-  return "An error occurred. Please try again.";
+  return "An error occurred while saving data. Check your connection and try again.";
 }

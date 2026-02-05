@@ -91,7 +91,7 @@ const SchoolPublicPage = () => {
       }
     } catch (err) {
       console.error("Error fetching school:", err);
-      setError("Failed to load school information");
+      setError("Could not load school information. The page may not exist or check your connection.");
     } finally {
       setIsLoading(false);
     }

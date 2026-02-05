@@ -121,7 +121,7 @@ export default function CreateAnnouncement({ schoolId, onCreated }: CreateAnnoun
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to create announcement. Please try again.",
+        description: "Could not create the announcement. Ensure title and content are filled in.",
       });
     } finally {
       setLoading(false);

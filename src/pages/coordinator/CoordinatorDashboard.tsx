@@ -279,7 +279,7 @@ const CoordinatorDashboard = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to add section.",
+        description: "Could not add the section. The name may already exist.",
       });
     }
   };
@@ -323,7 +323,7 @@ const CoordinatorDashboard = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to delete section.",
+        description: "Could not delete the section. It may still be assigned to a class.",
       });
     }
   };
@@ -567,7 +567,7 @@ const CoordinatorDashboard = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to create classes.",
+        description: error instanceof Error ? error.message : "Could not create the class. It may already exist with that section.",
       });
     } finally {
       setIsSubmitting(false);
@@ -593,7 +593,7 @@ const CoordinatorDashboard = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to delete class.",
+        description: error instanceof Error ? error.message : "Could not delete the class. It may have students or subjects assigned.",
       });
     }
   };
@@ -642,7 +642,7 @@ const CoordinatorDashboard = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to add subject.",
+        description: error instanceof Error ? error.message : "Could not add the subject. It may already exist.",
       });
     } finally {
       setIsSubmitting(false);
@@ -675,7 +675,7 @@ const CoordinatorDashboard = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to add subjects.",
+        description: error instanceof Error ? error.message : "Could not add common subjects. Some may already exist.",
       });
     } finally {
       setIsSubmitting(false);
@@ -701,7 +701,7 @@ const CoordinatorDashboard = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to remove subject.",
+        description: error instanceof Error ? error.message : "Could not remove the subject. It may be assigned to classes.",
       });
     }
   };
@@ -761,7 +761,7 @@ const CoordinatorDashboard = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to assign subjects.",
+        description: error instanceof Error ? error.message : "Could not assign subjects to the class. Check your connection and try again.",
       });
     } finally {
       setIsSubmitting(false);
@@ -811,7 +811,7 @@ const CoordinatorDashboard = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to assign teacher.",
+        description: error instanceof Error ? error.message : "Could not assign the teacher. They may already be assigned to this class-subject.",
       });
     } finally {
       setIsSubmitting(false);
@@ -837,7 +837,7 @@ const CoordinatorDashboard = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to remove assignment.",
+        description: error instanceof Error ? error.message : "Could not remove the teacher assignment.",
       });
     }
   };
@@ -945,7 +945,7 @@ const CoordinatorDashboard = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to add staff.",
+        description: error instanceof Error ? error.message : "Could not add staff member. The email may already be in use.",
       });
     } finally {
       setIsSubmitting(false);
@@ -977,7 +977,7 @@ const CoordinatorDashboard = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to remove staff.",
+        description: error instanceof Error ? error.message : "Could not remove the staff member.",
       });
     }
   };

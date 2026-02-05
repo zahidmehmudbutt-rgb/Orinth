@@ -144,7 +144,7 @@ const ParentDashboard = () => {
         toast({
           variant: "destructive",
           title: "Error",
-          description: "Failed to load children data",
+          description: "Could not load your children's data. Check your connection and refresh the page.",
         });
       } finally {
         setIsLoading(false);
@@ -259,7 +259,7 @@ const ParentDashboard = () => {
           toast({
             variant: "destructive",
             title: "Error",
-            description: "Failed to load exam results.",
+            description: "Could not load exam results. Check your connection and try again.",
           });
           return;
         }
@@ -311,7 +311,7 @@ const ParentDashboard = () => {
         toast({
           variant: "destructive",
           title: "Error",
-          description: "An unexpected error occurred while loading exam results.",
+          description: "Could not process exam results. Refresh the page to try again.",
         });
       }
     };

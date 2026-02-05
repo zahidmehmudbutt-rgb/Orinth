@@ -96,7 +96,7 @@ export function SchoolCard({ school, onUpdate, onToggleStatus }: SchoolCardProps
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to update school.",
+        description: "Could not update school details. Check your connection and try again.",
       });
     } finally {
       setIsUpdating(false);

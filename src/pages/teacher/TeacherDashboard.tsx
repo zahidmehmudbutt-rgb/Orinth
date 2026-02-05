@@ -201,7 +201,7 @@ const TeacherDashboard = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to load dashboard data.",
+        description: "Could not load your classes and assignments. Check your connection and refresh the page.",
       });
     } finally {
       setLoading(false);
@@ -296,7 +296,7 @@ const TeacherDashboard = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to load homework data.",
+        description: "Could not load homework assignments. Check your connection and refresh the page.",
       });
     }
   };
@@ -412,8 +412,8 @@ const TeacherDashboard = () => {
       console.error("Error creating homework:", error);
       toast({
         variant: "destructive",
-        title: "Something went wrong",
-        description: "Could not post homework. Please try again.",
+        title: "Homework Not Posted",
+        description: "Could not save the homework assignment. Ensure all fields are filled and try again.",
       });
     } finally {
       setIsSubmitting(false);
@@ -477,7 +477,7 @@ const TeacherDashboard = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Could not save grade. Please try again.",
+        description: "Could not save the grade. Ensure marks are between 0-10 and try again.",
       });
     } finally {
       setSavingGrade(null);
@@ -522,7 +522,7 @@ const TeacherDashboard = () => {
         toast({
           variant: "destructive",
           title: "Error",
-          description: "Failed to load exams.",
+          description: "Could not load exam list. Check your connection and refresh the page.",
         });
         return;
       }
@@ -589,7 +589,7 @@ const TeacherDashboard = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to load exams.",
+        description: "Could not load exam list. Check your connection and refresh the page.",
       });
     } finally {
       setLoadingExams(false);
@@ -653,8 +653,8 @@ const TeacherDashboard = () => {
       console.error("Error creating exam:", error);
       toast({
         variant: "destructive",
-        title: "Something went wrong",
-        description: "Could not create exam. Please try again.",
+        title: "Exam Not Created",
+        description: "Could not create the exam. Ensure all fields are filled correctly and try again.",
       });
     } finally {
       setIsCreatingExam(false);
@@ -788,7 +788,7 @@ const TeacherDashboard = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Could not save mark. Please try again.",
+        description: "Could not save the mark. Ensure marks do not exceed the maximum and try again.",
       });
     } finally {
       setSavingMark(null);
@@ -944,7 +944,7 @@ const TeacherDashboard = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "An unexpected error occurred. Please try again.",
+        description: "Could not save marks. Check that all values are valid numbers within the allowed range.",
       });
     } finally {
       setIsBulkSaving(false);
@@ -1038,7 +1038,7 @@ const TeacherDashboard = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to update exam. Please try again.",
+        description: "Could not update the exam details. Verify the fields and try again.",
       });
     } finally {
       setIsUpdatingExam(false);
@@ -1083,7 +1083,7 @@ const TeacherDashboard = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to delete exam. Please try again.",
+        description: "Could not delete the exam. It may still have linked data — contact your coordinator if this persists.",
       });
     } finally {
       setDeletingExamId(null);

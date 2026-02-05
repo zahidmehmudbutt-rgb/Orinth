@@ -135,7 +135,7 @@ const ClassTeacherDashboard = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to load students.",
+        description: "Could not load student list. Check your connection and refresh the page.",
       });
     }
   };
@@ -274,7 +274,7 @@ const ClassTeacherDashboard = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: error instanceof Error ? error.message : "Could not add the student. Please try again.",
+        description: error instanceof Error ? error.message : "Could not add the student. The Student ID may already be in use.",
       });
     } finally {
       setIsSubmitting(false);
@@ -311,7 +311,7 @@ const ClassTeacherDashboard = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: error instanceof Error ? error.message : "Could not remove the student.",
+        description: error instanceof Error ? error.message : "Could not remove the student. They may have linked records.",
       });
     }
   };
@@ -403,7 +403,7 @@ const ClassTeacherDashboard = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: error instanceof Error ? error.message : "Could not save attendance. Please try again.",
+        description: error instanceof Error ? error.message : "Could not save attendance. Check your connection and try again.",
       });
     } finally {
       setIsSavingAttendance(false);

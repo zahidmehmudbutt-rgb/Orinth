@@ -67,7 +67,7 @@ export function EmailPreferences() {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to save preferences. Please try again.",
+        description: "Could not save preferences. Your browser storage may be full.",
       });
     } finally {
       setIsSaving(false);

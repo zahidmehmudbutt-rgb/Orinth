@@ -64,7 +64,7 @@ const ClassTeacherLogin = () => {
         toast({
           variant: "destructive",
           title: "Login Failed",
-          description: "Unable to authenticate. Please try again.",
+          description: "Authentication failed. Check your email, password, and connection.",
         });
         setIsLoading(false);
         return;

@@ -39,7 +39,7 @@ const VerifyEmail = () => {
           description: "Your email has been successfully verified.",
         });
       } else {
-        setError("Unable to verify email. Please try again.");
+        setError("Could not verify your email. The link may have expired — request a new one.");
       }
 
       setIsVerifying(false);

@@ -98,7 +98,7 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to load school settings.",
+        description: "Could not load school settings. Check your connection and refresh.",
       });
     } finally {
       setIsLoading(false);
@@ -166,7 +166,7 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
       toast({
         variant: "destructive",
         title: "Upload Failed",
-        description: "Failed to upload logo. Please try again.",
+        description: "Could not upload the logo. Ensure the file is a valid image under 2MB.",
       });
     } finally {
       setIsUploading(false);
@@ -206,7 +206,7 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
       toast({
         variant: "destructive",
         title: "Save Failed",
-        description: "Failed to save settings. Please try again.",
+        description: "Could not save settings. Check your connection and try again.",
       });
     } finally {
       setIsSaving(false);
@@ -232,7 +232,7 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
   if (!settings) {
     return (
       <div className="text-center p-8 text-muted-foreground">
-        Failed to load settings. Please refresh and try again.
+        Could not load settings. Please refresh the page.
       </div>
     );
   }

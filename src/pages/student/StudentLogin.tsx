@@ -62,7 +62,7 @@ const StudentLogin = () => {
         toast({
           variant: "destructive",
           title: "Login Failed",
-          description: "Unable to verify student credentials. Please try again.",
+          description: "Could not verify your Student ID. Check your connection and try again.",
         });
         setIsLoading(false);
         return;
@@ -122,7 +122,7 @@ const StudentLogin = () => {
         toast({
           variant: "destructive",
           title: "Login Failed",
-          description: "Unable to authenticate. Please try again.",
+          description: "Authentication failed. Check your connection and try again.",
         });
         setIsLoading(false);
         return;

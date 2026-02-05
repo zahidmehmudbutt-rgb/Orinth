@@ -107,7 +107,7 @@ export default function ChangePassword() {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to change password. Please try again.",
+        description: "Could not change your password. Your session may have expired — try logging in again.",
       });
     } finally {
       setLoading(false);
