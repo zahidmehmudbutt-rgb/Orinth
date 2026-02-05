@@ -4,8 +4,8 @@ import { RoleCard } from "@/components/RoleCard";
 import { StatsCard } from "@/components/StatsCard";
 import {
   Users, BookOpen, GraduationCap, Award, UserCheck, BookMarked, Crown, UserPlus,
-  ClipboardCheck, BarChart3, Bell, Shield, MessageSquare, Calendar,
-  ChevronDown, Check, ArrowRight, Star,
+  ClipboardCheck, BarChart3, Bell, Shield, MessageSquare,
+  ChevronDown, ArrowRight, Star,
 } from "lucide-react";
 import { FadeIn, FadeInView, StaggerContainer, StaggerItem } from "@/components/ui/motion-wrapper";
 import { Button } from "@/components/ui/button";
@@ -136,58 +136,6 @@ const testimonials = [
   },
 ];
 
-const pricingPlans = [
-  {
-    name: "Starter",
-    price: "Free",
-    period: "",
-    description: "For small schools getting started",
-    features: [
-      "Up to 100 students",
-      "3 teacher accounts",
-      "Attendance tracking",
-      "Basic homework management",
-      "Email notifications",
-    ],
-    cta: "Start Free",
-    popular: false,
-  },
-  {
-    name: "Professional",
-    price: "Rs. 15,000",
-    period: "/month",
-    description: "For growing schools that need more",
-    features: [
-      "Up to 1,000 students",
-      "Unlimited teacher accounts",
-      "Full marks & result cards",
-      "Group chat & announcements",
-      "Analytics dashboard",
-      "Parent portal access",
-      "Priority email support",
-    ],
-    cta: "Get Started",
-    popular: true,
-  },
-  {
-    name: "Enterprise",
-    price: "Custom",
-    period: "",
-    description: "For school networks & chains",
-    features: [
-      "Unlimited students",
-      "Multi-campus support",
-      "Custom branding",
-      "API access",
-      "Dedicated account manager",
-      "On-site training",
-      "24/7 phone support",
-    ],
-    cta: "Contact Sales",
-    popular: false,
-  },
-];
-
 const faqs = [
   {
     q: "How long does it take to set up?",
@@ -243,8 +191,8 @@ const Index = () => {
                 </p>
                 <div className="flex flex-wrap gap-4">
                   <Button asChild size="lg" className="bg-gradient-primary text-white shadow-button hover:shadow-lg hover:-translate-y-0.5 transition-all h-12 px-8">
-                    <a href="#pricing">
-                      Start Free Trial
+                    <a href="#portals">
+                      Login to Portal
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </a>
                   </Button>
@@ -407,61 +355,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Pricing */}
-      <section id="pricing" className="py-20 bg-gradient-hero">
-        <div className="container mx-auto px-4">
-          <FadeInView>
-            <div className="text-center mb-14 max-w-2xl mx-auto">
-              <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">Pricing</span>
-              <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-                Simple, Transparent Pricing
-              </h2>
-              <p className="text-muted-foreground text-lg">
-                Start free. Upgrade when you're ready. No hidden fees.
-              </p>
-            </div>
-          </FadeInView>
-
-          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto items-start">
-            {pricingPlans.map((plan, i) => (
-              <FadeInView key={plan.name} delay={i * 0.1}>
-                <div className={`bg-card rounded-2xl p-8 border shadow-card h-full flex flex-col relative ${
-                  plan.popular ? "border-primary shadow-card-hover ring-2 ring-primary/20" : "border-border"
-                }`}>
-                  {plan.popular && (
-                    <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-primary text-white text-xs font-semibold rounded-full shadow-button">
-                      Most Popular
-                    </div>
-                  )}
-                  <div className="mb-6">
-                    <h3 className="text-lg font-semibold text-foreground">{plan.name}</h3>
-                    <p className="text-muted-foreground text-sm mt-1">{plan.description}</p>
-                  </div>
-                  <div className="mb-6">
-                    <span className="text-4xl font-bold text-foreground">{plan.price}</span>
-                    {plan.period && <span className="text-muted-foreground text-sm">{plan.period}</span>}
-                  </div>
-                  <ul className="space-y-3 mb-8 flex-1">
-                    {plan.features.map((f) => (
-                      <li key={f} className="flex items-start gap-3 text-sm text-muted-foreground">
-                        <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-                  <Button
-                    className={`w-full h-11 ${plan.popular ? "bg-gradient-primary text-white shadow-button hover:opacity-90" : ""}`}
-                    variant={plan.popular ? "default" : "outline"}
-                  >
-                    {plan.cta}
-                  </Button>
-                </div>
-              </FadeInView>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* FAQ */}
       <section id="faq" className="py-20 bg-card">
         <div className="container mx-auto px-4">
@@ -497,34 +390,6 @@ const Index = () => {
               </FadeInView>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* CTA Banner */}
-      <section className="py-20 bg-gradient-primary relative overflow-hidden">
-        <div className="floating-shapes">
-          <div className="floating-shape" />
-          <div className="floating-shape" />
-          <div className="floating-shape" />
-        </div>
-        <div className="container mx-auto px-4 relative z-10 text-center">
-          <FadeInView>
-            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">
-              Ready to Transform Your School?
-            </h2>
-            <p className="text-white/80 text-lg max-w-xl mx-auto mb-8">
-              Join 15+ schools already using School Smart Pakistan. Start free today - no credit card required.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Button size="lg" className="bg-white text-primary font-semibold hover:bg-white/90 h-12 px-8 shadow-lg">
-                Start Free Trial
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
-              <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 h-12 px-8">
-                Contact Sales
-              </Button>
-            </div>
-          </FadeInView>
         </div>
       </section>
 
