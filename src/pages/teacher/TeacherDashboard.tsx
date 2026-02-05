@@ -1027,6 +1027,9 @@ const TeacherDashboard = () => {
       setExamTitle("");
       setMaxMarks("100");
       setExamDate("");
+      setResultsClassId("");
+      setResultsSubject("");
+      setExamType("weekly_daily");
 
       await fetchExams();
 

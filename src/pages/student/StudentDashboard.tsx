@@ -452,12 +452,14 @@ const StudentDashboard = () => {
         .getPublicUrl(filePath);
 
       // Check if submission exists
-      const { data: existingSubmission } = await supabase
+      const { data: existingSubmissions } = await supabase
         .from("homework_submissions")
         .select("id")
         .eq("homework_id", homeworkId)
         .eq("student_id", studentData.id)
-        .single();
+        .limit(1);
+
+      const existingSubmission = existingSubmissions?.[0] || null;
 
       if (existingSubmission) {
         // Update existing submission

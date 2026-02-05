@@ -330,13 +330,20 @@ const ClassTeacherDashboard = () => {
     try {
       if (attendanceExists) {
         // Update existing attendance records
-        for (const record of attendance) {
-          if (record.id) {
-            await supabase
-              .from('attendance')
-              .update({ is_present: record.is_present })
-              .eq('id', record.id);
-          }
+        const updates = attendance
+          .filter(record => record.id)
+          .map(record => ({
+            id: record.id,
+            is_present: record.is_present,
+          }));
+
+        for (const update of updates) {
+          const { error: updateError } = await supabase
+            .from('attendance')
+            .update({ is_present: update.is_present })
+            .eq('id', update.id);
+
+          if (updateError) throw updateError;
         }
       } else {
         // Insert new attendance records

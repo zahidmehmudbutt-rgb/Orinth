@@ -185,23 +185,36 @@ export default function AnalyticsDashboard({ schoolId, role, classId }: Analytic
         ? Math.round((presentCount / totalAttendance) * 100)
         : 0;
 
-      // Fetch marks data
-      let marksQuery = supabase
-        .from("marks")
+      // Fetch marks data from exam system
+      let examsQuery = supabase
+        .from("student_exam_marks")
         .select(`
           marks_obtained,
-          total_marks,
-          subject,
+          is_absent,
+          exam_id,
           student_id,
-          students!inner(class_id)
+          exam_results!inner(max_marks, subject, school_id, class_id)
         `)
-        .eq("school_id", schoolId);
+        .eq("exam_results.school_id", schoolId);
 
       if (classFilter) {
-        marksQuery = marksQuery.eq("students.class_id", classFilter);
+        examsQuery = examsQuery.eq("exam_results.class_id", classFilter);
       }
 
-      const { data: marksRaw } = await marksQuery;
+      const { data: marksRawData } = await examsQuery;
+
+      // Transform to expected format
+      const marksRaw = (marksRawData || [])
+        .filter(m => !m.is_absent && m.marks_obtained != null)
+        .map(m => {
+          const exam = m.exam_results as unknown as { max_marks: number; subject: string; class_id: string };
+          return {
+            marks_obtained: m.marks_obtained as number,
+            total_marks: exam.max_marks,
+            subject: exam.subject,
+            student_id: m.student_id,
+          };
+        });
 
       // Calculate marks distribution
       const marksRanges = {
@@ -286,17 +299,22 @@ export default function AnalyticsDashboard({ schoolId, role, classId }: Analytic
             const classTotal = classAttendance?.length || 1;
 
             // Get average marks for this class
-            const { data: classMarks } = await supabase
-              .from("marks")
-              .select("marks_obtained, total_marks, students!inner(class_id)")
-              .eq("students.class_id", cls.id);
+            const { data: classMarksRaw } = await supabase
+              .from("student_exam_marks")
+              .select("marks_obtained, is_absent, exam_results!inner(max_marks, class_id)")
+              .eq("exam_results.class_id", cls.id);
 
             let avgMarks = 0;
-            if (classMarks && classMarks.length > 0) {
-              const validMarks = classMarks.filter(m => m.total_marks > 0);
+            if (classMarksRaw && classMarksRaw.length > 0) {
+              const validMarks = classMarksRaw.filter(m =>
+                !m.is_absent && m.marks_obtained != null
+              );
               if (validMarks.length > 0) {
                 const totalPct = validMarks.reduce(
-                  (sum, m) => sum + (m.marks_obtained / m.total_marks) * 100,
+                  (sum, m) => {
+                    const exam = m.exam_results as unknown as { max_marks: number };
+                    return sum + ((m.marks_obtained as number) / exam.max_marks) * 100;
+                  },
                   0
                 );
                 avgMarks = Math.round(totalPct / validMarks.length);
