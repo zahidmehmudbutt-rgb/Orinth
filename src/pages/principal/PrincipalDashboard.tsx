@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { DashboardSkeleton } from "@/components/ui/skeleton-loader";
 import { Bell, LogOut, UserPlus, Users, Crown, BarChart3, Trash2, Settings, Sparkles, GraduationCap, School, Globe, BookOpen, MessageSquare, Megaphone } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -401,14 +403,7 @@ const PrincipalDashboard = () => {
   ];
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-role-principal border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading dashboard...</p>
-        </div>
-      </div>
-    );
+    return <DashboardSkeleton roleColor="bg-role-principal" />;
   }
 
   const showOnboarding = sectionHeads.length === 0 && classes.length === 0;
@@ -438,7 +433,11 @@ const PrincipalDashboard = () => {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-6">
+      <motion.main
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+        className="container mx-auto px-4 py-6">
         {/* Welcome Banner for new principals */}
         {showOnboarding && (
           <WelcomeBanner
@@ -715,7 +714,7 @@ const PrincipalDashboard = () => {
             </div>
           </TabsContent>
         </Tabs>
-      </main>
+      </motion.main>
     </div>
   );
 };

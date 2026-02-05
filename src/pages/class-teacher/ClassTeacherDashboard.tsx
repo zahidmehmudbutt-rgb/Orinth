@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { LogOut, Calendar, UserPlus, Users, Trash2, Printer, Settings, Sparkles, Loader2, RefreshCw, Check, X, Megaphone, BarChart3 } from "lucide-react";
+import { motion } from "framer-motion";
+import { DashboardSkeleton } from "@/components/ui/skeleton-loader";
+import { LogOut, Calendar, UserPlus, Users, Trash2, Printer, Settings, Sparkles, RefreshCw, Check, X, Megaphone, BarChart3 } from "lucide-react";
 import { NotificationCenter } from "@/components/notifications/NotificationCenter";
 import { GroupChat } from "@/components/chat";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -440,11 +442,7 @@ const ClassTeacherDashboard = () => {
   ];
 
   if (loading || isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-role-class-teacher" />
-      </div>
-    );
+    return <DashboardSkeleton roleColor="bg-role-class-teacher" />;
   }
 
   if (!assignedClass) {
@@ -518,7 +516,11 @@ const ClassTeacherDashboard = () => {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-6">
+      <motion.main
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+        className="container mx-auto px-4 py-6">
         {/* Welcome Banner */}
         {!hasStudents && (
           <WelcomeBanner
@@ -808,7 +810,7 @@ const ClassTeacherDashboard = () => {
             </div>
           </TabsContent>
         </Tabs>
-      </main>
+      </motion.main>
     </div>
   );
 };

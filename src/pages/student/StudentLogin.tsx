@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { GraduationCap, User, Lock, ArrowLeft, Loader2, AlertCircle } from "lucide-react";
+import { GraduationCap, User, Lock, ArrowLeft, Loader2, AlertCircle, BookOpen, Award, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { hasRole, signIn } from "@/lib/auth";
 import { validateStudentId, validatePassword, parseAuthError } from "@/lib/validation";
+import { FadeIn } from "@/components/ui/motion-wrapper";
 
 const StudentLogin = () => {
   const [studentId, setStudentId] = useState("");
@@ -31,14 +32,12 @@ const StudentLogin = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate student ID
     const studentIdValidation = validateStudentId(studentId);
     if (!studentIdValidation.valid) {
       setStudentIdError(studentIdValidation.error || "Invalid Student ID");
       return;
     }
 
-    // Validate password
     const passwordValidation = validatePassword(password);
     if (!passwordValidation.valid) {
       setPasswordError(passwordValidation.error || "Invalid password");
@@ -48,7 +47,6 @@ const StudentLogin = () => {
     setIsLoading(true);
 
     try {
-      // Step 1: Look up the student by student_id to get their user_id
       const { data: studentData, error: studentError } = await supabase
         .from('students')
         .select('user_id')
@@ -78,7 +76,6 @@ const StudentLogin = () => {
         return;
       }
 
-      // Step 2: Get the profile to find the email
       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .select('email')
@@ -98,7 +95,6 @@ const StudentLogin = () => {
         return;
       }
 
-      // Step 3: Authenticate with email and password (uses centralized auth for login logging)
       const { data: authData, error: authError } = await signIn(
         profileData.email,
         password
@@ -128,7 +124,6 @@ const StudentLogin = () => {
         return;
       }
 
-      // Step 4: Verify the user has the 'student' role
       const isStudent = await hasRole(authData.user.id, 'student');
 
       if (!isStudent) {
@@ -164,121 +159,162 @@ const StudentLogin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-hero flex flex-col">
-      {/* Header */}
-      <header className="w-full bg-card/80 backdrop-blur-md border-b border-border">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center">
-              <GraduationCap className="w-6 h-6 text-primary-foreground" />
-            </div>
-            <div>
-              <h1 className="text-lg font-bold text-foreground">School Portal</h1>
-              <p className="text-xs text-muted-foreground">Education Hub</p>
-            </div>
-          </Link>
+    <div className="min-h-screen flex flex-col lg:flex-row">
+      {/* Left panel - Branding */}
+      <div className="hidden lg:flex lg:w-1/2 bg-role-student relative overflow-hidden items-center justify-center p-12">
+        <div className="floating-shapes">
+          <div className="floating-shape" />
+          <div className="floating-shape" />
+          <div className="floating-shape" />
         </div>
-      </header>
-
-      {/* Login Form */}
-      <main className="flex-1 flex items-center justify-center p-4">
-        <div className="w-full max-w-md animate-fade-in">
-          <Link
-            to="/"
-            className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Home
-          </Link>
-
-          <div className="bg-card rounded-2xl shadow-card-hover p-8 border border-border">
-            <div className="text-center mb-8">
-              <div className="w-16 h-16 bg-role-student rounded-xl flex items-center justify-center mx-auto mb-4">
-                <User className="w-8 h-8 text-primary-foreground" />
+        <div className="relative z-10 text-white max-w-md">
+          <FadeIn delay={0.2}>
+            <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mb-8 backdrop-blur-sm">
+              <GraduationCap className="w-8 h-8" />
+            </div>
+            <h1 className="text-4xl font-bold mb-4">Student Portal</h1>
+            <p className="text-lg opacity-90 mb-8">
+              Access your homework, attendance, marks, and school notices all in one place.
+            </p>
+            <div className="space-y-4">
+              <div className="flex items-center gap-3 text-sm opacity-80">
+                <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
+                  <BookOpen className="w-4 h-4" />
+                </div>
+                <span>View homework & assignments</span>
               </div>
-              <h2 className="text-2xl font-bold text-foreground">Student Login</h2>
-              <p className="text-muted-foreground mt-2">
-                Enter your Student ID and Password
+              <div className="flex items-center gap-3 text-sm opacity-80">
+                <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
+                  <Award className="w-4 h-4" />
+                </div>
+                <span>Check your marks & results</span>
+              </div>
+              <div className="flex items-center gap-3 text-sm opacity-80">
+                <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
+                  <Users className="w-4 h-4" />
+                </div>
+                <span>Stay connected with teachers</span>
+              </div>
+            </div>
+          </FadeIn>
+        </div>
+      </div>
+
+      {/* Right panel - Login form */}
+      <div className="flex-1 flex flex-col bg-background">
+        <header className="w-full bg-card/80 backdrop-blur-md border-b border-border lg:hidden">
+          <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+            <Link to="/" className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center">
+                <GraduationCap className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-lg font-bold text-foreground">School Portal</h1>
+                <p className="text-xs text-muted-foreground">Education Hub</p>
+              </div>
+            </Link>
+          </div>
+        </header>
+
+        <main className="flex-1 flex items-center justify-center p-6">
+          <FadeIn className="w-full max-w-md">
+            <Link
+              to="/"
+              className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8 transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to Home
+            </Link>
+
+            <div>
+              <div className="mb-8">
+                <div className="w-14 h-14 bg-role-student rounded-xl flex items-center justify-center mb-4 lg:hidden">
+                  <User className="w-7 h-7 text-white" />
+                </div>
+                <h2 className="text-2xl font-bold text-foreground">Student Login</h2>
+                <p className="text-muted-foreground mt-2">
+                  Enter your Student ID and Password
+                </p>
+              </div>
+
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div className="space-y-2">
+                  <Label htmlFor="studentId">Student ID</Label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                    <Input
+                      id="studentId"
+                      type="text"
+                      placeholder="Enter your Student ID"
+                      value={studentId}
+                      onChange={(e) => handleStudentIdChange(e.target.value)}
+                      className={`pl-10 h-12 ${studentIdError ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                      disabled={isLoading}
+                      autoComplete="username"
+                    />
+                  </div>
+                  {studentIdError && (
+                    <p className="text-sm text-destructive flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" />
+                      {studentIdError}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="password">Password</Label>
+                    <Link
+                      to="/auth/forgot-password"
+                      className="text-sm text-primary hover:underline"
+                    >
+                      Forgot Password?
+                    </Link>
+                  </div>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder="Enter your Password"
+                      value={password}
+                      onChange={(e) => handlePasswordChange(e.target.value)}
+                      className={`pl-10 h-12 ${passwordError ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                      disabled={isLoading}
+                      autoComplete="current-password"
+                    />
+                  </div>
+                  {passwordError && (
+                    <p className="text-sm text-destructive flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" />
+                      {passwordError}
+                    </p>
+                  )}
+                </div>
+
+                <Button
+                  type="submit"
+                  className="w-full h-12 bg-role-student hover:opacity-90 text-white font-medium shadow-button"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Signing in...
+                    </>
+                  ) : (
+                    "Sign In"
+                  )}
+                </Button>
+              </form>
+
+              <p className="text-center text-sm text-muted-foreground mt-6">
+                Forgot your password? Contact your class teacher to reset it.
               </p>
             </div>
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="studentId">Student ID</Label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                  <Input
-                    id="studentId"
-                    type="text"
-                    placeholder="Enter your Student ID"
-                    value={studentId}
-                    onChange={(e) => handleStudentIdChange(e.target.value)}
-                    className={`pl-10 h-12 ${studentIdError ? 'border-destructive focus-visible:ring-destructive' : ''}`}
-                    disabled={isLoading}
-                    autoComplete="username"
-                  />
-                </div>
-                {studentIdError && (
-                  <p className="text-sm text-destructive flex items-center gap-1">
-                    <AlertCircle className="w-3 h-3" />
-                    {studentIdError}
-                  </p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="password">Password</Label>
-                  <Link
-                    to="/auth/forgot-password"
-                    className="text-sm text-primary hover:underline"
-                  >
-                    Forgot Password?
-                  </Link>
-                </div>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="Enter your Password"
-                    value={password}
-                    onChange={(e) => handlePasswordChange(e.target.value)}
-                    className={`pl-10 h-12 ${passwordError ? 'border-destructive focus-visible:ring-destructive' : ''}`}
-                    disabled={isLoading}
-                    autoComplete="current-password"
-                  />
-                </div>
-                {passwordError && (
-                  <p className="text-sm text-destructive flex items-center gap-1">
-                    <AlertCircle className="w-3 h-3" />
-                    {passwordError}
-                  </p>
-                )}
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full h-12 bg-gradient-primary text-primary-foreground font-medium shadow-button hover:opacity-90"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Signing in...
-                  </>
-                ) : (
-                  "Sign In"
-                )}
-              </Button>
-            </form>
-
-            <p className="text-center text-sm text-muted-foreground mt-6">
-              Forgot your password? Contact your class teacher to reset it.
-            </p>
-          </div>
-        </div>
-      </main>
+          </FadeIn>
+        </main>
+      </div>
     </div>
   );
 };

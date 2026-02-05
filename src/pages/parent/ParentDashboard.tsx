@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { DashboardSkeleton } from "@/components/ui/skeleton-loader";
 import {
   Users,
   BookOpen,
@@ -12,7 +14,6 @@ import {
   XCircle,
   Clock,
   FileText,
-  Loader2,
   Settings,
   Award,
   BarChart3,
@@ -20,6 +21,7 @@ import {
 } from "lucide-react";
 import { NotificationCenter } from "@/components/notifications/NotificationCenter";
 import { GroupChat } from "@/components/chat";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { EmailPreferences } from "@/components/account/EmailPreferences";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -348,11 +350,7 @@ const ParentDashboard = () => {
   // getExamTypeBadgeColor imported from @/utils/exam
 
   if (authLoading || isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-purple-600" />
-      </div>
-    );
+    return <DashboardSkeleton roleColor="bg-role-parent" />;
   }
 
   return (
@@ -370,6 +368,7 @@ const ParentDashboard = () => {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <ThemeToggle className="text-primary-foreground hover:bg-primary-foreground/20" />
             <GroupChat triggerClassName="text-primary-foreground hover:bg-primary-foreground/20" />
             <NotificationCenter className="text-primary-foreground hover:bg-primary-foreground/20" />
             <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/20" onClick={handleLogout}>
@@ -379,13 +378,17 @@ const ParentDashboard = () => {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-6">
+      <motion.main
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+        className="container mx-auto px-4 py-6">
         {children.length === 0 ? (
           <Card>
             <CardContent className="py-12 text-center">
-              <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">No Children Linked</h3>
-              <p className="text-gray-500">
+              <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-foreground mb-2">No Children Linked</h3>
+              <p className="text-muted-foreground">
                 No children have been linked to your account yet. Please contact the school administration.
               </p>
             </CardContent>
@@ -472,8 +475,8 @@ const ParentDashboard = () => {
                     </CardHeader>
                     <CardContent>
                       {homework.length === 0 ? (
-                        <div className="text-center py-8 text-gray-500">
-                          <FileText className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                        <div className="text-center py-8 text-muted-foreground">
+                          <FileText className="w-12 h-12 mx-auto mb-3 text-muted-foreground/40" />
                           <p>No homework assignments yet</p>
                         </div>
                       ) : (
@@ -482,11 +485,11 @@ const ParentDashboard = () => {
                             <div key={hw.id} className="border rounded-lg p-4">
                               <div className="flex justify-between items-start mb-2">
                                 <div>
-                                  <h4 className="font-semibold text-gray-900">{hw.title}</h4>
-                                  <p className="text-sm text-gray-500">{hw.subject}</p>
+                                  <h4 className="font-semibold text-foreground">{hw.title}</h4>
+                                  <p className="text-sm text-muted-foreground">{hw.subject}</p>
                                 </div>
                                 {hw.submission?.submitted_at ? (
-                                  <Badge className="bg-green-100 text-green-800">
+                                  <Badge className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">
                                     <CheckCircle2 className="w-3 h-3 mr-1" />
                                     Submitted
                                   </Badge>
@@ -502,11 +505,11 @@ const ParentDashboard = () => {
                                   </Badge>
                                 )}
                               </div>
-                              <p className="text-sm text-gray-600 mb-2">
+                              <p className="text-sm text-muted-foreground mb-2">
                                 Due: {new Date(hw.due_date).toLocaleDateString()}
                               </p>
                               {hw.submission?.marks !== null && hw.submission?.marks !== undefined && (
-                                <div className="mt-2 p-2 bg-gray-50 rounded">
+                                <div className="mt-2 p-2 bg-muted rounded">
                                   <p className="text-sm">
                                     <span className="font-medium">Marks:</span>{" "}
                                     <span className={hw.submission.marks >= 7 ? "text-green-600" : hw.submission.marks >= 5 ? "text-yellow-600" : "text-red-600"}>
@@ -514,7 +517,7 @@ const ParentDashboard = () => {
                                     </span>
                                   </p>
                                   {hw.submission.remarks && (
-                                    <p className="text-sm text-gray-600 mt-1">
+                                    <p className="text-sm text-muted-foreground mt-1">
                                       <span className="font-medium">Remarks:</span> {hw.submission.remarks}
                                     </p>
                                   )}
@@ -535,8 +538,8 @@ const ParentDashboard = () => {
                     </CardHeader>
                     <CardContent>
                       {!hasExamResults ? (
-                        <div className="text-center py-8 text-gray-500">
-                          <Award className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                        <div className="text-center py-8 text-muted-foreground">
+                          <Award className="w-12 h-12 mx-auto mb-3 text-muted-foreground/40" />
                           <p>No exam results yet</p>
                         </div>
                       ) : (
@@ -545,20 +548,20 @@ const ParentDashboard = () => {
                             <div key={result.id} className="border rounded-lg p-4">
                               <div className="flex justify-between items-start mb-2">
                                 <div>
-                                  <h4 className="font-semibold text-gray-900">{result.title}</h4>
-                                  <p className="text-sm text-gray-500">{result.subject}</p>
+                                  <h4 className="font-semibold text-foreground">{result.title}</h4>
+                                  <p className="text-sm text-muted-foreground">{result.subject}</p>
                                 </div>
                                 <span className={`text-xs px-2 py-1 rounded-full ${getExamTypeBadgeColor(result.examType)}`}>
                                   {result.examType === 'weekly_daily' ? 'Weekly' : result.examType === 'monthly_midterm' ? 'Monthly' : 'Semester'}
                                 </span>
                               </div>
-                              <p className="text-sm text-gray-600 mb-2">{result.examDate}</p>
+                              <p className="text-sm text-muted-foreground mb-2">{result.examDate}</p>
                               {result.isAbsent ? (
                                 <div className="mt-2 p-2 bg-red-50 rounded">
                                   <p className="text-sm text-red-600">Absent</p>
                                 </div>
                               ) : result.marksObtained !== null ? (
-                                <div className="mt-2 p-2 bg-gray-50 rounded">
+                                <div className="mt-2 p-2 bg-muted rounded">
                                   <div className="flex justify-between items-center mb-2">
                                     <span className="text-sm font-medium">Score:</span>
                                     <span className={`font-semibold ${
@@ -570,14 +573,14 @@ const ParentDashboard = () => {
                                   </div>
                                   <Progress value={(result.marksObtained / result.maxMarks) * 100} className="h-2" />
                                   {result.remarks && (
-                                    <p className="text-sm text-gray-600 mt-2">
+                                    <p className="text-sm text-muted-foreground mt-2">
                                       <span className="font-medium">Remarks:</span> {result.remarks}
                                     </p>
                                   )}
                                 </div>
                               ) : (
-                                <div className="mt-2 p-2 bg-gray-50 rounded">
-                                  <p className="text-sm text-gray-500">Not yet graded</p>
+                                <div className="mt-2 p-2 bg-muted rounded">
+                                  <p className="text-sm text-muted-foreground">Not yet graded</p>
                                 </div>
                               )}
                             </div>
@@ -893,16 +896,16 @@ const ParentDashboard = () => {
                       </div>
                       <div className="grid grid-cols-3 gap-4 text-center">
                         <div>
-                          <p className="text-2xl font-bold text-gray-900">{attendanceStats.total}</p>
-                          <p className="text-sm text-gray-500">Total Days</p>
+                          <p className="text-2xl font-bold text-foreground">{attendanceStats.total}</p>
+                          <p className="text-sm text-muted-foreground">Total Days</p>
                         </div>
                         <div>
                           <p className="text-2xl font-bold text-green-600">{attendanceStats.present}</p>
-                          <p className="text-sm text-gray-500">Present</p>
+                          <p className="text-sm text-muted-foreground">Present</p>
                         </div>
                         <div>
                           <p className="text-2xl font-bold text-red-600">{attendanceStats.absent}</p>
-                          <p className="text-sm text-gray-500">Absent</p>
+                          <p className="text-sm text-muted-foreground">Absent</p>
                         </div>
                       </div>
                     </CardContent>
@@ -916,15 +919,15 @@ const ParentDashboard = () => {
                     </CardHeader>
                     <CardContent>
                       {attendance.length === 0 ? (
-                        <div className="text-center py-8 text-gray-500">
-                          <Calendar className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                        <div className="text-center py-8 text-muted-foreground">
+                          <Calendar className="w-12 h-12 mx-auto mb-3 text-muted-foreground/40" />
                           <p>No attendance records yet</p>
                         </div>
                       ) : (
                         <div className="space-y-2 max-h-64 overflow-y-auto">
                           {attendance.slice(0, 15).map(record => (
                             <div key={record.id} className="flex justify-between items-center py-2 border-b last:border-0">
-                              <span className="text-sm text-gray-600">
+                              <span className="text-sm text-muted-foreground">
                                 {new Date(record.date).toLocaleDateString('en-US', {
                                   weekday: 'short',
                                   month: 'short',
@@ -932,7 +935,7 @@ const ParentDashboard = () => {
                                 })}
                               </span>
                               {record.is_present ? (
-                                <Badge className="bg-green-100 text-green-800">Present</Badge>
+                                <Badge className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">Present</Badge>
                               ) : (
                                 <Badge variant="destructive">Absent</Badge>
                               )}
@@ -954,8 +957,8 @@ const ParentDashboard = () => {
                   </CardHeader>
                   <CardContent>
                     {notices.length === 0 ? (
-                      <div className="text-center py-8 text-gray-500">
-                        <Bell className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                      <div className="text-center py-8 text-muted-foreground">
+                        <Bell className="w-12 h-12 mx-auto mb-3 text-muted-foreground/40" />
                         <p>No notices available</p>
                       </div>
                     ) : (
@@ -963,12 +966,12 @@ const ParentDashboard = () => {
                         {notices.map(notice => (
                           <div key={notice.id} className="border rounded-lg p-4">
                             <div className="flex justify-between items-start mb-2">
-                              <h4 className="font-semibold text-gray-900">{notice.title}</h4>
-                              <span className="text-xs text-gray-500">
+                              <h4 className="font-semibold text-foreground">{notice.title}</h4>
+                              <span className="text-xs text-muted-foreground">
                                 {new Date(notice.created_at).toLocaleDateString()}
                               </span>
                             </div>
-                            <p className="text-sm text-gray-600">{notice.content}</p>
+                            <p className="text-sm text-muted-foreground">{notice.content}</p>
                           </div>
                         ))}
                       </div>
@@ -986,7 +989,7 @@ const ParentDashboard = () => {
             </Tabs>
           </>
         )}
-      </main>
+      </motion.main>
     </div>
   );
 };

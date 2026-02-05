@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { GraduationCap, LogOut, BookOpen, Calendar, BarChart3, Megaphone, Clock, Upload, CheckCircle, AlertCircle, Settings, Sparkles, FileText, Download, Award, Printer } from "lucide-react";
 import { NotificationCenter } from "@/components/notifications/NotificationCenter";
 import { GroupChat } from "@/components/chat";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { motion } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -12,6 +14,7 @@ import { WelcomeBanner } from "@/components/onboarding/WelcomeBanner";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { LoadingButton } from "@/components/ui/LoadingButton";
 import { supabase } from "@/integrations/supabase/client";
+import { DashboardSkeleton } from "@/components/ui/skeleton-loader";
 import type { ExamType, ExamResult } from "@/types/exam";
 import { EXAM_TYPE_LABELS } from "@/types/exam";
 import { getExamTypeBadgeColor } from "@/utils/exam";
@@ -509,14 +512,7 @@ const StudentDashboard = () => {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading dashboard...</p>
-        </div>
-      </div>
-    );
+    return <DashboardSkeleton roleColor="bg-gradient-primary" />;
   }
 
   const hasSubjects = subjects.length > 0;
@@ -556,6 +552,7 @@ const StudentDashboard = () => {
           </div>
           <div className="flex items-center gap-3">
             <span className="hidden sm:inline text-sm opacity-80">{studentData?.className}</span>
+            <ThemeToggle className="text-primary-foreground hover:bg-primary-foreground/20" />
             <GroupChat triggerClassName="text-primary-foreground hover:bg-primary-foreground/20" />
             <NotificationCenter className="text-primary-foreground hover:bg-primary-foreground/20" />
             <Button
@@ -571,7 +568,11 @@ const StudentDashboard = () => {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-6">
+      <motion.main
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+        className="container mx-auto px-4 py-6">
         {/* Welcome Banner for new students */}
         {!hasSubjects && (
           <WelcomeBanner
@@ -1240,7 +1241,7 @@ const StudentDashboard = () => {
             </div>
           </TabsContent>
         </Tabs>
-      </main>
+      </motion.main>
     </div>
   );
 };

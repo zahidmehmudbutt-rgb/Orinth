@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { DashboardSkeleton } from "@/components/ui/skeleton-loader";
 import {
   Bell, LogOut, UserPlus, Users, Trash2, BookMarked, Settings,
-  Sparkles, Loader2, RefreshCw, GraduationCap, School, BookOpen,
+  Sparkles, RefreshCw, GraduationCap, School, BookOpen,
   Plus, Edit2, Check, X, Link2, Megaphone, BarChart3
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -999,11 +1001,7 @@ const CoordinatorDashboard = () => {
   };
 
   if (loading || isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-role-coordinator" />
-      </div>
-    );
+    return <DashboardSkeleton roleColor="bg-role-coordinator" />;
   }
 
   return (
@@ -1040,7 +1038,11 @@ const CoordinatorDashboard = () => {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-6">
+      <motion.main
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+        className="container mx-auto px-4 py-6">
         {/* Stats Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-card rounded-xl p-4 shadow-card border border-border">
@@ -1843,7 +1845,7 @@ const CoordinatorDashboard = () => {
             </div>
           </TabsContent>
         </Tabs>
-      </main>
+      </motion.main>
     </div>
   );
 };

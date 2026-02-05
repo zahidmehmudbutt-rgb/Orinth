@@ -8,11 +8,11 @@ import type { ExamType, ExamResult } from '@/types/exam';
 export function getExamTypeBadgeColor(type: ExamType): string {
   switch (type) {
     case 'weekly_daily':
-      return 'bg-blue-100 text-blue-800';
+      return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300';
     case 'monthly_midterm':
-      return 'bg-amber-100 text-amber-800';
+      return 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300';
     case 'semester_final':
-      return 'bg-purple-100 text-purple-800';
+      return 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300';
   }
 }
 

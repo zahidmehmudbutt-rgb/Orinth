@@ -83,79 +83,73 @@ export function CreateSchoolForm({ onCreated, onCancel }: CreateSchoolFormProps)
   };
 
   return (
-    <Card className="mb-6 bg-slate-800 border-slate-700">
+    <Card className="mb-6">
       <CardHeader>
-        <CardTitle className="text-white">Create New School</CardTitle>
-        <CardDescription className="text-slate-400">
+        <CardTitle>Create New School</CardTitle>
+        <CardDescription>
           Each school will have its own isolated website and data
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label className="text-slate-300">School Name *</Label>
+            <Label>School Name *</Label>
             <Input
               value={formData.name}
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-              className="bg-slate-700 border-slate-600 text-white"
               placeholder="Enter school name"
             />
             {formData.name && (
-              <p className="text-xs text-slate-500">
-                URL Slug: <code className="text-amber-400">/school/{slug}</code>
+              <p className="text-xs text-muted-foreground">
+                URL Slug: <code className="text-amber-600 dark:text-amber-400">/school/{slug}</code>
               </p>
             )}
           </div>
           <div className="space-y-2">
-            <Label className="text-slate-300">Email</Label>
+            <Label>Email</Label>
             <Input
               type="email"
               value={formData.email}
               onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-              className="bg-slate-700 border-slate-600 text-white"
               placeholder="school@example.com"
             />
           </div>
           <div className="space-y-2">
-            <Label className="text-slate-300">Phone</Label>
+            <Label>Phone</Label>
             <Input
               value={formData.phone}
               onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-              className="bg-slate-700 border-slate-600 text-white"
               placeholder="+92 300 1234567"
             />
           </div>
           <div className="space-y-2">
-            <Label className="text-slate-300">Address</Label>
+            <Label>Address</Label>
             <Input
               value={formData.address}
               onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
-              className="bg-slate-700 border-slate-600 text-white"
               placeholder="Enter address"
             />
           </div>
           <div className="col-span-2 space-y-2">
-            <Label className="text-slate-300">
+            <Label>
               <Image className="w-4 h-4 inline mr-2" />
               Logo URL
             </Label>
             <Input
               value={formData.logo_url}
               onChange={(e) => setFormData(prev => ({ ...prev, logo_url: e.target.value }))}
-              className="bg-slate-700 border-slate-600 text-white"
               placeholder="https://example.com/logo.png"
             />
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-muted-foreground">
               The logo will appear on the school's public page, login screens, and dashboards
             </p>
           </div>
         </div>
-        
+
         <div className="flex justify-end gap-2 pt-4">
           <Button
             variant="outline"
             onClick={onCancel}
-            className="border-slate-600 text-slate-300 hover:bg-slate-700"
           >
             Cancel
           </Button>

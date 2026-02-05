@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { GraduationCap, Mail, Lock, ArrowLeft, BookMarked, Loader2, AlertCircle } from "lucide-react";
+import { GraduationCap, Mail, Lock, ArrowLeft, BookMarked, Loader2, AlertCircle, Settings, Users, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { signIn, signOut, hasRole } from "@/lib/auth";
 import { validateEmail, validatePassword, parseAuthError } from "@/lib/validation";
+import { FadeIn } from "@/components/ui/motion-wrapper";
 
 const CoordinatorLogin = () => {
   const [email, setEmail] = useState("");
@@ -30,14 +31,12 @@ const CoordinatorLogin = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate email
     const emailValidation = validateEmail(email);
     if (!emailValidation.valid) {
       setEmailError(emailValidation.error || "Invalid email");
       return;
     }
 
-    // Validate password
     const passwordValidation = validatePassword(password);
     if (!passwordValidation.valid) {
       setPasswordError(passwordValidation.error || "Invalid password");
@@ -70,7 +69,6 @@ const CoordinatorLogin = () => {
         return;
       }
 
-      // Verify user has coordinator role
       const isCoordinator = await hasRole(data.user.id, 'coordinator');
 
       if (!isCoordinator) {
@@ -92,7 +90,7 @@ const CoordinatorLogin = () => {
       navigate("/coordinator/dashboard");
     } catch (error) {
       if (import.meta.env.DEV) {
-        if (import.meta.env.DEV) console.error('Login error:', error);
+        console.error('Login error:', error);
       }
 
       toast({
@@ -106,114 +104,154 @@ const CoordinatorLogin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-hero flex flex-col">
-      <header className="w-full bg-card/80 backdrop-blur-md border-b border-border">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center">
-              <GraduationCap className="w-6 h-6 text-primary-foreground" />
-            </div>
-            <div>
-              <h1 className="text-lg font-bold text-foreground">School Portal</h1>
-              <p className="text-xs text-muted-foreground">Education Hub</p>
-            </div>
-          </Link>
+    <div className="min-h-screen flex flex-col lg:flex-row">
+      {/* Left panel - Branding */}
+      <div className="hidden lg:flex lg:w-1/2 bg-role-coordinator relative overflow-hidden items-center justify-center p-12">
+        <div className="floating-shapes">
+          <div className="floating-shape" />
+          <div className="floating-shape" />
+          <div className="floating-shape" />
         </div>
-      </header>
-
-      <main className="flex-1 flex items-center justify-center p-4">
-        <div className="w-full max-w-md animate-fade-in">
-          <Link to="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6 transition-colors">
-            <ArrowLeft className="w-4 h-4" />
-            Back to Home
-          </Link>
-
-          <div className="bg-card rounded-2xl shadow-card-hover p-8 border border-border">
-            <div className="text-center mb-8">
-              <div className="w-16 h-16 bg-role-coordinator rounded-xl flex items-center justify-center mx-auto mb-4">
-                <BookMarked className="w-8 h-8 text-primary-foreground" />
-              </div>
-              <h2 className="text-2xl font-bold text-foreground">Section Head Login</h2>
-              <p className="text-muted-foreground mt-2">Coordinator Access</p>
+        <div className="relative z-10 text-white max-w-md">
+          <FadeIn delay={0.2}>
+            <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mb-8 backdrop-blur-sm">
+              <BookMarked className="w-8 h-8" />
             </div>
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="Enter your Email"
-                    value={email}
-                    onChange={(e) => handleEmailChange(e.target.value)}
-                    className={`pl-10 h-12 ${emailError ? 'border-destructive focus-visible:ring-destructive' : ''}`}
-                    disabled={isLoading}
-                    autoComplete="email"
-                  />
-                </div>
-                {emailError && (
-                  <p className="text-sm text-destructive flex items-center gap-1">
-                    <AlertCircle className="w-3 h-3" />
-                    {emailError}
-                  </p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="password">Password</Label>
-                  <Link
-                    to="/auth/forgot-password"
-                    className="text-sm text-primary hover:underline"
-                  >
-                    Forgot Password?
-                  </Link>
-                </div>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="Enter your Password"
-                    value={password}
-                    onChange={(e) => handlePasswordChange(e.target.value)}
-                    className={`pl-10 h-12 ${passwordError ? 'border-destructive focus-visible:ring-destructive' : ''}`}
-                    disabled={isLoading}
-                    autoComplete="current-password"
-                  />
-                </div>
-                {passwordError && (
-                  <p className="text-sm text-destructive flex items-center gap-1">
-                    <AlertCircle className="w-3 h-3" />
-                    {passwordError}
-                  </p>
-                )}
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full h-12 bg-role-coordinator text-primary-foreground font-medium hover:opacity-90"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Signing in...
-                  </>
-                ) : (
-                  "Sign In"
-                )}
-              </Button>
-            </form>
-
-            <p className="text-center text-sm text-muted-foreground mt-6">
-              Credentials assigned by Principal
+            <h1 className="text-4xl font-bold mb-4">Section Head Portal</h1>
+            <p className="text-lg opacity-90 mb-8">
+              Manage teachers, class teachers, and oversee your section operations.
             </p>
-          </div>
+            <div className="space-y-4">
+              <div className="flex items-center gap-3 text-sm opacity-80">
+                <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
+                  <Users className="w-4 h-4" />
+                </div>
+                <span>Manage staff assignments</span>
+              </div>
+              <div className="flex items-center gap-3 text-sm opacity-80">
+                <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
+                  <BarChart3 className="w-4 h-4" />
+                </div>
+                <span>View section analytics</span>
+              </div>
+              <div className="flex items-center gap-3 text-sm opacity-80">
+                <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
+                  <Settings className="w-4 h-4" />
+                </div>
+                <span>Configure section settings</span>
+              </div>
+            </div>
+          </FadeIn>
         </div>
-      </main>
+      </div>
+
+      {/* Right panel - Login form */}
+      <div className="flex-1 flex flex-col bg-background">
+        <header className="w-full bg-card/80 backdrop-blur-md border-b border-border lg:hidden">
+          <div className="container mx-auto px-4 py-4">
+            <Link to="/" className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center">
+                <GraduationCap className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-lg font-bold text-foreground">School Portal</h1>
+                <p className="text-xs text-muted-foreground">Education Hub</p>
+              </div>
+            </Link>
+          </div>
+        </header>
+
+        <main className="flex-1 flex items-center justify-center p-6">
+          <FadeIn className="w-full max-w-md">
+            <Link to="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8 transition-colors">
+              <ArrowLeft className="w-4 h-4" />
+              Back to Home
+            </Link>
+
+            <div>
+              <div className="mb-8">
+                <div className="w-14 h-14 bg-role-coordinator rounded-xl flex items-center justify-center mb-4 lg:hidden">
+                  <BookMarked className="w-7 h-7 text-white" />
+                </div>
+                <h2 className="text-2xl font-bold text-foreground">Section Head Login</h2>
+                <p className="text-muted-foreground mt-2">Coordinator Access</p>
+              </div>
+
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="Enter your Email"
+                      value={email}
+                      onChange={(e) => handleEmailChange(e.target.value)}
+                      className={`pl-10 h-12 ${emailError ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                      disabled={isLoading}
+                      autoComplete="email"
+                    />
+                  </div>
+                  {emailError && (
+                    <p className="text-sm text-destructive flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" />
+                      {emailError}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="password">Password</Label>
+                    <Link to="/auth/forgot-password" className="text-sm text-primary hover:underline">
+                      Forgot Password?
+                    </Link>
+                  </div>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder="Enter your Password"
+                      value={password}
+                      onChange={(e) => handlePasswordChange(e.target.value)}
+                      className={`pl-10 h-12 ${passwordError ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                      disabled={isLoading}
+                      autoComplete="current-password"
+                    />
+                  </div>
+                  {passwordError && (
+                    <p className="text-sm text-destructive flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" />
+                      {passwordError}
+                    </p>
+                  )}
+                </div>
+
+                <Button
+                  type="submit"
+                  className="w-full h-12 bg-role-coordinator text-white font-medium hover:opacity-90"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Signing in...
+                    </>
+                  ) : (
+                    "Sign In"
+                  )}
+                </Button>
+              </form>
+
+              <p className="text-center text-sm text-muted-foreground mt-6">
+                Credentials assigned by Principal
+              </p>
+            </div>
+          </FadeIn>
+        </main>
+      </div>
     </div>
   );
 };

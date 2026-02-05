@@ -116,57 +116,52 @@ export function SchoolCard({ school, onUpdate, onToggleStatus }: SchoolCardProps
 
   if (isEditing) {
     return (
-      <Card className="bg-slate-800 border-slate-700">
+      <Card>
         <CardContent className="p-6 space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label className="text-slate-300">School Name *</Label>
+              <Label>School Name *</Label>
               <Input
                 value={editData.name}
                 onChange={(e) => setEditData(prev => ({ ...prev, name: e.target.value }))}
-                className="bg-slate-700 border-slate-600 text-white"
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-slate-300">Email</Label>
+              <Label>Email</Label>
               <Input
                 type="email"
                 value={editData.email || ""}
                 onChange={(e) => setEditData(prev => ({ ...prev, email: e.target.value }))}
-                className="bg-slate-700 border-slate-600 text-white"
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-slate-300">Phone</Label>
+              <Label>Phone</Label>
               <Input
                 value={editData.phone || ""}
                 onChange={(e) => setEditData(prev => ({ ...prev, phone: e.target.value }))}
-                className="bg-slate-700 border-slate-600 text-white"
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-slate-300">Address</Label>
+              <Label>Address</Label>
               <Input
                 value={editData.address || ""}
                 onChange={(e) => setEditData(prev => ({ ...prev, address: e.target.value }))}
-                className="bg-slate-700 border-slate-600 text-white"
               />
             </div>
             <div className="col-span-2 space-y-2">
-              <Label className="text-slate-300">
+              <Label>
                 <Image className="w-4 h-4 inline mr-2" />
                 Logo URL
               </Label>
               <Input
                 value={editData.logo_url || ""}
                 onChange={(e) => setEditData(prev => ({ ...prev, logo_url: e.target.value }))}
-                className="bg-slate-700 border-slate-600 text-white"
                 placeholder="https://example.com/logo.png"
               />
-              <p className="text-xs text-slate-500">Enter a direct URL to the school logo image</p>
+              <p className="text-xs text-muted-foreground">Enter a direct URL to the school logo image</p>
             </div>
           </div>
-          
+
           <div className="flex justify-end gap-2">
             <Button
               variant="outline"
@@ -174,7 +169,6 @@ export function SchoolCard({ school, onUpdate, onToggleStatus }: SchoolCardProps
                 setIsEditing(false);
                 setEditData(school);
               }}
-              className="border-slate-600 text-slate-300 hover:bg-slate-700"
             >
               Cancel
             </Button>
@@ -193,7 +187,7 @@ export function SchoolCard({ school, onUpdate, onToggleStatus }: SchoolCardProps
   }
 
   return (
-    <Card className="bg-slate-800 border-slate-700">
+    <Card>
       <CardContent className="p-6">
         <div className="flex items-start justify-between">
           <div className="flex items-start gap-4">
@@ -204,34 +198,34 @@ export function SchoolCard({ school, onUpdate, onToggleStatus }: SchoolCardProps
                 className="w-12 h-12 rounded-lg object-contain bg-white p-1"
               />
             ) : (
-              <div className="w-12 h-12 bg-slate-700 rounded-lg flex items-center justify-center">
-                <Building className="w-6 h-6 text-slate-400" />
+              <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
+                <Building className="w-6 h-6 text-muted-foreground" />
               </div>
             )}
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <h3 className="text-lg font-medium text-white">{school.name}</h3>
+                <h3 className="text-lg font-medium text-foreground">{school.name}</h3>
                 <Badge
                   variant={school.is_active ? "default" : "secondary"}
-                  className={school.is_active ? "bg-green-600" : "bg-slate-600"}
+                  className={school.is_active ? "bg-green-600" : "bg-muted"}
                 >
                   {school.is_active ? "Active" : "Inactive"}
                 </Badge>
               </div>
-              <div className="space-y-1 text-sm text-slate-400">
+              <div className="space-y-1 text-sm text-muted-foreground">
                 {school.email && <p>Email: {school.email}</p>}
                 {school.phone && <p>Phone: {school.phone}</p>}
                 {school.address && <p>Address: {school.address}</p>}
                 <div className="flex items-center gap-2 mt-2">
-                  <span className="text-xs text-slate-500">Public URL:</span>
-                  <code className="text-xs bg-slate-700 px-2 py-0.5 rounded text-amber-400">
+                  <span className="text-xs text-muted-foreground">Public URL:</span>
+                  <code className="text-xs bg-muted px-2 py-0.5 rounded text-amber-600 dark:text-amber-400">
                     /school/{slug}
                   </code>
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={copyPublicUrl}
-                    className="h-6 w-6 p-0 text-slate-400 hover:text-white"
+                    className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
                   >
                     {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                   </Button>
@@ -245,17 +239,15 @@ export function SchoolCard({ school, onUpdate, onToggleStatus }: SchoolCardProps
               variant="outline"
               size="sm"
               onClick={() => window.open(publicUrl, '_blank')}
-              className="border-slate-600 text-slate-300 hover:bg-slate-700"
             >
               <ExternalLink className="w-4 h-4 mr-1" />
               View Page
             </Button>
-            
+
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setIsEditing(true)}
-              className="border-slate-600 text-slate-300 hover:bg-slate-700"
+              onClick={() => setIsEditing(true)
             >
               <Edit className="w-4 h-4 mr-1" />
               Edit
@@ -266,7 +258,7 @@ export function SchoolCard({ school, onUpdate, onToggleStatus }: SchoolCardProps
                 <Button
                   variant="outline"
                   size="sm"
-                  className={`border-slate-600 ${
+                  className={`${
                     school.is_active
                       ? "text-red-400 hover:bg-red-500/10"
                       : "text-green-400 hover:bg-green-500/10"
@@ -276,19 +268,19 @@ export function SchoolCard({ school, onUpdate, onToggleStatus }: SchoolCardProps
                   {school.is_active ? "Disable" : "Enable"}
                 </Button>
               </AlertDialogTrigger>
-              <AlertDialogContent className="bg-slate-800 border-slate-700">
+              <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle className="text-white">
+                  <AlertDialogTitle>
                     {school.is_active ? "Disable" : "Enable"} School?
                   </AlertDialogTitle>
-                  <AlertDialogDescription className="text-slate-400">
+                  <AlertDialogDescription>
                     {school.is_active
                       ? "This will prevent all users from logging in to this school. The school can be re-enabled later."
                       : "This will allow users to access this school again."}
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel className="border-slate-600 text-slate-300 hover:bg-slate-700">
+                  <AlertDialogCancel>
                     Cancel
                   </AlertDialogCancel>
                   <AlertDialogAction
@@ -305,7 +297,7 @@ export function SchoolCard({ school, onUpdate, onToggleStatus }: SchoolCardProps
               variant="outline"
               size="sm"
               onClick={() => navigate(`/sys-admin-x7k9/school/${school.id}/principal`)}
-              className="border-slate-600 text-amber-400 hover:bg-amber-500/10"
+              className="text-amber-600 dark:text-amber-400 hover:bg-amber-500/10"
             >
               <Crown className="w-4 h-4 mr-1" />
               Principal

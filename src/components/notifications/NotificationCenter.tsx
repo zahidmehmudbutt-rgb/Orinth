@@ -24,12 +24,12 @@ const notificationIcons: Record<NotificationType, typeof Bell> = {
 };
 
 const notificationColors: Record<NotificationType, string> = {
-  homework_assigned: "bg-blue-100 text-blue-600",
-  attendance_alert: "bg-red-100 text-red-600",
-  grades_published: "bg-green-100 text-green-600",
-  notice: "bg-purple-100 text-purple-600",
+  homework_assigned: "bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400",
+  attendance_alert: "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400",
+  grades_published: "bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400",
+  notice: "bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400",
   welcome: "bg-primary/10 text-primary",
-  general: "bg-gray-100 text-gray-600",
+  general: "bg-muted text-muted-foreground",
 };
 
 export function NotificationCenter({ className }: NotificationCenterProps) {

@@ -40,10 +40,10 @@ export function getGradeColors(grade: Grade): GradeInfo {
     case 'F':
       return { grade, color: 'text-red-600', bgColor: 'bg-red-50' };
     case 'AB':
-      return { grade, color: 'text-gray-600', bgColor: 'bg-gray-100' };
+      return { grade, color: 'text-gray-600 dark:text-gray-400', bgColor: 'bg-gray-100 dark:bg-gray-800/50' };
     case '-':
     default:
-      return { grade, color: 'text-gray-400', bgColor: 'bg-gray-50' };
+      return { grade, color: 'text-gray-400 dark:text-gray-500', bgColor: 'bg-gray-50 dark:bg-gray-800/30' };
   }
 }
 
@@ -87,10 +87,10 @@ export function calculateResultTotals(
  * Grading scale for display
  */
 export const GRADING_SCALE = [
-  { grade: 'A+', range: '90-100%', color: 'bg-green-100 text-green-700' },
-  { grade: 'A', range: '80-89%', color: 'bg-green-50 text-green-600' },
-  { grade: 'B', range: '70-79%', color: 'bg-blue-50 text-blue-600' },
-  { grade: 'C', range: '60-69%', color: 'bg-yellow-50 text-yellow-600' },
-  { grade: 'D', range: '50-59%', color: 'bg-orange-50 text-orange-600' },
-  { grade: 'F', range: 'Below 50%', color: 'bg-red-50 text-red-600' },
+  { grade: 'A+', range: '90-100%', color: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' },
+  { grade: 'A', range: '80-89%', color: 'bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400' },
+  { grade: 'B', range: '70-79%', color: 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400' },
+  { grade: 'C', range: '60-69%', color: 'bg-yellow-50 text-yellow-600 dark:bg-yellow-900/20 dark:text-yellow-400' },
+  { grade: 'D', range: '50-59%', color: 'bg-orange-50 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400' },
+  { grade: 'F', range: 'Below 50%', color: 'bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400' },
 ] as const;

@@ -36,9 +36,9 @@ const getActionIcon = (action: string) => {
     return <Crown className="w-4 h-4 text-amber-400" />;
   }
   if (actionLower.includes('school')) {
-    return <Building className="w-4 h-4 text-slate-400" />;
+    return <Building className="w-4 h-4 text-muted-foreground" />;
   }
-  return <Activity className="w-4 h-4 text-slate-400" />;
+  return <Activity className="w-4 h-4 text-muted-foreground" />;
 };
 
 const getActionColor = (action: string) => {
@@ -52,7 +52,7 @@ const getActionColor = (action: string) => {
   if (actionLower.includes('update') || actionLower.includes('edit') || actionLower.includes('change')) {
     return "bg-blue-500/10 text-blue-400 border-blue-500/20";
   }
-  return "bg-slate-500/10 text-slate-400 border-slate-500/20";
+  return "bg-muted text-muted-foreground border-border";
 };
 
 const formatDetails = (details: Record<string, unknown> | null) => {
@@ -66,20 +66,20 @@ const formatDetails = (details: Record<string, unknown> | null) => {
   
   return entries.map(([key, value]) => (
     <span key={key} className="inline-flex items-center gap-1">
-      <span className="text-slate-500">{key}:</span>
-      <span className="text-slate-300">{String(value)}</span>
+      <span className="text-muted-foreground">{key}:</span>
+      <span className="text-foreground">{String(value)}</span>
     </span>
   ));
 };
 
 export function ActivityLogList({ logs, isLoading, onRefresh }: ActivityLogListProps) {
   return (
-    <Card className="bg-slate-800 border-slate-700">
+    <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="text-white">System Activity Logs</CardTitle>
-            <CardDescription className="text-slate-400">
+            <CardTitle>System Activity Logs</CardTitle>
+            <CardDescription>
               Track all host actions: school creation, principal assignments, status changes
             </CardDescription>
           </div>
@@ -87,7 +87,6 @@ export function ActivityLogList({ logs, isLoading, onRefresh }: ActivityLogListP
             variant="outline"
             size="sm"
             onClick={onRefresh}
-            className="border-slate-600 text-slate-300 hover:bg-slate-700"
           >
             <RefreshCw className="w-4 h-4 mr-2" />
             Refresh
@@ -101,33 +100,33 @@ export function ActivityLogList({ logs, isLoading, onRefresh }: ActivityLogListP
           </div>
         ) : logs.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12">
-            <Activity className="w-12 h-12 text-slate-600 mb-4" />
-            <p className="text-slate-400">No activity logs yet</p>
-            <p className="text-sm text-slate-500 mt-1">Actions like creating schools will appear here</p>
+            <Activity className="w-12 h-12 text-muted-foreground/40 mb-4" />
+            <p className="text-muted-foreground">No activity logs yet</p>
+            <p className="text-sm text-muted-foreground mt-1">Actions like creating schools will appear here</p>
           </div>
         ) : (
           <div className="space-y-3">
             {logs.map((log) => (
               <div
                 key={log.id}
-                className="flex items-start gap-4 p-4 bg-slate-700/50 rounded-lg hover:bg-slate-700/70 transition-colors"
+                className="flex items-start gap-4 p-4 bg-muted/50 rounded-lg hover:bg-muted/70 transition-colors"
               >
-                <div className="w-10 h-10 bg-slate-600 rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 bg-muted rounded-full flex items-center justify-center flex-shrink-0">
                   {getActionIcon(log.action)}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1 flex-wrap">
-                    <span className="font-medium text-white">{log.action}</span>
+                    <span className="font-medium text-foreground">{log.action}</span>
                     <Badge variant="outline" className={getActionColor(log.action)}>
                       {log.entity_type}
                     </Badge>
                   </div>
                   {log.details && (
-                    <div className="text-sm text-slate-400 flex gap-3 flex-wrap">
+                    <div className="text-sm text-muted-foreground flex gap-3 flex-wrap">
                       {formatDetails(log.details)}
                     </div>
                   )}
-                  <p className="text-xs text-slate-500 mt-2">
+                  <p className="text-xs text-muted-foreground mt-2">
                     {new Date(log.created_at).toLocaleString()}
                   </p>
                 </div>
