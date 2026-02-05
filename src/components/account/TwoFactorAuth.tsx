@@ -60,29 +60,26 @@ export default function TwoFactorAuth() {
       if (error && error.code !== "PGRST116") throw error;
       setSettings(data || { is_enabled: false, backup_codes: null, last_used_at: null });
     } catch (error) {
-      console.error("Error fetching 2FA settings:", error);
+      if (import.meta.env.DEV) console.error("Error fetching 2FA settings:", error);
     } finally {
       setLoading(false);
     }
   };
 
   const generateSecret = () => {
-    // Generate a random base32 secret (in production, this should be done server-side)
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
-    let secret = "";
-    for (let i = 0; i < 16; i++) {
-      secret += chars[Math.floor(Math.random() * chars.length)];
-    }
-    return secret;
+    const randomValues = crypto.getRandomValues(new Uint8Array(16));
+    return Array.from(randomValues, (v) => chars[v % chars.length]).join("");
   };
 
   const generateBackupCodes = () => {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     const codes: string[] = [];
     for (let i = 0; i < 10; i++) {
-      const code = Math.random().toString(36).substring(2, 6).toUpperCase() +
-                   "-" +
-                   Math.random().toString(36).substring(2, 6).toUpperCase();
-      codes.push(code);
+      const values = crypto.getRandomValues(new Uint8Array(8));
+      const part1 = Array.from(values.slice(0, 4), (v) => chars[v % chars.length]).join("");
+      const part2 = Array.from(values.slice(4, 8), (v) => chars[v % chars.length]).join("");
+      codes.push(`${part1}-${part2}`);
     }
     return codes;
   };
@@ -145,7 +142,7 @@ export default function TwoFactorAuth() {
         description: "Two-factor authentication has been enabled on your account.",
       });
     } catch (error) {
-      console.error("Error enabling 2FA:", error);
+      if (import.meta.env.DEV) console.error("Error enabling 2FA:", error);
       toast({
         variant: "destructive",
         title: "Error",

@@ -274,7 +274,7 @@ const StudentLogin = () => {
             </form>
 
             <p className="text-center text-sm text-muted-foreground mt-6">
-              First time? Your password is the same as your Student ID
+              Forgot your password? Contact your class teacher to reset it.
             </p>
           </div>
         </div>

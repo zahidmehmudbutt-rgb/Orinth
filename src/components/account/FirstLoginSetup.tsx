@@ -107,7 +107,7 @@ const FirstLoginSetup = ({ onComplete }: FirstLoginSetupProps) => {
       refreshUserData();
       onComplete();
     } catch (error) {
-      console.error("Error updating profile:", error);
+      if (import.meta.env.DEV) console.error("Error updating profile:", error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -123,11 +123,14 @@ const FirstLoginSetup = ({ onComplete }: FirstLoginSetupProps) => {
       <div className="w-full max-w-md">
         <div className="bg-card rounded-2xl shadow-card border border-border p-8">
           {/* Progress Indicator */}
-          <div className="flex items-center justify-center gap-3 mb-8">
+          <div className="flex items-center justify-center gap-3 mb-2">
             <div className={`w-3 h-3 rounded-full ${step >= 1 ? 'bg-primary' : 'bg-muted'}`} />
             <div className={`w-16 h-1 rounded ${step >= 2 ? 'bg-primary' : 'bg-muted'}`} />
             <div className={`w-3 h-3 rounded-full ${step >= 2 ? 'bg-primary' : 'bg-muted'}`} />
           </div>
+          <p className="text-center text-xs text-muted-foreground mb-6">
+            Step {step} of 2: {step === 1 ? 'Set Password' : 'Complete Profile'}
+          </p>
 
           {step === 1 ? (
             <>
@@ -161,7 +164,14 @@ const FirstLoginSetup = ({ onComplete }: FirstLoginSetupProps) => {
                       {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                     </button>
                   </div>
-                  <p className="text-xs text-muted-foreground">At least 8 characters</p>
+                  <div className="space-y-1 mt-1">
+                    <p className={`text-xs flex items-center gap-1 ${newPassword.length >= 8 ? 'text-green-600' : 'text-muted-foreground'}`}>
+                      {newPassword.length >= 8 ? '✓' : '○'} At least 8 characters
+                    </p>
+                    <p className={`text-xs flex items-center gap-1 ${newPassword && newPassword === confirmPassword ? 'text-green-600' : 'text-muted-foreground'}`}>
+                      {newPassword && newPassword === confirmPassword ? '✓' : '○'} Passwords match
+                    </p>
+                  </div>
                 </div>
 
                 <div className="space-y-2">
