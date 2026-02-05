@@ -4,12 +4,11 @@ import { RoleCard } from "@/components/RoleCard";
 import { StatsCard } from "@/components/StatsCard";
 import {
   Users, BookOpen, GraduationCap, Award, UserCheck, BookMarked, Crown, UserPlus,
-  ClipboardCheck, BarChart3, Bell, Shield, MessageSquare,
-  ChevronDown, ArrowRight, Star,
+  ClipboardCheck, BarChart3, Bell, Shield, MessageSquare, Calendar,
+  ArrowRight,
 } from "lucide-react";
 import { FadeIn, FadeInView, StaggerContainer, StaggerItem } from "@/components/ui/motion-wrapper";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
 import heroImage from "@/assets/hero-classroom.jpg";
 
 const roles = [
@@ -58,110 +57,46 @@ const roles = [
 ];
 
 const stats = [
-  { icon: Users, value: "5000+", label: "Active Students" },
-  { icon: BookOpen, value: "100+", label: "Classes Managed" },
-  { icon: GraduationCap, value: "200+", label: "Teachers" },
-  { icon: Award, value: "15+", label: "Partner Schools" },
+  { icon: Users, value: "1200+", label: "Students Enrolled" },
+  { icon: GraduationCap, value: "85+", label: "Dedicated Teachers" },
+  { icon: BookOpen, value: "50+", label: "Active Classes" },
+  { icon: Award, value: "25+", label: "Years of Excellence" },
 ];
 
 const features = [
   {
     icon: ClipboardCheck,
-    title: "Smart Attendance",
-    description: "One-tap daily attendance marking with automatic absence notifications sent to parents via email.",
+    title: "Daily Attendance",
+    description: "Real-time attendance tracking for every class. Parents receive instant notifications when their child is marked absent.",
   },
   {
     icon: BookOpen,
-    title: "Homework Management",
-    description: "Teachers assign homework with deadlines. Students submit files. Parents track completion status.",
+    title: "Homework & Assignments",
+    description: "Teachers post homework with deadlines. Students can submit work online. Parents stay informed about pending tasks.",
   },
   {
     icon: BarChart3,
     title: "Marks & Result Cards",
-    description: "Enter marks for weekly, monthly, and final exams. Auto-generated printable result cards with grades.",
+    description: "Complete academic records including weekly tests, monthly exams, and term results. Download printable result cards anytime.",
   },
   {
     icon: Bell,
-    title: "Announcements",
-    description: "School-wide or class-specific announcements with instant notifications to all relevant users.",
+    title: "School Announcements",
+    description: "Important notices, event updates, and school news delivered directly to students and parents through the portal.",
   },
   {
     icon: MessageSquare,
-    title: "Group Chat",
-    description: "Built-in real-time messaging between teachers, parents, and coordinators. Role-based chat rooms.",
+    title: "Parent-Teacher Communication",
+    description: "Direct messaging between parents and teachers. Stay connected about your child's progress and any concerns.",
   },
   {
-    icon: Shield,
-    title: "Role-Based Access",
-    description: "6 distinct portals - Student, Teacher, Class Teacher, Coordinator, Principal, and Parent. Each sees only their data.",
-  },
-];
-
-const steps = [
-  {
-    number: "01",
-    title: "Principal Sets Up",
-    description: "The Principal creates classes and assigns Section Heads who manage their respective sections.",
-  },
-  {
-    number: "02",
-    title: "Teachers Get Assigned",
-    description: "Section Heads assign teachers to classes and subjects. Class Teachers manage their class roster.",
-  },
-  {
-    number: "03",
-    title: "Everyone Connects",
-    description: "Students, teachers, and parents log into their portals. Attendance, homework, and marks flow seamlessly.",
-  },
-];
-
-const testimonials = [
-  {
-    name: "Ahmed Khan",
-    role: "Principal, Lahore Grammar School",
-    content: "School Smart transformed how we manage our school. Attendance tracking that used to take hours now takes minutes. Parents are more engaged than ever.",
-    rating: 5,
-  },
-  {
-    name: "Fatima Noor",
-    role: "Teacher, Islamabad Model School",
-    content: "Uploading homework and entering marks is so simple. I can see which students submitted and grade them all from one screen. It saves me 2 hours every day.",
-    rating: 5,
-  },
-  {
-    name: "Bilal Raza",
-    role: "Parent",
-    content: "I can finally see my son's attendance and homework status without calling the school. The result cards are professional and I get notified if he's absent.",
-    rating: 5,
-  },
-];
-
-const faqs = [
-  {
-    q: "How long does it take to set up?",
-    a: "Most schools are fully operational within 1-2 days. The Principal creates classes, assigns staff, and students are added by Class Teachers. No technical expertise required.",
-  },
-  {
-    q: "Do parents need to install an app?",
-    a: "No. School Smart works in any web browser on phones, tablets, and computers. Parents simply log in through the Parent Portal - no app download needed.",
-  },
-  {
-    q: "Is our school data secure?",
-    a: "Absolutely. We use Supabase with enterprise-grade encryption, row-level security, and role-based access controls. Each user only sees data they are authorized to access.",
-  },
-  {
-    q: "Can we try it before paying?",
-    a: "Yes! Our Starter plan is completely free for schools with up to 100 students. You can upgrade anytime as your school grows.",
-  },
-  {
-    q: "What if we need help with setup?",
-    a: "Professional and Enterprise plans include setup assistance. We also provide video tutorials and documentation for the free tier. Email support is available for all plans.",
+    icon: Calendar,
+    title: "Academic Calendar",
+    description: "View exam schedules, holidays, events, and important dates. Never miss a school activity or deadline.",
   },
 ];
 
 const Index = () => {
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
-
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -180,14 +115,14 @@ const Index = () => {
               <div>
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
                   <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                  Trusted by 15+ schools across Pakistan
+                  Welcome to Our School Portal
                 </div>
                 <h1 className="text-4xl lg:text-6xl font-bold text-foreground mb-6 leading-tight">
-                  The Smarter Way to{" "}
-                  <span className="text-gradient">Run Your School</span>
+                  Excellence in{" "}
+                  <span className="text-gradient">Education</span>
                 </h1>
                 <p className="text-lg text-muted-foreground mb-8 max-w-lg leading-relaxed">
-                  Attendance, homework, marks, result cards, parent communication - everything your school needs in one simple platform. Built for Pakistani schools.
+                  Access your academic records, homework, attendance, and stay connected with teachers and school activities through our integrated portal system.
                 </p>
                 <div className="flex flex-wrap gap-4">
                   <Button asChild size="lg" className="bg-gradient-primary text-white shadow-button hover:shadow-lg hover:-translate-y-0.5 transition-all h-12 px-8">
@@ -197,7 +132,7 @@ const Index = () => {
                     </a>
                   </Button>
                   <Button asChild variant="outline" size="lg" className="h-12 px-8">
-                    <a href="#features">See Features</a>
+                    <a href="#features">Explore Features</a>
                   </Button>
                 </div>
               </div>
@@ -208,7 +143,7 @@ const Index = () => {
                 <div className="rounded-2xl overflow-hidden shadow-card-hover border border-border">
                   <img
                     src={heroImage}
-                    alt="Students in a modern classroom"
+                    alt="Students in classroom"
                     className="w-full h-auto object-cover"
                   />
                 </div>
@@ -221,6 +156,13 @@ const Index = () => {
       {/* Stats Bar */}
       <section className="py-16 bg-card border-b border-border">
         <div className="container mx-auto px-4">
+          <FadeInView>
+            <div className="text-center mb-10">
+              <h2 className="text-2xl lg:text-3xl font-bold text-foreground">
+                Our School at a Glance
+              </h2>
+            </div>
+          </FadeInView>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
             {stats.map((stat) => (
               <StatsCard key={stat.label} {...stat} />
@@ -229,82 +171,17 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section id="features" className="py-20 bg-gradient-hero">
-        <div className="container mx-auto px-4">
-          <FadeInView>
-            <div className="text-center mb-14 max-w-2xl mx-auto">
-              <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">Features</span>
-              <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-                Everything Your School Needs
-              </h2>
-              <p className="text-muted-foreground text-lg">
-                From daily attendance to annual result cards, we handle it all so you can focus on education.
-              </p>
-            </div>
-          </FadeInView>
-
-          <StaggerContainer className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            {features.map((feature) => (
-              <StaggerItem key={feature.title}>
-                <div className="bg-card rounded-xl p-6 border border-border shadow-card hover:shadow-card-hover transition-all duration-300 h-full group">
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
-                    <feature.icon className="w-6 h-6 text-primary" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-foreground mb-2">{feature.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{feature.description}</p>
-                </div>
-              </StaggerItem>
-            ))}
-          </StaggerContainer>
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section id="how-it-works" className="py-20 bg-card">
-        <div className="container mx-auto px-4">
-          <FadeInView>
-            <div className="text-center mb-14 max-w-2xl mx-auto">
-              <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">How It Works</span>
-              <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-                Up and Running in 3 Steps
-              </h2>
-              <p className="text-muted-foreground text-lg">
-                No complicated setup. No technical skills needed. Your school can be live in under a day.
-              </p>
-            </div>
-          </FadeInView>
-
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {steps.map((step, i) => (
-              <FadeInView key={step.number} delay={i * 0.15}>
-                <div className="text-center relative">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-primary text-white text-2xl font-bold flex items-center justify-center mx-auto mb-5 shadow-button">
-                    {step.number}
-                  </div>
-                  {i < steps.length - 1 && (
-                    <div className="hidden md:block absolute top-8 left-[60%] w-[80%] border-t-2 border-dashed border-primary/20" />
-                  )}
-                  <h3 className="text-xl font-semibold text-foreground mb-2">{step.title}</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">{step.description}</p>
-                </div>
-              </FadeInView>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Portal Selection */}
+      {/* Portal Selection - Moved up for quick access */}
       <section id="portals" className="py-20 bg-gradient-hero">
         <div className="container mx-auto px-4">
           <FadeInView>
             <div className="text-center mb-14">
-              <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">Quick Access</span>
+              <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">Login</span>
               <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-                Choose Your Portal
+                Access Your Portal
               </h2>
               <p className="text-muted-foreground max-w-xl mx-auto">
-                Select your role to access your personalized dashboard
+                Select your role to login and access your personalized dashboard
               </p>
             </div>
           </FadeInView>
@@ -319,77 +196,34 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-20 bg-card">
+      {/* Features Section */}
+      <section id="features" className="py-20 bg-card">
         <div className="container mx-auto px-4">
           <FadeInView>
             <div className="text-center mb-14 max-w-2xl mx-auto">
-              <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">Testimonials</span>
+              <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">Portal Features</span>
               <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-                Loved by Schools Across Pakistan
+                What You Can Do
               </h2>
               <p className="text-muted-foreground text-lg">
-                Hear from principals, teachers, and parents who use School Smart every day.
+                Our school portal provides comprehensive tools for students, parents, and teachers to stay connected and informed.
               </p>
             </div>
           </FadeInView>
 
-          <StaggerContainer className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {testimonials.map((t) => (
-              <StaggerItem key={t.name}>
-                <div className="bg-background rounded-xl p-6 border border-border shadow-card h-full flex flex-col">
-                  <div className="flex gap-1 mb-4">
-                    {Array.from({ length: t.rating }).map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    ))}
+          <StaggerContainer className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            {features.map((feature) => (
+              <StaggerItem key={feature.title}>
+                <div className="bg-background rounded-xl p-6 border border-border shadow-card hover:shadow-card-hover transition-all duration-300 h-full group">
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
+                    <feature.icon className="w-6 h-6 text-primary" />
                   </div>
-                  <p className="text-foreground text-sm leading-relaxed flex-1 mb-4">"{t.content}"</p>
-                  <div className="border-t border-border pt-4">
-                    <p className="font-semibold text-foreground text-sm">{t.name}</p>
-                    <p className="text-muted-foreground text-xs">{t.role}</p>
-                  </div>
+                  <h3 className="text-lg font-semibold text-foreground mb-2">{feature.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{feature.description}</p>
                 </div>
               </StaggerItem>
             ))}
           </StaggerContainer>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section id="faq" className="py-20 bg-card">
-        <div className="container mx-auto px-4">
-          <FadeInView>
-            <div className="text-center mb-14 max-w-2xl mx-auto">
-              <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">FAQ</span>
-              <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-                Frequently Asked Questions
-              </h2>
-              <p className="text-muted-foreground text-lg">
-                Got questions? We've got answers.
-              </p>
-            </div>
-          </FadeInView>
-
-          <div className="max-w-3xl mx-auto space-y-3">
-            {faqs.map((faq, i) => (
-              <FadeInView key={i} delay={i * 0.05}>
-                <div className="bg-background rounded-xl border border-border overflow-hidden">
-                  <button
-                    className="w-full flex items-center justify-between p-5 text-left"
-                    onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                  >
-                    <span className="font-medium text-foreground pr-4">{faq.q}</span>
-                    <ChevronDown className={`w-5 h-5 text-muted-foreground shrink-0 transition-transform duration-200 ${openFaq === i ? "rotate-180" : ""}`} />
-                  </button>
-                  {openFaq === i && (
-                    <div className="px-5 pb-5 -mt-1">
-                      <p className="text-muted-foreground text-sm leading-relaxed">{faq.a}</p>
-                    </div>
-                  )}
-                </div>
-              </FadeInView>
-            ))}
-          </div>
         </div>
       </section>
 

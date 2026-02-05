@@ -6,9 +6,7 @@ import { Button } from "@/components/ui/button";
 
 const navLinks = [
   { label: "Features", href: "#features" },
-  { label: "How It Works", href: "#how-it-works" },
-  { label: "Pricing", href: "#pricing" },
-  { label: "FAQ", href: "#faq" },
+  { label: "Portals", href: "#portals" },
 ];
 
 const portalLinks = [
@@ -82,9 +80,6 @@ export const Header = () => {
             )}
           </div>
 
-          <Button asChild size="sm" className="bg-gradient-primary text-white shadow-button hover:opacity-90">
-            <a href="#pricing">Get Started</a>
-          </Button>
         </div>
 
         {/* Mobile Right Side */}
@@ -130,11 +125,6 @@ export const Header = () => {
               ))}
             </div>
 
-            <div className="pt-3">
-              <Button asChild className="w-full bg-gradient-primary text-white shadow-button">
-                <a href="#pricing" onClick={() => setMobileOpen(false)}>Get Started</a>
-              </Button>
-            </div>
           </div>
         </div>
       )}
