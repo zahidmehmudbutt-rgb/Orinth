@@ -92,7 +92,7 @@ const ClassTeacherLogin = () => {
       navigate("/class-teacher/dashboard");
     } catch (error) {
       if (import.meta.env.DEV) {
-        console.error('Login error:', error);
+        if (import.meta.env.DEV) console.error('Login error:', error);
       }
 
       toast({

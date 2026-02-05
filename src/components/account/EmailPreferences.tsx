@@ -63,7 +63,7 @@ export function EmailPreferences() {
         description: "Your email notification preferences have been updated.",
       });
     } catch (error) {
-      console.error("Error saving preferences:", error);
+      if (import.meta.env.DEV) console.error("Error saving preferences:", error);
       toast({
         variant: "destructive",
         title: "Error",

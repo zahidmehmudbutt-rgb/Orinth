@@ -45,7 +45,7 @@ export default function AnnouncementList() {
 
       setAnnouncements(data || []);
     } catch (error) {
-      console.error("Error fetching announcements:", error);
+      if (import.meta.env.DEV) console.error("Error fetching announcements:", error);
     } finally {
       setLoading(false);
     }

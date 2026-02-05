@@ -103,7 +103,7 @@ export default function ChangePassword() {
       setConfirmPassword("");
       setErrors({});
     } catch (error) {
-      console.error("Error changing password:", error);
+      if (import.meta.env.DEV) console.error("Error changing password:", error);
       toast({
         variant: "destructive",
         title: "Error",

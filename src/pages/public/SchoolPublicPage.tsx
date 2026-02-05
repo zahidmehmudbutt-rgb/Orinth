@@ -90,7 +90,7 @@ const SchoolPublicPage = () => {
         await fetchSchoolDetails(matchedSchool.id);
       }
     } catch (err) {
-      console.error("Error fetching school:", err);
+      if (import.meta.env.DEV) console.error("Error fetching school:", err);
       setError("Could not load school information. The page may not exist or check your connection.");
     } finally {
       setIsLoading(false);

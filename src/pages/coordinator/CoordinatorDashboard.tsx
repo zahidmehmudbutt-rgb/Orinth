@@ -245,7 +245,7 @@ const CoordinatorDashboard = () => {
         setCustomSections(data.map(s => s.name));
       }
     } catch (error) {
-      console.error("Error loading custom sections:", error);
+      if (import.meta.env.DEV) console.error("Error loading custom sections:", error);
     }
   };
 
@@ -374,7 +374,7 @@ const CoordinatorDashboard = () => {
 
       setClasses(classesWithDetails);
     } catch (error) {
-      console.error('Error loading classes:', error);
+      if (import.meta.env.DEV) console.error('Error loading classes:', error);
     }
   };
 
@@ -391,7 +391,7 @@ const CoordinatorDashboard = () => {
       if (error) throw error;
       setSubjects(data || []);
     } catch (error) {
-      console.error('Error loading subjects:', error);
+      if (import.meta.env.DEV) console.error('Error loading subjects:', error);
     }
   };
 
@@ -432,7 +432,7 @@ const CoordinatorDashboard = () => {
 
       setStaff(staffList);
     } catch (error) {
-      console.error('Error loading staff:', error);
+      if (import.meta.env.DEV) console.error('Error loading staff:', error);
     }
   };
 
@@ -470,7 +470,7 @@ const CoordinatorDashboard = () => {
 
       setTeacherAssignments(assignmentsWithNames);
     } catch (error) {
-      console.error('Error loading assignments:', error);
+      if (import.meta.env.DEV) console.error('Error loading assignments:', error);
     }
   };
 
@@ -488,7 +488,7 @@ const CoordinatorDashboard = () => {
       if (error) throw error;
       setAllClassSubjects(data || []);
     } catch (error) {
-      console.error('Error loading all class subjects:', error);
+      if (import.meta.env.DEV) console.error('Error loading all class subjects:', error);
     }
   };
 
@@ -511,7 +511,7 @@ const CoordinatorDashboard = () => {
 
       setClassSubjects(subjectsWithNames);
     } catch (error) {
-      console.error('Error loading class subjects:', error);
+      if (import.meta.env.DEV) console.error('Error loading class subjects:', error);
     }
   };
 
@@ -912,8 +912,8 @@ const CoordinatorDashboard = () => {
       });
 
       if (response.error) {
-        const errorData = response.error.context?.body ?
-          JSON.parse(new TextDecoder().decode(response.error.context.body)) : null;
+        let errorData = null;
+        try { errorData = response.error.context?.body ? JSON.parse(new TextDecoder().decode(response.error.context.body)) : null; } catch {}
         throw new Error(errorData?.error || response.error.message || "Failed to create user");
       }
 

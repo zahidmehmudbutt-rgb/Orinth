@@ -60,7 +60,7 @@ export default function AnnouncementManager({ schoolId }: AnnouncementManagerPro
       if (error) throw error;
       setAnnouncements(data || []);
     } catch (error) {
-      console.error("Error fetching announcements:", error);
+      if (import.meta.env.DEV) console.error("Error fetching announcements:", error);
     } finally {
       setLoading(false);
     }
@@ -87,7 +87,7 @@ export default function AnnouncementManager({ schoolId }: AnnouncementManagerPro
         description: "The announcement has been removed.",
       });
     } catch (error) {
-      console.error("Error deleting announcement:", error);
+      if (import.meta.env.DEV) console.error("Error deleting announcement:", error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -116,7 +116,7 @@ export default function AnnouncementManager({ schoolId }: AnnouncementManagerPro
         description: `Announcement has been ${currentPinned ? "unpinned" : "pinned"}.`,
       });
     } catch (error) {
-      console.error("Error toggling pin:", error);
+      if (import.meta.env.DEV) console.error("Error toggling pin:", error);
     }
   };
 

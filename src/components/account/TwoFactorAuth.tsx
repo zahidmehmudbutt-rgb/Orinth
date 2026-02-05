@@ -180,7 +180,7 @@ export default function TwoFactorAuth() {
         description: "Two-factor authentication has been disabled on your account.",
       });
     } catch (error) {
-      console.error("Error disabling 2FA:", error);
+      if (import.meta.env.DEV) console.error("Error disabling 2FA:", error);
       toast({
         variant: "destructive",
         title: "Error",

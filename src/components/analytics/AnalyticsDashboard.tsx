@@ -111,7 +111,7 @@ export default function AnalyticsDashboard({ schoolId, role, classId }: Analytic
       if (error) throw error;
       setClasses(data || []);
     } catch (error) {
-      console.error("Error fetching classes:", error);
+      if (import.meta.env.DEV) console.error("Error fetching classes:", error);
     }
   };
 
@@ -346,7 +346,7 @@ export default function AnalyticsDashboard({ schoolId, role, classId }: Analytic
       });
 
     } catch (error) {
-      console.error("Error fetching analytics:", error);
+      if (import.meta.env.DEV) console.error("Error fetching analytics:", error);
     } finally {
       setLoading(false);
     }

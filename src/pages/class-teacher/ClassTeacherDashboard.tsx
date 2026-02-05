@@ -107,7 +107,7 @@ const ClassTeacherDashboard = () => {
       if (error && error.code !== 'PGRST116') throw error;
       setAssignedClass(data || null);
     } catch (error) {
-      console.error('Error loading assigned class:', error);
+      if (import.meta.env.DEV) console.error('Error loading assigned class:', error);
     } finally {
       setIsLoading(false);
     }
@@ -131,7 +131,7 @@ const ClassTeacherDashboard = () => {
         setAttendance(data.map(s => ({ student_id: s.id, is_present: true })));
       }
     } catch (error) {
-      console.error('Error loading students:', error);
+      if (import.meta.env.DEV) console.error('Error loading students:', error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -161,7 +161,7 @@ const ClassTeacherDashboard = () => {
         })));
       }
     } catch (error) {
-      console.error('Error loading attendance:', error);
+      if (import.meta.env.DEV) console.error('Error loading attendance:', error);
     }
   };
 
@@ -236,8 +236,8 @@ const ClassTeacherDashboard = () => {
       // Handle edge function errors
       if (response.error) {
         // Try to extract error message from the response
-        const errorData = response.error.context?.body ?
-          JSON.parse(new TextDecoder().decode(response.error.context.body)) : null;
+        let errorData = null;
+        try { errorData = response.error.context?.body ? JSON.parse(new TextDecoder().decode(response.error.context.body)) : null; } catch {}
         const errorMessage = errorData?.error || response.error.message || "Failed to create student account";
         throw new Error(errorMessage);
       }
@@ -270,7 +270,7 @@ const ClassTeacherDashboard = () => {
       setNewStudentId("");
       loadStudents();
     } catch (error) {
-      console.error('Error adding student:', error);
+      if (import.meta.env.DEV) console.error('Error adding student:', error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -307,7 +307,7 @@ const ClassTeacherDashboard = () => {
 
       loadStudents();
     } catch (error) {
-      console.error('Error removing student:', error);
+      if (import.meta.env.DEV) console.error('Error removing student:', error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -399,7 +399,7 @@ const ClassTeacherDashboard = () => {
 
       loadTodayAttendance();
     } catch (error) {
-      console.error('Error saving attendance:', error);
+      if (import.meta.env.DEV) console.error('Error saving attendance:', error);
       toast({
         variant: "destructive",
         title: "Error",

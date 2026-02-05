@@ -94,7 +94,7 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
       setSettings(data);
       setExtended(loadExtendedSettings(schoolId));
     } catch (error) {
-      console.error("Error fetching settings:", error);
+      if (import.meta.env.DEV) console.error("Error fetching settings:", error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -162,7 +162,7 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
         description: "School logo has been uploaded successfully.",
       });
     } catch (error) {
-      console.error("Upload error:", error);
+      if (import.meta.env.DEV) console.error("Upload error:", error);
       toast({
         variant: "destructive",
         title: "Upload Failed",
@@ -202,7 +202,7 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
 
       onSaved?.();
     } catch (error) {
-      console.error("Save error:", error);
+      if (import.meta.env.DEV) console.error("Save error:", error);
       toast({
         variant: "destructive",
         title: "Save Failed",

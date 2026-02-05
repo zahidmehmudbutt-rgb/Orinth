@@ -124,7 +124,7 @@ const PrincipalDashboard = () => {
         ]);
       }
     } catch (error) {
-      console.error("Error:", error);
+      if (import.meta.env.DEV) console.error("Error:", error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -321,8 +321,8 @@ const PrincipalDashboard = () => {
       // Handle edge function errors
       if (response.error) {
         // Try to extract error message from the response
-        const errorData = response.error.context?.body ?
-          JSON.parse(new TextDecoder().decode(response.error.context.body)) : null;
+        let errorData = null;
+        try { errorData = response.error.context?.body ? JSON.parse(new TextDecoder().decode(response.error.context.body)) : null; } catch {}
         const errorMessage = errorData?.error || response.error.message || "Failed to create user";
         throw new Error(errorMessage);
       }
@@ -343,7 +343,7 @@ const PrincipalDashboard = () => {
       setNewCoordinatorSection("");
       await fetchCoordinators(principalData.schoolId);
     } catch (error) {
-      console.error("Error:", error);
+      if (import.meta.env.DEV) console.error("Error:", error);
       toast({
         variant: "destructive",
         title: "Error",

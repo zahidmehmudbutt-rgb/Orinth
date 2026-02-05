@@ -140,7 +140,7 @@ const ParentDashboard = () => {
           setSelectedChild(childrenData[0]);
         }
       } catch (error) {
-        console.error('Error fetching children:', error);
+        if (import.meta.env.DEV) console.error('Error fetching children:', error);
         toast({
           variant: "destructive",
           title: "Error",
@@ -188,7 +188,7 @@ const ParentDashboard = () => {
 
         setHomework(homeworkWithSubmissions);
       } catch (error) {
-        console.error('Error fetching homework:', error);
+        if (import.meta.env.DEV) console.error('Error fetching homework:', error);
       }
     };
 
@@ -211,7 +211,7 @@ const ParentDashboard = () => {
         if (error) throw error;
         setAttendance(data || []);
       } catch (error) {
-        console.error('Error fetching attendance:', error);
+        if (import.meta.env.DEV) console.error('Error fetching attendance:', error);
       }
     };
 
@@ -234,7 +234,7 @@ const ParentDashboard = () => {
         if (error) throw error;
         setNotices(data || []);
       } catch (error) {
-        console.error('Error fetching notices:', error);
+        if (import.meta.env.DEV) console.error('Error fetching notices:', error);
       }
     };
 

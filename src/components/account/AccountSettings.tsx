@@ -62,7 +62,7 @@ const AccountSettings = ({ roleColor = "bg-primary" }: AccountSettingsProps) => 
 
       refreshUserData();
     } catch (error) {
-      console.error("Error updating profile:", error);
+      if (import.meta.env.DEV) console.error("Error updating profile:", error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -119,7 +119,7 @@ const AccountSettings = ({ roleColor = "bg-primary" }: AccountSettingsProps) => 
       setNewPassword("");
       setConfirmPassword("");
     } catch (error) {
-      console.error("Error changing password:", error);
+      if (import.meta.env.DEV) console.error("Error changing password:", error);
       toast({
         variant: "destructive",
         title: "Error",

@@ -18,7 +18,6 @@ import { supabase } from "@/integrations/supabase/client";
 import type { ExamType, ExamItem, StudentMarkEntry } from "@/types/exam";
 import { EXAM_TYPE_LABELS } from "@/types/exam";
 import { getExamTypeBadgeColor } from "@/utils/exam";
-import { sendLowMarksNotification, getSchoolNotificationStatus } from "@/lib/notifications";
 
 interface TeacherData {
   id: string;
@@ -197,7 +196,7 @@ const TeacherDashboard = () => {
       await fetchHomework(user.id);
 
     } catch (error) {
-      console.error("Error:", error);
+      if (import.meta.env.DEV) console.error("Error:", error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -356,7 +355,7 @@ const TeacherDashboard = () => {
       setGrades(initialGrades);
 
     } catch (error) {
-      console.error("Error fetching submissions:", error);
+      if (import.meta.env.DEV) console.error("Error fetching submissions:", error);
     } finally {
       setLoadingSubmissions(false);
     }
@@ -409,7 +408,7 @@ const TeacherDashboard = () => {
       await fetchHomework(teacherData.id);
 
     } catch (error) {
-      console.error("Error creating homework:", error);
+      if (import.meta.env.DEV) console.error("Error creating homework:", error);
       toast({
         variant: "destructive",
         title: "Homework Not Posted",
@@ -473,7 +472,7 @@ const TeacherDashboard = () => {
       await fetchSubmissions();
 
     } catch (error) {
-      console.error("Error saving grade:", error);
+      if (import.meta.env.DEV) console.error("Error saving grade:", error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -650,7 +649,7 @@ const TeacherDashboard = () => {
       await fetchExams();
 
     } catch (error) {
-      console.error("Error creating exam:", error);
+      if (import.meta.env.DEV) console.error("Error creating exam:", error);
       toast({
         variant: "destructive",
         title: "Exam Not Created",
@@ -713,7 +712,7 @@ const TeacherDashboard = () => {
       setMarksInput(initialMarksInput);
 
     } catch (error) {
-      console.error("Error fetching students for marking:", error);
+      if (import.meta.env.DEV) console.error("Error fetching students for marking:", error);
     } finally {
       setLoadingStudentMarks(false);
     }

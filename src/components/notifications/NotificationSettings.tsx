@@ -77,7 +77,7 @@ export function NotificationSettings({ schoolId }: NotificationSettingsProps) {
         });
       }
     } catch (error) {
-      console.error("Error loading settings:", error);
+      if (import.meta.env.DEV) console.error("Error loading settings:", error);
     } finally {
       setIsLoading(false);
     }
@@ -122,7 +122,7 @@ export function NotificationSettings({ schoolId }: NotificationSettingsProps) {
         description: "Notification settings have been updated.",
       });
     } catch (error) {
-      console.error("Error saving settings:", error);
+      if (import.meta.env.DEV) console.error("Error saving settings:", error);
       toast({
         variant: "destructive",
         title: "Error",

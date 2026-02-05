@@ -117,7 +117,7 @@ export default function CreateAnnouncement({ schoolId, onCreated }: CreateAnnoun
 
       onCreated?.();
     } catch (error) {
-      console.error("Error creating announcement:", error);
+      if (import.meta.env.DEV) console.error("Error creating announcement:", error);
       toast({
         variant: "destructive",
         title: "Error",

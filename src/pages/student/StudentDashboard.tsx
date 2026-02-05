@@ -138,7 +138,7 @@ const StudentDashboard = () => {
       ]);
 
     } catch (error) {
-      console.error("Error:", error);
+      if (import.meta.env.DEV) console.error("Error:", error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -497,7 +497,7 @@ const StudentDashboard = () => {
       await fetchSubjectsAndHomework(studentData.classId, studentData.id);
 
     } catch (error) {
-      console.error("Upload error:", error);
+      if (import.meta.env.DEV) console.error("Upload error:", error);
       toast({
         variant: "destructive",
         title: "Upload Failed",

@@ -50,7 +50,7 @@ export default function LoginHistory() {
       if (error) throw error;
       setHistory(data || []);
     } catch (error) {
-      console.error("Error fetching login history:", error);
+      if (import.meta.env.DEV) console.error("Error fetching login history:", error);
     } finally {
       setLoading(false);
     }
