@@ -106,7 +106,7 @@ const ParentLogin = () => {
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
       {/* Left panel - Branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-purple-600 relative overflow-hidden items-center justify-center p-12">
+      <div className="hidden lg:flex lg:w-1/2 bg-role-parent relative overflow-hidden items-center justify-center p-12">
         <div className="floating-shapes">
           <div className="floating-shape" />
           <div className="floating-shape" />
@@ -173,7 +173,7 @@ const ParentLogin = () => {
 
             <div>
               <div className="mb-8">
-                <div className="w-14 h-14 bg-purple-600 rounded-xl flex items-center justify-center mb-4 lg:hidden">
+                <div className="w-14 h-14 bg-role-parent rounded-xl flex items-center justify-center mb-4 lg:hidden">
                   <Users className="w-7 h-7 text-white" />
                 </div>
                 <h2 className="text-2xl font-bold text-foreground">Parent Login</h2>
@@ -211,7 +211,7 @@ const ParentLogin = () => {
                     <Label htmlFor="password">Password</Label>
                     <Link
                       to="/auth/forgot-password"
-                      className="text-sm text-purple-600 dark:text-purple-400 hover:underline"
+                      className="text-sm text-primary hover:underline"
                     >
                       Forgot Password?
                     </Link>
@@ -239,7 +239,7 @@ const ParentLogin = () => {
 
                 <Button
                   type="submit"
-                  className="w-full h-12 bg-purple-600 hover:bg-purple-700 text-white font-medium shadow-button"
+                  className="w-full h-12 bg-role-parent text-white font-medium hover:opacity-90 shadow-button"
                   disabled={isLoading}
                 >
                   {isLoading ? (

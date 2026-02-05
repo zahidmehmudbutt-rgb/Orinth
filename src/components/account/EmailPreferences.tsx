@@ -88,8 +88,8 @@ export function EmailPreferences() {
       <CardContent className="space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-              <Bell className="w-5 h-5 text-blue-600" />
+            <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+              <Bell className="w-5 h-5 text-blue-600 dark:text-blue-400" />
             </div>
             <div>
               <Label htmlFor="homework" className="font-medium">
@@ -109,8 +109,8 @@ export function EmailPreferences() {
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
-              <Calendar className="w-5 h-5 text-red-600" />
+            <div className="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+              <Calendar className="w-5 h-5 text-red-600 dark:text-red-400" />
             </div>
             <div>
               <Label htmlFor="attendance" className="font-medium">
@@ -130,8 +130,8 @@ export function EmailPreferences() {
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-              <GraduationCap className="w-5 h-5 text-green-600" />
+            <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+              <GraduationCap className="w-5 h-5 text-green-600 dark:text-green-400" />
             </div>
             <div>
               <Label htmlFor="grades" className="font-medium">
@@ -151,8 +151,8 @@ export function EmailPreferences() {
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
-              <Megaphone className="w-5 h-5 text-purple-600" />
+            <div className="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+              <Megaphone className="w-5 h-5 text-purple-600 dark:text-purple-400" />
             </div>
             <div>
               <Label htmlFor="notices" className="font-medium">

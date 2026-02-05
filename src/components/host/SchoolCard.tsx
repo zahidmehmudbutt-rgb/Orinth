@@ -175,7 +175,7 @@ export function SchoolCard({ school, onUpdate, onToggleStatus }: SchoolCardProps
             <Button
               onClick={handleSave}
               disabled={isUpdating}
-              className="bg-amber-600 hover:bg-amber-700"
+              className="bg-amber-600 hover:bg-amber-700 text-white"
             >
               {isUpdating && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
               Save Changes
@@ -195,7 +195,7 @@ export function SchoolCard({ school, onUpdate, onToggleStatus }: SchoolCardProps
               <img
                 src={school.logo_url}
                 alt={school.name}
-                className="w-12 h-12 rounded-lg object-contain bg-white p-1"
+                className="w-12 h-12 rounded-lg object-contain bg-muted p-1"
               />
             ) : (
               <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">

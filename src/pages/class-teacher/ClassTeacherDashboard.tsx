@@ -460,7 +460,7 @@ const ClassTeacherDashboard = () => {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <ThemeToggle />
+              <ThemeToggle className="text-primary-foreground hover:bg-primary-foreground/20" />
               <GroupChat triggerClassName="text-primary-foreground hover:bg-primary-foreground/20" />
               <NotificationCenter className="text-primary-foreground hover:bg-primary-foreground/20" />
               <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/20" onClick={handleLogout}>
@@ -506,7 +506,7 @@ const ClassTeacherDashboard = () => {
             >
               <RefreshCw className="w-5 h-5" />
             </Button>
-            <ThemeToggle />
+            <ThemeToggle className="text-primary-foreground hover:bg-primary-foreground/20" />
             <GroupChat triggerClassName="text-primary-foreground hover:bg-primary-foreground/20" />
             <NotificationCenter className="text-primary-foreground hover:bg-primary-foreground/20" />
             <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/20" onClick={handleLogout}>

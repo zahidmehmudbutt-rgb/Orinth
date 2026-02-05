@@ -236,13 +236,13 @@ export function NotificationSettings({ schoolId }: NotificationSettingsProps) {
             </CardContent>
           </Card>
 
-          <Card className="border-blue-200 bg-blue-50/50">
+          <Card className="border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-900/20">
             <CardContent className="pt-6">
               <div className="flex gap-3">
-                <Info className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
-                <div className="text-sm text-blue-800">
+                <Info className="w-5 h-5 text-blue-500 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+                <div className="text-sm text-blue-800 dark:text-blue-200">
                   <p className="font-medium mb-1">How it works</p>
-                  <ul className="list-disc list-inside space-y-1 text-blue-700">
+                  <ul className="list-disc list-inside space-y-1 text-blue-700 dark:text-blue-300">
                     <li>When a student is marked absent, their parent receives an alert</li>
                     <li>When a student scores below passing marks, their parent is notified</li>
                     <li>Parents can opt-out from their dashboard settings</li>
@@ -319,13 +319,13 @@ export function NotificationSettings({ schoolId }: NotificationSettingsProps) {
             </CardContent>
           </Card>
 
-          <Card className="border-amber-200 bg-amber-50/50">
+          <Card className="border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-900/20">
             <CardContent className="pt-6">
               <div className="flex gap-3">
-                <Info className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
-                <div className="text-sm text-amber-800">
+                <Info className="w-5 h-5 text-amber-500 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+                <div className="text-sm text-amber-800 dark:text-amber-200">
                   <p className="font-medium mb-1">Important Notes</p>
-                  <ul className="list-disc list-inside space-y-1 text-amber-700">
+                  <ul className="list-disc list-inside space-y-1 text-amber-700 dark:text-amber-300">
                     <li>Keep your credentials secure - never share them</li>
                     <li>Twilio charges per message sent (check their pricing)</li>
                     <li>For WhatsApp, you need to set up a WhatsApp Business account with Twilio</li>

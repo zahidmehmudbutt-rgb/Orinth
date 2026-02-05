@@ -407,7 +407,7 @@ const ParentDashboard = () => {
                       <Button
                         key={child.id}
                         variant={selectedChild?.id === child.id ? "default" : "outline"}
-                        className={selectedChild?.id === child.id ? "bg-purple-600 hover:bg-purple-700" : ""}
+                        className={selectedChild?.id === child.id ? "bg-role-parent hover:opacity-90 text-white" : ""}
                         onClick={() => setSelectedChild(child)}
                       >
                         <User className="w-4 h-4 mr-2" />
@@ -421,7 +421,7 @@ const ParentDashboard = () => {
 
             {/* Selected Child Info */}
             {selectedChild && (
-              <Card className="mb-6 bg-gradient-to-r from-purple-600 to-purple-700 text-white">
+              <Card className="mb-6 bg-role-parent text-white">
                 <CardContent className="py-6">
                   <div className="flex items-center gap-4">
                     <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
@@ -429,10 +429,10 @@ const ParentDashboard = () => {
                     </div>
                     <div>
                       <h2 className="text-xl font-bold">{selectedChild.full_name}</h2>
-                      <p className="text-purple-100">
+                      <p className="opacity-90">
                         {selectedChild.class_name} {selectedChild.section && `- Section ${selectedChild.section}`}
                       </p>
-                      <p className="text-purple-200 text-sm">ID: {selectedChild.student_id}</p>
+                      <p className="opacity-70 text-sm">ID: {selectedChild.student_id}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -512,7 +512,7 @@ const ParentDashboard = () => {
                                 <div className="mt-2 p-2 bg-muted rounded">
                                   <p className="text-sm">
                                     <span className="font-medium">Marks:</span>{" "}
-                                    <span className={hw.submission.marks >= 7 ? "text-green-600" : hw.submission.marks >= 5 ? "text-yellow-600" : "text-red-600"}>
+                                    <span className={hw.submission.marks >= 7 ? "text-green-600 dark:text-green-400" : hw.submission.marks >= 5 ? "text-yellow-600 dark:text-yellow-400" : "text-red-600 dark:text-red-400"}>
                                       {hw.submission.marks}/10
                                     </span>
                                   </p>
@@ -557,16 +557,16 @@ const ParentDashboard = () => {
                               </div>
                               <p className="text-sm text-muted-foreground mb-2">{result.examDate}</p>
                               {result.isAbsent ? (
-                                <div className="mt-2 p-2 bg-red-50 rounded">
-                                  <p className="text-sm text-red-600">Absent</p>
+                                <div className="mt-2 p-2 bg-destructive/10 rounded">
+                                  <p className="text-sm text-destructive">Absent</p>
                                 </div>
                               ) : result.marksObtained !== null ? (
                                 <div className="mt-2 p-2 bg-muted rounded">
                                   <div className="flex justify-between items-center mb-2">
                                     <span className="text-sm font-medium">Score:</span>
                                     <span className={`font-semibold ${
-                                      (result.marksObtained / result.maxMarks) >= 0.7 ? 'text-green-600' :
-                                      (result.marksObtained / result.maxMarks) >= 0.5 ? 'text-yellow-600' : 'text-red-600'
+                                      (result.marksObtained / result.maxMarks) >= 0.7 ? 'text-green-600 dark:text-green-400' :
+                                      (result.marksObtained / result.maxMarks) >= 0.5 ? 'text-yellow-600 dark:text-yellow-400' : 'text-red-600 dark:text-red-400'
                                     }`}>
                                       {result.marksObtained}/{result.maxMarks}
                                     </span>
@@ -874,7 +874,7 @@ const ParentDashboard = () => {
                               cx="64"
                               cy="64"
                               r="56"
-                              stroke="#e5e7eb"
+                              className="stroke-border"
                               strokeWidth="12"
                               fill="none"
                             />
@@ -900,11 +900,11 @@ const ParentDashboard = () => {
                           <p className="text-sm text-muted-foreground">Total Days</p>
                         </div>
                         <div>
-                          <p className="text-2xl font-bold text-green-600">{attendanceStats.present}</p>
+                          <p className="text-2xl font-bold text-success">{attendanceStats.present}</p>
                           <p className="text-sm text-muted-foreground">Present</p>
                         </div>
                         <div>
-                          <p className="text-2xl font-bold text-red-600">{attendanceStats.absent}</p>
+                          <p className="text-2xl font-bold text-destructive">{attendanceStats.absent}</p>
                           <p className="text-sm text-muted-foreground">Absent</p>
                         </div>
                       </div>

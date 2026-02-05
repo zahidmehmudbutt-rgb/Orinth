@@ -53,7 +53,7 @@ const roles = [
     description: "Monitor your child's academics, attendance, and progress",
     icon: UserPlus,
     href: "/parent/login",
-    colorClass: "bg-purple-600",
+    colorClass: "bg-role-parent",
   },
 ];
 

@@ -422,7 +422,7 @@ const PrincipalDashboard = () => {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <ThemeToggle />
+            <ThemeToggle className="text-primary-foreground hover:bg-primary-foreground/20" />
             <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/20">
               <Bell className="w-5 h-5" />
             </Button>

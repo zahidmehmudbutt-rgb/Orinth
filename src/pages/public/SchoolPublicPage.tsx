@@ -342,7 +342,7 @@ const SchoolPublicPage = () => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-foreground text-background py-8 mt-12">
+      <footer className="bg-gradient-footer text-white py-8 mt-12">
         <div className="container mx-auto px-4 text-center">
           <p className="opacity-80">
             &copy; {new Date().getFullYear()} {school.name}. All rights reserved.
