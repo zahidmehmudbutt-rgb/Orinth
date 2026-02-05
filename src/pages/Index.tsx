@@ -1,10 +1,12 @@
+import { useState, useEffect } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { RoleCard } from "@/components/RoleCard";
 import { StatsCard } from "@/components/StatsCard";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Users, BookOpen, GraduationCap, Award, UserCheck, BookMarked, Crown, UserPlus,
-  ClipboardCheck, BarChart3, Bell, Shield, MessageSquare, Calendar,
+  ClipboardCheck, BarChart3, Bell, MessageSquare, Calendar,
   ArrowRight,
 } from "lucide-react";
 import { FadeIn, FadeInView, StaggerContainer, StaggerItem } from "@/components/ui/motion-wrapper";
@@ -56,13 +58,6 @@ const roles = [
   },
 ];
 
-const stats = [
-  { icon: Users, value: "1200+", label: "Students Enrolled" },
-  { icon: GraduationCap, value: "85+", label: "Dedicated Teachers" },
-  { icon: BookOpen, value: "50+", label: "Active Classes" },
-  { icon: Award, value: "25+", label: "Years of Excellence" },
-];
-
 const features = [
   {
     icon: ClipboardCheck,
@@ -96,7 +91,50 @@ const features = [
   },
 ];
 
+interface Stats {
+  students: number;
+  teachers: number;
+  classes: number;
+  schools: number;
+}
+
 const Index = () => {
+  const [stats, setStats] = useState<Stats>({ students: 0, teachers: 0, classes: 0, schools: 0 });
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+  const fetchStats = async () => {
+    try {
+      const [studentsResult, teachersResult, classesResult, schoolsResult] = await Promise.all([
+        supabase.from("students").select("id", { count: "exact", head: true }),
+        supabase.from("user_roles").select("id", { count: "exact", head: true }).in("role", ["teacher", "class_teacher"]),
+        supabase.from("classes").select("id", { count: "exact", head: true }),
+        supabase.from("schools").select("id", { count: "exact", head: true }).eq("is_active", true),
+      ]);
+
+      setStats({
+        students: studentsResult.count || 0,
+        teachers: teachersResult.count || 0,
+        classes: classesResult.count || 0,
+        schools: schoolsResult.count || 0,
+      });
+    } catch (error) {
+      if (import.meta.env.DEV) console.error("Error fetching stats:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const statsData = [
+    { icon: Users, value: stats.students.toLocaleString(), label: "Students Enrolled" },
+    { icon: GraduationCap, value: stats.teachers.toLocaleString(), label: "Teachers" },
+    { icon: BookOpen, value: stats.classes.toLocaleString(), label: "Active Classes" },
+    { icon: Award, value: stats.schools.toLocaleString(), label: "Schools" },
+  ];
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -159,19 +197,24 @@ const Index = () => {
           <FadeInView>
             <div className="text-center mb-10">
               <h2 className="text-2xl lg:text-3xl font-bold text-foreground">
-                Our School at a Glance
+                Platform Overview
               </h2>
             </div>
           </FadeInView>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
-            {stats.map((stat) => (
-              <StatsCard key={stat.label} {...stat} />
+            {statsData.map((stat) => (
+              <StatsCard
+                key={stat.label}
+                icon={stat.icon}
+                value={isLoading ? "..." : stat.value}
+                label={stat.label}
+              />
             ))}
           </div>
         </div>
       </section>
 
-      {/* Portal Selection - Moved up for quick access */}
+      {/* Portal Selection */}
       <section id="portals" className="py-20 bg-gradient-hero">
         <div className="container mx-auto px-4">
           <FadeInView>
