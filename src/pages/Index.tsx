@@ -149,14 +149,6 @@ const faqs = [
   },
 ];
 
-const faqCategories = {
-  login: [0, 1, 7],
-  homework: [2, 3],
-  marks: [4, 10],
-  parent: [5],
-  technical: [6, 8],
-  attendance: [9, 11],
-};
 
 const Index = () => {
   const [stats, setStats] = useState<Stats>({ students: 0, teachers: 0, classes: 0, schools: 0 });
