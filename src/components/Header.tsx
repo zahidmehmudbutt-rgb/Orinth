@@ -55,10 +55,7 @@ export const Header = () => {
           <ThemeToggle />
 
           {/* Login Dropdown */}
-          <div
-            className="relative"
-            onMouseLeave={() => setLoginOpen(false)}
-          >
+          <div className="relative">
             <Button
               variant="outline"
               size="sm"
@@ -69,18 +66,25 @@ export const Header = () => {
               <ChevronDown className={`w-3.5 h-3.5 transition-transform ${loginOpen ? "rotate-180" : ""}`} />
             </Button>
             {loginOpen && (
-              <div className="absolute right-0 top-full mt-2 w-48 bg-card border border-border rounded-xl shadow-card-hover py-2 z-50">
-                {portalLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    to={link.href}
-                    className="block px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-                    onClick={() => setLoginOpen(false)}
-                  >
-                    {link.label} Portal
-                  </Link>
-                ))}
-              </div>
+              <>
+                {/* Invisible overlay to close dropdown when clicking outside */}
+                <div
+                  className="fixed inset-0 z-40"
+                  onClick={() => setLoginOpen(false)}
+                />
+                <div className="absolute right-0 top-full mt-2 w-48 bg-card border border-border rounded-xl shadow-card-hover py-2 z-50">
+                  {portalLinks.map((link) => (
+                    <Link
+                      key={link.href}
+                      to={link.href}
+                      className="block px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                      onClick={() => setLoginOpen(false)}
+                    >
+                      {link.label} Portal
+                    </Link>
+                  ))}
+                </div>
+              </>
             )}
           </div>
 
