@@ -24,11 +24,10 @@ export const Footer = () => {
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4">Product</h4>
+              <h4 className="font-semibold mb-4">Quick Links</h4>
               <ul className="space-y-2.5 text-sm opacity-80">
                 <li><a href="#features" className="hover:opacity-100 transition-opacity">Features</a></li>
-                <li><a href="#pricing" className="hover:opacity-100 transition-opacity">Pricing</a></li>
-                <li><a href="#how-it-works" className="hover:opacity-100 transition-opacity">How It Works</a></li>
+                <li><a href="#portals" className="hover:opacity-100 transition-opacity">Portals</a></li>
                 <li><a href="#faq" className="hover:opacity-100 transition-opacity">FAQ</a></li>
               </ul>
             </div>
