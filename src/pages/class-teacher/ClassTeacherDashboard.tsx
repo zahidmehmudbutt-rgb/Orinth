@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { FadeInView, StaggerContainer, StaggerItem, HoverScale } from "@/components/ui/motion-wrapper";
 import { DashboardSkeleton } from "@/components/ui/skeleton-loader";
 import { LogOut, Calendar, UserPlus, Users, Trash2, Printer, Settings, Sparkles, RefreshCw, Check, X, Megaphone, BarChart3 } from "lucide-react";
 import { NotificationCenter } from "@/components/notifications/NotificationCenter";
@@ -539,41 +540,53 @@ const ClassTeacherDashboard = () => {
         )}
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <div className="bg-card rounded-xl p-4 shadow-card border border-border">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-                <Users className="w-5 h-5 text-primary" />
+        <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <StaggerItem>
+            <HoverScale>
+              <div className="bg-card rounded-xl p-4 shadow-card border border-border h-full">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                    <Users className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-foreground">{students.length}</p>
+                    <p className="text-sm text-muted-foreground">Total Students</p>
+                  </div>
+                </div>
               </div>
-              <div>
-                <p className="text-2xl font-bold text-foreground">{students.length}</p>
-                <p className="text-sm text-muted-foreground">Total Students</p>
+            </HoverScale>
+          </StaggerItem>
+          <StaggerItem>
+            <HoverScale>
+              <div className="bg-card rounded-xl p-4 shadow-card border border-border h-full">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-success/10 rounded-lg flex items-center justify-center">
+                    <Check className="w-5 h-5 text-success" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-foreground">{presentCount}</p>
+                    <p className="text-sm text-muted-foreground">Present Today</p>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          <div className="bg-card rounded-xl p-4 shadow-card border border-border">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-success/10 rounded-lg flex items-center justify-center">
-                <Check className="w-5 h-5 text-success" />
+            </HoverScale>
+          </StaggerItem>
+          <StaggerItem>
+            <HoverScale>
+              <div className="bg-card rounded-xl p-4 shadow-card border border-border h-full">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-destructive/10 rounded-lg flex items-center justify-center">
+                    <X className="w-5 h-5 text-destructive" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-foreground">{absentCount}</p>
+                    <p className="text-sm text-muted-foreground">Absent Today</p>
+                  </div>
+                </div>
               </div>
-              <div>
-                <p className="text-2xl font-bold text-foreground">{presentCount}</p>
-                <p className="text-sm text-muted-foreground">Present Today</p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-card rounded-xl p-4 shadow-card border border-border">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-destructive/10 rounded-lg flex items-center justify-center">
-                <X className="w-5 h-5 text-destructive" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-foreground">{absentCount}</p>
-                <p className="text-sm text-muted-foreground">Absent Today</p>
-              </div>
-            </div>
-          </div>
-        </div>
+            </HoverScale>
+          </StaggerItem>
+        </StaggerContainer>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="w-full max-w-2xl mx-auto grid grid-cols-5 mb-8 bg-card shadow-card">
@@ -727,17 +740,18 @@ const ClassTeacherDashboard = () => {
                   />
                 ) : (
                   <>
-                    <div className="flex justify-between items-center mb-4">
+                    <FadeInView className="flex justify-between items-center mb-4">
                       <h2 className="text-xl font-bold text-foreground">Student List ({students.length})</h2>
                       <Button variant="outline" size="sm" className="gap-2" onClick={() => window.print()}>
                         <Printer className="w-4 h-4" />
                         Print List
                       </Button>
-                    </div>
+                    </FadeInView>
 
-                    <div className="space-y-3">
+                    <StaggerContainer className="space-y-3">
                       {students.map((student) => (
-                        <div key={student.id} className="bg-card rounded-xl p-4 shadow-card border border-border flex items-center justify-between">
+                        <StaggerItem key={student.id}>
+                          <div className="bg-card rounded-xl p-4 shadow-card border border-border flex items-center justify-between">
                           <div>
                             <p className="font-medium text-foreground">{student.full_name}</p>
                             <p className="text-xs text-muted-foreground">ID: {student.student_id}</p>
@@ -768,8 +782,9 @@ const ClassTeacherDashboard = () => {
                             </AlertDialogContent>
                           </AlertDialog>
                         </div>
+                        </StaggerItem>
                       ))}
-                    </div>
+                    </StaggerContainer>
                   </>
                 )}
               </div>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { FadeInView, StaggerContainer, StaggerItem, HoverScale } from "@/components/ui/motion-wrapper";
 import { DashboardSkeleton } from "@/components/ui/skeleton-loader";
 import { Bell, LogOut, UserPlus, Users, Crown, BarChart3, Trash2, Settings, Sparkles, GraduationCap, School, Globe, BookOpen, MessageSquare, Megaphone } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -557,13 +558,16 @@ const PrincipalDashboard = () => {
                   />
                 ) : (
                   <>
-                    <h2 className="text-xl font-bold text-foreground mb-4">
-                      Section Heads ({sectionHeads.length})
-                    </h2>
+                    <FadeInView>
+                      <h2 className="text-xl font-bold text-foreground mb-4">
+                        Section Heads ({sectionHeads.length})
+                      </h2>
+                    </FadeInView>
                     {sectionHeads.length > 0 ? (
-                      <div className="space-y-3">
+                      <StaggerContainer className="space-y-3">
                         {sectionHeads.map((head) => (
-                          <div key={head.id} className="bg-card rounded-xl p-4 shadow-card border border-border">
+                          <StaggerItem key={head.id}>
+                            <div className="bg-card rounded-xl p-4 shadow-card border border-border">
                             <div className="flex items-start justify-between">
                               <div>
                                 <p className="font-semibold text-foreground">{head.name}</p>
@@ -596,8 +600,9 @@ const PrincipalDashboard = () => {
                               </AlertDialog>
                             </div>
                           </div>
+                          </StaggerItem>
                         ))}
-                      </div>
+                      </StaggerContainer>
                     ) : (
                       <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                         <EmptyState
@@ -625,13 +630,17 @@ const PrincipalDashboard = () => {
                 </div>
               </div>
 
-              <h2 className="text-xl font-bold text-foreground mb-4">
-                All Classes ({classes.length})
-              </h2>
+              <FadeInView>
+                <h2 className="text-xl font-bold text-foreground mb-4">
+                  All Classes ({classes.length})
+                </h2>
+              </FadeInView>
               {classes.length > 0 ? (
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <StaggerContainer className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {classes.map((cls) => (
-                    <div key={cls.id} className="bg-card rounded-xl p-4 shadow-card border border-border">
+                    <StaggerItem key={cls.id}>
+                      <HoverScale>
+                        <div className="bg-card rounded-xl p-4 shadow-card border border-border h-full">
                       <div className="mb-3">
                         <p className="font-semibold text-foreground text-lg">
                           {cls.name}-{cls.section}
@@ -647,8 +656,10 @@ const PrincipalDashboard = () => {
                         </p>
                       </div>
                     </div>
+                      </HoverScale>
+                    </StaggerItem>
                   ))}
-                </div>
+                </StaggerContainer>
               ) : (
                 <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                   <EmptyState

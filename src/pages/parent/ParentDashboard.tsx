@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { FadeInView, StaggerContainer, StaggerItem, HoverScale } from "@/components/ui/motion-wrapper";
 import { DashboardSkeleton } from "@/components/ui/skeleton-loader";
 import {
   Users,
@@ -480,9 +481,10 @@ const ParentDashboard = () => {
                           <p>No homework assignments yet</p>
                         </div>
                       ) : (
-                        <div className="space-y-4">
+                        <StaggerContainer className="space-y-4">
                           {homework.map(hw => (
-                            <div key={hw.id} className="border rounded-lg p-4">
+                            <StaggerItem key={hw.id}>
+                              <div className="border rounded-lg p-4">
                               <div className="flex justify-between items-start mb-2">
                                 <div>
                                   <h4 className="font-semibold text-foreground">{hw.title}</h4>
@@ -524,8 +526,9 @@ const ParentDashboard = () => {
                                 </div>
                               )}
                             </div>
+                            </StaggerItem>
                           ))}
-                        </div>
+                        </StaggerContainer>
                       )}
                     </CardContent>
                   </Card>
@@ -543,9 +546,10 @@ const ParentDashboard = () => {
                           <p>No exam results yet</p>
                         </div>
                       ) : (
-                        <div className="space-y-4">
+                        <StaggerContainer className="space-y-4">
                           {examResults.map(result => (
-                            <div key={result.id} className="border rounded-lg p-4">
+                            <StaggerItem key={result.id}>
+                              <div className="border rounded-lg p-4">
                               <div className="flex justify-between items-start mb-2">
                                 <div>
                                   <h4 className="font-semibold text-foreground">{result.title}</h4>
@@ -584,8 +588,9 @@ const ParentDashboard = () => {
                                 </div>
                               )}
                             </div>
+                            </StaggerItem>
                           ))}
-                        </div>
+                        </StaggerContainer>
                       )}
                     </CardContent>
                   </Card>

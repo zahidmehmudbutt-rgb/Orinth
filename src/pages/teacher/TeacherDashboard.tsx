@@ -5,6 +5,7 @@ import { NotificationCenter } from "@/components/notifications/NotificationCente
 import { GroupChat } from "@/components/chat";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { motion } from "framer-motion";
+import { FadeInView, StaggerContainer, StaggerItem, HoverScale } from "@/components/ui/motion-wrapper";
 import { DashboardSkeleton } from "@/components/ui/skeleton-loader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -1278,11 +1279,15 @@ const TeacherDashboard = () => {
 
                 {/* Recent Homework */}
                 <div>
-                  <h2 className="text-xl font-bold text-foreground mb-4">Recent Homework ({recentHomework.length})</h2>
+                  <FadeInView>
+                    <h2 className="text-xl font-bold text-foreground mb-4">Recent Homework ({recentHomework.length})</h2>
+                  </FadeInView>
                   {hasHomework ? (
-                    <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
+                    <StaggerContainer className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
                       {recentHomework.map((hw) => (
-                        <div key={hw.id} className="bg-card rounded-xl p-5 shadow-card border border-border">
+                        <StaggerItem key={hw.id}>
+                          <HoverScale>
+                            <div className="bg-card rounded-xl p-5 shadow-card border border-border">
                           <div className="flex justify-between items-start mb-3">
                             <div>
                               <h3 className="font-semibold text-foreground">{hw.title}</h3>
@@ -1305,8 +1310,10 @@ const TeacherDashboard = () => {
                             </div>
                           </div>
                         </div>
+                          </HoverScale>
+                        </StaggerItem>
                       ))}
-                    </div>
+                    </StaggerContainer>
                   ) : (
                     <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                       <EmptyState

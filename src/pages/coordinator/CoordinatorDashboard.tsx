@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { FadeInView, StaggerContainer, StaggerItem, HoverScale } from "@/components/ui/motion-wrapper";
 import { DashboardSkeleton } from "@/components/ui/skeleton-loader";
 import {
   Bell, LogOut, UserPlus, Users, Trash2, BookMarked, Settings,
@@ -1044,52 +1045,68 @@ const CoordinatorDashboard = () => {
         transition={{ duration: 0.4, ease: "easeOut" }}
         className="container mx-auto px-4 py-6">
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-card rounded-xl p-4 shadow-card border border-border">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center">
-                <School className="w-5 h-5 text-blue-500" />
+        <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <StaggerItem>
+            <HoverScale>
+              <div className="bg-card rounded-xl p-4 shadow-card border border-border h-full">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center">
+                    <School className="w-5 h-5 text-blue-500" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-foreground">{classes.length}</p>
+                    <p className="text-sm text-muted-foreground">Classes</p>
+                  </div>
+                </div>
               </div>
-              <div>
-                <p className="text-2xl font-bold text-foreground">{classes.length}</p>
-                <p className="text-sm text-muted-foreground">Classes</p>
+            </HoverScale>
+          </StaggerItem>
+          <StaggerItem>
+            <HoverScale>
+              <div className="bg-card rounded-xl p-4 shadow-card border border-border h-full">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-purple-500/10 rounded-lg flex items-center justify-center">
+                    <BookOpen className="w-5 h-5 text-purple-500" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-foreground">{subjects.length}</p>
+                    <p className="text-sm text-muted-foreground">Subjects</p>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          <div className="bg-card rounded-xl p-4 shadow-card border border-border">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-purple-500/10 rounded-lg flex items-center justify-center">
-                <BookOpen className="w-5 h-5 text-purple-500" />
+            </HoverScale>
+          </StaggerItem>
+          <StaggerItem>
+            <HoverScale>
+              <div className="bg-card rounded-xl p-4 shadow-card border border-border h-full">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-role-teacher/10 rounded-lg flex items-center justify-center">
+                    <GraduationCap className="w-5 h-5 text-role-teacher" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-foreground">{teacherCount}</p>
+                    <p className="text-sm text-muted-foreground">Teachers</p>
+                  </div>
+                </div>
               </div>
-              <div>
-                <p className="text-2xl font-bold text-foreground">{subjects.length}</p>
-                <p className="text-sm text-muted-foreground">Subjects</p>
+            </HoverScale>
+          </StaggerItem>
+          <StaggerItem>
+            <HoverScale>
+              <div className="bg-card rounded-xl p-4 shadow-card border border-border h-full">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-role-class-teacher/10 rounded-lg flex items-center justify-center">
+                    <Users className="w-5 h-5 text-role-class-teacher" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-foreground">{classTeacherCount}</p>
+                    <p className="text-sm text-muted-foreground">Class Teachers</p>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          <div className="bg-card rounded-xl p-4 shadow-card border border-border">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-role-teacher/10 rounded-lg flex items-center justify-center">
-                <GraduationCap className="w-5 h-5 text-role-teacher" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-foreground">{teacherCount}</p>
-                <p className="text-sm text-muted-foreground">Teachers</p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-card rounded-xl p-4 shadow-card border border-border">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-role-class-teacher/10 rounded-lg flex items-center justify-center">
-                <Users className="w-5 h-5 text-role-class-teacher" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-foreground">{classTeacherCount}</p>
-                <p className="text-sm text-muted-foreground">Class Teachers</p>
-              </div>
-            </div>
-          </div>
-        </div>
+            </HoverScale>
+          </StaggerItem>
+        </StaggerContainer>
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -1279,9 +1296,11 @@ const CoordinatorDashboard = () => {
                 />
               </div>
             ) : (
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <StaggerContainer className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {classes.map(cls => (
-                  <div key={cls.id} className="bg-card rounded-xl p-4 shadow-card border border-border">
+                  <StaggerItem key={cls.id}>
+                    <HoverScale>
+                      <div className="bg-card rounded-xl p-4 shadow-card border border-border h-full">
                     <div className="flex justify-between items-start mb-3">
                       <div>
                         <p className="font-semibold text-foreground text-lg">
@@ -1334,8 +1353,10 @@ const CoordinatorDashboard = () => {
                       </Button>
                     </div>
                   </div>
+                    </HoverScale>
+                  </StaggerItem>
                 ))}
-              </div>
+              </StaggerContainer>
             )}
 
             {/* Assign Subjects Dialog */}

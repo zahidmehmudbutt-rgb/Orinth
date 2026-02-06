@@ -5,6 +5,7 @@ import { NotificationCenter } from "@/components/notifications/NotificationCente
 import { GroupChat } from "@/components/chat";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { motion } from "framer-motion";
+import { FadeInView, StaggerContainer, StaggerItem, HoverScale } from "@/components/ui/motion-wrapper";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -630,46 +631,51 @@ const StudentDashboard = () => {
               </div>
             ) : (
               <>
-                <div className="mb-6">
+                <FadeInView className="mb-6">
                   <h2 className="text-xl font-bold text-foreground mb-2">Your Subjects</h2>
                   <p className="text-muted-foreground text-sm">{subjects.length} subjects enrolled</p>
-                </div>
+                </FadeInView>
 
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+                <StaggerContainer className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
                   {subjects.map((subject) => (
-                    <div key={subject.code} className="bg-card rounded-xl p-5 shadow-card border border-border hover:shadow-card-hover transition-shadow">
-                      <div className="flex justify-between items-start mb-3">
-                        <div>
-                          <h3 className="font-semibold text-foreground">{subject.name}</h3>
-                          <p className="text-xs text-muted-foreground">{subject.code}</p>
+                    <StaggerItem key={subject.code}>
+                      <HoverScale>
+                        <div className="bg-card rounded-xl p-5 shadow-card border border-border h-full">
+                          <div className="flex justify-between items-start mb-3">
+                            <div>
+                              <h3 className="font-semibold text-foreground">{subject.name}</h3>
+                              <p className="text-xs text-muted-foreground">{subject.code}</p>
+                            </div>
+                            <BookOpen className="w-5 h-5 text-primary" />
+                          </div>
+                          <p className="text-sm text-muted-foreground mb-3">Teacher: {subject.teacher}</p>
+                          {subject.pending > 0 ? (
+                            <div className="bg-warning/10 text-warning px-3 py-1.5 rounded-lg text-sm font-medium">
+                              {subject.pending} homework pending
+                            </div>
+                          ) : (
+                            <div className="bg-success/10 text-success px-3 py-1.5 rounded-lg text-sm font-medium">
+                              All caught up!
+                            </div>
+                          )}
                         </div>
-                        <BookOpen className="w-5 h-5 text-primary" />
-                      </div>
-                      <p className="text-sm text-muted-foreground mb-3">Teacher: {subject.teacher}</p>
-                      {subject.pending > 0 ? (
-                        <div className="bg-warning/10 text-warning px-3 py-1.5 rounded-lg text-sm font-medium">
-                          {subject.pending} homework pending
-                        </div>
-                      ) : (
-                        <div className="bg-success/10 text-success px-3 py-1.5 rounded-lg text-sm font-medium">
-                          All caught up!
-                        </div>
-                      )}
-                    </div>
+                      </HoverScale>
+                    </StaggerItem>
                   ))}
-                </div>
+                </StaggerContainer>
 
-                <div className="mb-6">
+                <FadeInView className="mb-6">
                   <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
                     <Clock className="w-5 h-5 text-primary" />
                     All Homework ({homeworks.length})
                   </h2>
-                </div>
+                </FadeInView>
 
                 {hasHomework ? (
-                  <div className="grid sm:grid-cols-2 gap-4">
+                  <StaggerContainer className="grid sm:grid-cols-2 gap-4">
                     {homeworks.map((hw) => (
-                      <div key={hw.id} className="bg-card rounded-xl p-5 shadow-card border border-border">
+                      <StaggerItem key={hw.id}>
+                        <div className="bg-card rounded-xl p-5 shadow-card border border-border h-full">
                         <div className="flex justify-between items-start mb-3">
                           <div>
                             <h3 className="font-semibold text-foreground">{hw.title}</h3>
@@ -731,8 +737,9 @@ const StudentDashboard = () => {
                           </>
                         )}
                       </div>
+                      </StaggerItem>
                     ))}
-                  </div>
+                  </StaggerContainer>
                 ) : (
                   <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                     <EmptyState
@@ -808,31 +815,34 @@ const StudentDashboard = () => {
                   </div>
                 </div>
 
-                <h2 className="text-xl font-bold text-foreground mb-4">Daily Attendance Record</h2>
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <FadeInView>
+                  <h2 className="text-xl font-bold text-foreground mb-4">Daily Attendance Record</h2>
+                </FadeInView>
+                <StaggerContainer className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {recentAttendance.map((record, index) => (
-                    <div
-                      key={index}
-                      className={`bg-card rounded-xl p-4 shadow-card border border-border flex items-center justify-between ${
-                        record.status === "absent" ? "border-destructive/30" : ""
-                      }`}
-                    >
-                      <div>
-                        <p className="font-semibold text-foreground">{record.day}</p>
-                        <p className="text-sm text-muted-foreground">{record.date}</p>
-                      </div>
-                      <span
-                        className={`px-3 py-1.5 rounded-lg text-sm font-medium ${
-                          record.status === "present"
-                            ? "bg-success text-success-foreground"
-                            : "bg-destructive text-destructive-foreground"
+                    <StaggerItem key={index}>
+                      <div
+                        className={`bg-card rounded-xl p-4 shadow-card border border-border flex items-center justify-between ${
+                          record.status === "absent" ? "border-destructive/30" : ""
                         }`}
                       >
-                        {record.status === "present" ? "Present" : "Absent"}
-                      </span>
-                    </div>
+                        <div>
+                          <p className="font-semibold text-foreground">{record.day}</p>
+                          <p className="text-sm text-muted-foreground">{record.date}</p>
+                        </div>
+                        <span
+                          className={`px-3 py-1.5 rounded-lg text-sm font-medium ${
+                            record.status === "present"
+                              ? "bg-success text-success-foreground"
+                              : "bg-destructive text-destructive-foreground"
+                          }`}
+                        >
+                          {record.status === "present" ? "Present" : "Absent"}
+                        </span>
+                      </div>
+                    </StaggerItem>
                   ))}
-                </div>
+                </StaggerContainer>
               </>
             )}
           </TabsContent>
@@ -852,14 +862,15 @@ const StudentDashboard = () => {
                 {/* Homework Marks Section */}
                 {hasMarks && (
                   <>
-                    <div className="mb-6">
+                    <FadeInView className="mb-6">
                       <h2 className="text-xl font-bold text-foreground mb-2">Homework Marks</h2>
                       <p className="text-muted-foreground text-sm">Your marks for submitted homework (out of 10)</p>
-                    </div>
+                    </FadeInView>
 
-                    <div className="grid sm:grid-cols-2 gap-4">
+                    <StaggerContainer className="grid sm:grid-cols-2 gap-4">
                       {marks.map((mark, index) => (
-                        <div key={index} className="bg-card rounded-xl p-5 shadow-card border border-border">
+                        <StaggerItem key={index}>
+                          <div className="bg-card rounded-xl p-5 shadow-card border border-border h-full">
                           <div className="flex justify-between items-start mb-4">
                             <div>
                               <h3 className="font-semibold text-foreground">{mark.title}</h3>
@@ -878,22 +889,24 @@ const StudentDashboard = () => {
                             <p className="text-sm text-muted-foreground italic">"{mark.remarks}"</p>
                           )}
                         </div>
+                        </StaggerItem>
                       ))}
-                    </div>
+                    </StaggerContainer>
                   </>
                 )}
 
                 {/* Exam Results Section */}
                 {hasExamResults && (
                   <>
-                    <div className="mb-6">
+                    <FadeInView className="mb-6">
                       <h2 className="text-xl font-bold text-foreground mb-2">Exam Results</h2>
                       <p className="text-muted-foreground text-sm">Your results from tests and exams</p>
-                    </div>
+                    </FadeInView>
 
-                    <div className="grid sm:grid-cols-2 gap-4">
+                    <StaggerContainer className="grid sm:grid-cols-2 gap-4">
                       {examResults.map((result) => (
-                        <div key={result.id} className="bg-card rounded-xl p-5 shadow-card border border-border">
+                        <StaggerItem key={result.id}>
+                          <div className="bg-card rounded-xl p-5 shadow-card border border-border h-full">
                           <div className="flex justify-between items-start mb-3">
                             <div>
                               <h3 className="font-semibold text-foreground">{result.title}</h3>
@@ -927,8 +940,9 @@ const StudentDashboard = () => {
                             </div>
                           )}
                         </div>
+                        </StaggerItem>
                       ))}
-                    </div>
+                    </StaggerContainer>
                   </>
                 )}
               </div>
@@ -1210,22 +1224,24 @@ const StudentDashboard = () => {
               </div>
             ) : (
               <>
-                <div className="mb-6">
+                <FadeInView className="mb-6">
                   <h2 className="text-xl font-bold text-foreground mb-2">School Notices</h2>
                   <p className="text-muted-foreground text-sm">Important announcements and updates</p>
-                </div>
+                </FadeInView>
 
-                <div className="space-y-4">
+                <StaggerContainer className="space-y-4">
                   {notices.map((notice) => (
-                    <div key={notice.id} className="bg-card rounded-xl p-5 shadow-card border border-border">
-                      <div className="flex justify-between items-start mb-3">
-                        <h3 className="font-semibold text-foreground">{notice.title}</h3>
-                        <span className="text-xs text-muted-foreground">{notice.date}</span>
+                    <StaggerItem key={notice.id}>
+                      <div className="bg-card rounded-xl p-5 shadow-card border border-border">
+                        <div className="flex justify-between items-start mb-3">
+                          <h3 className="font-semibold text-foreground">{notice.title}</h3>
+                          <span className="text-xs text-muted-foreground">{notice.date}</span>
+                        </div>
+                        <p className="text-muted-foreground">{notice.content}</p>
                       </div>
-                      <p className="text-muted-foreground">{notice.content}</p>
-                    </div>
+                    </StaggerItem>
                   ))}
-                </div>
+                </StaggerContainer>
               </>
             )}
           </TabsContent>
