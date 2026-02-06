@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import { FadeInView, StaggerContainer, StaggerItem, HoverScale } from "@/components/ui/motion-wrapper";
 import { DashboardSkeleton } from "@/components/ui/skeleton-loader";
 import { MobileNav } from "@/components/ui/mobile-nav";
+import { SwipeableTabContent } from "@/components/ui/swipeable-tabs";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -1117,10 +1118,10 @@ const TeacherDashboard = () => {
             </div>
             <div>
               <h1 className="text-lg font-bold">Teacher Dashboard</h1>
-              <p className="text-xs opacity-80">Welcome, {teacherData?.name}</p>
+              <p className="text-xs opacity-80 truncate max-w-[150px] sm:max-w-none">Welcome, {teacherData?.name}</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1 sm:gap-3">
             <ThemeToggle className="text-primary-foreground hover:bg-primary-foreground/20" />
             <GroupChat triggerClassName="text-primary-foreground hover:bg-primary-foreground/20" />
             <NotificationCenter className="text-primary-foreground hover:bg-primary-foreground/20" />
@@ -1132,6 +1133,7 @@ const TeacherDashboard = () => {
       </header>
 
       <motion.main
+        id="main-content"
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
@@ -1154,7 +1156,7 @@ const TeacherDashboard = () => {
         )}
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="w-full max-w-2xl mx-auto grid grid-cols-4 mb-8 bg-card shadow-card">
+          <TabsList className="w-full max-w-2xl mx-auto hidden md:grid grid-cols-4 mb-8 bg-card shadow-card">
             <TabsTrigger value="homework" className="flex items-center gap-2 data-[state=active]:bg-role-teacher data-[state=active]:text-primary-foreground">
               <BookOpen className="w-4 h-4" />
               <span className="hidden sm:inline">Homework</span>
@@ -1173,6 +1175,7 @@ const TeacherDashboard = () => {
             </TabsTrigger>
           </TabsList>
 
+          <SwipeableTabContent activeTab={activeTab} tabOrder={["homework", "marks", "results", "account"]} onTabChange={setActiveTab}>
           <TabsContent value="homework" className="animate-fade-in">
             {!hasClasses ? (
               <div className="bg-card rounded-xl p-6 shadow-card border border-border">
@@ -1463,7 +1466,7 @@ const TeacherDashboard = () => {
                               </div>
 
                               {/* Grading Inputs */}
-                              <div className="flex items-center gap-3">
+                              <div className="flex items-center gap-2 sm:gap-3 flex-wrap sm:flex-nowrap w-full sm:w-auto">
                                 <div className="w-20">
                                   <Input
                                     type="number"
@@ -1483,7 +1486,7 @@ const TeacherDashboard = () => {
                                     className="text-center"
                                   />
                                 </div>
-                                <div className="flex-1 min-w-[150px]">
+                                <div className="flex-1 min-w-0">
                                   <Input
                                     placeholder="Remarks (optional)"
                                     value={grades[submission.studentId]?.remarks || ""}
@@ -1503,7 +1506,7 @@ const TeacherDashboard = () => {
                                   onClick={() => handleSaveGrade(submission.studentId)}
                                   loading={savingGrade === submission.studentId}
                                   loadingText=""
-                                  className="bg-role-teacher"
+                                  className="bg-role-teacher flex-shrink-0"
                                 >
                                   Save
                                 </LoadingButton>
@@ -1795,11 +1798,11 @@ const TeacherDashboard = () => {
                 {/* Enter Marks Section */}
                 {selectedExamId && (
                   <div className="bg-card rounded-xl p-6 shadow-card border border-border">
-                    <div className="flex items-center justify-between mb-6">
-                      <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
-                        <FileText className="w-5 h-5 text-role-teacher" />
-                        Enter Marks: {recentExams.find(e => e.id === selectedExamId)?.title}
-                        <span className="text-sm font-normal text-muted-foreground ml-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+                      <h2 className="text-lg sm:text-xl font-bold text-foreground flex items-center gap-2 flex-wrap">
+                        <FileText className="w-5 h-5 text-role-teacher flex-shrink-0" />
+                        <span>Enter Marks: {recentExams.find(e => e.id === selectedExamId)?.title}</span>
+                        <span className="text-sm font-normal text-muted-foreground">
                           (Max: {recentExams.find(e => e.id === selectedExamId)?.maxMarks})
                         </span>
                       </h2>
@@ -1807,7 +1810,7 @@ const TeacherDashboard = () => {
                         onClick={handleBulkSaveMarks}
                         loading={isBulkSaving}
                         loadingText="Saving All..."
-                        className="bg-role-teacher"
+                        className="bg-role-teacher flex-shrink-0 w-full sm:w-auto"
                         disabled={!hasUnsavedChanges && !studentMarks.some(s => !s.markId)}
                       >
                         <Save className="w-4 h-4 mr-2" />
@@ -1853,8 +1856,8 @@ const TeacherDashboard = () => {
                                 </div>
 
                                 {/* Inputs */}
-                                <div className="flex items-center gap-3 flex-wrap">
-                                  <label className="flex items-center gap-2 text-sm">
+                                <div className="flex items-center gap-2 sm:gap-3 flex-wrap w-full sm:w-auto">
+                                  <label className="flex items-center gap-2 text-sm flex-shrink-0">
                                     <input
                                       type="checkbox"
                                       checked={currentInput.isAbsent}
@@ -1864,7 +1867,7 @@ const TeacherDashboard = () => {
                                     Absent
                                   </label>
 
-                                  <div className="w-24">
+                                  <div className="w-20 sm:w-24 flex-shrink-0">
                                     <Input
                                       type="number"
                                       min="0"
@@ -1877,7 +1880,7 @@ const TeacherDashboard = () => {
                                     />
                                   </div>
 
-                                  <div className="flex-1 min-w-[150px]">
+                                  <div className="flex-1 min-w-0 basis-full sm:basis-auto">
                                     <Input
                                       placeholder="Remarks (optional)"
                                       value={currentInput.remarks}
@@ -1890,7 +1893,7 @@ const TeacherDashboard = () => {
                                     onClick={() => handleSaveMark(student.studentId)}
                                     loading={savingMark === student.studentId}
                                     loadingText=""
-                                    className="bg-role-teacher"
+                                    className="bg-role-teacher flex-shrink-0"
                                   >
                                     Save
                                   </LoadingButton>
@@ -1917,6 +1920,7 @@ const TeacherDashboard = () => {
               <AccountSettings roleColor="bg-role-teacher" />
             </div>
           </TabsContent>
+          </SwipeableTabContent>
         </Tabs>
       </motion.main>
 

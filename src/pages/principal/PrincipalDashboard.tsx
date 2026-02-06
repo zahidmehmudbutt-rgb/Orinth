@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { FadeInView, StaggerContainer, StaggerItem, HoverScale } from "@/components/ui/motion-wrapper";
 import { DashboardSkeleton } from "@/components/ui/skeleton-loader";
 import { MobileNav } from "@/components/ui/mobile-nav";
+import { SwipeableTabContent } from "@/components/ui/swipeable-tabs";
 import { Bell, LogOut, UserPlus, Users, Crown, BarChart3, Trash2, Settings, Sparkles, GraduationCap, School, Globe, BookOpen, MessageSquare, Megaphone } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -326,7 +327,7 @@ const PrincipalDashboard = () => {
       if (response.error) {
         // Try to extract error message from the response
         let errorData = null;
-        try { errorData = response.error.context?.body ? JSON.parse(new TextDecoder().decode(response.error.context.body)) : null; } catch {}
+        try { errorData = response.error.context?.body ? JSON.parse(new TextDecoder().decode(response.error.context.body)) : null; } catch { /* ignore parse errors */ }
         const errorMessage = errorData?.error || response.error.message || "Failed to create user";
         throw new Error(errorMessage);
       }
@@ -420,10 +421,10 @@ const PrincipalDashboard = () => {
             </div>
             <div>
               <h1 className="text-lg font-bold">Principal Dashboard</h1>
-              <p className="text-xs opacity-80">{principalData?.schoolName}</p>
+              <p className="text-xs opacity-80 truncate max-w-[150px] sm:max-w-none">{principalData?.schoolName}</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1 sm:gap-3">
             <ThemeToggle className="text-primary-foreground hover:bg-primary-foreground/20" />
             <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/20">
               <Bell className="w-5 h-5" />
@@ -436,6 +437,7 @@ const PrincipalDashboard = () => {
       </header>
 
       <motion.main
+        id="main-content"
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
@@ -458,36 +460,52 @@ const PrincipalDashboard = () => {
         )}
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="w-full max-w-4xl mx-auto grid grid-cols-6 mb-8 bg-card shadow-card">
+          <TabsList className="w-full max-w-4xl mx-auto hidden md:grid grid-cols-6 mb-8 bg-card shadow-card">
             <TabsTrigger value="staff" className="flex items-center gap-2 data-[state=active]:bg-role-principal data-[state=active]:text-primary-foreground">
               <Users className="w-4 h-4" />
-              <span className="hidden sm:inline">Staff</span>
+              <span className="text-sm">Staff</span>
             </TabsTrigger>
             <TabsTrigger value="classes" className="flex items-center gap-2 data-[state=active]:bg-role-principal data-[state=active]:text-primary-foreground">
               <School className="w-4 h-4" />
-              <span className="hidden sm:inline">Classes</span>
+              <span className="text-sm">Classes</span>
             </TabsTrigger>
             <TabsTrigger value="announcements" className="flex items-center gap-2 data-[state=active]:bg-role-principal data-[state=active]:text-primary-foreground">
               <Megaphone className="w-4 h-4" />
-              <span className="hidden sm:inline">Announce</span>
+              <span className="text-sm">Announce</span>
             </TabsTrigger>
             <TabsTrigger value="analytics" className="flex items-center gap-2 data-[state=active]:bg-role-principal data-[state=active]:text-primary-foreground">
               <BarChart3 className="w-4 h-4" />
-              <span className="hidden sm:inline">Analytics</span>
+              <span className="text-sm">Analytics</span>
             </TabsTrigger>
             <TabsTrigger value="school" className="flex items-center gap-2 data-[state=active]:bg-role-principal data-[state=active]:text-primary-foreground">
               <Globe className="w-4 h-4" />
-              <span className="hidden sm:inline">Public Page</span>
+              <span className="text-sm">Public</span>
             </TabsTrigger>
             <TabsTrigger value="account" className="flex items-center gap-2 data-[state=active]:bg-role-principal data-[state=active]:text-primary-foreground">
               <Settings className="w-4 h-4" />
-              <span className="hidden sm:inline">Account</span>
+              <span className="text-sm">Account</span>
             </TabsTrigger>
           </TabsList>
 
+          {/* Mobile: quick-access for Announcements (not in bottom MobileNav) */}
+          <div className="flex md:hidden gap-2 mb-6">
+            <button
+              onClick={() => setActiveTab("announcements")}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                activeTab === "announcements"
+                  ? "bg-role-principal text-primary-foreground"
+                  : "bg-card text-muted-foreground border border-border"
+              }`}
+            >
+              <Megaphone className="w-4 h-4" />
+              Announcements
+            </button>
+          </div>
+
+          <SwipeableTabContent activeTab={activeTab} tabOrder={["staff", "classes", "announcements", "analytics", "school", "account"]} onTabChange={setActiveTab}>
           {/* Staff Tab */}
           <TabsContent value="staff" className="animate-fade-in">
-            <div className="grid lg:grid-cols-2 gap-8">
+            <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
               {/* Add Section Head Form */}
               <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                 <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
@@ -725,6 +743,7 @@ const PrincipalDashboard = () => {
               <LoginHistory />
             </div>
           </TabsContent>
+          </SwipeableTabContent>
         </Tabs>
       </motion.main>
 

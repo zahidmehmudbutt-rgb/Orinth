@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { FadeInView, StaggerContainer, StaggerItem, HoverScale } from "@/components/ui/motion-wrapper";
 import { DashboardSkeleton } from "@/components/ui/skeleton-loader";
 import { MobileNav } from "@/components/ui/mobile-nav";
+import { SwipeableTabContent } from "@/components/ui/swipeable-tabs";
 import {
   Bell, LogOut, UserPlus, Users, Trash2, BookMarked, Settings,
   Sparkles, RefreshCw, GraduationCap, School, BookOpen,
@@ -917,7 +918,7 @@ const CoordinatorDashboard = () => {
 
       if (response.error) {
         let errorData = null;
-        try { errorData = response.error.context?.body ? JSON.parse(new TextDecoder().decode(response.error.context.body)) : null; } catch {}
+        try { errorData = response.error.context?.body ? JSON.parse(new TextDecoder().decode(response.error.context.body)) : null; } catch { /* ignore parse errors */ }
         throw new Error(errorData?.error || response.error.message || "Failed to create user");
       }
 
@@ -1017,10 +1018,10 @@ const CoordinatorDashboard = () => {
             </div>
             <div>
               <h1 className="text-lg font-bold">Section Head Dashboard</h1>
-              <p className="text-xs opacity-80">{profile?.full_name || "Coordinator"}</p>
+              <p className="text-xs opacity-80 truncate max-w-[150px] sm:max-w-none">{profile?.full_name || "Coordinator"}</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1 sm:gap-3">
             <ThemeToggle className="text-primary-foreground hover:bg-primary-foreground/20" />
             <Button
               variant="ghost"
@@ -1041,6 +1042,7 @@ const CoordinatorDashboard = () => {
       </header>
 
       <motion.main
+        id="main-content"
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
@@ -1111,40 +1113,64 @@ const CoordinatorDashboard = () => {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="w-full max-w-4xl mx-auto grid grid-cols-7 mb-8 bg-card shadow-card">
-            <TabsTrigger value="classes" className="text-xs sm:text-sm data-[state=active]:bg-role-coordinator data-[state=active]:text-primary-foreground">
-              <School className="w-4 h-4 mr-1 hidden sm:inline" />
+          {/* Desktop tabs - hidden on mobile where MobileNav handles navigation */}
+          <TabsList className="hidden md:grid w-full max-w-4xl mx-auto grid-cols-7 mb-8 bg-card shadow-card">
+            <TabsTrigger value="classes" className="text-sm data-[state=active]:bg-role-coordinator data-[state=active]:text-primary-foreground">
+              <School className="w-4 h-4 mr-1" />
               Classes
             </TabsTrigger>
-            <TabsTrigger value="subjects" className="text-xs sm:text-sm data-[state=active]:bg-role-coordinator data-[state=active]:text-primary-foreground">
-              <BookOpen className="w-4 h-4 mr-1 hidden sm:inline" />
+            <TabsTrigger value="subjects" className="text-sm data-[state=active]:bg-role-coordinator data-[state=active]:text-primary-foreground">
+              <BookOpen className="w-4 h-4 mr-1" />
               Subjects
             </TabsTrigger>
-            <TabsTrigger value="assignments" className="text-xs sm:text-sm data-[state=active]:bg-role-coordinator data-[state=active]:text-primary-foreground">
-              <Link2 className="w-4 h-4 mr-1 hidden sm:inline" />
+            <TabsTrigger value="assignments" className="text-sm data-[state=active]:bg-role-coordinator data-[state=active]:text-primary-foreground">
+              <Link2 className="w-4 h-4 mr-1" />
               Assign
             </TabsTrigger>
-            <TabsTrigger value="staff" className="text-xs sm:text-sm data-[state=active]:bg-role-coordinator data-[state=active]:text-primary-foreground">
-              <Users className="w-4 h-4 mr-1 hidden sm:inline" />
+            <TabsTrigger value="staff" className="text-sm data-[state=active]:bg-role-coordinator data-[state=active]:text-primary-foreground">
+              <Users className="w-4 h-4 mr-1" />
               Staff
             </TabsTrigger>
-            <TabsTrigger value="announcements" className="text-xs sm:text-sm data-[state=active]:bg-role-coordinator data-[state=active]:text-primary-foreground">
-              <Megaphone className="w-4 h-4 mr-1 hidden sm:inline" />
+            <TabsTrigger value="announcements" className="text-sm data-[state=active]:bg-role-coordinator data-[state=active]:text-primary-foreground">
+              <Megaphone className="w-4 h-4 mr-1" />
               Announce
             </TabsTrigger>
-            <TabsTrigger value="analytics" className="text-xs sm:text-sm data-[state=active]:bg-role-coordinator data-[state=active]:text-primary-foreground">
-              <BarChart3 className="w-4 h-4 mr-1 hidden sm:inline" />
+            <TabsTrigger value="analytics" className="text-sm data-[state=active]:bg-role-coordinator data-[state=active]:text-primary-foreground">
+              <BarChart3 className="w-4 h-4 mr-1" />
               Analytics
             </TabsTrigger>
-            <TabsTrigger value="account" className="text-xs sm:text-sm data-[state=active]:bg-role-coordinator data-[state=active]:text-primary-foreground">
-              <Settings className="w-4 h-4 mr-1 hidden sm:inline" />
+            <TabsTrigger value="account" className="text-sm data-[state=active]:bg-role-coordinator data-[state=active]:text-primary-foreground">
+              <Settings className="w-4 h-4 mr-1" />
               Account
             </TabsTrigger>
           </TabsList>
 
+          {/* Mobile quick-access tabs for items not in bottom MobileNav */}
+          <div className="flex md:hidden gap-2 mb-6 overflow-x-auto pb-1">
+            <button
+              onClick={() => setActiveTab("assignments")}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
+                activeTab === "assignments" ? "bg-role-coordinator text-primary-foreground" : "bg-card text-muted-foreground border border-border"
+              }`}
+            >
+              <Link2 className="w-4 h-4" />
+              Assign Teachers
+            </button>
+            <button
+              onClick={() => setActiveTab("announcements")}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
+                activeTab === "announcements" ? "bg-role-coordinator text-primary-foreground" : "bg-card text-muted-foreground border border-border"
+              }`}
+            >
+              <Megaphone className="w-4 h-4" />
+              Announcements
+            </button>
+          </div>
+
+          <SwipeableTabContent activeTab={activeTab} tabOrder={["classes", "subjects", "assignments", "staff", "announcements", "analytics", "account"]} onTabChange={setActiveTab}>
           {/* CLASSES TAB */}
           <TabsContent value="classes" className="animate-fade-in">
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 mb-6">
               <h2 className="text-xl font-bold text-foreground">Classes & Sections</h2>
               <div className="flex gap-2">
                 {/* Manage Sections Dialog */}
@@ -1610,29 +1636,80 @@ const CoordinatorDashboard = () => {
                 />
               </div>
             ) : (
-              <div className="bg-card rounded-xl shadow-card border border-border overflow-hidden">
+              <>
+              {/* Mobile Card View */}
+              <div className="md:hidden space-y-3">
+                {teacherAssignments.map((assignment, index) => (
+                  <motion.div
+                    key={assignment.id}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.05, duration: 0.3 }}
+                    className="bg-card rounded-xl p-4 shadow-card border border-border card-pressable"
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-foreground text-sm truncate">{assignment.teacher_name}</p>
+                        <div className="flex items-center gap-2 mt-1.5">
+                          <span className="text-xs bg-secondary text-secondary-foreground px-2 py-0.5 rounded-full">
+                            {assignment.class_name}{assignment.class_section ? `-${assignment.class_section}` : ''}
+                          </span>
+                          <span className="text-xs text-muted-foreground">{assignment.subject}</span>
+                        </div>
+                      </div>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10 shrink-0" aria-label="Remove assignment">
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Remove Assignment?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This will remove {assignment.teacher_name}'s assignment to teach {assignment.subject} in {assignment.class_name}{assignment.class_section ? `-${assignment.class_section}` : ''}.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              className="bg-destructive text-destructive-foreground"
+                              onClick={() => handleRemoveTeacherAssignment(assignment)}
+                            >
+                              Remove
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Desktop Table View */}
+              <div className="hidden md:block bg-card rounded-xl shadow-card border border-border overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full">
                     <thead className="bg-secondary/50">
                       <tr>
-                        <th className="text-left p-4 font-semibold text-foreground">Teacher</th>
-                        <th className="text-left p-4 font-semibold text-foreground">Class</th>
-                        <th className="text-left p-4 font-semibold text-foreground">Subject</th>
-                        <th className="text-right p-4 font-semibold text-foreground">Actions</th>
+                        <th className="text-left p-2 sm:p-4 font-semibold text-foreground text-sm sm:text-base">Teacher</th>
+                        <th className="text-left p-2 sm:p-4 font-semibold text-foreground text-sm sm:text-base">Class</th>
+                        <th className="text-left p-2 sm:p-4 font-semibold text-foreground text-sm sm:text-base">Subject</th>
+                        <th className="text-right p-2 sm:p-4 font-semibold text-foreground text-sm sm:text-base">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
                       {teacherAssignments.map(assignment => (
                         <tr key={assignment.id} className="border-t border-border">
-                          <td className="p-4 text-foreground">{assignment.teacher_name}</td>
-                          <td className="p-4 text-foreground">
+                          <td className="p-2 sm:p-4 text-foreground text-sm sm:text-base">{assignment.teacher_name}</td>
+                          <td className="p-2 sm:p-4 text-foreground text-sm sm:text-base">
                             {assignment.class_name}{assignment.class_section ? `-${assignment.class_section}` : ''}
                           </td>
-                          <td className="p-4 text-foreground">{assignment.subject}</td>
-                          <td className="p-4 text-right">
+                          <td className="p-2 sm:p-4 text-foreground text-sm sm:text-base">{assignment.subject}</td>
+                          <td className="p-2 sm:p-4 text-right">
                             <AlertDialog>
                               <AlertDialogTrigger asChild>
-                                <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10">
+                                <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10" aria-label="Remove assignment">
                                   <Trash2 className="w-4 h-4" />
                                 </Button>
                               </AlertDialogTrigger>
@@ -1661,12 +1738,13 @@ const CoordinatorDashboard = () => {
                   </table>
                 </div>
               </div>
+              </>
             )}
           </TabsContent>
 
           {/* STAFF TAB */}
           <TabsContent value="staff" className="animate-fade-in">
-            <div className="grid lg:grid-cols-2 gap-8">
+            <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
               {/* Add Staff Form */}
               <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                 <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
@@ -1866,6 +1944,7 @@ const CoordinatorDashboard = () => {
               <LoginHistory />
             </div>
           </TabsContent>
+          </SwipeableTabContent>
         </Tabs>
       </motion.main>
 

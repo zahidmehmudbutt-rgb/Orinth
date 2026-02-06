@@ -116,7 +116,13 @@
     --ring: 199 89% 55%;
 
     --gradient-hero: linear-gradient(135deg, hsl(215, 30%, 12%) 0%, hsl(215, 35%, 15%) 50%, hsl(215, 30%, 18%) 100%);
+    --gradient-card-hover: linear-gradient(180deg, hsl(215, 30%, 15%) 0%, hsl(215, 35%, 18%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(199, 89%, 55%) 0%, hsl(186, 100%, 50%) 100%);
     --gradient-footer: linear-gradient(180deg, hsl(215, 35%, 16%) 0%, hsl(215, 40%, 9%) 100%);
+
+    --shadow-card: 0 4px 20px -4px hsl(0, 0%, 0%, 0.4);
+    --shadow-card-hover: 0 8px 30px -4px hsl(0, 0%, 0%, 0.5);
+    --shadow-button: 0 4px 14px -2px hsl(199, 89%, 55%, 0.3);
 
     --sidebar-background: 215 30% 10%;
     --sidebar-foreground: 200 20% 95%;
@@ -303,6 +309,161 @@
   }
   50% {
     box-shadow: 0 0 40px hsl(var(--primary) / 0.4);
+  }
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  /* Prevent text zoom on input focus in iOS */
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  input[type="password"],
+  input[type="date"],
+  textarea,
+  select {
+    font-size: 16px;
+  }
+
+  /* Smoother scrolling for overflow containers */
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .overflow-x-auto::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Safe area support for notched devices */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Prevent accidental horizontal overflow - only on #root, not body (preserves inner overflow-x-auto) */
+#root {
+  overflow-x: clip;
+}
+
+/* Landscape compact mode for mobile */
+@media (orientation: landscape) and (max-height: 500px) {
+  .landscape-compact\:py-0\.5 {
+    padding-top: 0.125rem;
+    padding-bottom: 0.125rem;
+  }
+  .landscape-compact\:py-1 {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+  }
+  .landscape-compact\:hidden {
+    display: none;
+  }
+  .landscape-compact\:min-w-0 {
+    min-width: 0;
+  }
+  .landscape-compact\:px-2 {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+  .landscape-compact\:pb-16 {
+    padding-bottom: 4rem;
+  }
+}
+
+/* Touch device hover fix - prevent sticky hover on mobile */
+@media (hover: none) and (pointer: coarse) {
+  button:hover,
+  a:hover {
+    transform: none !important;
+  }
+}
+
+/* Badge pulse animation */
+@keyframes badge-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+}
+
+.animate-badge-pulse {
+  animation: badge-pulse 2s ease-in-out infinite;
+}
+
+/* Floating animation for empty states */
+@keyframes float-gentle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.animate-float {
+  animation: float-gentle 3s ease-in-out infinite;
+}
+
+/* Card press feedback for mobile */
+.card-pressable {
+  transition: transform 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.card-pressable:active {
+  transform: scale(0.98);
+}
+
+/* Button ripple effect for touch devices */
+@media (hover: none) and (pointer: coarse) {
+  .btn-ripple {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-ripple::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 10%, transparent 10%);
+    background-repeat: no-repeat;
+    background-position: 50%;
+    transform: scale(10);
+    opacity: 0;
+    transition: transform 0.5s, opacity 0.8s;
+  }
+
+  .btn-ripple:active::after {
+    transform: scale(0);
+    opacity: 1;
+    transition: 0s;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .animate-badge-pulse,
+  .animate-float,
+  .floating-shape {
+    animation: none !important;
   }
 }
 
