@@ -240,7 +240,7 @@ const ClassTeacherDashboard = () => {
       if (response.error) {
         // Try to extract error message from the response
         let errorData = null;
-        try { errorData = response.error.context?.body ? JSON.parse(new TextDecoder().decode(response.error.context.body)) : null; } catch {}
+        try { errorData = response.error.context?.body ? JSON.parse(new TextDecoder().decode(response.error.context.body)) : null; } catch { /* ignore parse errors */ }
         const errorMessage = errorData?.error || response.error.message || "Failed to create student account";
         throw new Error(errorMessage);
       }
