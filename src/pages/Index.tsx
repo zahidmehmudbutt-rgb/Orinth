@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import {
   Users, BookOpen, GraduationCap, Award, UserCheck, BookMarked, Crown, UserPlus,
   ClipboardCheck, BarChart3, Bell, MessageSquare, Calendar,
-  ArrowRight,
+  ArrowRight, ChevronDown,
 } from "lucide-react";
 import { FadeIn, FadeInView, StaggerContainer, StaggerItem } from "@/components/ui/motion-wrapper";
 import { Button } from "@/components/ui/button";
@@ -98,9 +98,70 @@ interface Stats {
   schools: number;
 }
 
+const faqs = [
+  {
+    q: "I can't login - it says 'Invalid credentials' or 'Student ID not found'",
+    a: "Make sure you're using the correct portal for your role (e.g., students should use Student Portal, not Teacher Portal). Double-check your Student ID or email for typos. If you're a new user, your account may not be set up yet - contact your class teacher or school office.",
+  },
+  {
+    q: "How do I reset my password if I forgot it?",
+    a: "Click 'Forgot Password?' on any login page. Enter your registered email address and you'll receive a reset link. Check your spam folder if you don't see it. The link expires after 1 hour, so use it promptly. If you never received initial credentials, contact your school administration.",
+  },
+  {
+    q: "My homework file won't upload - what should I do?",
+    a: "Check that your file is under 10MB and in an accepted format (PDF, Word documents, or images like JPG/PNG). If your file is too large, try compressing it or converting to PDF. Make sure you have a stable internet connection and try again.",
+  },
+  {
+    q: "I submitted homework but my teacher says they don't see it",
+    a: "The upload may not have completed successfully. Go back to the homework section, check if it shows 'Submitted' status, and try re-uploading if needed. Ask your teacher to refresh their page. If the problem persists, contact your class teacher.",
+  },
+  {
+    q: "Why can't I see my marks or attendance?",
+    a: "Your class teacher needs to add you to subjects and mark your attendance first. If you're newly enrolled, wait for your class teacher to complete the setup. If you've been a student for a while and still see no data, contact your class teacher to verify your enrollment.",
+  },
+  {
+    q: "As a parent, how do I link my account to my child?",
+    a: "Parent-student linking is done by the school administration. Contact the school office with your child's name and class to have them link your accounts. Once linked, you'll see your child's information automatically when you login.",
+  },
+  {
+    q: "The page shows 'Network Error' or won't load properly",
+    a: "Check your internet connection and try refreshing the page. If the problem continues, try clearing your browser cache or using a different browser. Wait a few minutes and try again - the server may be temporarily busy.",
+  },
+  {
+    q: "I'm getting 'Access Denied' even with correct login",
+    a: "This means your account exists but doesn't have the required role. Make sure you're using the correct portal for your role. If you recently changed roles (e.g., became a class teacher), contact school administration to update your permissions.",
+  },
+  {
+    q: "How do I change my password after logging in?",
+    a: "Go to your Account Settings (usually accessible from the profile menu or settings icon). Select 'Change Password', enter your current password, then your new password twice. Your new password must be at least 8 characters with uppercase, lowercase, numbers, and special characters.",
+  },
+  {
+    q: "Why is my attendance showing incorrectly?",
+    a: "Attendance is marked daily by your class teacher. If you believe there's an error, contact your class teacher directly - they can review and correct attendance records. Keep track of dates you were present in case verification is needed.",
+  },
+  {
+    q: "Can I print my result card?",
+    a: "Yes! Go to the 'Yearly Results' or 'Result Card' section in your dashboard. Click the 'Print Result Card' button to generate a printable version. You can print it directly or save as PDF for your records.",
+  },
+  {
+    q: "As a teacher, why can't I mark attendance?",
+    a: "Only Class Teachers can mark attendance, not subject teachers. If you're a subject teacher and need attendance for your class, ask the assigned class teacher for that information. If you should be a class teacher, contact your coordinator to update your role.",
+  },
+];
+
+const faqCategories = {
+  login: [0, 1, 7],
+  homework: [2, 3],
+  marks: [4, 10],
+  parent: [5],
+  technical: [6, 8],
+  attendance: [9, 11],
+};
+
 const Index = () => {
   const [stats, setStats] = useState<Stats>({ students: 0, teachers: 0, classes: 0, schools: 0 });
   const [isLoading, setIsLoading] = useState(true);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   useEffect(() => {
     fetchStats();
@@ -267,6 +328,52 @@ const Index = () => {
               </StaggerItem>
             ))}
           </StaggerContainer>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section id="faq" className="py-20 bg-gradient-hero">
+        <div className="container mx-auto px-4">
+          <FadeInView>
+            <div className="text-center mb-14 max-w-2xl mx-auto">
+              <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">Help & Support</span>
+              <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
+                Frequently Asked Questions
+              </h2>
+              <p className="text-muted-foreground text-lg">
+                Common issues and solutions for students, teachers, and parents
+              </p>
+            </div>
+          </FadeInView>
+
+          <div className="max-w-3xl mx-auto space-y-3">
+            {faqs.map((faq, i) => (
+              <FadeInView key={i} delay={i * 0.03}>
+                <div className="bg-card rounded-xl border border-border overflow-hidden shadow-card">
+                  <button
+                    className="w-full flex items-center justify-between p-5 text-left hover:bg-muted/50 transition-colors"
+                    onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                  >
+                    <span className="font-medium text-foreground pr-4">{faq.q}</span>
+                    <ChevronDown className={`w-5 h-5 text-muted-foreground shrink-0 transition-transform duration-200 ${openFaq === i ? "rotate-180" : ""}`} />
+                  </button>
+                  {openFaq === i && (
+                    <div className="px-5 pb-5 -mt-1">
+                      <p className="text-muted-foreground text-sm leading-relaxed">{faq.a}</p>
+                    </div>
+                  )}
+                </div>
+              </FadeInView>
+            ))}
+          </div>
+
+          <FadeInView delay={0.4}>
+            <div className="text-center mt-10">
+              <p className="text-muted-foreground text-sm">
+                Still need help? Contact your class teacher or school administration for assistance.
+              </p>
+            </div>
+          </FadeInView>
         </div>
       </section>
 
