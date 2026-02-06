@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FadeInView, StaggerContainer, StaggerItem, HoverScale } from "@/components/ui/motion-wrapper";
 import { DashboardSkeleton } from "@/components/ui/skeleton-loader";
+import { MobileNav } from "@/components/ui/mobile-nav";
 import { Bell, LogOut, UserPlus, Users, Crown, BarChart3, Trash2, Settings, Sparkles, GraduationCap, School, Globe, BookOpen, MessageSquare, Megaphone } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -438,7 +439,7 @@ const PrincipalDashboard = () => {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
-        className="container mx-auto px-4 py-6">
+        className="container mx-auto px-4 py-6 pb-24 md:pb-6">
         {/* Welcome Banner for new principals */}
         {showOnboarding && (
           <WelcomeBanner
@@ -726,6 +727,20 @@ const PrincipalDashboard = () => {
           </TabsContent>
         </Tabs>
       </motion.main>
+
+      {/* Mobile Bottom Navigation */}
+      <MobileNav
+        items={[
+          { id: "staff", label: "Staff", icon: Users },
+          { id: "classes", label: "Classes", icon: School },
+          { id: "analytics", label: "Analytics", icon: BarChart3 },
+          { id: "school", label: "Public", icon: Globe },
+          { id: "account", label: "Account", icon: Settings },
+        ]}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        accentColor="bg-role-principal"
+      />
     </div>
   );
 };

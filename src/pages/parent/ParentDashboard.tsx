@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FadeInView, StaggerContainer, StaggerItem, HoverScale } from "@/components/ui/motion-wrapper";
 import { DashboardSkeleton } from "@/components/ui/skeleton-loader";
+import { MobileNav } from "@/components/ui/mobile-nav";
 import {
   Users,
   BookOpen,
@@ -383,7 +384,7 @@ const ParentDashboard = () => {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
-        className="container mx-auto px-4 py-6">
+        className="container mx-auto px-4 py-6 pb-24 md:pb-6">
         {children.length === 0 ? (
           <Card>
             <CardContent className="py-12 text-center">
@@ -995,6 +996,20 @@ const ParentDashboard = () => {
           </>
         )}
       </motion.main>
+
+      {/* Mobile Bottom Navigation */}
+      <MobileNav
+        items={[
+          { id: "academics", label: "Academics", icon: BookOpen },
+          { id: "yearly", label: "Yearly", icon: Award },
+          { id: "attendance", label: "Attendance", icon: Calendar },
+          { id: "notices", label: "Notices", icon: Bell },
+          { id: "settings", label: "Settings", icon: Settings },
+        ]}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        accentColor="bg-role-parent"
+      />
     </div>
   );
 };

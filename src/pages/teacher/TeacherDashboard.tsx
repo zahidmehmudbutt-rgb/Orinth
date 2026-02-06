@@ -7,6 +7,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { motion } from "framer-motion";
 import { FadeInView, StaggerContainer, StaggerItem, HoverScale } from "@/components/ui/motion-wrapper";
 import { DashboardSkeleton } from "@/components/ui/skeleton-loader";
+import { MobileNav } from "@/components/ui/mobile-nav";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -1134,7 +1135,7 @@ const TeacherDashboard = () => {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
-        className="container mx-auto px-4 py-6">
+        className="container mx-auto px-4 py-6 pb-24 md:pb-6">
         {/* Welcome Banner */}
         {!hasClasses && (
           <WelcomeBanner
@@ -1918,6 +1919,19 @@ const TeacherDashboard = () => {
           </TabsContent>
         </Tabs>
       </motion.main>
+
+      {/* Mobile Bottom Navigation */}
+      <MobileNav
+        items={[
+          { id: "homework", label: "Homework", icon: BookOpen },
+          { id: "marks", label: "Marks", icon: Users },
+          { id: "results", label: "Results", icon: Award },
+          { id: "account", label: "Account", icon: Settings },
+        ]}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        accentColor="bg-role-teacher"
+      />
     </div>
   );
 };

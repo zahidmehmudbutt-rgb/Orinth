@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FadeInView, StaggerContainer, StaggerItem, HoverScale } from "@/components/ui/motion-wrapper";
 import { DashboardSkeleton } from "@/components/ui/skeleton-loader";
+import { MobileNav } from "@/components/ui/mobile-nav";
 import {
   Bell, LogOut, UserPlus, Users, Trash2, BookMarked, Settings,
   Sparkles, RefreshCw, GraduationCap, School, BookOpen,
@@ -1043,7 +1044,7 @@ const CoordinatorDashboard = () => {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
-        className="container mx-auto px-4 py-6">
+        className="container mx-auto px-4 py-6 pb-24 md:pb-6">
         {/* Stats Cards */}
         <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <StaggerItem>
@@ -1867,6 +1868,20 @@ const CoordinatorDashboard = () => {
           </TabsContent>
         </Tabs>
       </motion.main>
+
+      {/* Mobile Bottom Navigation */}
+      <MobileNav
+        items={[
+          { id: "classes", label: "Classes", icon: School },
+          { id: "subjects", label: "Subjects", icon: BookOpen },
+          { id: "staff", label: "Staff", icon: Users },
+          { id: "analytics", label: "Analytics", icon: BarChart3 },
+          { id: "account", label: "Account", icon: Settings },
+        ]}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        accentColor="bg-role-coordinator"
+      />
     </div>
   );
 };

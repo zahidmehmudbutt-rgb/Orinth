@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { GraduationCap, LogOut, BookOpen, Calendar, BarChart3, Megaphone, Clock, Upload, CheckCircle, AlertCircle, Settings, Sparkles, FileText, Download, Award, Printer } from "lucide-react";
+import { GraduationCap, LogOut, BookOpen, Calendar, BarChart3, Megaphone, Clock, Upload, CheckCircle, AlertCircle, Settings, Sparkles, FileText, Download, Award, Printer, CalendarDays } from "lucide-react";
 import { NotificationCenter } from "@/components/notifications/NotificationCenter";
 import { GroupChat } from "@/components/chat";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -16,6 +16,8 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { LoadingButton } from "@/components/ui/LoadingButton";
 import { supabase } from "@/integrations/supabase/client";
 import { DashboardSkeleton } from "@/components/ui/skeleton-loader";
+import { MobileNav } from "@/components/ui/mobile-nav";
+import { HomeworkCalendar } from "@/components/ui/homework-calendar";
 import type { ExamType, ExamResult } from "@/types/exam";
 import { EXAM_TYPE_LABELS } from "@/types/exam";
 import { getExamTypeBadgeColor } from "@/utils/exam";
@@ -42,6 +44,7 @@ interface Homework {
   title: string;
   description: string;
   dueDate: string;
+  dueDateRaw: string; // YYYY-MM-DD format for calendar
   status: "pending" | "submitted" | "graded";
   marks?: number;
   remarks?: string;
@@ -74,6 +77,7 @@ interface Notice {
 
 const StudentDashboard = () => {
   const [activeTab, setActiveTab] = useState("homework");
+  const [homeworkView, setHomeworkView] = useState<"list" | "calendar">("list");
   const [uploadingId, setUploadingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [studentData, setStudentData] = useState<StudentData | null>(null);
@@ -223,6 +227,7 @@ const StudentDashboard = () => {
           day: "numeric",
           year: "numeric",
         }),
+        dueDateRaw: hw.due_date.split('T')[0], // YYYY-MM-DD format for calendar
         status,
         marks: submission?.marks,
         remarks: submission?.remarks,
@@ -573,7 +578,7 @@ const StudentDashboard = () => {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
-        className="container mx-auto px-4 py-6">
+        className="container mx-auto px-4 py-6 pb-24 md:pb-6">
         {/* Welcome Banner for new students */}
         {!hasSubjects && (
           <WelcomeBanner
@@ -665,13 +670,51 @@ const StudentDashboard = () => {
                 </StaggerContainer>
 
                 <FadeInView className="mb-6">
-                  <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-                    <Clock className="w-5 h-5 text-primary" />
-                    All Homework ({homeworks.length})
-                  </h2>
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
+                      <Clock className="w-5 h-5 text-primary" />
+                      All Homework ({homeworks.length})
+                    </h2>
+                    <div className="flex gap-2">
+                      <Button
+                        variant={homeworkView === "list" ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setHomeworkView("list")}
+                        className={homeworkView === "list" ? "bg-primary" : ""}
+                      >
+                        <BookOpen className="w-4 h-4 mr-1" />
+                        List
+                      </Button>
+                      <Button
+                        variant={homeworkView === "calendar" ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setHomeworkView("calendar")}
+                        className={homeworkView === "calendar" ? "bg-primary" : ""}
+                      >
+                        <CalendarDays className="w-4 h-4 mr-1" />
+                        Calendar
+                      </Button>
+                    </div>
+                  </div>
                 </FadeInView>
 
-                {hasHomework ? (
+                {homeworkView === "calendar" ? (
+                  <HomeworkCalendar
+                    homework={homeworks.map(hw => ({
+                      id: hw.id,
+                      title: hw.title,
+                      subject: hw.subject,
+                      dueDate: hw.dueDateRaw,
+                      status: hw.status,
+                    }))}
+                    onSelectHomework={(hw) => {
+                      const homework = homeworks.find(h => h.id === hw.id);
+                      if (homework && homework.status === "pending") {
+                        handleFileSelect(hw.id);
+                      }
+                    }}
+                  />
+                ) : hasHomework ? (
                   <StaggerContainer className="grid sm:grid-cols-2 gap-4">
                     {homeworks.map((hw) => (
                       <StaggerItem key={hw.id}>
@@ -1258,6 +1301,20 @@ const StudentDashboard = () => {
           </TabsContent>
         </Tabs>
       </motion.main>
+
+      {/* Mobile Bottom Navigation */}
+      <MobileNav
+        items={[
+          { id: "homework", label: "Homework", icon: BookOpen, badge: pendingHomework.length || undefined },
+          { id: "attendance", label: "Attendance", icon: Calendar },
+          { id: "marks", label: "Marks", icon: BarChart3 },
+          { id: "yearly", label: "Yearly", icon: Award },
+          { id: "notices", label: "Notices", icon: Megaphone },
+        ]}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        accentColor="bg-primary"
+      />
     </div>
   );
 };

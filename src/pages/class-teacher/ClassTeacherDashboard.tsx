@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FadeInView, StaggerContainer, StaggerItem, HoverScale } from "@/components/ui/motion-wrapper";
 import { DashboardSkeleton } from "@/components/ui/skeleton-loader";
+import { MobileNav } from "@/components/ui/mobile-nav";
 import { LogOut, Calendar, UserPlus, Users, Trash2, Printer, Settings, Sparkles, RefreshCw, Check, X, Megaphone, BarChart3 } from "lucide-react";
 import { NotificationCenter } from "@/components/notifications/NotificationCenter";
 import { GroupChat } from "@/components/chat";
@@ -521,7 +522,7 @@ const ClassTeacherDashboard = () => {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
-        className="container mx-auto px-4 py-6">
+        className="container mx-auto px-4 py-6 pb-24 md:pb-6">
         {/* Welcome Banner */}
         {!hasStudents && (
           <WelcomeBanner
@@ -826,6 +827,20 @@ const ClassTeacherDashboard = () => {
           </TabsContent>
         </Tabs>
       </motion.main>
+
+      {/* Mobile Bottom Navigation */}
+      <MobileNav
+        items={[
+          { id: "attendance", label: "Attendance", icon: Calendar },
+          { id: "students", label: "Students", icon: Users },
+          { id: "announcements", label: "Announce", icon: Megaphone },
+          { id: "analytics", label: "Analytics", icon: BarChart3 },
+          { id: "account", label: "Account", icon: Settings },
+        ]}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        accentColor="bg-role-class-teacher"
+      />
     </div>
   );
 };
