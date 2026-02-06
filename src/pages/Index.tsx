@@ -153,6 +153,7 @@ const Index = () => {
   const [stats, setStats] = useState<Stats>({ students: 0, teachers: 0, classes: 0, schools: 0 });
   const [isLoading, setIsLoading] = useState(true);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [showAllFaqs, setShowAllFaqs] = useState(false);
 
   useEffect(() => {
     fetchStats();
@@ -338,7 +339,7 @@ const Index = () => {
           </FadeInView>
 
           <div className="max-w-3xl mx-auto space-y-3">
-            {faqs.map((faq, i) => (
+            {(showAllFaqs ? faqs : faqs.slice(0, 5)).map((faq, i) => (
               <FadeInView key={i} delay={i * 0.03}>
                 <div className="bg-card rounded-xl border border-border overflow-hidden shadow-card">
                   <button
@@ -357,6 +358,21 @@ const Index = () => {
               </FadeInView>
             ))}
           </div>
+
+          {!showAllFaqs && faqs.length > 5 && (
+            <FadeInView delay={0.2}>
+              <div className="text-center mt-6">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowAllFaqs(true)}
+                  className="gap-2"
+                >
+                  Show More Questions
+                  <ChevronDown className="w-4 h-4" />
+                </Button>
+              </div>
+            </FadeInView>
+          )}
 
           <FadeInView delay={0.4}>
             <div className="text-center mt-10">
