@@ -149,7 +149,6 @@ const faqs = [
   },
 ];
 
-
 const Index = () => {
   const [stats, setStats] = useState<Stats>({ students: 0, teachers: 0, classes: 0, schools: 0 });
   const [isLoading, setIsLoading] = useState(true);
