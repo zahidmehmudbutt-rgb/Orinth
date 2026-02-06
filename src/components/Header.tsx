@@ -55,13 +55,15 @@ export const Header = () => {
           <ThemeToggle />
 
           {/* Login Dropdown */}
-          <div className="relative">
+          <div
+            className="relative"
+            onMouseLeave={() => setLoginOpen(false)}
+          >
             <Button
               variant="outline"
               size="sm"
               className="gap-1.5"
               onClick={() => setLoginOpen(!loginOpen)}
-              onBlur={() => setTimeout(() => setLoginOpen(false), 150)}
             >
               Login
               <ChevronDown className={`w-3.5 h-3.5 transition-transform ${loginOpen ? "rotate-180" : ""}`} />
@@ -73,6 +75,7 @@ export const Header = () => {
                     key={link.href}
                     to={link.href}
                     className="block px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                    onClick={() => setLoginOpen(false)}
                   >
                     {link.label} Portal
                   </Link>
