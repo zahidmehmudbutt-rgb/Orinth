@@ -18,8 +18,8 @@ interface MobileNavProps {
 
 export function MobileNav({ items, activeTab, onTabChange, accentColor = "bg-primary" }: MobileNavProps) {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-md border-t border-border z-50 md:hidden safe-area-bottom" aria-label="Mobile navigation">
-      <div className="flex items-center justify-around px-2 py-1 landscape-compact:py-0.5">
+    <nav className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-md border-t border-border z-50 md:hidden safe-area-bottom">
+      <div className="flex items-center justify-around px-2 py-1">
         {items.map((item) => {
           const isActive = activeTab === item.id;
           const Icon = item.icon;
@@ -28,10 +28,8 @@ export function MobileNav({ items, activeTab, onTabChange, accentColor = "bg-pri
             <button
               key={item.id}
               onClick={() => onTabChange(item.id)}
-              aria-label={item.label}
-              aria-current={isActive ? "page" : undefined}
               className={cn(
-                "relative flex flex-col items-center justify-center py-2 px-3 min-w-[64px] min-h-[44px] rounded-xl transition-all landscape-compact:py-1 landscape-compact:min-w-0 landscape-compact:px-2",
+                "relative flex flex-col items-center justify-center py-2 px-3 min-w-[64px] rounded-xl transition-all",
                 isActive ? "text-primary" : "text-muted-foreground"
               )}
             >
@@ -45,13 +43,13 @@ export function MobileNav({ items, activeTab, onTabChange, accentColor = "bg-pri
               <div className="relative">
                 <Icon className={cn("w-5 h-5 transition-transform", isActive && "scale-110")} />
                 {item.badge !== undefined && item.badge > 0 && (
-                  <span className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 px-1 text-[10px] font-bold bg-destructive text-destructive-foreground rounded-full flex items-center justify-center animate-badge-pulse">
+                  <span className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 px-1 text-[10px] font-bold bg-destructive text-destructive-foreground rounded-full flex items-center justify-center">
                     {item.badge > 99 ? "99+" : item.badge}
                   </span>
                 )}
               </div>
               <span className={cn(
-                "text-[11px] font-medium mt-1 transition-colors landscape-compact:hidden",
+                "text-[10px] font-medium mt-1 transition-colors",
                 isActive ? "text-primary" : "text-muted-foreground"
               )}>
                 {item.label}

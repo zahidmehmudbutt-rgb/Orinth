@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import { FadeInView, StaggerContainer, StaggerItem, HoverScale } from "@/components/ui/motion-wrapper";
 import { DashboardSkeleton } from "@/components/ui/skeleton-loader";
 import { MobileNav } from "@/components/ui/mobile-nav";
-import { SwipeableTabContent } from "@/components/ui/swipeable-tabs";
 import {
   Users,
   BookOpen,
@@ -35,7 +34,6 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { MobileResultCards } from "@/components/ui/mobile-result-card";
 import type { ExamType, ExamResult } from "@/types/exam";
 import { getExamTypeBadgeColor } from "@/utils/exam";
 import { calculateGrade, getGradeColors, calculatePercentage, formatPercentage, calculateResultTotals, GRADING_SCALE } from "@/utils/grades";
@@ -368,10 +366,10 @@ const ParentDashboard = () => {
             </div>
             <div>
               <h1 className="text-lg font-bold">Parent Dashboard</h1>
-              <p className="text-xs text-primary-foreground/80 truncate max-w-[150px] sm:max-w-none">Welcome, {profile?.full_name}</p>
+              <p className="text-xs text-primary-foreground/80">Welcome, {profile?.full_name}</p>
             </div>
           </div>
-          <div className="flex items-center gap-1 sm:gap-2">
+          <div className="flex items-center gap-2">
             <ThemeToggle className="text-primary-foreground hover:bg-primary-foreground/20" />
             <GroupChat triggerClassName="text-primary-foreground hover:bg-primary-foreground/20" />
             <NotificationCenter className="text-primary-foreground hover:bg-primary-foreground/20" />
@@ -383,7 +381,6 @@ const ParentDashboard = () => {
       </header>
 
       <motion.main
-        id="main-content"
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
@@ -446,7 +443,7 @@ const ParentDashboard = () => {
 
             {/* Tabs */}
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="hidden md:grid w-full grid-cols-5 mb-6">
+              <TabsList className="grid w-full grid-cols-5 mb-6">
                 <TabsTrigger value="academics" className="flex items-center gap-2">
                   <BookOpen className="w-4 h-4" />
                   <span className="hidden sm:inline">Academics</span>
@@ -469,7 +466,6 @@ const ParentDashboard = () => {
                 </TabsTrigger>
               </TabsList>
 
-              <SwipeableTabContent activeTab={activeTab} tabOrder={["academics", "yearly", "attendance", "notices", "settings"]} onTabChange={setActiveTab}>
               {/* Academics Tab */}
               <TabsContent value="academics">
                 <div className="space-y-6">
@@ -627,114 +623,68 @@ const ParentDashboard = () => {
                         Print Result Card
                       </Button>
                     </div>
-                    {/* Mobile Result Cards (shown only on mobile) */}
-                    <div className="md:hidden space-y-4 print:hidden">
-                      {semesterResults.length > 0 && (() => {
-                        const graded = semesterResults.filter(r => r.marksObtained !== null && !r.isAbsent);
-                        const totalObtained = graded.reduce((sum, r) => sum + (r.marksObtained || 0), 0);
-                        const totalMax = graded.reduce((sum, r) => sum + r.maxMarks, 0);
-                        const overallPct = totalMax > 0 ? (totalObtained / totalMax) * 100 : 0;
-                        const overallGrade = overallPct >= 90 ? 'A+' : overallPct >= 80 ? 'A' : overallPct >= 70 ? 'B' : overallPct >= 60 ? 'C' : overallPct >= 50 ? 'D' : 'F';
-                        return (
-                          <MobileResultCards
-                            type="semester"
-                            results={semesterResults.map(r => {
-                              const pct = r.marksObtained !== null ? (r.marksObtained / r.maxMarks) * 100 : null;
-                              const grade = r.isAbsent ? 'Absent' : pct === null ? '-' : pct >= 90 ? 'A+' : pct >= 80 ? 'A' : pct >= 70 ? 'B' : pct >= 60 ? 'C' : pct >= 50 ? 'D' : 'F';
-                              return { subject: r.subject, examTitle: r.title, maxMarks: r.maxMarks, obtainedMarks: r.marksObtained, percentage: pct, grade, isAbsent: r.isAbsent };
-                            })}
-                            totalObtained={totalObtained}
-                            totalMax={totalMax}
-                            overallPercentage={overallPct}
-                            overallGrade={overallGrade}
-                          />
-                        );
-                      })()}
-                      {monthlyResults.length > 0 && (() => {
-                        const graded = monthlyResults.filter(r => r.marksObtained !== null && !r.isAbsent);
-                        const totalObtained = graded.reduce((sum, r) => sum + (r.marksObtained || 0), 0);
-                        const totalMax = graded.reduce((sum, r) => sum + r.maxMarks, 0);
-                        const overallPct = totalMax > 0 ? (totalObtained / totalMax) * 100 : 0;
-                        const overallGrade = overallPct >= 90 ? 'A+' : overallPct >= 80 ? 'A' : overallPct >= 70 ? 'B' : overallPct >= 60 ? 'C' : overallPct >= 50 ? 'D' : 'F';
-                        return (
-                          <MobileResultCards
-                            type="monthly"
-                            results={monthlyResults.map(r => {
-                              const pct = r.marksObtained !== null ? (r.marksObtained / r.maxMarks) * 100 : null;
-                              const grade = r.isAbsent ? 'Absent' : pct === null ? '-' : pct >= 90 ? 'A+' : pct >= 80 ? 'A' : pct >= 70 ? 'B' : pct >= 60 ? 'C' : pct >= 50 ? 'D' : 'F';
-                              return { subject: r.subject, examTitle: r.title, maxMarks: r.maxMarks, obtainedMarks: r.marksObtained, percentage: pct, grade, isAbsent: r.isAbsent };
-                            })}
-                            totalObtained={totalObtained}
-                            totalMax={totalMax}
-                            overallPercentage={overallPct}
-                            overallGrade={overallGrade}
-                          />
-                        );
-                      })()}
-                    </div>
-
-                    {/* Result Card / Certificate (hidden on mobile, visible for print) */}
-                    <div className="hidden md:block print:!block bg-gradient-to-br from-slate-50 to-slate-100 rounded-lg shadow-xl border-4 border-double border-slate-300 overflow-hidden print:shadow-none print:border-2">
+                    {/* Result Card / Certificate */}
+                    <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-lg shadow-xl border-4 border-double border-slate-300 overflow-hidden print:shadow-none print:border-2">
                       {/* Certificate Header */}
-                      <div className="bg-gradient-to-r from-indigo-900 via-purple-900 to-indigo-900 text-white px-4 sm:px-8 py-5 sm:py-6 text-center relative">
+                      <div className="bg-gradient-to-r from-indigo-900 via-purple-900 to-indigo-900 text-white px-8 py-6 text-center relative">
                         <div className="absolute top-0 left-0 w-full h-full opacity-10">
-                          <div className="absolute top-2 left-2 w-12 sm:w-16 h-12 sm:h-16 border-2 border-white rounded-full"></div>
-                          <div className="absolute top-2 right-2 w-12 sm:w-16 h-12 sm:h-16 border-2 border-white rounded-full"></div>
-                          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-16 sm:w-20 h-16 sm:h-20 border-2 border-white rounded-full"></div>
+                          <div className="absolute top-2 left-2 w-16 h-16 border-2 border-white rounded-full"></div>
+                          <div className="absolute top-2 right-2 w-16 h-16 border-2 border-white rounded-full"></div>
+                          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-20 h-20 border-2 border-white rounded-full"></div>
                         </div>
                         <div className="relative">
                           <div className="flex justify-center mb-3">
-                            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white/20 rounded-full flex items-center justify-center border-2 border-white/30">
-                              <Award className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" />
+                            <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center border-2 border-white/30">
+                              <Award className="w-8 h-8 text-yellow-300" />
                             </div>
                           </div>
-                          <h1 className="text-lg sm:text-2xl font-serif font-bold tracking-wide">ACADEMIC RESULT CARD</h1>
-                          <p className="text-indigo-200 text-xs sm:text-sm mt-1">Official Academic Record</p>
+                          <h1 className="text-2xl font-serif font-bold tracking-wide">ACADEMIC RESULT CARD</h1>
+                          <p className="text-indigo-200 text-sm mt-1">Official Academic Record</p>
                         </div>
                       </div>
 
                       {/* Student Info Section */}
-                      <div className="px-4 sm:px-8 py-4 sm:py-6 border-b-2 border-dashed border-slate-300 bg-white/50">
-                        <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                      <div className="px-8 py-6 border-b-2 border-dashed border-slate-300 bg-white/50">
+                        <div className="grid grid-cols-2 gap-4">
                           <div>
                             <p className="text-xs text-slate-500 uppercase tracking-wide">Student Name</p>
-                            <p className="font-semibold text-slate-800 text-sm sm:text-lg">{selectedChild?.full_name}</p>
+                            <p className="font-semibold text-slate-800 text-lg">{selectedChild?.full_name}</p>
                           </div>
                           <div className="text-right">
                             <p className="text-xs text-slate-500 uppercase tracking-wide">Class</p>
-                            <p className="font-semibold text-slate-800 text-sm sm:text-lg">{selectedChild?.class_name} {selectedChild?.section && `- ${selectedChild.section}`}</p>
+                            <p className="font-semibold text-slate-800 text-lg">{selectedChild?.class_name} {selectedChild?.section && `- ${selectedChild.section}`}</p>
                           </div>
                           <div>
                             <p className="text-xs text-slate-500 uppercase tracking-wide">Student ID</p>
-                            <p className="font-mono text-slate-700 text-sm">{selectedChild?.student_id}</p>
+                            <p className="font-mono text-slate-700">{selectedChild?.student_id}</p>
                           </div>
                           <div className="text-right">
                             <p className="text-xs text-slate-500 uppercase tracking-wide">Academic Year</p>
-                            <p className="font-mono text-slate-700 text-sm">{new Date().getFullYear()}</p>
+                            <p className="font-mono text-slate-700">{new Date().getFullYear()}</p>
                           </div>
                         </div>
                       </div>
 
                       {/* Semester / Final Exams Section */}
                       {semesterResults.length > 0 && (
-                        <div className="px-4 sm:px-8 py-4 sm:py-6 border-b border-slate-200">
-                          <div className="flex items-center gap-2 sm:gap-3 mb-4">
-                            <div className="w-7 h-7 sm:w-8 sm:h-8 bg-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
-                              <Award className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
+                        <div className="px-8 py-6 border-b border-slate-200">
+                          <div className="flex items-center gap-3 mb-4">
+                            <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
+                              <Award className="w-4 h-4 text-white" />
                             </div>
-                            <h2 className="text-sm sm:text-lg font-bold text-slate-800 uppercase tracking-wide">Semester / Final Examinations</h2>
+                            <h2 className="text-lg font-bold text-slate-800 uppercase tracking-wide">Semester / Final Examinations</h2>
                           </div>
 
-                          <div className="bg-white rounded-lg border border-slate-200 overflow-x-auto">
-                            <table className="w-full min-w-[560px]">
+                          <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
+                            <table className="w-full">
                               <thead>
                                 <tr className="bg-purple-50 border-b border-purple-100">
-                                  <th className="text-left py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">Subject</th>
-                                  <th className="text-left py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">Exam</th>
-                                  <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">Max</th>
-                                  <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">Obtained</th>
-                                  <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">%</th>
-                                  <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">Grade</th>
+                                  <th className="text-left py-3 px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">Subject</th>
+                                  <th className="text-left py-3 px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">Exam</th>
+                                  <th className="text-center py-3 px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">Max Marks</th>
+                                  <th className="text-center py-3 px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">Obtained</th>
+                                  <th className="text-center py-3 px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">Percentage</th>
+                                  <th className="text-center py-3 px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">Grade</th>
                                 </tr>
                               </thead>
                               <tbody className="divide-y divide-slate-100">
@@ -802,24 +752,24 @@ const ParentDashboard = () => {
 
                       {/* Monthly / Midterm Exams Section */}
                       {monthlyResults.length > 0 && (
-                        <div className="px-4 sm:px-8 py-4 sm:py-6 border-b border-slate-200">
-                          <div className="flex items-center gap-2 sm:gap-3 mb-4">
-                            <div className="w-7 h-7 sm:w-8 sm:h-8 bg-amber-500 rounded-full flex items-center justify-center flex-shrink-0">
-                              <BarChart3 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
+                        <div className="px-8 py-6 border-b border-slate-200">
+                          <div className="flex items-center gap-3 mb-4">
+                            <div className="w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center">
+                              <BarChart3 className="w-4 h-4 text-white" />
                             </div>
-                            <h2 className="text-sm sm:text-lg font-bold text-slate-800 uppercase tracking-wide">Monthly Tests / Midterms</h2>
+                            <h2 className="text-lg font-bold text-slate-800 uppercase tracking-wide">Monthly Tests / Midterms</h2>
                           </div>
 
-                          <div className="bg-white rounded-lg border border-slate-200 overflow-x-auto">
-                            <table className="w-full min-w-[560px]">
+                          <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
+                            <table className="w-full">
                               <thead>
                                 <tr className="bg-amber-50 border-b border-amber-100">
-                                  <th className="text-left py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">Subject</th>
-                                  <th className="text-left py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">Test</th>
-                                  <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">Max</th>
-                                  <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">Obtained</th>
-                                  <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">%</th>
-                                  <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">Grade</th>
+                                  <th className="text-left py-3 px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">Subject</th>
+                                  <th className="text-left py-3 px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">Test</th>
+                                  <th className="text-center py-3 px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">Max Marks</th>
+                                  <th className="text-center py-3 px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">Obtained</th>
+                                  <th className="text-center py-3 px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">Percentage</th>
+                                  <th className="text-center py-3 px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">Grade</th>
                                 </tr>
                               </thead>
                               <tbody className="divide-y divide-slate-100">
@@ -886,7 +836,7 @@ const ParentDashboard = () => {
                       )}
 
                       {/* Grading Scale & Footer */}
-                      <div className="px-4 sm:px-8 py-4 sm:py-6 bg-slate-100/50">
+                      <div className="px-8 py-6 bg-slate-100/50">
                         <div className="flex flex-wrap justify-between items-start gap-4">
                           <div>
                             <p className="text-xs text-slate-500 uppercase tracking-wide mb-2">Grading Scale</p>
@@ -924,8 +874,8 @@ const ParentDashboard = () => {
                     </CardHeader>
                     <CardContent>
                       <div className="flex items-center justify-center mb-6">
-                        <div className="relative w-32 h-32 sm:w-40 sm:h-40">
-                          <svg className="w-full h-full -rotate-90" viewBox="0 0 128 128">
+                        <div className="relative w-32 h-32">
+                          <svg className="w-full h-full transform -rotate-90">
                             <circle
                               cx="64"
                               cy="64"
@@ -1042,7 +992,6 @@ const ParentDashboard = () => {
                   <EmailPreferences />
                 </div>
               </TabsContent>
-              </SwipeableTabContent>
             </Tabs>
           </>
         )}

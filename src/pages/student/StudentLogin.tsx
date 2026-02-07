@@ -159,9 +159,9 @@ const StudentLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row">
+    <div className="min-h-screen flex flex-col lg:flex-row">
       {/* Left panel - Branding */}
-      <div className="hidden md:flex md:w-1/2 bg-role-student relative overflow-hidden items-center justify-center p-12">
+      <div className="hidden lg:flex lg:w-1/2 bg-role-student relative overflow-hidden items-center justify-center p-12">
         <div className="floating-shapes">
           <div className="floating-shape" />
           <div className="floating-shape" />
@@ -202,7 +202,7 @@ const StudentLogin = () => {
 
       {/* Right panel - Login form */}
       <div className="flex-1 flex flex-col bg-background">
-        <header className="w-full bg-card/80 backdrop-blur-md border-b border-border md:hidden">
+        <header className="w-full bg-card/80 backdrop-blur-md border-b border-border lg:hidden">
           <div className="container mx-auto px-4 py-4 flex items-center justify-between">
             <Link to="/" className="flex items-center gap-3">
               <div className="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center">
@@ -228,7 +228,7 @@ const StudentLogin = () => {
 
             <div>
               <div className="mb-8">
-                <div className="w-14 h-14 bg-role-student rounded-xl flex items-center justify-center mb-4 md:hidden">
+                <div className="w-14 h-14 bg-role-student rounded-xl flex items-center justify-center mb-4 lg:hidden">
                   <User className="w-7 h-7 text-white" />
                 </div>
                 <h2 className="text-2xl font-bold text-foreground">Student Login</h2>

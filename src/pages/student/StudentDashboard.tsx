@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { GraduationCap, LogOut, BookOpen, Calendar, BarChart3, Megaphone, Clock, Upload, CheckCircle, AlertCircle, Settings, Sparkles, FileText, Download, Award, Printer, CalendarDays, RefreshCw } from "lucide-react";
+import { GraduationCap, LogOut, BookOpen, Calendar, BarChart3, Megaphone, Clock, Upload, CheckCircle, AlertCircle, Settings, Sparkles, FileText, Download, Award, Printer, CalendarDays } from "lucide-react";
 import { NotificationCenter } from "@/components/notifications/NotificationCenter";
 import { GroupChat } from "@/components/chat";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -17,11 +17,7 @@ import { LoadingButton } from "@/components/ui/LoadingButton";
 import { supabase } from "@/integrations/supabase/client";
 import { DashboardSkeleton } from "@/components/ui/skeleton-loader";
 import { MobileNav } from "@/components/ui/mobile-nav";
-import { SwipeableTabContent } from "@/components/ui/swipeable-tabs";
 import { HomeworkCalendar } from "@/components/ui/homework-calendar";
-import { SmartHeader } from "@/components/ui/smart-header";
-import { FloatingActionButton } from "@/components/ui/floating-action-button";
-import { MobileResultCards } from "@/components/ui/mobile-result-card";
 import type { ExamType, ExamResult } from "@/types/exam";
 import { EXAM_TYPE_LABELS } from "@/types/exam";
 import { getExamTypeBadgeColor } from "@/utils/exam";
@@ -546,35 +542,10 @@ const StudentDashboard = () => {
 
   // getExamTypeBadgeColor imported from @/utils/exam
 
-  // FAB quick actions for student
-  const fabActions = [
-    {
-      id: "refresh",
-      label: "Refresh Data",
-      icon: RefreshCw,
-      onClick: () => fetchStudentData(),
-      color: "bg-blue-500 text-white",
-    },
-    {
-      id: "homework",
-      label: "View Homework",
-      icon: BookOpen,
-      onClick: () => setActiveTab("homework"),
-      color: "bg-amber-500 text-white",
-    },
-    {
-      id: "attendance",
-      label: "Check Attendance",
-      icon: Calendar,
-      onClick: () => setActiveTab("attendance"),
-      color: "bg-green-500 text-white",
-    },
-  ];
-
   return (
     <div className="min-h-screen bg-gradient-hero">
-      {/* Smart Header - hides on scroll down */}
-      <SmartHeader className="bg-gradient-primary text-primary-foreground">
+      {/* Header */}
+      <header className="w-full bg-gradient-primary text-primary-foreground sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-primary-foreground/20 rounded-lg flex items-center justify-center">
@@ -582,10 +553,10 @@ const StudentDashboard = () => {
             </div>
             <div>
               <h1 className="text-lg font-bold">Student Dashboard</h1>
-              <p className="text-xs opacity-80 truncate max-w-[150px] sm:max-w-none">Welcome back, {studentData?.name}!</p>
+              <p className="text-xs opacity-80">Welcome back, {studentData?.name}!</p>
             </div>
           </div>
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-3">
             <span className="hidden sm:inline text-sm opacity-80">{studentData?.className}</span>
             <ThemeToggle className="text-primary-foreground hover:bg-primary-foreground/20" />
             <GroupChat triggerClassName="text-primary-foreground hover:bg-primary-foreground/20" />
@@ -600,11 +571,10 @@ const StudentDashboard = () => {
             </Button>
           </div>
         </div>
-      </SmartHeader>
+      </header>
 
       {/* Main Content */}
       <motion.main
-        id="main-content"
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
@@ -627,48 +597,33 @@ const StudentDashboard = () => {
         )}
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          {/* Desktop tabs - hidden on mobile where MobileNav handles navigation */}
-          <TabsList className="hidden md:grid w-full max-w-2xl mx-auto grid-cols-6 mb-8 bg-card shadow-card">
+          <TabsList className="w-full max-w-2xl mx-auto grid grid-cols-6 mb-8 bg-card shadow-card">
             <TabsTrigger value="homework" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <BookOpen className="w-4 h-4" />
-              Homework
+              <span className="hidden sm:inline">Homework</span>
             </TabsTrigger>
             <TabsTrigger value="attendance" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Calendar className="w-4 h-4" />
-              Attendance
+              <span className="hidden sm:inline">Attendance</span>
             </TabsTrigger>
             <TabsTrigger value="marks" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <BarChart3 className="w-4 h-4" />
-              Marks
+              <span className="hidden sm:inline">Marks</span>
             </TabsTrigger>
             <TabsTrigger value="yearly" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Award className="w-4 h-4" />
-              Yearly
+              <span className="hidden sm:inline">Yearly</span>
             </TabsTrigger>
             <TabsTrigger value="notices" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Megaphone className="w-4 h-4" />
-              Notices
+              <span className="hidden sm:inline">Notices</span>
             </TabsTrigger>
             <TabsTrigger value="account" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Settings className="w-4 h-4" />
-              Account
+              <span className="hidden sm:inline">Account</span>
             </TabsTrigger>
           </TabsList>
 
-          {/* Mobile: Account tab button (not in bottom MobileNav) */}
-          <div className="flex md:hidden mb-6">
-            <button
-              onClick={() => setActiveTab("account")}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                activeTab === "account" ? "bg-primary text-primary-foreground" : "bg-card text-muted-foreground border border-border"
-              }`}
-            >
-              <Settings className="w-4 h-4" />
-              Account Settings
-            </button>
-          </div>
-
-          <SwipeableTabContent activeTab={activeTab} tabOrder={["homework", "attendance", "marks", "yearly", "notices", "account"]} onTabChange={setActiveTab}>
           {/* Homework Tab */}
           <TabsContent value="homework" className="animate-fade-in">
             {!hasSubjects ? (
@@ -856,7 +811,7 @@ const StudentDashboard = () => {
                 <div className="bg-card rounded-xl p-6 shadow-card border border-border mb-8">
                   <h2 className="text-xl font-bold text-foreground mb-6">Attendance Overview</h2>
                   <div className="flex flex-col md:flex-row gap-8 items-center">
-                    <div className="relative w-32 h-32 sm:w-40 sm:h-40">
+                    <div className="relative w-40 h-40">
                       <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
                         <circle
                           cx="50"
@@ -878,7 +833,7 @@ const StudentDashboard = () => {
                         />
                       </svg>
                       <div className="absolute inset-0 flex flex-col items-center justify-center">
-                        <span className="text-2xl sm:text-3xl font-bold text-primary">{attendanceData.percentage}%</span>
+                        <span className="text-3xl font-bold text-primary">{attendanceData.percentage}%</span>
                         <span className="text-xs text-muted-foreground">Attendance</span>
                       </div>
                     </div>
@@ -1060,114 +1015,68 @@ const StudentDashboard = () => {
                     Print Result Card
                   </Button>
                 </div>
-                {/* Mobile Result Cards (shown only on mobile) */}
-                <div className="md:hidden space-y-4 print:hidden">
-                  {semesterResults.length > 0 && (() => {
-                    const graded = semesterResults.filter(r => r.marksObtained !== null && !r.isAbsent);
-                    const totalObtained = graded.reduce((sum, r) => sum + (r.marksObtained || 0), 0);
-                    const totalMax = graded.reduce((sum, r) => sum + r.maxMarks, 0);
-                    const overallPct = totalMax > 0 ? (totalObtained / totalMax) * 100 : 0;
-                    const overallGrade = overallPct >= 90 ? 'A+' : overallPct >= 80 ? 'A' : overallPct >= 70 ? 'B' : overallPct >= 60 ? 'C' : overallPct >= 50 ? 'D' : 'F';
-                    return (
-                      <MobileResultCards
-                        type="semester"
-                        results={semesterResults.map(r => {
-                          const pct = r.marksObtained !== null ? (r.marksObtained / r.maxMarks) * 100 : null;
-                          const grade = r.isAbsent ? 'Absent' : pct === null ? '-' : pct >= 90 ? 'A+' : pct >= 80 ? 'A' : pct >= 70 ? 'B' : pct >= 60 ? 'C' : pct >= 50 ? 'D' : 'F';
-                          return { subject: r.subject, examTitle: r.title, maxMarks: r.maxMarks, obtainedMarks: r.marksObtained, percentage: pct, grade, isAbsent: r.isAbsent };
-                        })}
-                        totalObtained={totalObtained}
-                        totalMax={totalMax}
-                        overallPercentage={overallPct}
-                        overallGrade={overallGrade}
-                      />
-                    );
-                  })()}
-                  {monthlyResults.length > 0 && (() => {
-                    const graded = monthlyResults.filter(r => r.marksObtained !== null && !r.isAbsent);
-                    const totalObtained = graded.reduce((sum, r) => sum + (r.marksObtained || 0), 0);
-                    const totalMax = graded.reduce((sum, r) => sum + r.maxMarks, 0);
-                    const overallPct = totalMax > 0 ? (totalObtained / totalMax) * 100 : 0;
-                    const overallGrade = overallPct >= 90 ? 'A+' : overallPct >= 80 ? 'A' : overallPct >= 70 ? 'B' : overallPct >= 60 ? 'C' : overallPct >= 50 ? 'D' : 'F';
-                    return (
-                      <MobileResultCards
-                        type="monthly"
-                        results={monthlyResults.map(r => {
-                          const pct = r.marksObtained !== null ? (r.marksObtained / r.maxMarks) * 100 : null;
-                          const grade = r.isAbsent ? 'Absent' : pct === null ? '-' : pct >= 90 ? 'A+' : pct >= 80 ? 'A' : pct >= 70 ? 'B' : pct >= 60 ? 'C' : pct >= 50 ? 'D' : 'F';
-                          return { subject: r.subject, examTitle: r.title, maxMarks: r.maxMarks, obtainedMarks: r.marksObtained, percentage: pct, grade, isAbsent: r.isAbsent };
-                        })}
-                        totalObtained={totalObtained}
-                        totalMax={totalMax}
-                        overallPercentage={overallPct}
-                        overallGrade={overallGrade}
-                      />
-                    );
-                  })()}
-                </div>
-
-                {/* Result Card / Certificate (hidden on mobile, visible for print) */}
-                <div className="hidden md:block print:!block bg-gradient-to-br from-slate-50 to-slate-100 rounded-lg shadow-xl border-4 border-double border-slate-300 overflow-hidden print:shadow-none print:border-2">
+                {/* Result Card / Certificate */}
+                <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-lg shadow-xl border-4 border-double border-slate-300 overflow-hidden print:shadow-none print:border-2">
                   {/* Certificate Header */}
-                  <div className="bg-gradient-to-r from-indigo-900 via-purple-900 to-indigo-900 text-white px-4 sm:px-8 py-5 sm:py-6 text-center relative">
+                  <div className="bg-gradient-to-r from-indigo-900 via-purple-900 to-indigo-900 text-white px-8 py-6 text-center relative">
                     <div className="absolute top-0 left-0 w-full h-full opacity-10">
-                      <div className="absolute top-2 left-2 w-12 sm:w-16 h-12 sm:h-16 border-2 border-white rounded-full"></div>
-                      <div className="absolute top-2 right-2 w-12 sm:w-16 h-12 sm:h-16 border-2 border-white rounded-full"></div>
-                      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-16 sm:w-20 h-16 sm:h-20 border-2 border-white rounded-full"></div>
+                      <div className="absolute top-2 left-2 w-16 h-16 border-2 border-white rounded-full"></div>
+                      <div className="absolute top-2 right-2 w-16 h-16 border-2 border-white rounded-full"></div>
+                      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-20 h-20 border-2 border-white rounded-full"></div>
                     </div>
                     <div className="relative">
                       <div className="flex justify-center mb-3">
-                        <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white/20 rounded-full flex items-center justify-center border-2 border-white/30">
-                          <Award className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" />
+                        <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center border-2 border-white/30">
+                          <Award className="w-8 h-8 text-yellow-300" />
                         </div>
                       </div>
-                      <h1 className="text-lg sm:text-2xl font-serif font-bold tracking-wide">ACADEMIC RESULT CARD</h1>
-                      <p className="text-indigo-200 text-xs sm:text-sm mt-1">Official Academic Record</p>
+                      <h1 className="text-2xl font-serif font-bold tracking-wide">ACADEMIC RESULT CARD</h1>
+                      <p className="text-indigo-200 text-sm mt-1">Official Academic Record</p>
                     </div>
                   </div>
 
                   {/* Student Info Section */}
-                  <div className="px-4 sm:px-8 py-4 sm:py-6 border-b-2 border-dashed border-slate-300 bg-white/50">
-                    <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                  <div className="px-8 py-6 border-b-2 border-dashed border-slate-300 bg-white/50">
+                    <div className="grid grid-cols-2 gap-4">
                       <div>
                         <p className="text-xs text-slate-500 uppercase tracking-wide">Student Name</p>
-                        <p className="font-semibold text-slate-800 text-sm sm:text-lg">{studentData?.name}</p>
+                        <p className="font-semibold text-slate-800 text-lg">{studentData?.name}</p>
                       </div>
                       <div className="text-right">
                         <p className="text-xs text-slate-500 uppercase tracking-wide">Class</p>
-                        <p className="font-semibold text-slate-800 text-sm sm:text-lg">{studentData?.className}</p>
+                        <p className="font-semibold text-slate-800 text-lg">{studentData?.className}</p>
                       </div>
                       <div>
                         <p className="text-xs text-slate-500 uppercase tracking-wide">Student ID</p>
-                        <p className="font-mono text-slate-700 text-sm">{studentData?.studentId}</p>
+                        <p className="font-mono text-slate-700">{studentData?.studentId}</p>
                       </div>
                       <div className="text-right">
                         <p className="text-xs text-slate-500 uppercase tracking-wide">Academic Year</p>
-                        <p className="font-mono text-slate-700 text-sm">{new Date().getFullYear()}</p>
+                        <p className="font-mono text-slate-700">{new Date().getFullYear()}</p>
                       </div>
                     </div>
                   </div>
 
                   {/* Semester / Final Exams Section */}
                   {semesterResults.length > 0 && (
-                    <div className="px-4 sm:px-8 py-4 sm:py-6 border-b border-slate-200">
-                      <div className="flex items-center gap-2 sm:gap-3 mb-4">
-                        <div className="w-7 h-7 sm:w-8 sm:h-8 bg-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
-                          <Award className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
+                    <div className="px-8 py-6 border-b border-slate-200">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
+                          <Award className="w-4 h-4 text-white" />
                         </div>
-                        <h2 className="text-sm sm:text-lg font-bold text-slate-800 uppercase tracking-wide">Semester / Final Examinations</h2>
+                        <h2 className="text-lg font-bold text-slate-800 uppercase tracking-wide">Semester / Final Examinations</h2>
                       </div>
 
-                      <div className="bg-white rounded-lg border border-slate-200 overflow-x-auto">
-                        <table className="w-full min-w-[560px]">
+                      <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
+                        <table className="w-full">
                           <thead>
                             <tr className="bg-purple-50 border-b border-purple-100">
-                              <th className="text-left py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">Subject</th>
-                              <th className="text-left py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">Exam</th>
-                              <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">Max</th>
-                              <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">Obtained</th>
-                              <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">%</th>
-                              <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">Grade</th>
+                              <th className="text-left py-3 px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">Subject</th>
+                              <th className="text-left py-3 px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">Exam</th>
+                              <th className="text-center py-3 px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">Max Marks</th>
+                              <th className="text-center py-3 px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">Obtained</th>
+                              <th className="text-center py-3 px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">Percentage</th>
+                              <th className="text-center py-3 px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">Grade</th>
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-slate-100">
@@ -1235,24 +1144,24 @@ const StudentDashboard = () => {
 
                   {/* Monthly / Midterm Exams Section */}
                   {monthlyResults.length > 0 && (
-                    <div className="px-4 sm:px-8 py-4 sm:py-6 border-b border-slate-200">
-                      <div className="flex items-center gap-2 sm:gap-3 mb-4">
-                        <div className="w-7 h-7 sm:w-8 sm:h-8 bg-amber-500 rounded-full flex items-center justify-center flex-shrink-0">
-                          <BarChart3 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
+                    <div className="px-8 py-6 border-b border-slate-200">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center">
+                          <BarChart3 className="w-4 h-4 text-white" />
                         </div>
-                        <h2 className="text-sm sm:text-lg font-bold text-slate-800 uppercase tracking-wide">Monthly Tests / Midterms</h2>
+                        <h2 className="text-lg font-bold text-slate-800 uppercase tracking-wide">Monthly Tests / Midterms</h2>
                       </div>
 
-                      <div className="bg-white rounded-lg border border-slate-200 overflow-x-auto">
-                        <table className="w-full min-w-[560px]">
+                      <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
+                        <table className="w-full">
                           <thead>
                             <tr className="bg-amber-50 border-b border-amber-100">
-                              <th className="text-left py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">Subject</th>
-                              <th className="text-left py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">Test</th>
-                              <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">Max</th>
-                              <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">Obtained</th>
-                              <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">%</th>
-                              <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">Grade</th>
+                              <th className="text-left py-3 px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">Subject</th>
+                              <th className="text-left py-3 px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">Test</th>
+                              <th className="text-center py-3 px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">Max Marks</th>
+                              <th className="text-center py-3 px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">Obtained</th>
+                              <th className="text-center py-3 px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">Percentage</th>
+                              <th className="text-center py-3 px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">Grade</th>
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-slate-100">
@@ -1319,7 +1228,7 @@ const StudentDashboard = () => {
                   )}
 
                   {/* Grading Scale & Footer */}
-                  <div className="px-4 sm:px-8 py-4 sm:py-6 bg-slate-100/50">
+                  <div className="px-8 py-6 bg-slate-100/50">
                     <div className="flex flex-wrap justify-between items-start gap-4">
                       <div>
                         <p className="text-xs text-slate-500 uppercase tracking-wide mb-2">Grading Scale</p>
@@ -1390,7 +1299,6 @@ const StudentDashboard = () => {
               <AccountSettings roleColor="bg-primary" />
             </div>
           </TabsContent>
-          </SwipeableTabContent>
         </Tabs>
       </motion.main>
 

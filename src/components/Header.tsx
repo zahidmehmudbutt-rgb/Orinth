@@ -1,16 +1,8 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { GraduationCap, Menu, X, ChevronDown } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
 
 const navLinks = [
   { label: "Features", href: "#features" },
@@ -29,63 +21,10 @@ const portalLinks = [
 
 export const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const mobileMenuRef = useRef<HTMLDivElement>(null);
-  const hamburgerRef = useRef<HTMLButtonElement>(null);
-
-  // Mobile menu: Escape key handler + focus trap
-  useEffect(() => {
-    if (!mobileOpen) return;
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setMobileOpen(false);
-        hamburgerRef.current?.focus();
-        return;
-      }
-
-      if (e.key !== "Tab" || !mobileMenuRef.current) return;
-
-      const focusableSelector = 'a[href], button, [tabindex]:not([tabindex="-1"])';
-      const focusableElements = mobileMenuRef.current.querySelectorAll(focusableSelector);
-      if (focusableElements.length === 0) return;
-
-      const firstElement = focusableElements[0] as HTMLElement;
-      const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
-
-      if (e.shiftKey && document.activeElement === firstElement) {
-        e.preventDefault();
-        lastElement.focus();
-      } else if (!e.shiftKey && document.activeElement === lastElement) {
-        e.preventDefault();
-        firstElement.focus();
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-
-    // Focus first link when menu opens
-    const timer = setTimeout(() => {
-      const firstFocusable = mobileMenuRef.current?.querySelector('a[href], button') as HTMLElement;
-      firstFocusable?.focus();
-    }, 50);
-
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-      clearTimeout(timer);
-    };
-  }, [mobileOpen]);
-
-  const closeMobile = useCallback(() => setMobileOpen(false), []);
+  const [loginOpen, setLoginOpen] = useState(false);
 
   return (
     <header className="w-full bg-card/80 backdrop-blur-md border-b border-border sticky top-0 z-50">
-      {/* Skip to main content - visible on focus for keyboard users */}
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[60] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:text-sm focus:font-medium"
-      >
-        Skip to main content
-      </a>
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-3 shrink-0">
@@ -115,40 +54,49 @@ export const Header = () => {
         <div className="hidden lg:flex items-center gap-2">
           <ThemeToggle />
 
-          {/* Login Dropdown — Radix DropdownMenu for full keyboard accessibility */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="gap-1.5 group">
-                Login
-                <ChevronDown className="w-3.5 h-3.5 transition-transform group-data-[state=open]:rotate-180" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                Login Portals
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {portalLinks.map((link) => (
-                <DropdownMenuItem key={link.href} asChild>
-                  <Link to={link.href} className="w-full cursor-pointer">
-                    {link.label} Portal
-                  </Link>
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {/* Login Dropdown */}
+          <div className="relative">
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-1.5"
+              onClick={() => setLoginOpen(!loginOpen)}
+            >
+              Login
+              <ChevronDown className={`w-3.5 h-3.5 transition-transform ${loginOpen ? "rotate-180" : ""}`} />
+            </Button>
+            {loginOpen && (
+              <>
+                {/* Invisible overlay to close dropdown when clicking outside */}
+                <div
+                  className="fixed inset-0 z-40"
+                  onClick={() => setLoginOpen(false)}
+                />
+                <div className="absolute right-0 top-full mt-2 w-48 bg-card border border-border rounded-xl shadow-card-hover py-2 z-50">
+                  {portalLinks.map((link) => (
+                    <Link
+                      key={link.href}
+                      to={link.href}
+                      className="block px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                      onClick={() => setLoginOpen(false)}
+                    >
+                      {link.label} Portal
+                    </Link>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+
         </div>
 
         {/* Mobile Right Side */}
         <div className="flex lg:hidden items-center gap-2">
           <ThemeToggle />
           <Button
-            ref={hamburgerRef}
             variant="ghost"
             size="icon"
-            aria-label="Toggle menu"
-            aria-expanded={mobileOpen}
-            aria-controls="mobile-menu"
+            className="h-9 w-9"
             onClick={() => setMobileOpen(!mobileOpen)}
           >
             {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -158,20 +106,14 @@ export const Header = () => {
 
       {/* Mobile Menu */}
       {mobileOpen && (
-        <div
-          ref={mobileMenuRef}
-          id="mobile-menu"
-          role="navigation"
-          aria-label="Mobile navigation"
-          className="lg:hidden border-t border-border bg-card/95 backdrop-blur-md"
-        >
+        <div className="lg:hidden border-t border-border bg-card/95 backdrop-blur-md">
           <div className="container mx-auto px-4 py-4 space-y-1">
             {navLinks.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
                 className="block px-3 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
-                onClick={closeMobile}
+                onClick={() => setMobileOpen(false)}
               >
                 {link.label}
               </a>
@@ -184,7 +126,7 @@ export const Header = () => {
                   key={link.href}
                   to={link.href}
                   className="block px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
-                  onClick={closeMobile}
+                  onClick={() => setMobileOpen(false)}
                 >
                   {link.label}
                 </Link>

@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import { FadeInView, StaggerContainer, StaggerItem, HoverScale } from "@/components/ui/motion-wrapper";
 import { DashboardSkeleton } from "@/components/ui/skeleton-loader";
 import { MobileNav } from "@/components/ui/mobile-nav";
-import { SwipeableTabContent } from "@/components/ui/swipeable-tabs";
 import { LogOut, Calendar, UserPlus, Users, Trash2, Printer, Settings, Sparkles, RefreshCw, Check, X, Megaphone, BarChart3 } from "lucide-react";
 import { NotificationCenter } from "@/components/notifications/NotificationCenter";
 import { GroupChat } from "@/components/chat";
@@ -459,10 +458,10 @@ const ClassTeacherDashboard = () => {
               </div>
               <div>
                 <h1 className="text-lg font-bold">Class Teacher Dashboard</h1>
-                <p className="text-xs opacity-80 truncate max-w-[150px] sm:max-w-none">{profile?.full_name || "Class Teacher"}</p>
+                <p className="text-xs opacity-80">{profile?.full_name || "Class Teacher"}</p>
               </div>
             </div>
-            <div className="flex items-center gap-1 sm:gap-3">
+            <div className="flex items-center gap-3">
               <ThemeToggle className="text-primary-foreground hover:bg-primary-foreground/20" />
               <GroupChat triggerClassName="text-primary-foreground hover:bg-primary-foreground/20" />
               <NotificationCenter className="text-primary-foreground hover:bg-primary-foreground/20" />
@@ -495,12 +494,12 @@ const ClassTeacherDashboard = () => {
             </div>
             <div>
               <h1 className="text-lg font-bold">Class Teacher Dashboard</h1>
-              <p className="text-xs opacity-80 truncate max-w-[150px] sm:max-w-none">
+              <p className="text-xs opacity-80">
                 {profile?.full_name || "Class Teacher"} - {assignedClass.name}{assignedClass.section ? ` (${assignedClass.section})` : ''}
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-1 sm:gap-3">
+          <div className="flex items-center gap-3">
             <Button
               variant="ghost"
               size="icon"
@@ -520,7 +519,6 @@ const ClassTeacherDashboard = () => {
       </header>
 
       <motion.main
-        id="main-content"
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
@@ -543,7 +541,7 @@ const ClassTeacherDashboard = () => {
         )}
 
         {/* Stats Cards */}
-        <StaggerContainer className="grid grid-cols-3 gap-3 sm:gap-4 mb-8">
+        <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <StaggerItem>
             <HoverScale>
               <div className="bg-card rounded-xl p-4 shadow-card border border-border h-full">
@@ -592,31 +590,29 @@ const ClassTeacherDashboard = () => {
         </StaggerContainer>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          {/* Desktop tabs - hidden on mobile where MobileNav handles navigation */}
-          <TabsList className="hidden md:grid w-full max-w-2xl mx-auto grid-cols-5 mb-8 bg-card shadow-card">
+          <TabsList className="w-full max-w-2xl mx-auto grid grid-cols-5 mb-8 bg-card shadow-card">
             <TabsTrigger value="attendance" className="flex items-center gap-2 data-[state=active]:bg-role-class-teacher data-[state=active]:text-primary-foreground">
               <Calendar className="w-4 h-4" />
-              Attendance
+              <span className="hidden sm:inline">Attendance</span>
             </TabsTrigger>
             <TabsTrigger value="students" className="flex items-center gap-2 data-[state=active]:bg-role-class-teacher data-[state=active]:text-primary-foreground">
               <Users className="w-4 h-4" />
-              Students
+              <span className="hidden sm:inline">Students</span>
             </TabsTrigger>
             <TabsTrigger value="announcements" className="flex items-center gap-2 data-[state=active]:bg-role-class-teacher data-[state=active]:text-primary-foreground">
               <Megaphone className="w-4 h-4" />
-              Announce
+              <span className="hidden sm:inline">Announce</span>
             </TabsTrigger>
             <TabsTrigger value="analytics" className="flex items-center gap-2 data-[state=active]:bg-role-class-teacher data-[state=active]:text-primary-foreground">
               <BarChart3 className="w-4 h-4" />
-              Analytics
+              <span className="hidden sm:inline">Analytics</span>
             </TabsTrigger>
             <TabsTrigger value="account" className="flex items-center gap-2 data-[state=active]:bg-role-class-teacher data-[state=active]:text-primary-foreground">
               <Settings className="w-4 h-4" />
-              Account
+              <span className="hidden sm:inline">Account</span>
             </TabsTrigger>
           </TabsList>
 
-          <SwipeableTabContent activeTab={activeTab} tabOrder={["attendance", "students", "announcements", "analytics", "account"]} onTabChange={setActiveTab}>
           <TabsContent value="attendance" className="animate-fade-in">
             {!hasStudents ? (
               <div className="bg-card rounded-xl p-6 shadow-card border border-border max-w-2xl mx-auto">
@@ -630,7 +626,7 @@ const ClassTeacherDashboard = () => {
               </div>
             ) : (
               <div className="bg-card rounded-xl p-6 shadow-card border border-border max-w-2xl mx-auto">
-                <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 mb-6">
+                <div className="flex justify-between items-center mb-6">
                   <div>
                     <h2 className="text-xl font-bold text-foreground">Mark Attendance</h2>
                     {attendanceExists && (
@@ -829,7 +825,6 @@ const ClassTeacherDashboard = () => {
               <LoginHistory />
             </div>
           </TabsContent>
-          </SwipeableTabContent>
         </Tabs>
       </motion.main>
 
