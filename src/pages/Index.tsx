@@ -3,6 +3,9 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { RoleCard } from "@/components/RoleCard";
 import { StatsCard } from "@/components/StatsCard";
+import { Testimonials } from "@/components/Testimonials";
+import { ScrollToTop } from "@/components/ScrollToTop";
+import { WaveDivider, CurveDivider } from "@/components/ui/section-divider";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Users, BookOpen, GraduationCap, Award, UserCheck, BookMarked, Crown, UserPlus,
@@ -194,36 +197,37 @@ const Index = () => {
 
       {/* Hero Section */}
       <main id="main-content">
-      <section className="relative bg-gradient-hero py-16 lg:py-24 overflow-hidden">
-        <div className="floating-shapes">
-          <div className="floating-shape" />
-          <div className="floating-shape" />
-          <div className="floating-shape" />
+      <section className="relative bg-gradient-hero min-h-[85vh] flex items-center py-16 lg:py-24 overflow-hidden noise-overlay">
+        {/* Animated mesh gradient blobs */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="hero-blob" />
+          <div className="hero-blob" />
+          <div className="hero-blob" />
         </div>
 
         <div className="container mx-auto px-4 relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <FadeIn delay={0.1}>
               <div>
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 dark:bg-primary/15 border border-primary/20 dark:border-primary/30 text-primary text-sm font-medium mb-6 backdrop-blur-sm">
                   <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                   Welcome to Our School Portal
                 </div>
-                <h1 className="text-4xl lg:text-6xl font-bold text-foreground mb-6 leading-tight">
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-foreground mb-6 leading-[1.1] tracking-tight">
                   Excellence in{" "}
                   <span className="text-gradient">Education</span>
                 </h1>
-                <p className="text-lg text-muted-foreground mb-8 max-w-lg leading-relaxed">
+                <p className="text-lg lg:text-xl text-muted-foreground mb-8 max-w-lg leading-relaxed">
                   Access your academic records, homework, attendance, and stay connected with teachers and school activities through our integrated portal system.
                 </p>
                 <div className="flex flex-wrap gap-4">
-                  <Button asChild size="lg" className="bg-gradient-primary text-white shadow-button hover:shadow-lg hover:-translate-y-0.5 transition-all h-12 px-8">
+                  <Button asChild size="lg" className="btn-gradient-animated text-white shadow-button hover:shadow-lg hover:-translate-y-0.5 transition-all h-12 px-8 text-base">
                     <a href="#portals">
                       Login to Portal
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </a>
                   </Button>
-                  <Button asChild variant="outline" size="lg" className="h-12 px-8">
+                  <Button asChild variant="outline" size="lg" className="h-12 px-8 text-base backdrop-blur-sm">
                     <a href="#features">Explore Features</a>
                   </Button>
                 </div>
@@ -231,8 +235,8 @@ const Index = () => {
             </FadeIn>
             <FadeIn delay={0.3}>
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-primary rounded-2xl blur-3xl opacity-20 -z-10 scale-95" />
-                <div className="rounded-2xl overflow-hidden shadow-card-hover border border-border">
+                <div className="absolute inset-0 bg-gradient-primary rounded-3xl blur-3xl opacity-20 dark:opacity-25 -z-10 scale-95" />
+                <div className="rounded-3xl overflow-hidden shadow-card-hover border border-white/20 dark:border-white/[0.08]">
                   <img
                     src={heroImage}
                     alt="Students in classroom"
@@ -246,15 +250,18 @@ const Index = () => {
             </FadeIn>
           </div>
         </div>
+
+        {/* Wave divider into Stats section */}
+        <WaveDivider fill="hsl(var(--card))" />
       </section>
 
       {/* Stats Bar */}
-      <section className="py-16 bg-card border-b border-border">
+      <section className="py-16 pt-24 bg-card relative">
         <div className="container mx-auto px-4">
           <FadeInView>
             <div className="text-center mb-10">
-              <h2 className="text-2xl lg:text-3xl font-bold text-foreground">
-                Platform Overview
+              <h2 className="text-2xl lg:text-3xl font-extrabold text-foreground">
+                Platform <span className="heading-gradient">Overview</span>
               </h2>
             </div>
           </FadeInView>
@@ -269,16 +276,17 @@ const Index = () => {
             ))}
           </div>
         </div>
+        <CurveDivider fill="hsl(var(--background))" />
       </section>
 
       {/* Portal Selection */}
-      <section id="portals" className="py-20 bg-gradient-hero">
-        <div className="container mx-auto px-4">
+      <section id="portals" className="py-20 pt-24 bg-gradient-hero relative noise-overlay">
+        <div className="container mx-auto px-4 relative z-10">
           <FadeInView>
             <div className="text-center mb-14">
-              <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">Login</span>
-              <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-                Access Your Portal
+              <span className="inline-block px-4 py-1.5 bg-primary/10 dark:bg-primary/15 text-primary rounded-full text-sm font-medium mb-4 backdrop-blur-sm border border-transparent dark:border-primary/20">Login</span>
+              <h2 className="text-3xl lg:text-4xl font-extrabold text-foreground mb-4">
+                Access Your <span className="heading-gradient">Portal</span>
               </h2>
               <p className="text-muted-foreground max-w-xl mx-auto">
                 Select your role to login and access your personalized dashboard
@@ -294,16 +302,17 @@ const Index = () => {
             ))}
           </StaggerContainer>
         </div>
+        <WaveDivider fill="hsl(var(--card))" />
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 bg-card">
+      <section id="features" className="py-20 pt-24 bg-card relative">
         <div className="container mx-auto px-4">
           <FadeInView>
             <div className="text-center mb-14 max-w-2xl mx-auto">
-              <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">Portal Features</span>
-              <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-                What You Can Do
+              <span className="inline-block px-4 py-1.5 bg-primary/10 dark:bg-primary/15 text-primary rounded-full text-sm font-medium mb-4 border border-transparent dark:border-primary/20">Portal Features</span>
+              <h2 className="text-3xl lg:text-4xl font-extrabold text-foreground mb-4">
+                What You <span className="heading-gradient">Can Do</span>
               </h2>
               <p className="text-muted-foreground text-lg">
                 Our school portal provides comprehensive tools for students, parents, and teachers to stay connected and informed.
@@ -314,8 +323,10 @@ const Index = () => {
           <StaggerContainer className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
             {features.map((feature) => (
               <StaggerItem key={feature.title}>
-                <div className="bg-background rounded-xl p-6 border border-border shadow-card hover:shadow-card-hover transition-all duration-300 h-full group">
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
+                <div className="relative bg-card/80 dark:bg-card/70 backdrop-blur-xl rounded-xl p-6 border border-white/20 dark:border-white/[0.08] shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 h-full group overflow-hidden dark:hover:border-primary/20">
+                  {/* Gradient border glow on hover */}
+                  <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10 bg-gradient-to-br from-primary/10 via-transparent to-accent/10 dark:from-primary/15 dark:to-accent/15" />
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 dark:bg-primary/15 flex items-center justify-center mb-4 group-hover:bg-primary/20 group-hover:scale-110 transition-all duration-300">
                     <feature.icon className="w-6 h-6 text-primary" />
                   </div>
                   <h3 className="text-lg font-semibold text-foreground mb-2">{feature.title}</h3>
@@ -325,16 +336,20 @@ const Index = () => {
             ))}
           </StaggerContainer>
         </div>
+        <CurveDivider fill="hsl(var(--background))" />
       </section>
 
+      {/* Testimonials Section */}
+      <Testimonials />
+
       {/* FAQ Section */}
-      <section id="faq" className="py-20 bg-gradient-hero">
+      <section id="faq" className="py-20 bg-card relative">
         <div className="container mx-auto px-4">
           <FadeInView>
             <div className="text-center mb-14 max-w-2xl mx-auto">
-              <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">Help & Support</span>
-              <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-                Frequently Asked Questions
+              <span className="inline-block px-4 py-1.5 bg-primary/10 dark:bg-primary/15 text-primary rounded-full text-sm font-medium mb-4 border border-transparent dark:border-primary/20">Help & Support</span>
+              <h2 className="text-3xl lg:text-4xl font-extrabold text-foreground mb-4">
+                Frequently Asked <span className="heading-gradient">Questions</span>
               </h2>
               <p className="text-muted-foreground text-lg">
                 Common issues and solutions for students, teachers, and parents
@@ -345,7 +360,7 @@ const Index = () => {
           <div className="max-w-3xl mx-auto space-y-3">
             {(showAllFaqs ? faqs : faqs.slice(0, 5)).map((faq, i) => (
               <FadeInView key={i} delay={i * 0.03}>
-                <div className="bg-card rounded-xl border border-border overflow-hidden shadow-card">
+                <div className="bg-card/80 dark:bg-card/70 backdrop-blur-xl rounded-xl border border-white/20 dark:border-white/[0.08] overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 dark:hover:border-primary/15">
                   <button
                     className="w-full flex items-center justify-between p-5 text-left hover:bg-muted/50 transition-colors"
                     onClick={() => setOpenFaq(openFaq === i ? null : i)}
@@ -390,6 +405,7 @@ const Index = () => {
 
       </main>
       <Footer />
+      <ScrollToTop />
     </div>
   );
 };

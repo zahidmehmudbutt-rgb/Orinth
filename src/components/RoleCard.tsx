@@ -19,7 +19,7 @@ export const RoleCard = ({ title, description, icon: Icon, href, colorClass }: R
     >
       <Link
         to={href}
-        className="group flex flex-col p-6 bg-card rounded-xl shadow-card hover:shadow-card-hover transition-all duration-300 border border-border hover:border-primary/30 h-full"
+        className="group flex flex-col p-6 bg-card/80 dark:bg-card/70 backdrop-blur-xl rounded-xl shadow-card hover:shadow-card-hover transition-all duration-300 border border-white/20 dark:border-white/[0.08] hover:border-primary/30 dark:hover:border-primary/25 h-full"
       >
         <div className={`w-14 h-14 rounded-xl ${colorClass} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
           <Icon className="w-7 h-7 text-white" />

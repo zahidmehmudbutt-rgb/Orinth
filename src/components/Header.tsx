@@ -30,10 +30,18 @@ const portalLinks = [
 
 export const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const hamburgerRef = useRef<HTMLButtonElement>(null);
   const { canInstall, install, isIOS, isStandalone } = usePWAInstall();
   const [showIOSTip, setShowIOSTip] = useState(false);
+
+  // Track scroll for header shadow
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Mobile menu: Escape key handler + focus trap
   useEffect(() => {
@@ -81,7 +89,7 @@ export const Header = () => {
   const closeMobile = useCallback(() => setMobileOpen(false), []);
 
   return (
-    <header className="w-full bg-card/80 backdrop-blur-md border-b border-border sticky top-0 z-50">
+    <header className={`w-full bg-card/80 dark:bg-card/70 backdrop-blur-md border-b sticky top-0 z-50 transition-all duration-300 ${scrolled ? "border-border dark:border-white/[0.08] shadow-card" : "border-transparent"}`}>
       {/* Skip to main content - visible on focus for keyboard users */}
       <a
         href="#main-content"
@@ -107,7 +115,7 @@ export const Header = () => {
             <a
               key={link.href}
               href={link.href}
-              className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-muted"
+              className="nav-link-animated px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               {link.label}
             </a>

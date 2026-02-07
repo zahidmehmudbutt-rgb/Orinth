@@ -17,7 +17,7 @@ export const StatsCard = ({ icon: Icon, value, label }: StatsCardProps) => {
   return (
     <FadeInView>
       <div className="flex flex-col items-center text-center group">
-        <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-3 group-hover:scale-110 group-hover:bg-primary/20 transition-all duration-300">
+        <div className="w-16 h-16 rounded-2xl bg-primary/10 dark:bg-primary/15 border border-primary/20 dark:border-primary/25 flex items-center justify-center mb-3 group-hover:scale-110 group-hover:bg-primary/20 transition-all duration-300">
           <Icon className="w-7 h-7 text-primary" />
         </div>
         <div className="text-3xl font-bold text-primary">

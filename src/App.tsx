@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { FullPageLoader } from "@/components/ui/LoadingSpinner";
 import SessionTimeout from "@/components/auth/SessionTimeout";
+import { AnimatedRoutes } from "@/components/AnimatedRoutes";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
@@ -54,6 +55,7 @@ const App = () => (
         <SessionTimeout />
         <Suspense fallback={<FullPageLoader />}>
           <OnlineGuard>
+          <AnimatedRoutes>
           <Routes>
             <Route path="/" element={<Index />} />
 
@@ -116,6 +118,7 @@ const App = () => (
             {/* Catch-all */}
             <Route path="*" element={<NotFound />} />
           </Routes>
+          </AnimatedRoutes>
           </OnlineGuard>
         </Suspense>
       </BrowserRouter>
