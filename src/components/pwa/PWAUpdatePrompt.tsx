@@ -2,7 +2,7 @@ import { useRegisterSW } from "virtual:pwa-register/react";
 import { toast } from "sonner";
 import { useEffect } from "react";
 
-export function PWAUpdatePrompt() {
+function PWAUpdateInner() {
   const {
     needRefresh: [needRefresh],
     offlineReady: [offlineReady],
@@ -43,4 +43,8 @@ export function PWAUpdatePrompt() {
   }, [needRefresh, updateServiceWorker]);
 
   return null;
+}
+
+export function PWAUpdatePrompt() {
+  return <PWAUpdateInner />;
 }
