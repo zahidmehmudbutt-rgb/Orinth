@@ -55,6 +55,8 @@ import AnnouncementManager from "@/components/announcements/AnnouncementManager"
 import AnalyticsDashboard from "@/components/analytics/AnalyticsDashboard";
 import ChangePassword from "@/components/account/ChangePassword";
 import LoginHistory from "@/components/account/LoginHistory";
+import { useTour } from "@/hooks/useTour";
+import { TourHelpButton } from "@/components/onboarding/TourHelpButton";
 
 // Interfaces
 interface StaffMember {
@@ -193,6 +195,7 @@ const CoordinatorDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user, profile, isCoordinator, loading } = useAuth();
+  const { startTour, hasCompletedTour } = useTour("coordinator");
 
   // Redirect if not coordinator
   useEffect(() => {
@@ -200,6 +203,13 @@ const CoordinatorDashboard = () => {
       navigate("/");
     }
   }, [loading, isCoordinator, navigate]);
+
+  useEffect(() => {
+    if (!loading && !isLoading && !hasCompletedTour) {
+      const timer = setTimeout(() => startTour(), 800);
+      return () => clearTimeout(timer);
+    }
+  }, [loading, isLoading, hasCompletedTour, startTour]);
 
   // Load all data
   useEffect(() => {
@@ -1010,7 +1020,7 @@ const CoordinatorDashboard = () => {
   return (
     <div className="min-h-screen bg-gradient-hero">
       {/* Header */}
-      <header className="w-full bg-role-coordinator text-primary-foreground sticky top-0 z-50">
+      <header className="w-full bg-role-coordinator text-primary-foreground sticky top-0 z-50" data-tour="coord-header">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-primary-foreground/20 rounded-lg flex items-center justify-center">
@@ -1114,7 +1124,7 @@ const CoordinatorDashboard = () => {
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           {/* Desktop tabs - hidden on mobile where MobileNav handles navigation */}
-          <TabsList className="hidden md:grid w-full max-w-4xl mx-auto grid-cols-7 mb-8 bg-card shadow-card">
+          <TabsList className="hidden md:grid w-full max-w-4xl mx-auto grid-cols-7 mb-8 bg-card shadow-card" data-tour="coord-tabs">
             <TabsTrigger value="classes" className="text-sm data-[state=active]:bg-role-coordinator data-[state=active]:text-primary-foreground">
               <School className="w-4 h-4 mr-1" />
               Classes
@@ -1244,7 +1254,7 @@ const CoordinatorDashboard = () => {
                 {/* Add Class Dialog */}
                 <Dialog open={showAddClassDialog} onOpenChange={setShowAddClassDialog}>
                   <DialogTrigger asChild>
-                    <Button className="bg-role-coordinator text-primary-foreground">
+                    <Button className="bg-role-coordinator text-primary-foreground" data-tour="coord-add-class">
                       <Plus className="w-4 h-4 mr-2" />
                       Add Class
                     </Button>
@@ -1552,7 +1562,7 @@ const CoordinatorDashboard = () => {
               <h2 className="text-xl font-bold text-foreground">Teacher Assignments</h2>
               <Dialog open={showAssignTeacherDialog} onOpenChange={setShowAssignTeacherDialog}>
                 <DialogTrigger asChild>
-                  <Button className="bg-role-coordinator text-primary-foreground">
+                  <Button className="bg-role-coordinator text-primary-foreground" data-tour="coord-assign-teacher">
                     <Plus className="w-4 h-4 mr-2" />
                     Assign Teacher
                   </Button>
@@ -1746,7 +1756,7 @@ const CoordinatorDashboard = () => {
           <TabsContent value="staff" className="animate-fade-in">
             <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
               {/* Add Staff Form */}
-              <div className="bg-card rounded-xl p-6 shadow-card border border-border">
+              <div className="bg-card rounded-xl p-6 shadow-card border border-border" data-tour="coord-add-staff">
                 <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
                   <UserPlus className="w-5 h-5 text-role-coordinator" />
                   Add New Staff
@@ -1948,8 +1958,11 @@ const CoordinatorDashboard = () => {
         </Tabs>
       </motion.main>
 
+      <TourHelpButton onClick={startTour} />
+
       {/* Mobile Bottom Navigation */}
       <MobileNav
+        data-tour="coord-mobile-nav"
         items={[
           { id: "classes", label: "Classes", icon: School },
           { id: "subjects", label: "Subjects", icon: BookOpen },

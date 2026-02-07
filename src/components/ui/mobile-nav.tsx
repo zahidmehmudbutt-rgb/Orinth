@@ -9,16 +9,16 @@ interface NavItem {
   badge?: number;
 }
 
-interface MobileNavProps {
+interface MobileNavProps extends React.HTMLAttributes<HTMLElement> {
   items: NavItem[];
   activeTab: string;
   onTabChange: (tab: string) => void;
   accentColor?: string;
 }
 
-export function MobileNav({ items, activeTab, onTabChange, accentColor = "bg-primary" }: MobileNavProps) {
+export function MobileNav({ items, activeTab, onTabChange, accentColor = "bg-primary", ...rest }: MobileNavProps) {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-md border-t border-border z-50 md:hidden safe-area-bottom" aria-label="Mobile navigation">
+    <nav className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-md border-t border-border z-50 md:hidden safe-area-bottom" aria-label="Mobile navigation" {...rest}>
       <div className="flex items-center justify-around px-2 py-1 landscape-compact:py-0.5">
         {items.map((item) => {
           const isActive = activeTab === item.id;

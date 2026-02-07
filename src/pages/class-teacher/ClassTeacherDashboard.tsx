@@ -39,6 +39,8 @@ import AnnouncementManager from "@/components/announcements/AnnouncementManager"
 import AnalyticsDashboard from "@/components/analytics/AnalyticsDashboard";
 import ChangePassword from "@/components/account/ChangePassword";
 import LoginHistory from "@/components/account/LoginHistory";
+import { useTour } from "@/hooks/useTour";
+import { TourHelpButton } from "@/components/onboarding/TourHelpButton";
 
 interface Student {
   id: string;
@@ -73,6 +75,7 @@ const ClassTeacherDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user, profile, isClassTeacher, loading } = useAuth();
+  const { startTour, hasCompletedTour } = useTour("class_teacher");
 
   const today = new Date().toISOString().split('T')[0];
 
@@ -82,6 +85,13 @@ const ClassTeacherDashboard = () => {
       navigate("/");
     }
   }, [loading, isClassTeacher, navigate]);
+
+  useEffect(() => {
+    if (!loading && !isLoading && !hasCompletedTour) {
+      const timer = setTimeout(() => startTour(), 800);
+      return () => clearTimeout(timer);
+    }
+  }, [loading, isLoading, hasCompletedTour, startTour]);
 
   // Load assigned class
   useEffect(() => {
@@ -487,7 +497,7 @@ const ClassTeacherDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-hero">
-      <header className="w-full bg-role-class-teacher text-primary-foreground sticky top-0 z-50">
+      <header className="w-full bg-role-class-teacher text-primary-foreground sticky top-0 z-50" data-tour="ct-header">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-primary-foreground/20 rounded-lg flex items-center justify-center">
@@ -543,6 +553,7 @@ const ClassTeacherDashboard = () => {
         )}
 
         {/* Stats Cards */}
+        <div data-tour="ct-stats">
         <StaggerContainer className="grid grid-cols-3 gap-3 sm:gap-4 mb-8">
           <StaggerItem>
             <HoverScale>
@@ -590,10 +601,11 @@ const ClassTeacherDashboard = () => {
             </HoverScale>
           </StaggerItem>
         </StaggerContainer>
+        </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           {/* Desktop tabs - hidden on mobile where MobileNav handles navigation */}
-          <TabsList className="hidden md:grid w-full max-w-2xl mx-auto grid-cols-5 mb-8 bg-card shadow-card">
+          <TabsList className="hidden md:grid w-full max-w-2xl mx-auto grid-cols-5 mb-8 bg-card shadow-card" data-tour="ct-tabs">
             <TabsTrigger value="attendance" className="flex items-center gap-2 data-[state=active]:bg-role-class-teacher data-[state=active]:text-primary-foreground">
               <Calendar className="w-4 h-4" />
               Attendance
@@ -629,7 +641,7 @@ const ClassTeacherDashboard = () => {
                 />
               </div>
             ) : (
-              <div className="bg-card rounded-xl p-6 shadow-card border border-border max-w-2xl mx-auto">
+              <div className="bg-card rounded-xl p-6 shadow-card border border-border max-w-2xl mx-auto" data-tour="ct-attendance">
                 <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 mb-6">
                   <div>
                     <h2 className="text-xl font-bold text-foreground">Mark Attendance</h2>
@@ -679,6 +691,7 @@ const ClassTeacherDashboard = () => {
                   onClick={handleSaveAttendance}
                   loading={isSavingAttendance}
                   loadingText="Saving..."
+                  data-tour="ct-save-attendance"
                 >
                   {attendanceExists ? 'Update Attendance' : 'Save Attendance'}
                 </LoadingButton>
@@ -693,7 +706,7 @@ const ClassTeacherDashboard = () => {
           <TabsContent value="students" className="animate-fade-in">
             <div className="grid lg:grid-cols-2 gap-8">
               {/* Add Student */}
-              <div className="bg-card rounded-xl p-6 shadow-card border border-border">
+              <div className="bg-card rounded-xl p-6 shadow-card border border-border" data-tour="ct-add-student">
                 <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
                   <UserPlus className="w-5 h-5 text-role-class-teacher" />
                   Add New Student
@@ -833,8 +846,11 @@ const ClassTeacherDashboard = () => {
         </Tabs>
       </motion.main>
 
+      <TourHelpButton onClick={startTour} />
+
       {/* Mobile Bottom Navigation */}
       <MobileNav
+        data-tour="ct-mobile-nav"
         items={[
           { id: "attendance", label: "Attendance", icon: Calendar },
           { id: "students", label: "Students", icon: Users },

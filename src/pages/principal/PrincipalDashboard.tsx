@@ -37,6 +37,8 @@ import ChangePassword from "@/components/account/ChangePassword";
 import LoginHistory from "@/components/account/LoginHistory";
 import TwoFactorAuth from "@/components/account/TwoFactorAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { useTour } from "@/hooks/useTour";
+import { TourHelpButton } from "@/components/onboarding/TourHelpButton";
 
 interface PrincipalData {
   id: string;
@@ -91,10 +93,18 @@ const PrincipalDashboard = () => {
 
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { startTour, hasCompletedTour } = useTour("principal");
 
   useEffect(() => {
     fetchDashboardData();
   }, []);
+
+  useEffect(() => {
+    if (!loading && !hasCompletedTour) {
+      const timer = setTimeout(() => startTour(), 800);
+      return () => clearTimeout(timer);
+    }
+  }, [loading, hasCompletedTour, startTour]);
 
   const fetchDashboardData = async () => {
     try {
@@ -413,7 +423,7 @@ const PrincipalDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-hero">
-      <header className="w-full bg-role-principal text-primary-foreground sticky top-0 z-50">
+      <header className="w-full bg-role-principal text-primary-foreground sticky top-0 z-50" data-tour="principal-header">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-primary-foreground/20 rounded-lg flex items-center justify-center">
@@ -460,7 +470,7 @@ const PrincipalDashboard = () => {
         )}
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="w-full max-w-4xl mx-auto hidden md:grid grid-cols-6 mb-8 bg-card shadow-card">
+          <TabsList className="w-full max-w-4xl mx-auto hidden md:grid grid-cols-6 mb-8 bg-card shadow-card" data-tour="principal-tabs">
             <TabsTrigger value="staff" className="flex items-center gap-2 data-[state=active]:bg-role-principal data-[state=active]:text-primary-foreground">
               <Users className="w-4 h-4" />
               <span className="text-sm">Staff</span>
@@ -473,11 +483,11 @@ const PrincipalDashboard = () => {
               <Megaphone className="w-4 h-4" />
               <span className="text-sm">Announce</span>
             </TabsTrigger>
-            <TabsTrigger value="analytics" className="flex items-center gap-2 data-[state=active]:bg-role-principal data-[state=active]:text-primary-foreground">
+            <TabsTrigger value="analytics" className="flex items-center gap-2 data-[state=active]:bg-role-principal data-[state=active]:text-primary-foreground" data-tour="principal-analytics">
               <BarChart3 className="w-4 h-4" />
               <span className="text-sm">Analytics</span>
             </TabsTrigger>
-            <TabsTrigger value="school" className="flex items-center gap-2 data-[state=active]:bg-role-principal data-[state=active]:text-primary-foreground">
+            <TabsTrigger value="school" className="flex items-center gap-2 data-[state=active]:bg-role-principal data-[state=active]:text-primary-foreground" data-tour="principal-school-settings">
               <Globe className="w-4 h-4" />
               <span className="text-sm">Public</span>
             </TabsTrigger>
@@ -507,7 +517,7 @@ const PrincipalDashboard = () => {
           <TabsContent value="staff" className="animate-fade-in">
             <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
               {/* Add Section Head Form */}
-              <div className="bg-card rounded-xl p-6 shadow-card border border-border">
+              <div className="bg-card rounded-xl p-6 shadow-card border border-border" data-tour="principal-add-coordinator">
                 <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
                   <UserPlus className="w-5 h-5 text-role-principal" />
                   Add Section Head / Coordinator
@@ -747,8 +757,11 @@ const PrincipalDashboard = () => {
         </Tabs>
       </motion.main>
 
+      <TourHelpButton onClick={startTour} />
+
       {/* Mobile Bottom Navigation */}
       <MobileNav
+        data-tour="principal-mobile-nav"
         items={[
           { id: "staff", label: "Staff", icon: Users },
           { id: "classes", label: "Classes", icon: School },

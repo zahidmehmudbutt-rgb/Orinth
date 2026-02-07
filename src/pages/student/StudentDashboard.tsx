@@ -22,6 +22,8 @@ import { HomeworkCalendar } from "@/components/ui/homework-calendar";
 import { SmartHeader } from "@/components/ui/smart-header";
 import { FloatingActionButton } from "@/components/ui/floating-action-button";
 import { MobileResultCards } from "@/components/ui/mobile-result-card";
+import { useTour } from "@/hooks/useTour";
+import { TourHelpButton } from "@/components/onboarding/TourHelpButton";
 import type { ExamType, ExamResult } from "@/types/exam";
 import { EXAM_TYPE_LABELS } from "@/types/exam";
 import { getExamTypeBadgeColor } from "@/utils/exam";
@@ -96,10 +98,18 @@ const StudentDashboard = () => {
 
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { startTour, hasCompletedTour } = useTour("student");
 
   useEffect(() => {
     fetchStudentData();
   }, []);
+
+  useEffect(() => {
+    if (!loading && !hasCompletedTour) {
+      const timer = setTimeout(() => startTour(), 800);
+      return () => clearTimeout(timer);
+    }
+  }, [loading, hasCompletedTour, startTour]);
 
   const fetchStudentData = async () => {
     try {
@@ -574,7 +584,7 @@ const StudentDashboard = () => {
   return (
     <div className="min-h-screen bg-gradient-hero">
       {/* Smart Header - hides on scroll down */}
-      <SmartHeader className="bg-gradient-primary text-primary-foreground">
+      <SmartHeader className="bg-gradient-primary text-primary-foreground" data-tour="student-header">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-primary-foreground/20 rounded-lg flex items-center justify-center">
@@ -587,9 +597,9 @@ const StudentDashboard = () => {
           </div>
           <div className="flex items-center gap-2 sm:gap-3">
             <span className="hidden sm:inline text-sm opacity-80">{studentData?.className}</span>
-            <ThemeToggle className="text-primary-foreground hover:bg-primary-foreground/20" />
-            <GroupChat triggerClassName="text-primary-foreground hover:bg-primary-foreground/20" />
-            <NotificationCenter className="text-primary-foreground hover:bg-primary-foreground/20" />
+            <ThemeToggle className="text-primary-foreground hover:bg-primary-foreground/20" data-tour="student-theme-toggle" />
+            <span data-tour="student-chat"><GroupChat triggerClassName="text-primary-foreground hover:bg-primary-foreground/20" /></span>
+            <span data-tour="student-notifications"><NotificationCenter className="text-primary-foreground hover:bg-primary-foreground/20" /></span>
             <Button
               variant="ghost"
               size="icon"
@@ -628,7 +638,7 @@ const StudentDashboard = () => {
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           {/* Desktop tabs - hidden on mobile where MobileNav handles navigation */}
-          <TabsList className="hidden md:grid w-full max-w-2xl mx-auto grid-cols-6 mb-8 bg-card shadow-card">
+          <TabsList className="hidden md:grid w-full max-w-2xl mx-auto grid-cols-6 mb-8 bg-card shadow-card" data-tour="student-tabs">
             <TabsTrigger value="homework" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <BookOpen className="w-4 h-4" />
               Homework
@@ -720,7 +730,7 @@ const StudentDashboard = () => {
                       <Clock className="w-5 h-5 text-primary" />
                       All Homework ({homeworks.length})
                     </h2>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2" data-tour="student-view-toggle">
                       <Button
                         variant={homeworkView === "list" ? "default" : "outline"}
                         size="sm"
@@ -818,6 +828,7 @@ const StudentDashboard = () => {
                               onClick={() => handleFileSelect(hw.id)}
                               loading={uploadingId === hw.id}
                               loadingText="Uploading..."
+                              data-tour="student-upload-btn"
                             >
                               <Upload className="w-4 h-4 mr-2" />
                               Upload Answer
@@ -1394,8 +1405,11 @@ const StudentDashboard = () => {
         </Tabs>
       </motion.main>
 
+      <TourHelpButton onClick={startTour} />
+
       {/* Mobile Bottom Navigation */}
       <MobileNav
+        data-tour="student-mobile-nav"
         items={[
           { id: "homework", label: "Homework", icon: BookOpen, badge: pendingHomework.length || undefined },
           { id: "attendance", label: "Attendance", icon: Calendar },

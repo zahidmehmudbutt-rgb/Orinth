@@ -2,11 +2,11 @@ import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/contexts/ThemeContext";
 
-interface ThemeToggleProps {
+interface ThemeToggleProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
 }
 
-export function ThemeToggle({ className }: ThemeToggleProps) {
+export function ThemeToggle({ className, ...rest }: ThemeToggleProps) {
   const { resolvedTheme, setTheme } = useTheme();
 
   const toggleTheme = () => {
@@ -19,6 +19,7 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
       size="icon"
       className={`h-9 w-9 ${className ?? ""}`}
       onClick={toggleTheme}
+      {...rest}
     >
       {resolvedTheme === "dark" ? (
         <Moon className="h-4 w-4" />

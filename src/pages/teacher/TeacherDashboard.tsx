@@ -24,6 +24,8 @@ import { supabase } from "@/integrations/supabase/client";
 import type { ExamType, ExamItem, StudentMarkEntry } from "@/types/exam";
 import { EXAM_TYPE_LABELS } from "@/types/exam";
 import { getExamTypeBadgeColor } from "@/utils/exam";
+import { useTour } from "@/hooks/useTour";
+import { TourHelpButton } from "@/components/onboarding/TourHelpButton";
 
 interface TeacherData {
   id: string;
@@ -113,10 +115,18 @@ const TeacherDashboard = () => {
 
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { startTour, hasCompletedTour } = useTour("teacher");
 
   useEffect(() => {
     fetchTeacherData();
   }, []);
+
+  useEffect(() => {
+    if (!loading && !hasCompletedTour) {
+      const timer = setTimeout(() => startTour(), 800);
+      return () => clearTimeout(timer);
+    }
+  }, [loading, hasCompletedTour, startTour]);
 
   useEffect(() => {
     if (gradingHomeworkId) {
@@ -1110,7 +1120,7 @@ const TeacherDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-hero">
-      <header className="w-full bg-role-teacher text-primary-foreground sticky top-0 z-50">
+      <header className="w-full bg-role-teacher text-primary-foreground sticky top-0 z-50" data-tour="teacher-header">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-primary-foreground/20 rounded-lg flex items-center justify-center">
@@ -1156,7 +1166,7 @@ const TeacherDashboard = () => {
         )}
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="w-full max-w-2xl mx-auto hidden md:grid grid-cols-4 mb-8 bg-card shadow-card">
+          <TabsList className="w-full max-w-2xl mx-auto hidden md:grid grid-cols-4 mb-8 bg-card shadow-card" data-tour="teacher-tabs">
             <TabsTrigger value="homework" className="flex items-center gap-2 data-[state=active]:bg-role-teacher data-[state=active]:text-primary-foreground">
               <BookOpen className="w-4 h-4" />
               <span className="hidden sm:inline">Homework</span>
@@ -1165,7 +1175,7 @@ const TeacherDashboard = () => {
               <Users className="w-4 h-4" />
               <span className="hidden sm:inline">Enter Marks</span>
             </TabsTrigger>
-            <TabsTrigger value="results" className="flex items-center gap-2 data-[state=active]:bg-role-teacher data-[state=active]:text-primary-foreground">
+            <TabsTrigger value="results" className="flex items-center gap-2 data-[state=active]:bg-role-teacher data-[state=active]:text-primary-foreground" data-tour="teacher-results-tab">
               <Award className="w-4 h-4" />
               <span className="hidden sm:inline">Results</span>
             </TabsTrigger>
@@ -1188,7 +1198,7 @@ const TeacherDashboard = () => {
             ) : (
               <div className="grid lg:grid-cols-2 gap-8">
                 {/* Create Homework Form */}
-                <div className="bg-card rounded-xl p-6 shadow-card border border-border">
+                <div className="bg-card rounded-xl p-6 shadow-card border border-border" data-tour="teacher-create-hw">
                   <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
                     <Plus className="w-5 h-5 text-role-teacher" />
                     Create New Homework
@@ -1275,6 +1285,7 @@ const TeacherDashboard = () => {
                       onClick={handleCreateHomework}
                       loading={isSubmitting}
                       loadingText="Posting..."
+                      data-tour="teacher-post-btn"
                     >
                       Post Homework
                     </LoadingButton>
@@ -1284,7 +1295,7 @@ const TeacherDashboard = () => {
                 {/* Recent Homework */}
                 <div>
                   <FadeInView>
-                    <h2 className="text-xl font-bold text-foreground mb-4">Recent Homework ({recentHomework.length})</h2>
+                    <h2 className="text-xl font-bold text-foreground mb-4" data-tour="teacher-recent-hw">Recent Homework ({recentHomework.length})</h2>
                   </FadeInView>
                   {hasHomework ? (
                     <StaggerContainer className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
@@ -1924,8 +1935,11 @@ const TeacherDashboard = () => {
         </Tabs>
       </motion.main>
 
+      <TourHelpButton onClick={startTour} />
+
       {/* Mobile Bottom Navigation */}
       <MobileNav
+        data-tour="teacher-mobile-nav"
         items={[
           { id: "homework", label: "Homework", icon: BookOpen },
           { id: "marks", label: "Marks", icon: Users },

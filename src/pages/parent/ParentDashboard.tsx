@@ -39,6 +39,8 @@ import { MobileResultCards } from "@/components/ui/mobile-result-card";
 import type { ExamType, ExamResult } from "@/types/exam";
 import { getExamTypeBadgeColor } from "@/utils/exam";
 import { calculateGrade, getGradeColors, calculatePercentage, formatPercentage, calculateResultTotals, GRADING_SCALE } from "@/utils/grades";
+import { useTour } from "@/hooks/useTour";
+import { TourHelpButton } from "@/components/onboarding/TourHelpButton";
 
 interface Child {
   id: string;
@@ -95,6 +97,7 @@ const ParentDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user, profile, loading: authLoading } = useAuth();
+  const { startTour, hasCompletedTour } = useTour("parent");
 
   const [children, setChildren] = useState<Child[]>([]);
   const [selectedChild, setSelectedChild] = useState<Child | null>(null);
@@ -104,6 +107,13 @@ const ParentDashboard = () => {
   const [examResults, setExamResults] = useState<ExamResult[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("academics");
+
+  useEffect(() => {
+    if (!authLoading && !isLoading && !hasCompletedTour) {
+      const timer = setTimeout(() => startTour(), 800);
+      return () => clearTimeout(timer);
+    }
+  }, [authLoading, isLoading, hasCompletedTour, startTour]);
 
   // Fetch children linked to this parent
   useEffect(() => {
@@ -360,7 +370,7 @@ const ParentDashboard = () => {
   return (
     <div className="min-h-screen bg-gradient-hero">
       {/* Header */}
-      <header className="w-full bg-role-parent text-primary-foreground sticky top-0 z-50">
+      <header className="w-full bg-role-parent text-primary-foreground sticky top-0 z-50" data-tour="parent-header">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-primary-foreground/20 rounded-lg flex items-center justify-center">
@@ -407,7 +417,7 @@ const ParentDashboard = () => {
                   <CardTitle className="text-base">Select Child</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex gap-2 flex-wrap">
+                  <div className="flex gap-2 flex-wrap" data-tour="parent-child-selector">
                     {children.map(child => (
                       <Button
                         key={child.id}
@@ -446,8 +456,8 @@ const ParentDashboard = () => {
 
             {/* Tabs */}
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="hidden md:grid w-full grid-cols-5 mb-6">
-                <TabsTrigger value="academics" className="flex items-center gap-2">
+              <TabsList className="hidden md:grid w-full grid-cols-5 mb-6" data-tour="parent-tabs">
+                <TabsTrigger value="academics" className="flex items-center gap-2" data-tour="parent-academics">
                   <BookOpen className="w-4 h-4" />
                   <span className="hidden sm:inline">Academics</span>
                 </TabsTrigger>
@@ -455,7 +465,7 @@ const ParentDashboard = () => {
                   <Award className="w-4 h-4" />
                   <span className="hidden sm:inline">Yearly</span>
                 </TabsTrigger>
-                <TabsTrigger value="attendance" className="flex items-center gap-2">
+                <TabsTrigger value="attendance" className="flex items-center gap-2" data-tour="parent-attendance">
                   <Calendar className="w-4 h-4" />
                   <span className="hidden sm:inline">Attendance</span>
                 </TabsTrigger>
@@ -622,6 +632,7 @@ const ParentDashboard = () => {
                         variant="outline"
                         onClick={() => window.print()}
                         className="gap-2"
+                        data-tour="parent-print-btn"
                       >
                         <Printer className="w-4 h-4" />
                         Print Result Card
@@ -1048,8 +1059,11 @@ const ParentDashboard = () => {
         )}
       </motion.main>
 
+      <TourHelpButton onClick={startTour} />
+
       {/* Mobile Bottom Navigation */}
       <MobileNav
+        data-tour="parent-mobile-nav"
         items={[
           { id: "academics", label: "Academics", icon: BookOpen },
           { id: "yearly", label: "Yearly", icon: Award },
