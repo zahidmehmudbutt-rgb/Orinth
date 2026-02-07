@@ -13,6 +13,7 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 import { PWAUpdatePrompt } from "@/components/pwa/PWAUpdatePrompt";
 import { PWAInstallPrompt } from "@/components/pwa/PWAInstallPrompt";
 import { OnlineGuard } from "@/components/pwa/OnlineGuard";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 // Lazy-loaded dashboards
 const StudentDashboard = lazy(() => import("./pages/student/StudentDashboard"));
@@ -41,6 +42,7 @@ const SchoolPublicPage = lazy(() => import("./pages/public/SchoolPublicPage"));
 const queryClient = new QueryClient();
 
 const App = () => (
+  <ErrorBoundary>
   <QueryClientProvider client={queryClient}>
     <ThemeProvider>
       <TooltipProvider>
@@ -120,6 +122,7 @@ const App = () => (
       </TooltipProvider>
     </ThemeProvider>
   </QueryClientProvider>
+  </ErrorBoundary>
 );
 
 export default App;
