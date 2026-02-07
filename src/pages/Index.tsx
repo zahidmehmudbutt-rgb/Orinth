@@ -193,6 +193,7 @@ const Index = () => {
       <Header />
 
       {/* Hero Section */}
+      <main id="main-content">
       <section className="relative bg-gradient-hero py-16 lg:py-24 overflow-hidden">
         <div className="floating-shapes">
           <div className="floating-shape" />
@@ -236,6 +237,9 @@ const Index = () => {
                     src={heroImage}
                     alt="Students in classroom"
                     className="w-full h-auto object-cover"
+                    loading="eager"
+                    decoding="async"
+                    fetchPriority="high"
                   />
                 </div>
               </div>
@@ -384,6 +388,7 @@ const Index = () => {
         </div>
       </section>
 
+      </main>
       <Footer />
     </div>
   );

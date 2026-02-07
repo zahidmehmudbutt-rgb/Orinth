@@ -139,64 +139,97 @@ export default function LoginHistory() {
             <p>No login history available</p>
           </div>
         ) : (
-          <ScrollArea className="h-[400px]">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Date & Time</TableHead>
-                  <TableHead>Device</TableHead>
-                  <TableHead>Browser</TableHead>
-                  <TableHead>IP Address</TableHead>
-                  <TableHead>Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {history.map((record) => (
-                  <TableRow key={record.id}>
-                    <TableCell>
-                      <div>
-                        <p className="font-medium">
-                          {format(new Date(record.login_at), "PPp")}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {formatDistanceToNow(new Date(record.login_at), { addSuffix: true })}
-                        </p>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        {getDeviceIcon(record.device_type)}
-                        <div>
-                          <p className="text-sm">{record.device_type || "Unknown"}</p>
-                          <p className="text-xs text-muted-foreground">{record.os || "Unknown OS"}</p>
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>{record.browser || "Unknown"}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-1">
-                        <Globe className="h-3 w-3 text-muted-foreground" />
-                        <span className="text-sm">{record.ip_address || "Unknown"}</span>
-                      </div>
-                      {record.location_city && (
-                        <p className="text-xs text-muted-foreground">
-                          {record.location_city}, {record.location_country}
-                        </p>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {getStatusBadge(record.login_status)}
-                      {record.failure_reason && (
-                        <p className="text-xs text-muted-foreground mt-1">
-                          {record.failure_reason}
-                        </p>
-                      )}
-                    </TableCell>
+          <>
+          {/* Mobile Card View */}
+          <div className="md:hidden space-y-3 max-h-[400px] overflow-y-auto" role="region" aria-label="Login history" tabIndex={0}>
+            {history.map((record) => (
+              <div key={record.id} className="border border-border rounded-lg p-3 space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    {getDeviceIcon(record.device_type)}
+                    <div>
+                      <p className="text-sm font-medium">{record.device_type || "Unknown"}</p>
+                      <p className="text-xs text-muted-foreground">{record.browser || "Unknown"} &middot; {record.os || "Unknown OS"}</p>
+                    </div>
+                  </div>
+                  {getStatusBadge(record.login_status)}
+                </div>
+                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                  <span>{format(new Date(record.login_at), "PPp")}</span>
+                  <div className="flex items-center gap-1">
+                    <Globe className="h-3 w-3" />
+                    <span>{record.ip_address || "Unknown"}</span>
+                  </div>
+                </div>
+                {record.failure_reason && (
+                  <p className="text-xs text-destructive">{record.failure_reason}</p>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop Table View */}
+          <div className="hidden md:block">
+            <ScrollArea className="h-[400px]">
+              <Table aria-label="Login history">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Date & Time</TableHead>
+                    <TableHead>Device</TableHead>
+                    <TableHead>Browser</TableHead>
+                    <TableHead>IP Address</TableHead>
+                    <TableHead>Status</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </ScrollArea>
+                </TableHeader>
+                <TableBody>
+                  {history.map((record) => (
+                    <TableRow key={record.id}>
+                      <TableCell>
+                        <div>
+                          <p className="font-medium">
+                            {format(new Date(record.login_at), "PPp")}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {formatDistanceToNow(new Date(record.login_at), { addSuffix: true })}
+                          </p>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          {getDeviceIcon(record.device_type)}
+                          <div>
+                            <p className="text-sm">{record.device_type || "Unknown"}</p>
+                            <p className="text-xs text-muted-foreground">{record.os || "Unknown OS"}</p>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>{record.browser || "Unknown"}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-1">
+                          <Globe className="h-3 w-3 text-muted-foreground" />
+                          <span className="text-sm">{record.ip_address || "Unknown"}</span>
+                        </div>
+                        {record.location_city && (
+                          <p className="text-xs text-muted-foreground">
+                            {record.location_city}, {record.location_country}
+                          </p>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {getStatusBadge(record.login_status)}
+                        {record.failure_reason && (
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {record.failure_reason}
+                          </p>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </ScrollArea>
+          </div>
+          </>
         )}
       </CardContent>
     </Card>
