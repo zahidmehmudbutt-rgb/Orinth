@@ -116,15 +116,13 @@ export default defineConfig(({ mode }) => ({
           if (id.includes('node_modules/@radix-ui/')) {
             return 'vendor-radix';
           }
-          if (id.includes('node_modules/recharts') || id.includes('node_modules/d3-')) {
-            return 'vendor-charts';
-          }
           if (id.includes('node_modules/framer-motion')) {
             return 'vendor-motion';
           }
           if (id.includes('node_modules/@tanstack/')) {
             return 'vendor-query';
           }
+          // Note: recharts/d3 NOT split manually - has circular deps that break initialization
         },
       },
     },
