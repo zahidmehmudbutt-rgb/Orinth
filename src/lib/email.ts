@@ -21,20 +21,20 @@ export async function sendEmail(template: EmailTemplate): Promise<boolean> {
     });
 
     if (error) {
-      console.error("Error sending email:", error);
+      if (import.meta.env.DEV) console.error("Error sending email:", error);
       return false;
     }
 
     return data?.success || false;
   } catch (error) {
-    console.error("Failed to send email:", error);
+    if (import.meta.env.DEV) console.error("Failed to send email:", error);
     return false;
   }
 }
 
 // Process pending emails from queue (stubbed - email_queue table not created)
 export async function processPendingEmails(): Promise<{ sent: number; failed: number }> {
-  console.warn("Email queue processing not available - email_queue table not created");
+  if (import.meta.env.DEV) console.warn("Email queue processing not available - email_queue table not created");
   return { sent: 0, failed: 0 };
 }
 
@@ -159,7 +159,7 @@ export function gradesPublishedEmail(
   maxMarks: number,
   teacherRemarks: string | null
 ): EmailTemplate {
-  const percentage = Math.round((marks / maxMarks) * 100);
+  const percentage = maxMarks > 0 ? Math.round((marks / maxMarks) * 100) : 0;
   const performanceColor = percentage >= 70 ? '#16A34A' : percentage >= 50 ? '#F59E0B' : '#DC2626';
 
   return {

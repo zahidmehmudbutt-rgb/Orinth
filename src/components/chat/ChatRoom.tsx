@@ -114,7 +114,8 @@ export function ChatRoom({ room, onBack }: ChatRoomProps) {
   const getInitials = (name: string) => {
     return name
       .split(" ")
-      .map((n) => n[0])
+      .filter(Boolean)
+      .map((n) => n[0] || "")
       .join("")
       .toUpperCase()
       .slice(0, 2);

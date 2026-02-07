@@ -87,13 +87,13 @@ export async function sendParentNotification(
     });
 
     if (error) {
-      console.error("Notification error:", error);
+      if (import.meta.env.DEV) console.error("Notification error:", error);
       return { success: false, error: error.message || "Failed to send notification" };
     }
 
     return data as NotificationResult;
   } catch (err) {
-    console.error("Notification error:", err);
+    if (import.meta.env.DEV) console.error("Notification error:", err);
     return { success: false, error: "Failed to send notification" };
   }
 }
@@ -133,7 +133,7 @@ export async function sendLowMarksNotification(
   marks: number,
   maxMarks: number
 ): Promise<NotificationResult> {
-  const percentage = Math.round((marks / maxMarks) * 100);
+  const percentage = maxMarks > 0 ? Math.round((marks / maxMarks) * 100) : 0;
 
   return sendParentNotification({
     type: "low_marks",
@@ -456,7 +456,7 @@ export async function notifyGradesPublished(
   maxMarks: number,
   remarks: string | null
 ) {
-  const percentage = Math.round((marks / maxMarks) * 100);
+  const percentage = maxMarks > 0 ? Math.round((marks / maxMarks) * 100) : 0;
 
   // Notify student
   await createNotification({

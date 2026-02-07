@@ -15,8 +15,12 @@ export function PWAInstallPrompt() {
     const handler = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
-      const dismissed = localStorage.getItem("pwa-install-dismissed");
-      if (!dismissed || Date.now() - parseInt(dismissed) > 7 * 24 * 60 * 60 * 1000) {
+      try {
+        const dismissed = localStorage.getItem("pwa-install-dismissed");
+        if (!dismissed || Date.now() - parseInt(dismissed) > 7 * 24 * 60 * 60 * 1000) {
+          setShowBanner(true);
+        }
+      } catch {
         setShowBanner(true);
       }
     };
@@ -36,7 +40,9 @@ export function PWAInstallPrompt() {
 
   const handleDismiss = () => {
     setShowBanner(false);
-    localStorage.setItem("pwa-install-dismissed", Date.now().toString());
+    try {
+      localStorage.setItem("pwa-install-dismissed", Date.now().toString());
+    } catch { /* private browsing */ }
   };
 
   if (!showBanner) return null;

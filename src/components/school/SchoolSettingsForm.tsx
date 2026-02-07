@@ -50,8 +50,8 @@ function loadExtendedSettings(schoolId: string): ExtendedSettings {
     if (stored) {
       return JSON.parse(stored);
     }
-  } catch (e) {
-    console.warn("Failed to load extended settings");
+  } catch {
+    if (import.meta.env.DEV) console.warn("Failed to load extended settings");
   }
   return {
     website: null,
@@ -65,8 +65,8 @@ function loadExtendedSettings(schoolId: string): ExtendedSettings {
 function saveExtendedSettings(schoolId: string, settings: ExtendedSettings): void {
   try {
     localStorage.setItem(`school_settings_${schoolId}`, JSON.stringify(settings));
-  } catch (e) {
-    console.warn("Failed to save extended settings");
+  } catch {
+    if (import.meta.env.DEV) console.warn("Failed to save extended settings");
   }
 }
 

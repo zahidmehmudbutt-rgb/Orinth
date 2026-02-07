@@ -24,8 +24,8 @@ function loadFromStorage(): EmailPreferencesData {
     if (stored) {
       return JSON.parse(stored);
     }
-  } catch (error) {
-    console.warn("Failed to load email preferences from storage");
+  } catch {
+    if (import.meta.env.DEV) console.warn("Failed to load email preferences from storage");
   }
   return {
     homework_notifications: true,
@@ -38,8 +38,8 @@ function loadFromStorage(): EmailPreferencesData {
 function saveToStorage(prefs: EmailPreferencesData): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
-  } catch (error) {
-    console.warn("Failed to save email preferences to storage");
+  } catch {
+    if (import.meta.env.DEV) console.warn("Failed to save email preferences to storage");
   }
 }
 

@@ -127,7 +127,7 @@ const StudentDashboard = () => {
         .single();
 
       if (studentError || !student) {
-        console.error("Error fetching student:", studentError);
+        if (import.meta.env.DEV) console.error("Error fetching student:", studentError);
         return;
       }
 
@@ -455,7 +455,7 @@ const StudentDashboard = () => {
         .upload(filePath, file);
 
       if (uploadError) {
-        console.error("Upload error:", uploadError);
+        if (import.meta.env.DEV) console.error("Upload error:", uploadError);
         throw uploadError;
       }
 
