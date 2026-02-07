@@ -58,6 +58,7 @@ export default function SessionTimeout() {
     setCountdown(WARNING_BEFORE_LOGOUT_SECONDS);
     setShowWarning(true);
 
+    if (countdownRef.current) clearInterval(countdownRef.current);
     countdownRef.current = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {

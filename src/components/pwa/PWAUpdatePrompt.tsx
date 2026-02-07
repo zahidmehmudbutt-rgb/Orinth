@@ -10,9 +10,11 @@ export function PWAUpdatePrompt() {
   } = useRegisterSW({
     onRegisteredSW(_swUrl, registration) {
       if (registration) {
-        setInterval(() => {
+        const id = setInterval(() => {
           registration.update();
         }, 60 * 60 * 1000);
+        // Cleanup handled by useRegisterSW lifecycle; store for safety
+        return () => clearInterval(id);
       }
     },
     onRegisterError(error) {
