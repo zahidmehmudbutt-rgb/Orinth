@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { GraduationCap, Menu, X, ChevronDown } from "lucide-react";
+import { GraduationCap, Menu, X, ChevronDown, Download, Share } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
+import { usePWAInstall } from "@/hooks/usePWAInstall";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -31,6 +32,8 @@ export const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const hamburgerRef = useRef<HTMLButtonElement>(null);
+  const { canInstall, install, isIOS, isStandalone } = usePWAInstall();
+  const [showIOSTip, setShowIOSTip] = useState(false);
 
   // Mobile menu: Escape key handler + focus trap
   useEffect(() => {
@@ -115,6 +118,25 @@ export const Header = () => {
         <div className="hidden lg:flex items-center gap-2">
           <ThemeToggle />
 
+          {/* Install App Button */}
+          {!isStandalone && canInstall && (
+            <Button variant="outline" size="sm" className="gap-1.5" onClick={install}>
+              <Download className="w-3.5 h-3.5" />
+              Install App
+            </Button>
+          )}
+          {!isStandalone && isIOS && !canInstall && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-1.5"
+              onClick={() => setShowIOSTip((v) => !v)}
+            >
+              <Share className="w-3.5 h-3.5" />
+              Install App
+            </Button>
+          )}
+
           {/* Login Dropdown — Radix DropdownMenu for full keyboard accessibility */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -156,6 +178,19 @@ export const Header = () => {
         </div>
       </div>
 
+      {/* iOS Install Tip */}
+      {showIOSTip && (
+        <div className="absolute top-full right-4 mt-2 w-72 bg-card border border-border rounded-xl shadow-lg p-4 z-50">
+          <p className="text-sm font-medium text-foreground mb-2">Install on iOS</p>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            Tap the <Share className="w-3.5 h-3.5 inline-block mx-0.5 -mt-0.5" /> <strong>Share</strong> button in Safari, then select <strong>"Add to Home Screen"</strong>.
+          </p>
+          <Button size="sm" variant="ghost" className="mt-2 text-xs h-7" onClick={() => setShowIOSTip(false)}>
+            Got it
+          </Button>
+        </div>
+      )}
+
       {/* Mobile Menu */}
       {mobileOpen && (
         <div
@@ -176,6 +211,28 @@ export const Header = () => {
                 {link.label}
               </a>
             ))}
+
+            {/* Mobile Install Button */}
+            {!isStandalone && canInstall && (
+              <button
+                className="flex items-center gap-2 w-full px-3 py-2.5 text-sm font-medium text-primary hover:bg-muted rounded-lg transition-colors"
+                onClick={() => { install(); closeMobile(); }}
+              >
+                <Download className="w-4 h-4" />
+                Install App
+              </button>
+            )}
+            {!isStandalone && isIOS && !canInstall && (
+              <div className="px-3 py-2.5 text-sm text-muted-foreground rounded-lg bg-muted/50">
+                <p className="font-medium text-foreground flex items-center gap-2">
+                  <Download className="w-4 h-4" />
+                  Install App
+                </p>
+                <p className="text-xs mt-1">
+                  Tap <Share className="w-3 h-3 inline-block mx-0.5" /> Share in Safari, then "Add to Home Screen"
+                </p>
+              </div>
+            )}
 
             <div className="border-t border-border pt-3 mt-3">
               <p className="px-3 py-1 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Login Portals</p>
