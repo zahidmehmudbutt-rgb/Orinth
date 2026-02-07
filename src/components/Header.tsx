@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { GraduationCap, Menu, X, ChevronDown, Download, Share } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { LanguageToggle } from "@/components/LanguageToggle";
 import { Button } from "@/components/ui/button";
 import { usePWAInstall } from "@/hooks/usePWAInstall";
 import {
@@ -124,6 +125,7 @@ export const Header = () => {
 
         {/* Desktop Right Side */}
         <div className="hidden lg:flex items-center gap-2">
+          <LanguageToggle />
           <ThemeToggle />
 
           {/* Install App Button */}
@@ -171,6 +173,7 @@ export const Header = () => {
 
         {/* Mobile Right Side */}
         <div className="flex lg:hidden items-center gap-2">
+          <LanguageToggle />
           <ThemeToggle />
           <Button
             ref={hamburgerRef}

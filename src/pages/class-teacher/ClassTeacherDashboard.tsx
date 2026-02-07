@@ -35,8 +35,11 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { LoadingButton } from "@/components/ui/LoadingButton";
 import { sendBulkAbsenceNotifications, getSchoolNotificationStatus } from "@/lib/notifications";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { LanguageToggle } from "@/components/LanguageToggle";
+import { useTranslation } from "react-i18next";
 import AnnouncementManager from "@/components/announcements/AnnouncementManager";
 import AnalyticsDashboard from "@/components/analytics/AnalyticsDashboard";
+import { Leaderboard } from "@/components/leaderboard/Leaderboard";
 import ChangePassword from "@/components/account/ChangePassword";
 import LoginHistory from "@/components/account/LoginHistory";
 import { useTour } from "@/hooks/useTour";
@@ -62,6 +65,7 @@ interface ClassInfo {
 }
 
 const ClassTeacherDashboard = () => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("attendance");
   const [students, setStudents] = useState<Student[]>([]);
   const [attendance, setAttendance] = useState<AttendanceRecord[]>([]);
@@ -468,11 +472,12 @@ const ClassTeacherDashboard = () => {
                 <Users className="w-6 h-6" />
               </div>
               <div>
-                <h1 className="text-lg font-bold">Class Teacher Dashboard</h1>
+                <h1 className="text-lg font-bold">{t("classTeacherDashboard.title")}</h1>
                 <p className="text-xs opacity-80 truncate max-w-[150px] sm:max-w-none">{profile?.full_name || "Class Teacher"}</p>
               </div>
             </div>
             <div className="flex items-center gap-1 sm:gap-3">
+              <LanguageToggle className="text-primary-foreground hover:bg-primary-foreground/20" />
               <ThemeToggle className="text-primary-foreground hover:bg-primary-foreground/20" />
               <GroupChat triggerClassName="text-primary-foreground hover:bg-primary-foreground/20" />
               <NotificationCenter className="text-primary-foreground hover:bg-primary-foreground/20" />
@@ -504,7 +509,7 @@ const ClassTeacherDashboard = () => {
               <Users className="w-6 h-6" />
             </div>
             <div>
-              <h1 className="text-lg font-bold">Class Teacher Dashboard</h1>
+              <h1 className="text-lg font-bold">{t("classTeacherDashboard.title")}</h1>
               <p className="text-xs opacity-80 truncate max-w-[150px] sm:max-w-none">
                 {profile?.full_name || "Class Teacher"} - {assignedClass.name}{assignedClass.section ? ` (${assignedClass.section})` : ''}
               </p>
@@ -519,6 +524,7 @@ const ClassTeacherDashboard = () => {
             >
               <RefreshCw className="w-5 h-5" />
             </Button>
+            <LanguageToggle className="text-primary-foreground hover:bg-primary-foreground/20" />
             <ThemeToggle className="text-primary-foreground hover:bg-primary-foreground/20" />
             <GroupChat triggerClassName="text-primary-foreground hover:bg-primary-foreground/20" />
             <NotificationCenter className="text-primary-foreground hover:bg-primary-foreground/20" />
@@ -608,23 +614,23 @@ const ClassTeacherDashboard = () => {
           <TabsList className="hidden md:grid w-full max-w-2xl mx-auto grid-cols-5 mb-8 bg-card shadow-card" data-tour="ct-tabs">
             <TabsTrigger value="attendance" className="flex items-center gap-2 data-[state=active]:bg-role-class-teacher data-[state=active]:text-primary-foreground">
               <Calendar className="w-4 h-4" />
-              Attendance
+              {t("classTeacherDashboard.tabs.attendance")}
             </TabsTrigger>
             <TabsTrigger value="students" className="flex items-center gap-2 data-[state=active]:bg-role-class-teacher data-[state=active]:text-primary-foreground">
               <Users className="w-4 h-4" />
-              Students
+              {t("classTeacherDashboard.tabs.students")}
             </TabsTrigger>
             <TabsTrigger value="announcements" className="flex items-center gap-2 data-[state=active]:bg-role-class-teacher data-[state=active]:text-primary-foreground">
               <Megaphone className="w-4 h-4" />
-              Announce
+              {t("classTeacherDashboard.tabs.announce")}
             </TabsTrigger>
             <TabsTrigger value="analytics" className="flex items-center gap-2 data-[state=active]:bg-role-class-teacher data-[state=active]:text-primary-foreground">
               <BarChart3 className="w-4 h-4" />
-              Analytics
+              {t("classTeacherDashboard.tabs.analytics")}
             </TabsTrigger>
             <TabsTrigger value="account" className="flex items-center gap-2 data-[state=active]:bg-role-class-teacher data-[state=active]:text-primary-foreground">
               <Settings className="w-4 h-4" />
-              Account
+              {t("classTeacherDashboard.tabs.account")}
             </TabsTrigger>
           </TabsList>
 
@@ -828,14 +834,17 @@ const ClassTeacherDashboard = () => {
                 classId={assignedClass.id}
               />
             )}
+            {assignedClass && (
+              <Leaderboard classId={assignedClass.id} className="mt-6" />
+            )}
           </TabsContent>
 
           {/* Account Tab */}
           <TabsContent value="account" className="animate-fade-in">
             <div className="max-w-2xl mx-auto space-y-6">
               <div className="mb-6">
-                <h2 className="text-xl font-bold text-foreground mb-2">Account Settings</h2>
-                <p className="text-muted-foreground text-sm">Manage your profile and security settings</p>
+                <h2 className="text-xl font-bold text-foreground mb-2">{t("common.accountSettings")}</h2>
+                <p className="text-muted-foreground text-sm">{t("common.manageProfile")}</p>
               </div>
               <AccountSettings roleColor="bg-role-class-teacher" />
               <ChangePassword />
@@ -852,11 +861,11 @@ const ClassTeacherDashboard = () => {
       <MobileNav
         data-tour="ct-mobile-nav"
         items={[
-          { id: "attendance", label: "Attendance", icon: Calendar },
-          { id: "students", label: "Students", icon: Users },
-          { id: "announcements", label: "Announce", icon: Megaphone },
-          { id: "analytics", label: "Analytics", icon: BarChart3 },
-          { id: "account", label: "Account", icon: Settings },
+          { id: "attendance", label: t("classTeacherDashboard.tabs.attendance"), icon: Calendar },
+          { id: "students", label: t("classTeacherDashboard.tabs.students"), icon: Users },
+          { id: "announcements", label: t("classTeacherDashboard.tabs.announce"), icon: Megaphone },
+          { id: "analytics", label: t("classTeacherDashboard.tabs.analytics"), icon: BarChart3 },
+          { id: "account", label: t("classTeacherDashboard.tabs.account"), icon: Settings },
         ]}
         activeTab={activeTab}
         onTabChange={setActiveTab}

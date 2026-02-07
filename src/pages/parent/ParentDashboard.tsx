@@ -25,6 +25,8 @@ import {
 import { NotificationCenter } from "@/components/notifications/NotificationCenter";
 import { GroupChat } from "@/components/chat";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { LanguageToggle } from "@/components/LanguageToggle";
+import { useTranslation } from "react-i18next";
 import { EmailPreferences } from "@/components/account/EmailPreferences";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -41,6 +43,7 @@ import { getExamTypeBadgeColor } from "@/utils/exam";
 import { calculateGrade, getGradeColors, calculatePercentage, formatPercentage, calculateResultTotals, GRADING_SCALE } from "@/utils/grades";
 import { useTour } from "@/hooks/useTour";
 import { TourHelpButton } from "@/components/onboarding/TourHelpButton";
+import { PerformanceTrends } from "@/components/performance/PerformanceTrends";
 
 interface Child {
   id: string;
@@ -94,6 +97,7 @@ interface Notice {
 // Types imported from @/types/exam
 
 const ParentDashboard = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user, profile, loading: authLoading } = useAuth();
@@ -377,11 +381,12 @@ const ParentDashboard = () => {
               <Users className="w-6 h-6" />
             </div>
             <div>
-              <h1 className="text-lg font-bold">Parent Dashboard</h1>
-              <p className="text-xs text-primary-foreground/80 truncate max-w-[150px] sm:max-w-none">Welcome, {profile?.full_name}</p>
+              <h1 className="text-lg font-bold">{t("parentDashboard.title")}</h1>
+              <p className="text-xs text-primary-foreground/80 truncate max-w-[150px] sm:max-w-none">{t("parentDashboard.welcome")}, {profile?.full_name}</p>
             </div>
           </div>
           <div className="flex items-center gap-1 sm:gap-2">
+            <LanguageToggle className="text-primary-foreground hover:bg-primary-foreground/20" />
             <ThemeToggle className="text-primary-foreground hover:bg-primary-foreground/20" />
             <GroupChat triggerClassName="text-primary-foreground hover:bg-primary-foreground/20" />
             <NotificationCenter className="text-primary-foreground hover:bg-primary-foreground/20" />
@@ -459,23 +464,23 @@ const ParentDashboard = () => {
               <TabsList className="hidden md:grid w-full grid-cols-5 mb-6" data-tour="parent-tabs">
                 <TabsTrigger value="academics" className="flex items-center gap-2" data-tour="parent-academics">
                   <BookOpen className="w-4 h-4" />
-                  <span className="hidden sm:inline">Academics</span>
+                  <span className="hidden sm:inline">{t("parentDashboard.tabs.academics")}</span>
                 </TabsTrigger>
                 <TabsTrigger value="yearly" className="flex items-center gap-2">
                   <Award className="w-4 h-4" />
-                  <span className="hidden sm:inline">Yearly</span>
+                  <span className="hidden sm:inline">{t("parentDashboard.tabs.yearly")}</span>
                 </TabsTrigger>
                 <TabsTrigger value="attendance" className="flex items-center gap-2" data-tour="parent-attendance">
                   <Calendar className="w-4 h-4" />
-                  <span className="hidden sm:inline">Attendance</span>
+                  <span className="hidden sm:inline">{t("parentDashboard.tabs.attendance")}</span>
                 </TabsTrigger>
                 <TabsTrigger value="notices" className="flex items-center gap-2">
                   <Bell className="w-4 h-4" />
-                  <span className="hidden sm:inline">Notices</span>
+                  <span className="hidden sm:inline">{t("parentDashboard.tabs.notices")}</span>
                 </TabsTrigger>
                 <TabsTrigger value="settings" className="flex items-center gap-2">
                   <Settings className="w-4 h-4" />
-                  <span className="hidden sm:inline">Settings</span>
+                  <span className="hidden sm:inline">{t("parentDashboard.tabs.settings")}</span>
                 </TabsTrigger>
               </TabsList>
 
@@ -483,6 +488,12 @@ const ParentDashboard = () => {
               {/* Academics Tab */}
               <TabsContent value="academics">
                 <div className="space-y-6">
+                  {/* Performance Trends */}
+                  <PerformanceTrends
+                    examResults={examResults}
+                    attendanceData={attendanceStats}
+                  />
+
                   {/* Homework Section */}
                   <Card>
                     <CardHeader>
@@ -1065,11 +1076,11 @@ const ParentDashboard = () => {
       <MobileNav
         data-tour="parent-mobile-nav"
         items={[
-          { id: "academics", label: "Academics", icon: BookOpen },
-          { id: "yearly", label: "Yearly", icon: Award },
-          { id: "attendance", label: "Attendance", icon: Calendar },
-          { id: "notices", label: "Notices", icon: Bell },
-          { id: "settings", label: "Settings", icon: Settings },
+          { id: "academics", label: t("parentDashboard.tabs.academics"), icon: BookOpen },
+          { id: "yearly", label: t("parentDashboard.tabs.yearly"), icon: Award },
+          { id: "attendance", label: t("parentDashboard.tabs.attendance"), icon: Calendar },
+          { id: "notices", label: t("parentDashboard.tabs.notices"), icon: Bell },
+          { id: "settings", label: t("parentDashboard.tabs.settings"), icon: Settings },
         ]}
         activeTab={activeTab}
         onTabChange={setActiveTab}

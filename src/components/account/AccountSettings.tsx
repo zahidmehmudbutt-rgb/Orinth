@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Loader2, Save, Mail, Phone, MapPin, MessageCircle, Lock, Eye, EyeOff } from "lucide-react";
+import { Loader2, Save, Mail, Phone, MapPin, MessageCircle, Lock, Eye, EyeOff, Camera } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 interface AccountSettingsProps {
   roleColor?: string;
@@ -23,6 +24,10 @@ const AccountSettings = ({ roleColor = "bg-primary" }: AccountSettingsProps) => 
   const [address, setAddress] = useState(profile?.address || "");
   const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
   
+  // Avatar state
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
+
   // Password state
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -70,6 +75,51 @@ const AccountSettings = ({ roleColor = "bg-primary" }: AccountSettingsProps) => 
       });
     } finally {
       setIsUpdatingProfile(false);
+    }
+  };
+
+  const handleAvatarUpload = async (file: File) => {
+    if (!user?.id) return;
+    if (file.size > 2 * 1024 * 1024) {
+      toast({ variant: "destructive", title: "File too large", description: "Avatar must be under 2MB." });
+      return;
+    }
+    if (!file.type.startsWith("image/")) {
+      toast({ variant: "destructive", title: "Invalid file", description: "Please select an image file." });
+      return;
+    }
+
+    setIsUploadingAvatar(true);
+    try {
+      const fileExt = file.name.split(".").pop() || "jpg";
+      const filePath = `${user.id}/avatar.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("user-avatars")
+        .upload(filePath, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: urlData } = supabase.storage
+        .from("user-avatars")
+        .getPublicUrl(filePath);
+
+      const avatarUrl = `${urlData.publicUrl}?t=${Date.now()}`;
+
+      const { error: updateError } = await supabase
+        .from("profiles")
+        .update({ avatar_url: avatarUrl })
+        .eq("id", user.id);
+
+      if (updateError) throw updateError;
+
+      toast({ title: "Avatar Updated", description: "Your profile picture has been updated." });
+      refreshUserData();
+    } catch (error) {
+      if (import.meta.env.DEV) console.error("Avatar upload error:", error);
+      toast({ variant: "destructive", title: "Upload Failed", description: "Could not upload avatar. The storage bucket may not be set up yet." });
+    } finally {
+      setIsUploadingAvatar(false);
     }
   };
 
@@ -144,6 +194,41 @@ const AccountSettings = ({ roleColor = "bg-primary" }: AccountSettingsProps) => 
 
         <TabsContent value="profile" className="p-6">
           <div className="space-y-6">
+            {/* Avatar Section */}
+            <div className="flex flex-col items-center gap-3">
+              <div className="relative group">
+                <Avatar className="w-20 h-20">
+                  <AvatarImage src={profile?.avatar_url || undefined} alt={profile?.full_name || "Avatar"} />
+                  <AvatarFallback className="text-lg font-semibold">
+                    {profile?.full_name?.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) || "?"}
+                  </AvatarFallback>
+                </Avatar>
+                <button
+                  type="button"
+                  onClick={() => avatarInputRef.current?.click()}
+                  disabled={isUploadingAvatar}
+                  className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                >
+                  {isUploadingAvatar ? (
+                    <Loader2 className="w-5 h-5 text-white animate-spin" />
+                  ) : (
+                    <Camera className="w-5 h-5 text-white" />
+                  )}
+                </button>
+                <input
+                  ref={avatarInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleAvatarUpload(file);
+                  }}
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">Click to change photo (max 2MB)</p>
+            </div>
+
             <div className="space-y-2">
               <Label className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-muted-foreground" />

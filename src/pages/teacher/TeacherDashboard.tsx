@@ -4,6 +4,8 @@ import { LogOut, BookOpen, Plus, Users, Settings, Sparkles, ClipboardList, FileT
 import { NotificationCenter } from "@/components/notifications/NotificationCenter";
 import { GroupChat } from "@/components/chat";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { LanguageToggle } from "@/components/LanguageToggle";
+import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { FadeInView, StaggerContainer, StaggerItem, HoverScale } from "@/components/ui/motion-wrapper";
 import { DashboardSkeleton } from "@/components/ui/skeleton-loader";
@@ -70,6 +72,7 @@ interface StudentSubmission {
 // Types imported from @/types/exam
 
 const TeacherDashboard = () => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("homework");
   const [loading, setLoading] = useState(true);
   const [teacherData, setTeacherData] = useState<TeacherData | null>(null);
@@ -1127,11 +1130,12 @@ const TeacherDashboard = () => {
               <BookOpen className="w-6 h-6" />
             </div>
             <div>
-              <h1 className="text-lg font-bold">Teacher Dashboard</h1>
-              <p className="text-xs opacity-80 truncate max-w-[150px] sm:max-w-none">Welcome, {teacherData?.name}</p>
+              <h1 className="text-lg font-bold">{t("teacherDashboard.title")}</h1>
+              <p className="text-xs opacity-80 truncate max-w-[150px] sm:max-w-none">{t("teacherDashboard.welcome")}, {teacherData?.name}</p>
             </div>
           </div>
           <div className="flex items-center gap-1 sm:gap-3">
+            <LanguageToggle className="text-primary-foreground hover:bg-primary-foreground/20" />
             <ThemeToggle className="text-primary-foreground hover:bg-primary-foreground/20" />
             <GroupChat triggerClassName="text-primary-foreground hover:bg-primary-foreground/20" />
             <NotificationCenter className="text-primary-foreground hover:bg-primary-foreground/20" />
@@ -1169,19 +1173,19 @@ const TeacherDashboard = () => {
           <TabsList className="w-full max-w-2xl mx-auto hidden md:grid grid-cols-4 mb-8 bg-card shadow-card" data-tour="teacher-tabs">
             <TabsTrigger value="homework" className="flex items-center gap-2 data-[state=active]:bg-role-teacher data-[state=active]:text-primary-foreground">
               <BookOpen className="w-4 h-4" />
-              <span className="hidden sm:inline">Homework</span>
+              <span className="hidden sm:inline">{t("teacherDashboard.tabs.homework")}</span>
             </TabsTrigger>
             <TabsTrigger value="marks" className="flex items-center gap-2 data-[state=active]:bg-role-teacher data-[state=active]:text-primary-foreground">
               <Users className="w-4 h-4" />
-              <span className="hidden sm:inline">Enter Marks</span>
+              <span className="hidden sm:inline">{t("teacherDashboard.tabs.enterMarks")}</span>
             </TabsTrigger>
             <TabsTrigger value="results" className="flex items-center gap-2 data-[state=active]:bg-role-teacher data-[state=active]:text-primary-foreground" data-tour="teacher-results-tab">
               <Award className="w-4 h-4" />
-              <span className="hidden sm:inline">Results</span>
+              <span className="hidden sm:inline">{t("teacherDashboard.tabs.results")}</span>
             </TabsTrigger>
             <TabsTrigger value="account" className="flex items-center gap-2 data-[state=active]:bg-role-teacher data-[state=active]:text-primary-foreground">
               <Settings className="w-4 h-4" />
-              <span className="hidden sm:inline">Account</span>
+              <span className="hidden sm:inline">{t("teacherDashboard.tabs.account")}</span>
             </TabsTrigger>
           </TabsList>
 
@@ -1925,8 +1929,8 @@ const TeacherDashboard = () => {
           <TabsContent value="account" className="animate-fade-in">
             <div className="max-w-2xl mx-auto">
               <div className="mb-6">
-                <h2 className="text-xl font-bold text-foreground mb-2">Account Settings</h2>
-                <p className="text-muted-foreground text-sm">Manage your profile and security settings</p>
+                <h2 className="text-xl font-bold text-foreground mb-2">{t("common.accountSettings")}</h2>
+                <p className="text-muted-foreground text-sm">{t("common.manageProfile")}</p>
               </div>
               <AccountSettings roleColor="bg-role-teacher" />
             </div>
@@ -1941,10 +1945,10 @@ const TeacherDashboard = () => {
       <MobileNav
         data-tour="teacher-mobile-nav"
         items={[
-          { id: "homework", label: "Homework", icon: BookOpen },
-          { id: "marks", label: "Marks", icon: Users },
-          { id: "results", label: "Results", icon: Award },
-          { id: "account", label: "Account", icon: Settings },
+          { id: "homework", label: t("teacherDashboard.tabs.homework"), icon: BookOpen },
+          { id: "marks", label: t("teacherDashboard.tabs.marks"), icon: Users },
+          { id: "results", label: t("teacherDashboard.tabs.results"), icon: Award },
+          { id: "account", label: t("teacherDashboard.tabs.account"), icon: Settings },
         ]}
         activeTab={activeTab}
         onTabChange={setActiveTab}

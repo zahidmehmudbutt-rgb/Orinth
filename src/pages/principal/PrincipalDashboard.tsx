@@ -31,6 +31,8 @@ import { LoadingButton } from "@/components/ui/LoadingButton";
 import { SchoolSettingsForm } from "@/components/school/SchoolSettingsForm";
 import { NotificationSettings } from "@/components/notifications/NotificationSettings";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { LanguageToggle } from "@/components/LanguageToggle";
+import { useTranslation } from "react-i18next";
 import AnnouncementManager from "@/components/announcements/AnnouncementManager";
 import AnalyticsDashboard from "@/components/analytics/AnalyticsDashboard";
 import ChangePassword from "@/components/account/ChangePassword";
@@ -70,6 +72,7 @@ interface Teacher {
 }
 
 const PrincipalDashboard = () => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("staff");
   const [loading, setLoading] = useState(true);
   const [principalData, setPrincipalData] = useState<PrincipalData | null>(null);
@@ -430,11 +433,12 @@ const PrincipalDashboard = () => {
               <Crown className="w-6 h-6" />
             </div>
             <div>
-              <h1 className="text-lg font-bold">Principal Dashboard</h1>
+              <h1 className="text-lg font-bold">{t("principalDashboard.title")}</h1>
               <p className="text-xs opacity-80 truncate max-w-[150px] sm:max-w-none">{principalData?.schoolName}</p>
             </div>
           </div>
           <div className="flex items-center gap-1 sm:gap-3">
+            <LanguageToggle className="text-primary-foreground hover:bg-primary-foreground/20" />
             <ThemeToggle className="text-primary-foreground hover:bg-primary-foreground/20" />
             <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/20">
               <Bell className="w-5 h-5" />
@@ -473,27 +477,27 @@ const PrincipalDashboard = () => {
           <TabsList className="w-full max-w-4xl mx-auto hidden md:grid grid-cols-6 mb-8 bg-card shadow-card" data-tour="principal-tabs">
             <TabsTrigger value="staff" className="flex items-center gap-2 data-[state=active]:bg-role-principal data-[state=active]:text-primary-foreground">
               <Users className="w-4 h-4" />
-              <span className="text-sm">Staff</span>
+              <span className="text-sm">{t("principalDashboard.tabs.staff")}</span>
             </TabsTrigger>
             <TabsTrigger value="classes" className="flex items-center gap-2 data-[state=active]:bg-role-principal data-[state=active]:text-primary-foreground">
               <School className="w-4 h-4" />
-              <span className="text-sm">Classes</span>
+              <span className="text-sm">{t("principalDashboard.tabs.classes")}</span>
             </TabsTrigger>
             <TabsTrigger value="announcements" className="flex items-center gap-2 data-[state=active]:bg-role-principal data-[state=active]:text-primary-foreground">
               <Megaphone className="w-4 h-4" />
-              <span className="text-sm">Announce</span>
+              <span className="text-sm">{t("principalDashboard.tabs.announce")}</span>
             </TabsTrigger>
             <TabsTrigger value="analytics" className="flex items-center gap-2 data-[state=active]:bg-role-principal data-[state=active]:text-primary-foreground" data-tour="principal-analytics">
               <BarChart3 className="w-4 h-4" />
-              <span className="text-sm">Analytics</span>
+              <span className="text-sm">{t("principalDashboard.tabs.analytics")}</span>
             </TabsTrigger>
             <TabsTrigger value="school" className="flex items-center gap-2 data-[state=active]:bg-role-principal data-[state=active]:text-primary-foreground" data-tour="principal-school-settings">
               <Globe className="w-4 h-4" />
-              <span className="text-sm">Public</span>
+              <span className="text-sm">{t("principalDashboard.tabs.publicPage")}</span>
             </TabsTrigger>
             <TabsTrigger value="account" className="flex items-center gap-2 data-[state=active]:bg-role-principal data-[state=active]:text-primary-foreground">
               <Settings className="w-4 h-4" />
-              <span className="text-sm">Account</span>
+              <span className="text-sm">{t("principalDashboard.tabs.account")}</span>
             </TabsTrigger>
           </TabsList>
 
@@ -508,7 +512,7 @@ const PrincipalDashboard = () => {
               }`}
             >
               <Megaphone className="w-4 h-4" />
-              Announcements
+              {t("principalDashboard.tabs.announcements")}
             </button>
           </div>
 
@@ -744,8 +748,8 @@ const PrincipalDashboard = () => {
           <TabsContent value="account" className="animate-fade-in">
             <div className="max-w-2xl mx-auto space-y-6">
               <div className="mb-6">
-                <h2 className="text-xl font-bold text-foreground mb-2">Account Settings</h2>
-                <p className="text-muted-foreground text-sm">Manage your profile and security settings</p>
+                <h2 className="text-xl font-bold text-foreground mb-2">{t("common.accountSettings")}</h2>
+                <p className="text-muted-foreground text-sm">{t("common.manageProfile")}</p>
               </div>
               <AccountSettings roleColor="bg-role-principal" />
               <ChangePassword />
@@ -763,11 +767,11 @@ const PrincipalDashboard = () => {
       <MobileNav
         data-tour="principal-mobile-nav"
         items={[
-          { id: "staff", label: "Staff", icon: Users },
-          { id: "classes", label: "Classes", icon: School },
-          { id: "analytics", label: "Analytics", icon: BarChart3 },
-          { id: "school", label: "Public", icon: Globe },
-          { id: "account", label: "Account", icon: Settings },
+          { id: "staff", label: t("principalDashboard.tabs.staff"), icon: Users },
+          { id: "classes", label: t("principalDashboard.tabs.classes"), icon: School },
+          { id: "analytics", label: t("principalDashboard.tabs.analytics"), icon: BarChart3 },
+          { id: "school", label: t("principalDashboard.tabs.publicPage"), icon: Globe },
+          { id: "account", label: t("principalDashboard.tabs.account"), icon: Settings },
         ]}
         activeTab={activeTab}
         onTabChange={setActiveTab}

@@ -1,0 +1,200 @@
+{
+  "common": {
+    "signIn": "Sign In",
+    "signingIn": "Signing in...",
+    "logout": "Logout",
+    "loggingOut": "Logging out...",
+    "save": "Save Changes",
+    "saving": "Saving...",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "back": "Back",
+    "backToHome": "Back to Home",
+    "loading": "Loading...",
+    "search": "Search",
+    "noData": "No data available",
+    "refresh": "Refresh",
+    "print": "Print",
+    "download": "Download",
+    "submit": "Submit",
+    "edit": "Edit",
+    "add": "Add",
+    "remove": "Remove",
+    "close": "Close",
+    "yes": "Yes",
+    "no": "No",
+    "password": "Password",
+    "email": "Email",
+    "forgotPassword": "Forgot Password?",
+    "welcomeBack": "Welcome Back!",
+    "redirecting": "Redirecting to your dashboard...",
+    "accountSettings": "Account Settings",
+    "manageProfile": "Manage your profile and security settings",
+    "changePassword": "Change Password",
+    "profileInfo": "Account Information",
+    "language": "Language",
+    "english": "English",
+    "urdu": "اردو"
+  },
+  "landing": {
+    "heroTitle": "Pakistan's Smartest School Management System",
+    "heroSubtitle": "Streamline attendance, homework, marks, and communication — all in one portal for students, teachers, and parents.",
+    "getStarted": "Get Started",
+    "learnMore": "Learn More",
+    "loginAs": "Login as",
+    "features": "Everything Your School Needs",
+    "featuresSubtitle": "A complete digital solution for Pakistani schools",
+    "statsTitle": "Trusted by Schools Across Pakistan",
+    "statsSubtitle": "Growing every day with schools, teachers, students, and parents",
+    "faqTitle": "Frequently Asked Questions",
+    "faqSubtitle": "Quick answers to common questions about using the portal",
+    "showMoreFaqs": "Show More Questions",
+    "showLessFaqs": "Show Less",
+    "students": "Students",
+    "teachers": "Teachers",
+    "classes": "Classes",
+    "schools": "Schools"
+  },
+  "roles": {
+    "student": "Student",
+    "teacher": "Teacher",
+    "classTeacher": "Class Teacher",
+    "coordinator": "Section Head / Coordinator",
+    "principal": "Principal",
+    "parent": "Parent"
+  },
+  "roleDescriptions": {
+    "student": "View homework, attendance, marks, and school notices",
+    "teacher": "Manage classes, upload homework, and enter marks",
+    "classTeacher": "Mark attendance, add students, and manage your class",
+    "coordinator": "Manage teachers, class teachers, and section staff",
+    "principal": "Oversee school administration and view analytics",
+    "parent": "Monitor your child's academics, attendance, and progress"
+  },
+  "studentDashboard": {
+    "title": "Student Dashboard",
+    "welcome": "Welcome back",
+    "tabs": {
+      "homework": "Homework",
+      "attendance": "Attendance",
+      "marks": "Marks",
+      "yearly": "Yearly",
+      "notices": "Notices",
+      "account": "Account"
+    }
+  },
+  "teacherDashboard": {
+    "title": "Teacher Dashboard",
+    "welcome": "Welcome",
+    "tabs": {
+      "homework": "Homework",
+      "enterMarks": "Enter Marks",
+      "marks": "Marks",
+      "results": "Results",
+      "account": "Account"
+    }
+  },
+  "classTeacherDashboard": {
+    "title": "Class Teacher Dashboard",
+    "welcome": "Welcome, Class Teacher",
+    "tabs": {
+      "attendance": "Attendance",
+      "students": "Students",
+      "announce": "Announce",
+      "analytics": "Analytics",
+      "account": "Account"
+    },
+    "markAttendance": "Mark Attendance",
+    "saveAttendance": "Save Attendance",
+    "addStudent": "Add Student",
+    "totalStudents": "Total Students",
+    "presentToday": "Present Today",
+    "absentToday": "Absent Today",
+    "classAnalytics": "Class Analytics"
+  },
+  "coordinatorDashboard": {
+    "title": "Coordinator Dashboard",
+    "welcome": "Welcome, Coordinator",
+    "tabs": {
+      "classes": "Classes",
+      "subjects": "Subjects",
+      "assign": "Assign",
+      "staff": "Staff",
+      "announce": "Announce",
+      "analytics": "Analytics",
+      "account": "Account"
+    }
+  },
+  "principalDashboard": {
+    "title": "Principal Dashboard",
+    "welcome": "Welcome, Principal",
+    "tabs": {
+      "staff": "Staff",
+      "classes": "Classes",
+      "announce": "Announce",
+      "announcements": "Announcements",
+      "analytics": "Analytics",
+      "publicPage": "Public Page",
+      "account": "Account"
+    }
+  },
+  "parentDashboard": {
+    "title": "Parent Dashboard",
+    "welcome": "Welcome",
+    "tabs": {
+      "academics": "Academics",
+      "yearly": "Yearly",
+      "attendance": "Attendance",
+      "notices": "Notices",
+      "settings": "Settings"
+    },
+    "selectChild": "Select Child",
+    "printResultCard": "Print Result Card"
+  },
+  "login": {
+    "studentPortal": "Student Portal",
+    "studentDesc": "Access your homework, attendance, marks, and school notices all in one place.",
+    "teacherPortal": "Teacher Portal",
+    "teacherDesc": "Manage your classes, post homework, and track student performance.",
+    "classTeacherPortal": "Class Teacher Portal",
+    "classTeacherDesc": "Mark attendance, manage students, and oversee your class.",
+    "coordinatorPortal": "Coordinator Portal",
+    "coordinatorDesc": "Manage teachers, assign classes, and oversee your section.",
+    "principalPortal": "Principal Portal",
+    "principalDesc": "Oversee school administration, analytics, and staff management.",
+    "parentPortal": "Parent Portal",
+    "parentDesc": "Monitor your child's academic progress, attendance, and school activities.",
+    "studentId": "Student ID",
+    "enterStudentId": "Enter your Student ID",
+    "enterEmail": "Enter your email",
+    "enterPassword": "Enter your Password",
+    "studentLogin": "Student Login",
+    "teacherLogin": "Teacher Login",
+    "classTeacherLogin": "Class Teacher Login",
+    "coordinatorLogin": "Coordinator Login",
+    "principalLogin": "Principal Login",
+    "parentLogin": "Parent Login",
+    "enterIdAndPassword": "Enter your Student ID and Password",
+    "enterEmailAndPassword": "Enter your email and password",
+    "contactClassTeacher": "Forgot your password? Contact your class teacher to reset it.",
+    "contactAdmin": "Forgot your password? Contact administration to reset it."
+  },
+  "features": {
+    "dailyAttendance": "Daily Attendance",
+    "dailyAttendanceDesc": "Real-time attendance tracking for every class. Parents receive instant notifications when their child is marked absent.",
+    "homework": "Homework & Assignments",
+    "homeworkDesc": "Teachers post homework with deadlines. Students can submit work online. Parents stay informed about pending tasks.",
+    "marksResults": "Marks & Result Cards",
+    "marksResultsDesc": "Complete academic records including weekly tests, monthly exams, and term results. Download printable result cards anytime.",
+    "announcements": "School Announcements",
+    "announcementsDesc": "Important notices, event updates, and school news delivered directly to students and parents through the portal.",
+    "communication": "Parent-Teacher Communication",
+    "communicationDesc": "Direct messaging between parents and teachers. Stay connected about your child's progress and any concerns.",
+    "calendar": "Academic Calendar",
+    "calendarDesc": "View exam schedules, holidays, events, and important dates. Never miss a school activity or deadline."
+  },
+  "tour": {
+    "helpButton": "Take a guided tour"
+  }
+}

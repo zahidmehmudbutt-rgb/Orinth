@@ -51,6 +51,8 @@ import { WelcomeBanner } from "@/components/onboarding/WelcomeBanner";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { LoadingButton } from "@/components/ui/LoadingButton";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { LanguageToggle } from "@/components/LanguageToggle";
+import { useTranslation } from "react-i18next";
 import AnnouncementManager from "@/components/announcements/AnnouncementManager";
 import AnalyticsDashboard from "@/components/analytics/AnalyticsDashboard";
 import ChangePassword from "@/components/account/ChangePassword";
@@ -148,6 +150,7 @@ const COMMON_SUBJECTS = [
 ];
 
 const CoordinatorDashboard = () => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("classes");
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -1027,11 +1030,12 @@ const CoordinatorDashboard = () => {
               <BookMarked className="w-6 h-6" />
             </div>
             <div>
-              <h1 className="text-lg font-bold">Section Head Dashboard</h1>
-              <p className="text-xs opacity-80 truncate max-w-[150px] sm:max-w-none">{profile?.full_name || "Coordinator"}</p>
+              <h1 className="text-lg font-bold">{t("coordinatorDashboard.title")}</h1>
+              <p className="text-xs opacity-80 truncate max-w-[150px] sm:max-w-none">{profile?.full_name || t("coordinatorDashboard.coordinator")}</p>
             </div>
           </div>
           <div className="flex items-center gap-1 sm:gap-3">
+            <LanguageToggle className="text-primary-foreground hover:bg-primary-foreground/20" />
             <ThemeToggle className="text-primary-foreground hover:bg-primary-foreground/20" />
             <Button
               variant="ghost"
@@ -1127,31 +1131,31 @@ const CoordinatorDashboard = () => {
           <TabsList className="hidden md:grid w-full max-w-4xl mx-auto grid-cols-7 mb-8 bg-card shadow-card" data-tour="coord-tabs">
             <TabsTrigger value="classes" className="text-sm data-[state=active]:bg-role-coordinator data-[state=active]:text-primary-foreground">
               <School className="w-4 h-4 mr-1" />
-              Classes
+              {t("coordinatorDashboard.tabs.classes")}
             </TabsTrigger>
             <TabsTrigger value="subjects" className="text-sm data-[state=active]:bg-role-coordinator data-[state=active]:text-primary-foreground">
               <BookOpen className="w-4 h-4 mr-1" />
-              Subjects
+              {t("coordinatorDashboard.tabs.subjects")}
             </TabsTrigger>
             <TabsTrigger value="assignments" className="text-sm data-[state=active]:bg-role-coordinator data-[state=active]:text-primary-foreground">
               <Link2 className="w-4 h-4 mr-1" />
-              Assign
+              {t("coordinatorDashboard.tabs.assign")}
             </TabsTrigger>
             <TabsTrigger value="staff" className="text-sm data-[state=active]:bg-role-coordinator data-[state=active]:text-primary-foreground">
               <Users className="w-4 h-4 mr-1" />
-              Staff
+              {t("coordinatorDashboard.tabs.staff")}
             </TabsTrigger>
             <TabsTrigger value="announcements" className="text-sm data-[state=active]:bg-role-coordinator data-[state=active]:text-primary-foreground">
               <Megaphone className="w-4 h-4 mr-1" />
-              Announce
+              {t("coordinatorDashboard.tabs.announce")}
             </TabsTrigger>
             <TabsTrigger value="analytics" className="text-sm data-[state=active]:bg-role-coordinator data-[state=active]:text-primary-foreground">
               <BarChart3 className="w-4 h-4 mr-1" />
-              Analytics
+              {t("coordinatorDashboard.tabs.analytics")}
             </TabsTrigger>
             <TabsTrigger value="account" className="text-sm data-[state=active]:bg-role-coordinator data-[state=active]:text-primary-foreground">
               <Settings className="w-4 h-4 mr-1" />
-              Account
+              {t("coordinatorDashboard.tabs.account")}
             </TabsTrigger>
           </TabsList>
 
@@ -1164,7 +1168,7 @@ const CoordinatorDashboard = () => {
               }`}
             >
               <Link2 className="w-4 h-4" />
-              Assign Teachers
+              {t("coordinatorDashboard.tabs.assign")}
             </button>
             <button
               onClick={() => setActiveTab("announcements")}
@@ -1173,7 +1177,7 @@ const CoordinatorDashboard = () => {
               }`}
             >
               <Megaphone className="w-4 h-4" />
-              Announcements
+              {t("coordinatorDashboard.tabs.announce")}
             </button>
           </div>
 
@@ -1946,8 +1950,8 @@ const CoordinatorDashboard = () => {
           <TabsContent value="account" className="animate-fade-in">
             <div className="max-w-2xl mx-auto space-y-6">
               <div className="mb-6">
-                <h2 className="text-xl font-bold text-foreground mb-2">Account Settings</h2>
-                <p className="text-muted-foreground text-sm">Manage your profile and security settings</p>
+                <h2 className="text-xl font-bold text-foreground mb-2">{t("common.accountSettings")}</h2>
+                <p className="text-muted-foreground text-sm">{t("common.manageProfile")}</p>
               </div>
               <AccountSettings roleColor="bg-role-coordinator" />
               <ChangePassword />
@@ -1964,11 +1968,11 @@ const CoordinatorDashboard = () => {
       <MobileNav
         data-tour="coord-mobile-nav"
         items={[
-          { id: "classes", label: "Classes", icon: School },
-          { id: "subjects", label: "Subjects", icon: BookOpen },
-          { id: "staff", label: "Staff", icon: Users },
-          { id: "analytics", label: "Analytics", icon: BarChart3 },
-          { id: "account", label: "Account", icon: Settings },
+          { id: "classes", label: t("coordinatorDashboard.tabs.classes"), icon: School },
+          { id: "subjects", label: t("coordinatorDashboard.tabs.subjects"), icon: BookOpen },
+          { id: "staff", label: t("coordinatorDashboard.tabs.staff"), icon: Users },
+          { id: "analytics", label: t("coordinatorDashboard.tabs.analytics"), icon: BarChart3 },
+          { id: "account", label: t("coordinatorDashboard.tabs.account"), icon: Settings },
         ]}
         activeTab={activeTab}
         onTabChange={setActiveTab}

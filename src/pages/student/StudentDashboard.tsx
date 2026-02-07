@@ -4,6 +4,8 @@ import { GraduationCap, LogOut, BookOpen, Calendar, BarChart3, Megaphone, Clock,
 import { NotificationCenter } from "@/components/notifications/NotificationCenter";
 import { GroupChat } from "@/components/chat";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { LanguageToggle } from "@/components/LanguageToggle";
+import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { FadeInView, StaggerContainer, StaggerItem, HoverScale } from "@/components/ui/motion-wrapper";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -28,6 +30,8 @@ import type { ExamType, ExamResult } from "@/types/exam";
 import { EXAM_TYPE_LABELS } from "@/types/exam";
 import { getExamTypeBadgeColor } from "@/utils/exam";
 import { calculateGrade, getGradeColors, calculatePercentage, formatPercentage, calculateResultTotals, GRADING_SCALE } from "@/utils/grades";
+import { PerformanceTrends } from "@/components/performance/PerformanceTrends";
+import { Leaderboard } from "@/components/leaderboard/Leaderboard";
 
 interface StudentData {
   id: string;
@@ -82,6 +86,7 @@ interface Notice {
 // Types imported from @/types/exam
 
 const StudentDashboard = () => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("homework");
   const [homeworkView, setHomeworkView] = useState<"list" | "calendar">("list");
   const [uploadingId, setUploadingId] = useState<string | null>(null);
@@ -591,12 +596,13 @@ const StudentDashboard = () => {
               <GraduationCap className="w-6 h-6" />
             </div>
             <div>
-              <h1 className="text-lg font-bold">Student Dashboard</h1>
-              <p className="text-xs opacity-80 truncate max-w-[150px] sm:max-w-none">Welcome back, {studentData?.name}!</p>
+              <h1 className="text-lg font-bold">{t("studentDashboard.title")}</h1>
+              <p className="text-xs opacity-80 truncate max-w-[150px] sm:max-w-none">{t("studentDashboard.welcome")}, {studentData?.name}!</p>
             </div>
           </div>
           <div className="flex items-center gap-2 sm:gap-3">
             <span className="hidden sm:inline text-sm opacity-80">{studentData?.className}</span>
+            <LanguageToggle className="text-primary-foreground hover:bg-primary-foreground/20" />
             <ThemeToggle className="text-primary-foreground hover:bg-primary-foreground/20" data-tour="student-theme-toggle" />
             <span data-tour="student-chat"><GroupChat triggerClassName="text-primary-foreground hover:bg-primary-foreground/20" /></span>
             <span data-tour="student-notifications"><NotificationCenter className="text-primary-foreground hover:bg-primary-foreground/20" /></span>
@@ -641,27 +647,27 @@ const StudentDashboard = () => {
           <TabsList className="hidden md:grid w-full max-w-2xl mx-auto grid-cols-6 mb-8 bg-card shadow-card" data-tour="student-tabs">
             <TabsTrigger value="homework" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <BookOpen className="w-4 h-4" />
-              Homework
+              {t("studentDashboard.tabs.homework")}
             </TabsTrigger>
             <TabsTrigger value="attendance" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Calendar className="w-4 h-4" />
-              Attendance
+              {t("studentDashboard.tabs.attendance")}
             </TabsTrigger>
             <TabsTrigger value="marks" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <BarChart3 className="w-4 h-4" />
-              Marks
+              {t("studentDashboard.tabs.marks")}
             </TabsTrigger>
             <TabsTrigger value="yearly" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Award className="w-4 h-4" />
-              Yearly
+              {t("studentDashboard.tabs.yearly")}
             </TabsTrigger>
             <TabsTrigger value="notices" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Megaphone className="w-4 h-4" />
-              Notices
+              {t("studentDashboard.tabs.notices")}
             </TabsTrigger>
             <TabsTrigger value="account" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Settings className="w-4 h-4" />
-              Account
+              {t("studentDashboard.tabs.account")}
             </TabsTrigger>
           </TabsList>
 
@@ -674,7 +680,7 @@ const StudentDashboard = () => {
               }`}
             >
               <Settings className="w-4 h-4" />
-              Account Settings
+              {t("common.accountSettings")}
             </button>
           </div>
 
@@ -958,6 +964,20 @@ const StudentDashboard = () => {
               </div>
             ) : (
               <div className="space-y-8">
+                {/* Performance Trends Charts */}
+                <PerformanceTrends
+                  examResults={examResults}
+                  attendanceData={attendanceData}
+                  className="mb-4"
+                />
+
+                {/* Class Leaderboard */}
+                <Leaderboard
+                  classId={studentData?.classId || ""}
+                  currentStudentId={studentData?.studentId}
+                  className="mb-4 bg-card border-border"
+                />
+
                 {/* Homework Marks Section */}
                 {hasMarks && (
                   <>
@@ -1395,8 +1415,8 @@ const StudentDashboard = () => {
           <TabsContent value="account" className="animate-fade-in">
             <div className="max-w-2xl mx-auto">
               <div className="mb-6">
-                <h2 className="text-xl font-bold text-foreground mb-2">Account Settings</h2>
-                <p className="text-muted-foreground text-sm">Manage your profile and security settings</p>
+                <h2 className="text-xl font-bold text-foreground mb-2">{t("common.accountSettings")}</h2>
+                <p className="text-muted-foreground text-sm">{t("common.manageProfile")}</p>
               </div>
               <AccountSettings roleColor="bg-primary" />
             </div>
@@ -1411,11 +1431,11 @@ const StudentDashboard = () => {
       <MobileNav
         data-tour="student-mobile-nav"
         items={[
-          { id: "homework", label: "Homework", icon: BookOpen, badge: pendingHomework.length || undefined },
-          { id: "attendance", label: "Attendance", icon: Calendar },
-          { id: "marks", label: "Marks", icon: BarChart3 },
-          { id: "yearly", label: "Yearly", icon: Award },
-          { id: "notices", label: "Notices", icon: Megaphone },
+          { id: "homework", label: t("studentDashboard.tabs.homework"), icon: BookOpen, badge: pendingHomework.length || undefined },
+          { id: "attendance", label: t("studentDashboard.tabs.attendance"), icon: Calendar },
+          { id: "marks", label: t("studentDashboard.tabs.marks"), icon: BarChart3 },
+          { id: "yearly", label: t("studentDashboard.tabs.yearly"), icon: Award },
+          { id: "notices", label: t("studentDashboard.tabs.notices"), icon: Megaphone },
         ]}
         activeTab={activeTab}
         onTabChange={setActiveTab}
