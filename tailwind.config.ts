@@ -71,6 +71,7 @@ export default {
           "class-teacher": "hsl(var(--role-class-teacher))",
           coordinator: "hsl(var(--role-coordinator))",
           principal: "hsl(var(--role-principal))",
+          parent: "hsl(var(--role-parent))",
         },
       },
       borderRadius: {

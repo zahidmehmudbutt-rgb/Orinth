@@ -816,13 +816,13 @@ html::-webkit-scrollbar-thumb:hover {
 
 /* RTL Support for Urdu language */
 [dir="rtl"] {
-  font-family: 'Noto Nastaliq Urdu', 'Jameel Noori Nastaleeq', 'Urdu Typesetting', 'Inter', system-ui, sans-serif;
+  font-family: 'Segoe UI', 'Tahoma', 'Noto Sans Arabic', 'Inter', system-ui, sans-serif;
 }
 
 [dir="rtl"] h1,
 [dir="rtl"] h2,
 [dir="rtl"] h3 {
-  font-family: 'Noto Nastaliq Urdu', 'Jameel Noori Nastaleeq', 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+  font-family: 'Segoe UI', 'Tahoma', 'Noto Sans Arabic', 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
 }
 
 /* Flip icons and directional elements in RTL */
