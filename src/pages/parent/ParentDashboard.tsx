@@ -20,7 +20,9 @@ import {
   Settings,
   Award,
   BarChart3,
-  Printer
+  Printer,
+  Download,
+  MessageSquare
 } from "lucide-react";
 import { NotificationCenter } from "@/components/notifications/NotificationCenter";
 import { GroupChat } from "@/components/chat";
@@ -28,6 +30,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { useTranslation } from "react-i18next";
 import { EmailPreferences } from "@/components/account/EmailPreferences";
+import { PushNotificationToggle } from "@/components/notifications/PushNotificationToggle";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -38,6 +41,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { MobileResultCards } from "@/components/ui/mobile-result-card";
+import { DirectMessageButton } from "@/components/messaging/DirectMessageButton";
 import type { ExamType, ExamResult } from "@/types/exam";
 import { getExamTypeBadgeColor } from "@/utils/exam";
 import { calculateGrade, getGradeColors, calculatePercentage, formatPercentage, calculateResultTotals, GRADING_SCALE } from "@/utils/grades";
@@ -45,6 +49,7 @@ import { useTour } from "@/hooks/useTour";
 import { TourHelpButton } from "@/components/onboarding/TourHelpButton";
 import { PerformanceTrends } from "@/components/performance/PerformanceTrends";
 import { getDateLocale } from "@/lib/utils/date-locale";
+import { exportToPDF } from "@/lib/utils/pdf-export";
 
 interface Child {
   id: string;
@@ -69,12 +74,18 @@ interface ParentStudentJoinResult {
   };
 }
 
+interface TeacherInfo {
+  id: string;
+  name: string;
+}
+
 interface Homework {
   id: string;
   title: string;
   subject: string;
   due_date: string;
   description?: string;
+  teacher?: TeacherInfo;
   submission?: {
     submitted_at: string | null;
     marks: number | null;
@@ -184,7 +195,7 @@ const ParentDashboard = () => {
       try {
         const { data: homeworkData, error: homeworkError } = await supabase
           .from('homework')
-          .select('id, title, subject, due_date, description')
+          .select('id, title, subject, due_date, description, teacher_id')
           .eq('class_id', selectedChild.class_id)
           .order('due_date', { ascending: false })
           .limit(10);
@@ -199,12 +210,27 @@ const ParentDashboard = () => {
 
         if (submissionsError) throw submissionsError;
 
+        // Fetch teacher profiles for homework
+        const teacherIds = [...new Set((homeworkData || []).map(hw => hw.teacher_id).filter(Boolean))];
+        const teacherMap = new Map<string, TeacherInfo>();
+        if (teacherIds.length > 0) {
+          const { data: teacherProfiles } = await supabase
+            .from('profiles')
+            .select('id, full_name')
+            .in('id', teacherIds);
+
+          (teacherProfiles || []).forEach(tp => {
+            teacherMap.set(tp.id, { id: tp.id, name: tp.full_name });
+          });
+        }
+
         const submissionsMap = new Map(
           (submissions || []).map(s => [s.homework_id, s])
         );
 
         const homeworkWithSubmissions: Homework[] = (homeworkData || []).map(hw => ({
           ...hw,
+          teacher: hw.teacher_id ? teacherMap.get(hw.teacher_id) : undefined,
           submission: submissionsMap.get(hw.id) || undefined,
         }));
 
@@ -496,6 +522,45 @@ const ParentDashboard = () => {
                     attendanceData={attendanceStats}
                   />
 
+                  {/* Contact Teachers Section */}
+                  {(() => {
+                    const uniqueTeachers = new Map<string, TeacherInfo>();
+                    homework.forEach(hw => {
+                      if (hw.teacher && !uniqueTeachers.has(hw.teacher.id)) {
+                        uniqueTeachers.set(hw.teacher.id, hw.teacher);
+                      }
+                    });
+                    const teachers = Array.from(uniqueTeachers.values());
+                    if (teachers.length === 0) return null;
+                    return (
+                      <Card>
+                        <CardHeader>
+                          <CardTitle className="flex items-center gap-2">
+                            <MessageSquare className="w-5 h-5" />
+                            {t("parentDashboard.contactTeachers")}
+                          </CardTitle>
+                          <CardDescription>{t("parentDashboard.contactTeachersDesc")}</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="flex flex-wrap gap-3">
+                            {teachers.map(teacher => (
+                              <DirectMessageButton
+                                key={teacher.id}
+                                recipientId={teacher.id}
+                                recipientName={teacher.name}
+                                studentName={selectedChild?.full_name}
+                                classId={selectedChild?.class_id || ""}
+                                schoolId={profile?.school_id || ""}
+                                senderRole="parent"
+                                recipientRole="teacher"
+                              />
+                            ))}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })()}
+
                   {/* Homework Section */}
                   <Card>
                     <CardHeader>
@@ -640,7 +705,7 @@ const ParentDashboard = () => {
                 ) : (
                   <div className="max-w-4xl mx-auto">
                     {/* Print Button */}
-                    <div className="flex justify-end mb-4 print:hidden">
+                    <div className="flex justify-end gap-2 mb-4 print:hidden">
                       <Button
                         variant="outline"
                         onClick={() => window.print()}
@@ -649,6 +714,15 @@ const ParentDashboard = () => {
                       >
                         <Printer className="w-4 h-4" />
                         {t("parentDashboard.printResultCard")}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="default"
+                        onClick={() => exportToPDF("result-card-content", `Result-Card-${selectedChild?.full_name || "Student"}`)}
+                        className="gap-2"
+                      >
+                        <Download className="w-4 h-4" />
+                        {t("parentDashboard.downloadPDF")}
                       </Button>
                     </div>
                     {/* Mobile Result Cards (shown only on mobile) */}
@@ -698,7 +772,7 @@ const ParentDashboard = () => {
                     </div>
 
                     {/* Result Card / Certificate (hidden on mobile, visible for print) */}
-                    <div className="hidden md:block print:!block bg-gradient-to-br from-slate-50 to-slate-100 rounded-lg shadow-xl border-4 border-double border-slate-300 overflow-hidden print:shadow-none print:border-2">
+                    <div id="result-card-content" className="hidden md:block print:!block bg-gradient-to-br from-slate-50 to-slate-100 rounded-lg shadow-xl border-4 border-double border-slate-300 overflow-hidden print:shadow-none print:border-2">
                       {/* Certificate Header */}
                       <div className="bg-gradient-to-r from-indigo-900 via-purple-900 to-indigo-900 text-white px-4 sm:px-8 py-5 sm:py-6 text-center relative">
                         <div className="absolute top-0 left-0 w-full h-full opacity-10">
@@ -1062,8 +1136,9 @@ const ParentDashboard = () => {
 
               {/* Settings Tab */}
               <TabsContent value="settings">
-                <div className="max-w-2xl mx-auto">
+                <div className="max-w-2xl mx-auto space-y-6">
                   <EmailPreferences />
+                  <PushNotificationToggle />
                 </div>
               </TabsContent>
               </SwipeableTabContent>

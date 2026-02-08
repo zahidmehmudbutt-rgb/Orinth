@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import * as OTPAuth from "otpauth";
+import QRCode from "qrcode";
 import { getDateLocale } from "@/lib/utils/date-locale";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -42,6 +44,7 @@ export default function TwoFactorAuth() {
   const [backupCodes, setBackupCodes] = useState<string[]>([]);
   const [processing, setProcessing] = useState(false);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
+  const [qrCodeUrl, setQrCodeUrl] = useState("");
   const { toast } = useToast();
   const { t } = useTranslation();
 
@@ -70,9 +73,8 @@ export default function TwoFactorAuth() {
   };
 
   const generateSecret = () => {
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
-    const randomValues = crypto.getRandomValues(new Uint8Array(16));
-    return Array.from(randomValues, (v) => chars[v % chars.length]).join("");
+    const secret = new OTPAuth.Secret({ size: 20 });
+    return secret.base32;
   };
 
   const generateBackupCodes = () => {
@@ -101,6 +103,17 @@ export default function TwoFactorAuth() {
     setSetupStep("intro");
     setSetupOpen(true);
     setVerificationCode("");
+
+    const totp = new OTPAuth.TOTP({
+      issuer: "School Smart Pakistan",
+      label: "School Smart",
+      algorithm: "SHA1",
+      digits: 6,
+      period: 30,
+      secret: OTPAuth.Secret.fromBase32(secret),
+    });
+    const uri = totp.toString();
+    QRCode.toDataURL(uri).then(url => setQrCodeUrl(url));
   };
 
   const verifyAndEnable = async () => {
@@ -116,8 +129,25 @@ export default function TwoFactorAuth() {
     setProcessing(true);
 
     try {
-      // In a real implementation, verify the TOTP code against the secret
-      // For demo purposes, accept any 6-digit code
+      const totp = new OTPAuth.TOTP({
+        issuer: "School Smart Pakistan",
+        label: "School Smart",
+        algorithm: "SHA1",
+        digits: 6,
+        period: 30,
+        secret: OTPAuth.Secret.fromBase32(generatedSecret),
+      });
+      const delta = totp.validate({ token: verificationCode, window: 1 });
+      if (delta === null) {
+        toast({
+          variant: "destructive",
+          title: t("twoFactor.invalidCode"),
+          description: t("twoFactor.invalidCodeDesc"),
+        });
+        setProcessing(false);
+        return;
+      }
+
       const codes = generateBackupCodes();
       setBackupCodes(codes);
 
@@ -293,7 +323,7 @@ export default function TwoFactorAuth() {
                 </div>
               </div>
 
-              <Button onClick={startSetup}>
+              <Button onClick={() => startSetup()}>
                 <Shield className="h-4 w-4 mr-2" />
                 {t("twoFactor.enable")}
               </Button>
@@ -319,6 +349,11 @@ export default function TwoFactorAuth() {
 
           {setupStep === "intro" && (
             <div className="space-y-4">
+              {qrCodeUrl && (
+                <div className="flex justify-center mb-4">
+                  <img src={qrCodeUrl} alt="QR Code" className="w-48 h-48 rounded-lg" />
+                </div>
+              )}
               <div className="p-4 bg-muted rounded-lg text-center">
                 <p className="text-sm text-muted-foreground mb-2">{t("twoFactor.secretKey")}</p>
                 <div className="flex items-center justify-center gap-2">

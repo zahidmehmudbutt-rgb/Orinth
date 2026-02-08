@@ -33,6 +33,7 @@ import { calculateGrade, getGradeColors, calculatePercentage, formatPercentage, 
 import { PerformanceTrends } from "@/components/performance/PerformanceTrends";
 import { Leaderboard } from "@/components/leaderboard/Leaderboard";
 import { getDateLocale } from "@/lib/utils/date-locale";
+import { exportToPDF } from "@/lib/utils/pdf-export";
 
 interface StudentData {
   id: string;
@@ -1094,7 +1095,7 @@ const StudentDashboard = () => {
             ) : (
               <div className="max-w-4xl mx-auto">
                 {/* Print Button */}
-                <div className="flex justify-end mb-4 print:hidden">
+                <div className="flex justify-end gap-2 mb-4 print:hidden">
                   <Button
                     variant="outline"
                     onClick={() => window.print()}
@@ -1102,6 +1103,15 @@ const StudentDashboard = () => {
                   >
                     <Printer className="w-4 h-4" />
                     {t("studentDashboard.printResultCard")}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="default"
+                    onClick={() => exportToPDF("result-card-content", `Result-Card-${studentData?.name || "Student"}`)}
+                    className="gap-2"
+                  >
+                    <Download className="w-4 h-4" />
+                    {t("studentDashboard.downloadPDF")}
                   </Button>
                 </div>
                 {/* Mobile Result Cards (shown only on mobile) */}
@@ -1151,7 +1161,7 @@ const StudentDashboard = () => {
                 </div>
 
                 {/* Result Card / Certificate (hidden on mobile, visible for print) */}
-                <div className="hidden md:block print:!block bg-gradient-to-br from-slate-50 to-slate-100 rounded-lg shadow-xl border-4 border-double border-slate-300 overflow-hidden print:shadow-none print:border-2">
+                <div id="result-card-content" className="hidden md:block print:!block bg-gradient-to-br from-slate-50 to-slate-100 rounded-lg shadow-xl border-4 border-double border-slate-300 overflow-hidden print:shadow-none print:border-2">
                   {/* Certificate Header */}
                   <div className="bg-gradient-to-r from-indigo-900 via-purple-900 to-indigo-900 text-white px-4 sm:px-8 py-5 sm:py-6 text-center relative">
                     <div className="absolute top-0 left-0 w-full h-full opacity-10">

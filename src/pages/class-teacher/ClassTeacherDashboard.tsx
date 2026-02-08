@@ -45,6 +45,7 @@ import LoginHistory from "@/components/account/LoginHistory";
 import { useTour } from "@/hooks/useTour";
 import { TourHelpButton } from "@/components/onboarding/TourHelpButton";
 import { getDateLocale } from "@/lib/utils/date-locale";
+import { BulkStudentImport } from "@/components/import/BulkStudentImport";
 
 interface Student {
   id: string;
@@ -814,6 +815,17 @@ const ClassTeacherDashboard = () => {
                 )}
               </div>
             </div>
+
+            {/* Bulk CSV Import */}
+            {profile?.school_id && assignedClass && (
+              <div className="mt-8">
+                <BulkStudentImport
+                  classId={assignedClass.id}
+                  schoolId={profile.school_id}
+                  onImportComplete={loadStudents}
+                />
+              </div>
+            )}
           </TabsContent>
 
           {/* Announcements Tab */}

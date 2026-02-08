@@ -7,7 +7,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TrendingUp, Target, BookOpen } from "lucide-react";
+import { TrendingUp, Target, BookOpen, BarChart3 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { getDateLocale } from "@/lib/utils/date-locale";
 import type { ExamResult } from "@/types/exam";
@@ -74,6 +74,43 @@ export function PerformanceTrends({ examResults, attendanceData, className }: Pe
   const totalObtained = graded.reduce((sum, r) => sum + r.marksObtained!, 0);
   const totalMax = graded.reduce((sum, r) => sum + r.maxMarks, 0);
   const overallPercentage = totalMax > 0 ? Math.round((totalObtained / totalMax) * 100) : 0;
+
+  // --- Exam Type Comparison ---
+  const typeComparisonData = [
+    {
+      type: t("performanceTrends.weekly"),
+      average: graded.filter(r => r.examType === "weekly_daily").length > 0
+        ? Math.round(
+            graded.filter(r => r.examType === "weekly_daily")
+              .reduce((sum, r) => sum + (r.marksObtained! / r.maxMarks) * 100, 0) /
+            graded.filter(r => r.examType === "weekly_daily").length
+          )
+        : 0,
+      count: graded.filter(r => r.examType === "weekly_daily").length,
+    },
+    {
+      type: t("performanceTrends.monthly"),
+      average: graded.filter(r => r.examType === "monthly_midterm").length > 0
+        ? Math.round(
+            graded.filter(r => r.examType === "monthly_midterm")
+              .reduce((sum, r) => sum + (r.marksObtained! / r.maxMarks) * 100, 0) /
+            graded.filter(r => r.examType === "monthly_midterm").length
+          )
+        : 0,
+      count: graded.filter(r => r.examType === "monthly_midterm").length,
+    },
+    {
+      type: t("performanceTrends.semester"),
+      average: graded.filter(r => r.examType === "semester_final").length > 0
+        ? Math.round(
+            graded.filter(r => r.examType === "semester_final")
+              .reduce((sum, r) => sum + (r.marksObtained! / r.maxMarks) * 100, 0) /
+            graded.filter(r => r.examType === "semester_final").length
+          )
+        : 0,
+      count: graded.filter(r => r.examType === "semester_final").length,
+    },
+  ].filter(d => d.count > 0);
 
   return (
     <div className={className}>
@@ -208,6 +245,71 @@ export function PerformanceTrends({ examResults, attendanceData, className }: Pe
           </Card>
         )}
       </div>
+
+      {/* Exam Type Comparison Bar Chart */}
+      {typeComparisonData.length > 1 && (
+        <Card className="bg-card border-border mt-6">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <BarChart3 className="w-4 h-4 text-primary" />
+              {t("performanceTrends.examTypeComparison")}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart data={typeComparisonData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <XAxis dataKey="type" tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }} />
+                <YAxis domain={[0, 100]} tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }} />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "hsl(var(--card))",
+                    border: "1px solid hsl(var(--border))",
+                    borderRadius: "var(--radius)",
+                    color: "hsl(var(--foreground))",
+                  }}
+                  formatter={(value: number) => [`${value}%`, t("performanceTrends.avgPercentage")]}
+                />
+                <Bar dataKey="average" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Subject Insights */}
+      {subjectData.length > 1 && (
+        <Card className="bg-card border-border mt-6">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <Target className="w-4 h-4 text-primary" />
+              {t("performanceTrends.subjectInsights")}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="p-3 bg-success/5 border border-success/20 rounded-lg">
+                <p className="text-xs text-muted-foreground">{t("performanceTrends.strongest")}</p>
+                <p className="font-semibold text-success">
+                  {subjectData.reduce((a, b) => a.percentage > b.percentage ? a : b).fullSubject}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  {subjectData.reduce((a, b) => a.percentage > b.percentage ? a : b).percentage}%
+                </p>
+              </div>
+              <div className="p-3 bg-destructive/5 border border-destructive/20 rounded-lg">
+                <p className="text-xs text-muted-foreground">{t("performanceTrends.weakest")}</p>
+                <p className="font-semibold text-destructive">
+                  {subjectData.reduce((a, b) => a.percentage < b.percentage ? a : b).fullSubject}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  {subjectData.reduce((a, b) => a.percentage < b.percentage ? a : b).percentage}%
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

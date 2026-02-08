@@ -161,6 +161,7 @@
     "noYearlyTitle": "No Yearly Results Yet",
     "noYearlyDesc": "Your semester exams and monthly test results will appear here.",
     "printResultCard": "Print Result Card",
+    "downloadPDF": "Download PDF",
     "academicResultCard": "ACADEMIC RESULT CARD",
     "officialRecord": "Official Academic Record",
     "studentName": "Student Name",
@@ -631,6 +632,7 @@
     },
     "selectChild": "Select Child",
     "printResultCard": "Print Result Card",
+    "downloadPDF": "Download PDF",
     "noChildrenTitle": "No Children Linked",
     "noChildrenDesc": "No children have been linked to your account yet. Please contact the school administration.",
     "section": "Section {{section}}",
@@ -687,7 +689,9 @@
     "error": "Error",
     "loadError": "Could not load your children's data. Check your connection and refresh the page.",
     "examLoadError": "Could not load exam results. Check your connection and try again.",
-    "examProcessError": "Could not process exam results. Refresh the page to try again."
+    "examProcessError": "Could not process exam results. Refresh the page to try again.",
+    "contactTeachers": "Contact Teachers",
+    "contactTeachersDesc": "Send a direct message to your child's teachers"
   },
   "login": {
     "studentPortal": "Student Portal",
@@ -849,6 +853,16 @@
     "gradeDistribution": "Grade Distribution",
     "average": "Average",
     "score": "Score"
+  },
+  "performanceTrends": {
+    "examTypeComparison": "Performance by Exam Type",
+    "avgPercentage": "Average %",
+    "weekly": "Weekly",
+    "monthly": "Monthly",
+    "semester": "Semester",
+    "subjectInsights": "Subject Insights",
+    "strongest": "Strongest Subject",
+    "weakest": "Needs Improvement"
   },
   "account": {
     "profileTab": "Account Information",
@@ -1179,6 +1193,22 @@
     "error": "Error",
     "errorDesc": "Could not save preferences. Your browser storage may be full."
   },
+  "pushNotifications": {
+    "title": "Push Notifications",
+    "description": "Receive instant notifications even when the app is closed",
+    "notSupported": "Push notifications are not supported on this browser or device.",
+    "active": "Active",
+    "receiveLabel": "Receive push notifications",
+    "subscribedDesc": "You will receive push notifications for important updates.",
+    "unsubscribedDesc": "Enable to get instant alerts for homework, attendance, and announcements.",
+    "deniedHint": "Notifications are blocked by your browser. To enable them, open your browser settings and allow notifications for this site.",
+    "enabled": "Notifications Enabled",
+    "enabledDesc": "You will now receive push notifications for important updates.",
+    "disabled": "Notifications Disabled",
+    "disabledDesc": "You will no longer receive push notifications.",
+    "blocked": "Notifications Blocked",
+    "blockedDesc": "Please allow notifications in your browser settings to enable this feature."
+  },
   "firstLoginSetup": {
     "validationError": "Validation Error",
     "fillPassword": "Please fill in both password fields.",
@@ -1318,6 +1348,22 @@
     "principal": "Principal",
     "error": "Error"
   },
+  "directMessage": {
+    "message": "Message",
+    "sendTo": "Send message to {{name}}",
+    "aboutStudent": "Regarding student {{student}}",
+    "directDesc": "Send a direct message",
+    "about": "About",
+    "directChat": "Direct Chat",
+    "placeholder": "Type your message...",
+    "cancel": "Cancel",
+    "send": "Send",
+    "sending": "Sending...",
+    "sent": "Message Sent",
+    "sentDesc": "Your message has been sent to {{name}}",
+    "error": "Error",
+    "errorDesc": "Could not send the message. Please try again."
+  },
   "homeworkCalendar": {
     "homeworkFor": "Homework for {{date}}"
   },
@@ -1361,5 +1407,31 @@
     "createdDesc": "Your announcement has been published successfully.",
     "error": "Error",
     "errorDesc": "Could not create the announcement. Ensure title and content are filled in."
+  },
+  "bulkImport": {
+    "title": "Bulk Student Import",
+    "description": "Upload a CSV file to import multiple students at once. Download the template to see the expected format.",
+    "downloadTemplate": "Download Template",
+    "selectFile": "Select CSV File",
+    "preview": "Preview",
+    "import": "Import Students",
+    "importing": "Importing...",
+    "columnName": "Full Name",
+    "columnStudentId": "Student ID",
+    "columnEmail": "Email",
+    "columnPhone": "Phone",
+    "status": "Status",
+    "valid": "Valid",
+    "invalid": "Invalid",
+    "errorRequired": "{{field}} is required",
+    "errorDuplicate": "Duplicate Student ID: {{id}}",
+    "success": "Import Successful",
+    "successDesc": "{{count}} student(s) imported successfully.",
+    "errorTitle": "Import Errors",
+    "errorDesc": "{{count}} student(s) failed to import.",
+    "noData": "No data found in the CSV file.",
+    "parseError": "Failed to parse CSV file",
+    "imported": "imported",
+    "failed": "failed"
   }
 }

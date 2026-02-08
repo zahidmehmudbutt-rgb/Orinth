@@ -1485,6 +1485,10 @@ const TeacherDashboard = () => {
                                 )}
                               </div>
 
+                              {/* TODO: Add DirectMessageButton here to contact student's parent.
+                                 Requires looking up parent_id from parent_students table using submission.studentId.
+                                 Example: <DirectMessageButton recipientId={parentId} recipientName={parentName} studentName={submission.studentName} /> */}
+
                               {/* Grading Inputs */}
                               <div className="flex items-center gap-2 sm:gap-3 flex-wrap sm:flex-nowrap w-full sm:w-auto">
                                 <div className="w-20">

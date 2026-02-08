@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { encryptValue, decryptValue } from "@/lib/utils/crypto";
 
 interface NotificationSettingsProps {
   schoolId: string;
@@ -63,12 +64,18 @@ export function NotificationSettings({ schoolId }: NotificationSettingsProps) {
       }
 
       if (data) {
+        // Decrypt sensitive Twilio credentials
+        const [decryptedSid, decryptedToken] = await Promise.all([
+          decryptValue(data.twilio_account_sid || ""),
+          decryptValue(data.twilio_auth_token || ""),
+        ]);
+
         setSettings({
           id: data.id,
           sms_enabled: data.sms_enabled,
           whatsapp_enabled: data.whatsapp_enabled,
-          twilio_account_sid: data.twilio_account_sid || "",
-          twilio_auth_token: data.twilio_auth_token || "",
+          twilio_account_sid: decryptedSid,
+          twilio_auth_token: decryptedToken,
           twilio_phone_number: data.twilio_phone_number || "",
           twilio_whatsapp_number: data.twilio_whatsapp_number || "",
           daily_sms_limit: data.daily_sms_limit || 1000,
@@ -86,12 +93,18 @@ export function NotificationSettings({ schoolId }: NotificationSettingsProps) {
   const handleSave = async () => {
     setIsSaving(true);
     try {
+      // Encrypt sensitive Twilio credentials before saving
+      const [encryptedSid, encryptedToken] = await Promise.all([
+        settings.twilio_account_sid ? encryptValue(settings.twilio_account_sid) : Promise.resolve(null),
+        settings.twilio_auth_token ? encryptValue(settings.twilio_auth_token) : Promise.resolve(null),
+      ]);
+
       const settingsData = {
         school_id: schoolId,
         sms_enabled: settings.sms_enabled,
         whatsapp_enabled: settings.whatsapp_enabled,
-        twilio_account_sid: settings.twilio_account_sid || null,
-        twilio_auth_token: settings.twilio_auth_token || null,
+        twilio_account_sid: encryptedSid,
+        twilio_auth_token: encryptedToken,
         twilio_phone_number: settings.twilio_phone_number || null,
         twilio_whatsapp_number: settings.twilio_whatsapp_number || null,
         daily_sms_limit: settings.daily_sms_limit,
