@@ -2,88 +2,89 @@ import type { DriveStep } from "driver.js";
 
 export function getStudentTourSteps(): DriveStep[] {
   const isMobile = window.innerWidth < 768;
-
   const steps: DriveStep[] = [
     {
       element: '[data-tour="student-header"]',
       popover: {
-        title: "Welcome to Your Dashboard!",
-        description: "This is your Student Dashboard where you can see homework, attendance, marks, and more. Let's explore!",
+        title: "Welcome!",
+        description: "This is your student dashboard. Let's take a quick tour of the key features.",
         side: "bottom",
         align: "center",
       },
     },
-    {
-      element: '[data-tour="student-theme-toggle"]',
-      popover: {
-        title: "Dark / Light Mode",
-        description: "Click here to switch between dark and light themes. Pick what's comfortable for your eyes!",
-        side: "bottom",
-        align: "end",
-      },
-    },
+    ...(isMobile
+      ? [
+          {
+            element: '[data-tour="student-mobile-nav"]',
+            popover: {
+              title: "Navigation",
+              description:
+                "Use these icons to switch between sections like Homework, Attendance, Marks, Results, and Notices.",
+              side: "top" as const,
+              align: "center" as const,
+            },
+          },
+        ]
+      : [
+          {
+            element: '[data-tour="student-tabs"]',
+            popover: {
+              title: "Navigation Tabs",
+              description:
+                "Switch between Homework, Attendance, Marks, Yearly Results, Notices, and Account using these tabs.",
+              side: "bottom" as const,
+              align: "center" as const,
+            },
+          },
+        ]),
     {
       element: '[data-tour="student-chat"]',
       popover: {
-        title: "Group Chat",
-        description: "Chat with your classmates and teachers right from here.",
+        title: "Chat",
+        description: "Message your classmates and teachers in real-time.",
         side: "bottom",
-        align: "end",
+        align: "center",
       },
     },
     {
       element: '[data-tour="student-notifications"]',
       popover: {
         title: "Notifications",
-        description: "Check for new announcements, homework updates, and important notices here.",
-        side: "bottom",
-        align: "end",
+        description:
+          "Stay updated with announcements, homework reminders, and results.",
+        side: "left",
+        align: "center",
       },
     },
-  ];
-
-  if (isMobile) {
-    steps.push({
-      element: '[data-tour="student-mobile-nav"]',
+    {
+      element: '[data-tour="student-theme-toggle"]',
       popover: {
-        title: "Navigation Bar",
-        description: "Use these tabs to switch between Homework, Attendance, Marks, Results, and Notices. You can also swipe left or right!",
-        side: "top",
-        align: "center",
-      },
-    });
-  } else {
-    steps.push({
-      element: '[data-tour="student-tabs"]',
-      popover: {
-        title: "Navigation Tabs",
-        description: "Switch between Homework, Attendance, Marks, Yearly Results, Notices, and Account Settings using these tabs.",
+        title: "Dark Mode",
+        description: "Toggle between light and dark mode for comfortable viewing.",
         side: "bottom",
         align: "center",
       },
-    });
-  }
-
-  steps.push(
+    },
     {
       element: '[data-tour="student-view-toggle"]',
       popover: {
-        title: "List or Calendar View",
-        description: "View your homework as a list or on a calendar. Pick whichever is easier for you!",
+        title: "Homework Views",
+        description:
+          "Switch between list and calendar views to see your homework in a way that works best for you.",
         side: "bottom",
-        align: "start",
+        align: "center",
       },
     },
     {
       element: '[data-tour="student-upload-btn"]',
       popover: {
-        title: "Submit Your Homework",
-        description: "Tap 'Upload Answer' to upload your completed homework. You can submit PDF, Word, or image files (up to 10MB).",
+        title: "Submit Homework",
+        description:
+          "Upload your completed homework here. Supported formats: PDF, images, and Word documents.",
         side: "top",
         align: "center",
       },
     },
-  );
-
+  ];
   return steps;
 }

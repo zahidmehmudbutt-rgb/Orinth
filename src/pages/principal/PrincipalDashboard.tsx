@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet-async";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FadeInView, StaggerContainer, StaggerItem, HoverScale } from "@/components/ui/motion-wrapper";
@@ -42,6 +42,7 @@ import TwoFactorAuth from "@/components/account/TwoFactorAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useTour } from "@/hooks/useTour";
 import { TourHelpButton } from "@/components/onboarding/TourHelpButton";
+import { getPrincipalTourSteps } from "@/components/onboarding/tour-configs";
 
 interface PrincipalData {
   id: string;
@@ -97,7 +98,8 @@ const PrincipalDashboard = () => {
 
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { startTour, hasCompletedTour } = useTour("principal");
+  const tourSteps = useMemo(() => getPrincipalTourSteps(), []);
+  const { startTour, hasCompletedTour } = useTour("principal", tourSteps);
 
   useEffect(() => {
     fetchDashboardData();

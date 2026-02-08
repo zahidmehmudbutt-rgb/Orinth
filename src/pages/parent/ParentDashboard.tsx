@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet-async";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FadeInView, StaggerContainer, StaggerItem, HoverScale } from "@/components/ui/motion-wrapper";
@@ -48,6 +48,7 @@ import { getExamTypeBadgeColor } from "@/utils/exam";
 import { calculateGrade, getGradeColors, calculatePercentage, formatPercentage, calculateResultTotals, GRADING_SCALE } from "@/utils/grades";
 import { useTour } from "@/hooks/useTour";
 import { TourHelpButton } from "@/components/onboarding/TourHelpButton";
+import { getParentTourSteps } from "@/components/onboarding/tour-configs";
 import { PerformanceTrends } from "@/components/performance/PerformanceTrends";
 import { getDateLocale } from "@/lib/utils/date-locale";
 import { exportToPDF } from "@/lib/utils/pdf-export";
@@ -115,7 +116,8 @@ const ParentDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user, profile, loading: authLoading } = useAuth();
-  const { startTour, hasCompletedTour } = useTour("parent");
+  const tourSteps = useMemo(() => getParentTourSteps(), []);
+  const { startTour, hasCompletedTour } = useTour("parent", tourSteps);
 
   const [children, setChildren] = useState<Child[]>([]);
   const [selectedChild, setSelectedChild] = useState<Child | null>(null);

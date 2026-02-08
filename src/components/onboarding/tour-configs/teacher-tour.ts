@@ -2,65 +2,58 @@ import type { DriveStep } from "driver.js";
 
 export function getTeacherTourSteps(): DriveStep[] {
   const isMobile = window.innerWidth < 768;
-
   const steps: DriveStep[] = [
     {
       element: '[data-tour="teacher-header"]',
       popover: {
-        title: "Welcome, Teacher!",
-        description: "This is your Teacher Dashboard. You can create homework, grade students, and manage exams from here.",
+        title: "Welcome!",
+        description:
+          "This is your teacher dashboard. Let's walk through the key features available to you.",
         side: "bottom",
         align: "center",
       },
     },
-  ];
-
-  if (isMobile) {
-    steps.push({
-      element: '[data-tour="teacher-mobile-nav"]',
-      popover: {
-        title: "Navigation Bar",
-        description: "Use these tabs to switch between Homework, Marks, Results, and Account settings.",
-        side: "top",
-        align: "center",
-      },
-    });
-  } else {
-    steps.push({
-      element: '[data-tour="teacher-tabs"]',
-      popover: {
-        title: "Navigation Tabs",
-        description: "Switch between Homework, Enter Marks, Results, and Account Settings using these tabs.",
-        side: "bottom",
-        align: "center",
-      },
-    });
-  }
-
-  steps.push(
+    ...(isMobile
+      ? [
+          {
+            element: '[data-tour="teacher-mobile-nav"]',
+            popover: {
+              title: "Navigation",
+              description:
+                "Use these icons to switch between Homework, Marks, Results, and Account sections.",
+              side: "top" as const,
+              align: "center" as const,
+            },
+          },
+        ]
+      : [
+          {
+            element: '[data-tour="teacher-tabs"]',
+            popover: {
+              title: "Navigation Tabs",
+              description:
+                "Switch between Homework, Enter Marks, Results, and Account using these tabs.",
+              side: "bottom" as const,
+              align: "center" as const,
+            },
+          },
+        ]),
     {
       element: '[data-tour="teacher-create-hw"]',
       popover: {
         title: "Create Homework",
-        description: "Fill in the class, subject, title, description, and due date to assign new homework to your students.",
+        description:
+          "Use this form to assign homework to your classes. Select a class, subject, add details, and set a due date.",
         side: "right",
         align: "start",
-      },
-    },
-    {
-      element: '[data-tour="teacher-post-btn"]',
-      popover: {
-        title: "Post Homework",
-        description: "After filling in the details, click this button to post the homework. Students will be notified right away!",
-        side: "top",
-        align: "center",
       },
     },
     {
       element: '[data-tour="teacher-recent-hw"]',
       popover: {
         title: "Recent Homework",
-        description: "See all homework you've posted recently. You can track how many students have submitted their work.",
+        description:
+          "View all your recently posted homework here. Track how many students have submitted their work.",
         side: "left",
         align: "start",
       },
@@ -68,13 +61,23 @@ export function getTeacherTourSteps(): DriveStep[] {
     {
       element: '[data-tour="teacher-results-tab"]',
       popover: {
-        title: "Exams & Results",
-        description: "Go to the Results tab to create exams (weekly, monthly, semester) and enter student marks.",
+        title: "Post Results",
+        description:
+          "Create exams and enter student marks in the Results tab. Supports weekly, monthly, and semester exams.",
         side: "bottom",
         align: "center",
       },
     },
-  );
-
+    {
+      element: '[data-tour="teacher-post-btn"]',
+      popover: {
+        title: "Post Homework",
+        description:
+          "Once you've filled in the details, click here to post the homework to your students.",
+        side: "top",
+        align: "center",
+      },
+    },
+  ];
   return steps;
 }

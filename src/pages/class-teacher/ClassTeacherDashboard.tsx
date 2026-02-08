@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet-async";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FadeInView, StaggerContainer, StaggerItem, HoverScale } from "@/components/ui/motion-wrapper";
@@ -45,6 +45,7 @@ import ChangePassword from "@/components/account/ChangePassword";
 import LoginHistory from "@/components/account/LoginHistory";
 import { useTour } from "@/hooks/useTour";
 import { TourHelpButton } from "@/components/onboarding/TourHelpButton";
+import { getClassTeacherTourSteps } from "@/components/onboarding/tour-configs";
 import { getDateLocale } from "@/lib/utils/date-locale";
 import { BulkStudentImport } from "@/components/import/BulkStudentImport";
 import { List } from "react-window";
@@ -170,7 +171,8 @@ const ClassTeacherDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user, profile, isClassTeacher, loading } = useAuth();
-  const { startTour, hasCompletedTour } = useTour("class_teacher");
+  const tourSteps = useMemo(() => getClassTeacherTourSteps(), []);
+  const { startTour, hasCompletedTour } = useTour("class_teacher", tourSteps);
 
   const today = new Date().toISOString().split('T')[0];
 

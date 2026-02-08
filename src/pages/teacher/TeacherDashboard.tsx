@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet-async";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { LogOut, BookOpen, Plus, Users, Settings, Sparkles, ClipboardList, FileText, ExternalLink, Check, X, Award, Calendar, Save, Pencil, Trash2 } from "lucide-react";
 import { NotificationCenter } from "@/components/notifications/NotificationCenter";
@@ -30,6 +30,7 @@ import { getExamTypeBadgeColor } from "@/utils/exam";
 import { getDateLocale } from "@/lib/utils/date-locale";
 import { useTour } from "@/hooks/useTour";
 import { TourHelpButton } from "@/components/onboarding/TourHelpButton";
+import { getTeacherTourSteps } from "@/components/onboarding/tour-configs";
 
 interface TeacherData {
   id: string;
@@ -121,7 +122,8 @@ const TeacherDashboard = () => {
 
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { startTour, hasCompletedTour } = useTour("teacher");
+  const tourSteps = useMemo(() => getTeacherTourSteps(), []);
+  const { startTour, hasCompletedTour } = useTour("teacher", tourSteps);
 
   useEffect(() => {
     fetchTeacherData();

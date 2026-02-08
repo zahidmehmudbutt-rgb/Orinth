@@ -2,13 +2,13 @@ import type { DriveStep } from "driver.js";
 
 export function getParentTourSteps(): DriveStep[] {
   const isMobile = window.innerWidth < 768;
-
   const steps: DriveStep[] = [
     {
       element: '[data-tour="parent-header"]',
       popover: {
-        title: "Welcome, Parent!",
-        description: "This is your Parent Dashboard. Track your child's homework, attendance, results, and school notices.",
+        title: "Welcome!",
+        description:
+          "This is your parent dashboard. Monitor your child's academics, attendance, and school notices.",
         side: "bottom",
         align: "center",
       },
@@ -16,43 +16,45 @@ export function getParentTourSteps(): DriveStep[] {
     {
       element: '[data-tour="parent-child-selector"]',
       popover: {
-        title: "Select Your Child",
-        description: "If you have more than one child enrolled, use these buttons to switch between them.",
+        title: "Select Child",
+        description:
+          "If you have multiple children, use these buttons to switch between them and view their individual data.",
         side: "bottom",
         align: "center",
       },
     },
-  ];
-
-  if (isMobile) {
-    steps.push({
-      element: '[data-tour="parent-mobile-nav"]',
-      popover: {
-        title: "Navigation Bar",
-        description: "Use these tabs to switch between Academics, Yearly Results, Attendance, Notices, and Settings.",
-        side: "top",
-        align: "center",
-      },
-    });
-  } else {
-    steps.push({
-      element: '[data-tour="parent-tabs"]',
-      popover: {
-        title: "Navigation Tabs",
-        description: "Switch between Academics, Yearly Results, Attendance, Notices, and Settings.",
-        side: "bottom",
-        align: "center",
-      },
-    });
-  }
-
-  steps.push(
+    ...(isMobile
+      ? [
+          {
+            element: '[data-tour="parent-mobile-nav"]',
+            popover: {
+              title: "Navigation",
+              description:
+                "Use these icons to switch between Academics, Yearly Results, Attendance, Notices, and Settings.",
+              side: "top" as const,
+              align: "center" as const,
+            },
+          },
+        ]
+      : [
+          {
+            element: '[data-tour="parent-tabs"]',
+            popover: {
+              title: "Navigation Tabs",
+              description:
+                "Switch between Academics, Yearly Results, Attendance, Notices, and Settings.",
+              side: "bottom" as const,
+              align: "center" as const,
+            },
+          },
+        ]),
     {
       element: '[data-tour="parent-academics"]',
       popover: {
         title: "Academics",
-        description: "View your child's homework and assignments here. You can see which ones are pending, submitted, or graded.",
-        side: "top",
+        description:
+          "View your child's homework status, exam results, and performance trends in the Academics tab.",
+        side: "bottom",
         align: "center",
       },
     },
@@ -60,7 +62,8 @@ export function getParentTourSteps(): DriveStep[] {
       element: '[data-tour="parent-attendance"]',
       popover: {
         title: "Attendance",
-        description: "Check your child's daily attendance record. See present/absent days at a glance.",
+        description:
+          "Check your child's attendance record, including present/absent days and overall percentage.",
         side: "bottom",
         align: "center",
       },
@@ -69,12 +72,12 @@ export function getParentTourSteps(): DriveStep[] {
       element: '[data-tour="parent-print-btn"]',
       popover: {
         title: "Print Result Card",
-        description: "Click here to print your child's result card. It's formatted for easy printing!",
-        side: "top",
+        description:
+          "Print or download your child's official result card as a PDF from the Yearly Results tab.",
+        side: "bottom",
         align: "center",
       },
     },
-  );
-
+  ];
   return steps;
 }

@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet-async";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { GraduationCap, LogOut, BookOpen, Calendar, BarChart3, Megaphone, Clock, Upload, CheckCircle, AlertCircle, Settings, Sparkles, FileText, Download, Award, Printer, CalendarDays, RefreshCw } from "lucide-react";
 import { NotificationCenter } from "@/components/notifications/NotificationCenter";
@@ -27,6 +27,7 @@ import { FloatingActionButton } from "@/components/ui/floating-action-button";
 import { MobileResultCards } from "@/components/ui/mobile-result-card";
 import { useTour } from "@/hooks/useTour";
 import { TourHelpButton } from "@/components/onboarding/TourHelpButton";
+import { getStudentTourSteps } from "@/components/onboarding/tour-configs";
 import type { ExamType, ExamResult } from "@/types/exam";
 import { EXAM_TYPE_LABELS } from "@/types/exam";
 import { getExamTypeBadgeColor } from "@/utils/exam";
@@ -106,7 +107,8 @@ const StudentDashboard = () => {
 
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { startTour, hasCompletedTour } = useTour("student");
+  const tourSteps = useMemo(() => getStudentTourSteps(), []);
+  const { startTour, hasCompletedTour } = useTour("student", tourSteps);
   const dateLocale = getDateLocale();
 
   useEffect(() => {

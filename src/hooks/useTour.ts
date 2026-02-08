@@ -1,69 +1,70 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { driver, type Driver } from "driver.js";
+import { useRef, useCallback, useState, useEffect } from "react";
+import { driver, type DriveStep, type Driver } from "driver.js";
 import "driver.js/dist/driver.css";
 import "@/components/onboarding/tour-styles.css";
-import { tourStepsByRole, type TourRole } from "@/components/onboarding/tour-configs";
 
-const TOUR_STORAGE_PREFIX = "tour-completed-";
-
-function getTourStorageKey(role: TourRole): string {
-  return `${TOUR_STORAGE_PREFIX}${role}`;
-}
-
-export function useTour(role: TourRole) {
+export function useTour(role: string, steps: DriveStep[]) {
   const driverRef = useRef<Driver | null>(null);
+  const storageKey = `tour-completed-${role}`;
   const [hasCompletedTour, setHasCompletedTour] = useState(() => {
-    return localStorage.getItem(getTourStorageKey(role)) === "true";
+    return localStorage.getItem(storageKey) === "true";
   });
 
-  useEffect(() => {
-    return () => {
-      driverRef.current?.destroy();
-    };
-  }, []);
-
   const startTour = useCallback(() => {
-    driverRef.current?.destroy();
-
-    const steps = tourStepsByRole[role]();
-
-    const validSteps = steps.filter((step) => {
-      if (!step.element) return true;
-      return document.querySelector(step.element as string) !== null;
+    // Filter out steps whose elements aren't in the DOM
+    const availableSteps = steps.filter((step) => {
+      if (!step.element) return true; // steps without element (e.g. intro) always show
+      const el = document.querySelector(step.element as string);
+      return el !== null;
     });
 
-    if (validSteps.length === 0) return;
+    if (availableSteps.length === 0) return;
 
-    const driverInstance = driver({
+    // Clean up previous instance
+    if (driverRef.current) {
+      driverRef.current.destroy();
+    }
+
+    driverRef.current = driver({
       showProgress: true,
-      showButtons: ["next", "previous", "close"],
-      steps: validSteps,
-      nextBtnText: "Next",
-      prevBtnText: "Back",
-      doneBtnText: "Done!",
-      progressText: "{{current}} of {{total}}",
+      animate: true,
       allowClose: true,
       overlayColor: "rgba(0, 0, 0, 0.6)",
       stagePadding: 8,
-      stageRadius: 12,
-      popoverClass: "school-tour-popover",
+      stageRadius: 8,
+      popoverClass: "driver-popover",
+      nextBtnText: "Next →",
+      prevBtnText: "← Back",
+      doneBtnText: "Done ✓",
+      steps: availableSteps,
       onDestroyed: () => {
-        localStorage.setItem(getTourStorageKey(role), "true");
+        localStorage.setItem(storageKey, "true");
         setHasCompletedTour(true);
       },
     });
 
-    driverRef.current = driverInstance;
-
+    // Wait for DOM to be painted
     requestAnimationFrame(() => {
-      driverInstance.drive();
+      requestAnimationFrame(() => {
+        driverRef.current?.drive();
+      });
     });
-  }, [role]);
+  }, [steps, storageKey]);
 
   const resetTour = useCallback(() => {
-    localStorage.removeItem(getTourStorageKey(role));
+    localStorage.removeItem(storageKey);
     setHasCompletedTour(false);
-  }, [role]);
+  }, [storageKey]);
 
-  return { startTour, resetTour, hasCompletedTour };
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (driverRef.current) {
+        driverRef.current.destroy();
+        driverRef.current = null;
+      }
+    };
+  }, []);
+
+  return { startTour, hasCompletedTour, resetTour };
 }

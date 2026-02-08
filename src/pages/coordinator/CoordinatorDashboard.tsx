@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet-async";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FadeInView, StaggerContainer, StaggerItem, HoverScale } from "@/components/ui/motion-wrapper";
@@ -60,6 +60,7 @@ import ChangePassword from "@/components/account/ChangePassword";
 import LoginHistory from "@/components/account/LoginHistory";
 import { useTour } from "@/hooks/useTour";
 import { TourHelpButton } from "@/components/onboarding/TourHelpButton";
+import { getCoordinatorTourSteps } from "@/components/onboarding/tour-configs";
 
 // Interfaces
 interface StaffMember {
@@ -199,7 +200,8 @@ const CoordinatorDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user, profile, isCoordinator, loading } = useAuth();
-  const { startTour, hasCompletedTour } = useTour("coordinator");
+  const tourSteps = useMemo(() => getCoordinatorTourSteps(), []);
+  const { startTour, hasCompletedTour } = useTour("coordinator", tourSteps);
 
   // Redirect if not coordinator
   useEffect(() => {
