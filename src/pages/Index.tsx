@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import { useState, useEffect } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -91,6 +92,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <Helmet><title>School Smart Pakistan — School Management System</title></Helmet>
       <Header />
 
       {/* Hero Section */}

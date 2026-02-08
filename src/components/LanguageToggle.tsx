@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Languages } from "lucide-react";
@@ -6,7 +7,7 @@ interface LanguageToggleProps extends React.ButtonHTMLAttributes<HTMLButtonEleme
   className?: string;
 }
 
-export function LanguageToggle({ className, ...rest }: LanguageToggleProps) {
+export const LanguageToggle = memo(function LanguageToggle({ className, ...rest }: LanguageToggleProps) {
   const { i18n } = useTranslation();
   const isUrdu = i18n.language === "ur" || i18n.language?.startsWith("ur-");
 
@@ -29,4 +30,4 @@ export function LanguageToggle({ className, ...rest }: LanguageToggleProps) {
       </span>
     </Button>
   );
-}
+});

@@ -73,7 +73,10 @@ export function PushNotificationToggle() {
             </p>
           </div>
           {loading ? (
-            <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+            <span role="status">
+              <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" aria-hidden="true" />
+              <span className="sr-only">Loading...</span>
+            </span>
           ) : (
             <Switch checked={isSubscribed} onCheckedChange={handleToggle} />
           )}

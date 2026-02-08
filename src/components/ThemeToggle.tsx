@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -6,7 +7,7 @@ interface ThemeToggleProps extends React.ButtonHTMLAttributes<HTMLButtonElement>
   className?: string;
 }
 
-export function ThemeToggle({ className, ...rest }: ThemeToggleProps) {
+export const ThemeToggle = memo(function ThemeToggle({ className, ...rest }: ThemeToggleProps) {
   const { resolvedTheme, setTheme } = useTheme();
 
   const toggleTheme = () => {
@@ -29,4 +30,4 @@ export function ThemeToggle({ className, ...rest }: ThemeToggleProps) {
       <span className="sr-only">Toggle theme</span>
     </Button>
   );
-}
+});

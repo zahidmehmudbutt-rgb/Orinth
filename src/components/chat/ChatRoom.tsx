@@ -1,7 +1,9 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import type { CSSProperties, ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 import { getDateLocale } from "@/lib/utils/date-locale";
 import { Send, Paperclip, Image, X, Users, ArrowLeft } from "lucide-react";
+import { List, useListRef } from "react-window";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -27,6 +29,69 @@ import { supabase } from "@/integrations/supabase/client";
 import { formatDistanceToNow } from "date-fns";
 import { RealtimeChannel } from "@supabase/supabase-js";
 
+// Row component for virtualized chat message list (react-window v2 API)
+interface ChatMessageRowProps {
+  messages: ChatMessage[];
+  currentUserId: string | null;
+  getInitials: (name: string) => string;
+  formatTime: (dateString: string) => string;
+}
+
+function ChatMessageRow(props: { index: number; style: CSSProperties; ariaAttributes: unknown } & ChatMessageRowProps): ReactElement {
+  const { index, style, messages, currentUserId, getInitials, formatTime } = props;
+  const message = messages[index];
+  const isOwn = message.sender_id === currentUserId;
+  const showAvatar =
+    index === 0 ||
+    messages[index - 1].sender_id !== message.sender_id;
+
+  return (
+    <div style={{ ...style, padding: "4px 16px" }}>
+      <div
+        className={`flex gap-2 ${isOwn ? "flex-row-reverse" : ""}`}
+      >
+        {!isOwn && showAvatar ? (
+          <Avatar className="w-8 h-8 flex-shrink-0">
+            <AvatarFallback className="text-xs">
+              {getInitials(message.sender?.full_name || "?")}
+            </AvatarFallback>
+          </Avatar>
+        ) : (
+          <div className="w-8" />
+        )}
+
+        <div
+          className={`max-w-[70%] ${isOwn ? "items-end" : "items-start"}`}
+        >
+          {!isOwn && showAvatar && (
+            <p className="text-xs text-muted-foreground mb-1 ml-1">
+              {message.sender?.full_name || "Unknown"}
+            </p>
+          )}
+          <div
+            className={`rounded-2xl px-4 py-2 ${
+              isOwn
+                ? "bg-primary text-primary-foreground rounded-br-md"
+                : "bg-background border rounded-bl-md"
+            }`}
+          >
+            <p className="text-sm whitespace-pre-wrap break-words">
+              {message.message}
+            </p>
+          </div>
+          <p
+            className={`text-xs text-muted-foreground mt-1 ${
+              isOwn ? "text-right mr-1" : "ml-1"
+            }`}
+          >
+            {formatTime(message.created_at)}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 interface ChatRoomProps {
   room: ChatRoomType;
   onBack?: () => void;
@@ -40,6 +105,7 @@ export function ChatRoom({ room, onBack }: ChatRoomProps) {
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [members, setMembers] = useState<Array<{ user_id: string; role: string; full_name: string }>>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const virtualListRef = useListRef();
   const channelRef = useRef<RealtimeChannel | null>(null);
   const { t } = useTranslation();
 
@@ -84,13 +150,15 @@ export function ChatRoom({ room, onBack }: ChatRoomProps) {
     scrollToBottom();
   }, [messages]);
 
-  const scrollToBottom = () => {
+  const scrollToBottom = useCallback(() => {
     setTimeout(() => {
-      if (scrollRef.current) {
+      if (virtualListRef.current && messages.length > 20) {
+        virtualListRef.current.scrollToRow({ index: messages.length - 1, align: "end" });
+      } else if (scrollRef.current) {
         scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
       }
     }, 100);
-  };
+  }, [messages.length, virtualListRef]);
 
   const handleSend = async () => {
     if (!newMessage.trim() || isSending) return;
@@ -206,23 +274,33 @@ export function ChatRoom({ room, onBack }: ChatRoomProps) {
       </div>
 
       {/* Messages */}
-      <div
-        ref={scrollRef}
-        className="flex-1 overflow-y-auto p-4 space-y-4 bg-muted/30"
-      >
-        {isLoading ? (
-          <div className="flex items-center justify-center h-full">
-            <p className="text-muted-foreground">{t("chat.loadingMessages")}</p>
-          </div>
-        ) : messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-center">
-            <p className="text-muted-foreground">{t("chat.noMessages")}</p>
-            <p className="text-sm text-muted-foreground">
-              {t("chat.beFirst")}
-            </p>
-          </div>
-        ) : (
-          messages.map((message, index) => {
+      {isLoading ? (
+        <div className="flex-1 flex items-center justify-center bg-muted/30">
+          <p className="text-muted-foreground">{t("chat.loadingMessages")}</p>
+        </div>
+      ) : messages.length === 0 ? (
+        <div className="flex-1 flex flex-col items-center justify-center bg-muted/30 text-center">
+          <p className="text-muted-foreground">{t("chat.noMessages")}</p>
+          <p className="text-sm text-muted-foreground">
+            {t("chat.beFirst")}
+          </p>
+        </div>
+      ) : messages.length > 20 ? (
+        <div className="flex-1 bg-muted/30" style={{ height: 400 }}>
+          <List<ChatMessageRowProps>
+            listRef={virtualListRef}
+            rowCount={messages.length}
+            rowHeight={72}
+            rowComponent={ChatMessageRow}
+            rowProps={{ messages, currentUserId, getInitials, formatTime }}
+          />
+        </div>
+      ) : (
+        <div
+          ref={scrollRef}
+          className="flex-1 overflow-y-auto p-4 space-y-4 bg-muted/30"
+        >
+          {messages.map((message, index) => {
             const isOwn = message.sender_id === currentUserId;
             const showAvatar =
               index === 0 ||
@@ -272,9 +350,9 @@ export function ChatRoom({ room, onBack }: ChatRoomProps) {
                 </div>
               </div>
             );
-          })
-        )}
-      </div>
+          })}
+        </div>
+      )}
 
       {/* Input */}
       <div className="p-4 border-t bg-background">

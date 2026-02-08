@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -401,6 +402,7 @@ const ParentDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-hero">
+      <Helmet><title>Parent Dashboard — School Smart Pakistan</title></Helmet>
       {/* Header */}
       <header className="w-full bg-role-parent text-primary-foreground sticky top-0 z-50" data-tour="parent-header">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">

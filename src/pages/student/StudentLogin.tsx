@@ -1,41 +1,41 @@
+import { Helmet } from "react-helmet-async";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { GraduationCap, User, Lock, ArrowLeft, Loader2, AlertCircle, BookOpen, Award, Users } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { hasRole, signIn } from "@/lib/auth";
-import { validateStudentId, validatePassword, parseAuthError } from "@/lib/validation";
+import { parseAuthError } from "@/lib/validation";
+import { studentLoginSchema, type StudentLoginFormData } from "@/lib/schemas";
 import { FadeIn } from "@/components/ui/motion-wrapper";
 import { useLoginRateLimit } from "@/hooks/useLoginRateLimit";
 
 const StudentLogin = () => {
-  const [studentId, setStudentId] = useState("");
-  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [studentIdError, setStudentIdError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useTranslation();
   const { isLocked, remainingSeconds, recordFailure, recordSuccess, checkLocked } = useLoginRateLimit();
 
-  const handleStudentIdChange = (value: string) => {
-    setStudentId(value);
-    setStudentIdError("");
-  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<StudentLoginFormData>({
+    resolver: zodResolver(studentLoginSchema),
+    defaultValues: {
+      studentId: "",
+      password: "",
+    },
+  });
 
-  const handlePasswordChange = (value: string) => {
-    setPassword(value);
-    setPasswordError("");
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const onSubmit = async (formData: StudentLoginFormData) => {
     if (checkLocked()) {
       toast({
         variant: "destructive",
@@ -45,25 +45,13 @@ const StudentLogin = () => {
       return;
     }
 
-    const studentIdValidation = validateStudentId(studentId);
-    if (!studentIdValidation.valid) {
-      setStudentIdError(studentIdValidation.error || "Invalid Student ID");
-      return;
-    }
-
-    const passwordValidation = validatePassword(password);
-    if (!passwordValidation.valid) {
-      setPasswordError(passwordValidation.error || "Invalid password");
-      return;
-    }
-
     setIsLoading(true);
 
     try {
       const { data: studentData, error: studentError } = await supabase
         .from('students')
         .select('user_id')
-        .eq('student_id', studentId.trim())
+        .eq('student_id', formData.studentId.trim())
         .maybeSingle();
 
       if (studentError) {
@@ -113,7 +101,7 @@ const StudentLogin = () => {
 
       const { data: authData, error: authError } = await signIn(
         profileData.email,
-        password
+        formData.password
       );
 
       if (authError) {
@@ -180,6 +168,7 @@ const StudentLogin = () => {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
+      <Helmet><title>Student Login — School Smart Pakistan</title></Helmet>
       {/* Left panel - Branding */}
       <div className="hidden md:flex md:w-1/2 bg-role-student relative overflow-hidden items-center justify-center p-12 noise-overlay">
         {/* Animated blobs */}
@@ -257,7 +246,7 @@ const StudentLogin = () => {
                 </p>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                 <div className="space-y-2">
                   <Label htmlFor="studentId">{t("login.studentId")}</Label>
                   <div className="relative">
@@ -266,17 +255,16 @@ const StudentLogin = () => {
                       id="studentId"
                       type="text"
                       placeholder={t("login.enterStudentId")}
-                      value={studentId}
-                      onChange={(e) => handleStudentIdChange(e.target.value)}
-                      className={`pl-10 h-12 bg-background/50 dark:bg-background/30 ${studentIdError ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                      {...register("studentId")}
+                      className={`pl-10 h-12 bg-background/50 dark:bg-background/30 ${errors.studentId ? 'border-destructive focus-visible:ring-destructive' : ''}`}
                       disabled={isLoading}
                       autoComplete="username"
                     />
                   </div>
-                  {studentIdError && (
+                  {errors.studentId && (
                     <p className="text-sm text-destructive flex items-center gap-1">
                       <AlertCircle className="w-3 h-3" />
-                      {studentIdError}
+                      {errors.studentId.message}
                     </p>
                   )}
                 </div>
@@ -297,17 +285,16 @@ const StudentLogin = () => {
                       id="password"
                       type="password"
                       placeholder={t("login.enterPassword")}
-                      value={password}
-                      onChange={(e) => handlePasswordChange(e.target.value)}
-                      className={`pl-10 h-12 bg-background/50 dark:bg-background/30 ${passwordError ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                      {...register("password")}
+                      className={`pl-10 h-12 bg-background/50 dark:bg-background/30 ${errors.password ? 'border-destructive focus-visible:ring-destructive' : ''}`}
                       disabled={isLoading}
                       autoComplete="current-password"
                     />
                   </div>
-                  {passwordError && (
+                  {errors.password && (
                     <p className="text-sm text-destructive flex items-center gap-1">
                       <AlertCircle className="w-3 h-3" />
-                      {passwordError}
+                      {errors.password.message}
                     </p>
                   )}
                 </div>

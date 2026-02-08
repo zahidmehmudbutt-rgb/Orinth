@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import { useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
 import { FadeIn } from "@/components/ui/motion-wrapper";
@@ -15,6 +16,7 @@ const NotFound = () => {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-hero relative overflow-hidden">
+      <Helmet><title>Page Not Found — School Smart Pakistan</title></Helmet>
       <div className="floating-shapes">
         <div className="floating-shape" />
         <div className="floating-shape" />

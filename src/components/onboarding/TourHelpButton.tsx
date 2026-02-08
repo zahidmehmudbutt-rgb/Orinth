@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -8,7 +9,7 @@ interface TourHelpButtonProps {
   className?: string;
 }
 
-export function TourHelpButton({ onClick, className }: TourHelpButtonProps) {
+export const TourHelpButton = memo(function TourHelpButton({ onClick, className }: TourHelpButtonProps) {
   const { t } = useTranslation();
   return (
     <div className={cn("fixed z-40 left-4 bottom-20 md:bottom-6", className)}>
@@ -24,4 +25,4 @@ export function TourHelpButton({ onClick, className }: TourHelpButtonProps) {
       </Button>
     </div>
   );
-}
+});

@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { GraduationCap, LogOut, BookOpen, Calendar, BarChart3, Megaphone, Clock, Upload, CheckCircle, AlertCircle, Settings, Sparkles, FileText, Download, Award, Printer, CalendarDays, RefreshCw } from "lucide-react";
@@ -602,6 +603,7 @@ const StudentDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-hero">
+      <Helmet><title>Student Dashboard — School Smart Pakistan</title></Helmet>
       {/* Smart Header - hides on scroll down */}
       <SmartHeader className="bg-gradient-primary text-primary-foreground" data-tour="student-header">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">

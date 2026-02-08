@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import { WifiOff, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
@@ -6,6 +7,7 @@ const Offline = () => {
   const { t } = useTranslation();
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-hero relative overflow-hidden">
+      <Helmet><title>Offline — School Smart Pakistan</title></Helmet>
       <div className="floating-shapes">
         <div className="floating-shape" />
         <div className="floating-shape" />

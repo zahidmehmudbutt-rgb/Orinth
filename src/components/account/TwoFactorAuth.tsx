@@ -351,7 +351,7 @@ export default function TwoFactorAuth() {
             <div className="space-y-4">
               {qrCodeUrl && (
                 <div className="flex justify-center mb-4">
-                  <img src={qrCodeUrl} alt="QR Code" className="w-48 h-48 rounded-lg" />
+                  <img src={qrCodeUrl} alt="QR Code" className="w-48 h-48 rounded-lg" loading="lazy" />
                 </div>
               )}
               <div className="p-4 bg-muted rounded-lg text-center">

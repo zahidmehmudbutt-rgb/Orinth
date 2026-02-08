@@ -152,8 +152,9 @@ export function NotificationSettings({ schoolId }: NotificationSettingsProps) {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+      <div className="flex items-center justify-center py-12" role="status">
+        <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" aria-hidden="true" />
+        <span className="sr-only">Loading...</span>
       </div>
     );
   }

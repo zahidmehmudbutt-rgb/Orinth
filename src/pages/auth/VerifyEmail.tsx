@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -70,6 +71,7 @@ const VerifyEmail = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-hero relative overflow-hidden px-4">
+      <Helmet><title>Verify Email — School Smart Pakistan</title></Helmet>
       <div className="floating-shapes"><div className="floating-shape" /><div className="floating-shape" /><div className="floating-shape" /></div>
       <FadeIn className="w-full max-w-md relative z-10">
         <div className="bg-card rounded-2xl shadow-card-hover border border-border p-8 text-center">

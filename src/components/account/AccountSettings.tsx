@@ -219,7 +219,10 @@ const AccountSettings = ({ roleColor = "bg-primary" }: AccountSettingsProps) => 
                   className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                 >
                   {isUploadingAvatar ? (
-                    <Loader2 className="w-5 h-5 text-white animate-spin" />
+                    <>
+                      <Loader2 className="w-5 h-5 text-white animate-spin" aria-hidden="true" />
+                      <span className="sr-only">Uploading...</span>
+                    </>
                   ) : (
                     <Camera className="w-5 h-5 text-white" />
                   )}

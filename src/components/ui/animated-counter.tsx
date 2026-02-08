@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import CountUp from "react-countup";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 interface AnimatedCounterProps {
   end: number;
@@ -19,10 +20,20 @@ export function AnimatedCounter({
 }: AnimatedCounterProps) {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.3 });
   const [hasStarted, setHasStarted] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     if (inView) setHasStarted(true);
   }, [inView]);
+
+  // Skip animation if user prefers reduced motion
+  if (prefersReducedMotion) {
+    return (
+      <span ref={ref} className={className}>
+        {`${prefix}${end}${suffix}`}
+      </span>
+    );
+  }
 
   return (
     <span ref={ref} className={className}>

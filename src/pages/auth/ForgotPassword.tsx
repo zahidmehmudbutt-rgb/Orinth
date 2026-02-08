@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -95,6 +96,7 @@ const ForgotPassword = () => {
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
+      <Helmet><title>Forgot Password — School Smart Pakistan</title></Helmet>
       {/* Left panel - Branding */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-primary relative overflow-hidden items-center justify-center p-12">
         <div className="floating-shapes">

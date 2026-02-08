@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -166,6 +167,7 @@ const SchoolPublicPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet><title>School Profile — School Smart Pakistan</title></Helmet>
       {/* Hero Section */}
       <header className="relative bg-primary text-primary-foreground py-16 md:py-24">
         <div className="absolute inset-0 bg-black/10"></div>
@@ -176,6 +178,7 @@ const SchoolPublicPage = () => {
                 src={school.logo_url}
                 alt={school.name}
                 className="w-24 h-24 md:w-32 md:h-32 rounded-xl bg-white p-2 object-contain"
+                loading="lazy"
               />
             ) : (
               <div className="w-24 h-24 md:w-32 md:h-32 rounded-xl bg-white/20 flex items-center justify-center">

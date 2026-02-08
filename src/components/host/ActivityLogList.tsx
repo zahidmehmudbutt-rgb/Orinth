@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -73,7 +74,7 @@ const formatDetails = (details: Record<string, unknown> | null) => {
   ));
 };
 
-export function ActivityLogList({ logs, isLoading, onRefresh }: ActivityLogListProps) {
+export const ActivityLogList = memo(function ActivityLogList({ logs, isLoading, onRefresh }: ActivityLogListProps) {
   return (
     <Card>
       <CardHeader>
@@ -96,8 +97,9 @@ export function ActivityLogList({ logs, isLoading, onRefresh }: ActivityLogListP
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-8 h-8 animate-spin text-amber-500" />
+          <div className="flex items-center justify-center py-12" role="status">
+            <Loader2 className="w-8 h-8 animate-spin text-amber-500" aria-hidden="true" />
+            <span className="sr-only">Loading...</span>
           </div>
         ) : logs.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12">
@@ -138,4 +140,4 @@ export function ActivityLogList({ logs, isLoading, onRefresh }: ActivityLogListP
       </CardContent>
     </Card>
   );
-}
+});

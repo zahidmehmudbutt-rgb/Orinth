@@ -1,3 +1,4 @@
+import { memo } from "react";
 import {
   BarChart, Bar,
   LineChart, Line,
@@ -20,7 +21,7 @@ interface PerformanceTrendsProps {
   className?: string;
 }
 
-export function PerformanceTrends({ examResults, attendanceData, className }: PerformanceTrendsProps) {
+export const PerformanceTrends = memo(function PerformanceTrends({ examResults, attendanceData, className }: PerformanceTrendsProps) {
   // Only graded results (not absent, has marks)
   const graded = examResults.filter(r => r.marksObtained !== null && !r.isAbsent);
   const { t } = useTranslation();
@@ -160,7 +161,7 @@ export function PerformanceTrends({ examResults, attendanceData, className }: Pe
                       color: "hsl(var(--foreground))",
                     }}
                     formatter={(value: number) => [`${value}%`, t("performance.average")]}
-                    labelFormatter={(label: string, payload: any[]) => payload?.[0]?.payload?.fullSubject || label}
+                    labelFormatter={(label: string, payload: Array<{ payload?: { fullSubject?: string } }>) => payload?.[0]?.payload?.fullSubject || label}
                   />
                   <Bar dataKey="percentage" radius={[6, 6, 0, 0]}>
                     {subjectData.map((_, index) => (
@@ -196,7 +197,7 @@ export function PerformanceTrends({ examResults, attendanceData, className }: Pe
                         color: "hsl(var(--foreground))",
                       }}
                       formatter={(value: number) => [`${value}%`, t("performance.score")]}
-                      labelFormatter={(_, payload: any[]) => payload?.[0]?.payload?.title || ""}
+                      labelFormatter={(_, payload: Array<{ payload?: { title?: string } }>) => payload?.[0]?.payload?.title || ""}
                     />
                     <Line type="monotone" dataKey="percentage" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ fill: "hsl(var(--primary))", r: 4 }} />
                   </LineChart>
@@ -312,4 +313,4 @@ export function PerformanceTrends({ examResults, attendanceData, className }: Pe
       )}
     </div>
   );
-}
+});

@@ -43,7 +43,7 @@ import { format, subDays, startOfMonth, endOfMonth, eachDayOfInterval } from "da
 
 interface AnalyticsDashboardProps {
   schoolId: string;
-  role: "class_teacher" | "coordinator" | "principal";
+  userRole: "class_teacher" | "coordinator" | "principal";
   classId?: string;
 }
 
@@ -73,7 +73,7 @@ interface ClassComparisonData {
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8", "#82ca9d"];
 
-export default function AnalyticsDashboard({ schoolId, role, classId }: AnalyticsDashboardProps) {
+export default function AnalyticsDashboard({ schoolId, userRole, classId }: AnalyticsDashboardProps) {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [timeRange, setTimeRange] = useState("30");
@@ -126,7 +126,7 @@ export default function AnalyticsDashboard({ schoolId, role, classId }: Analytic
 
       // Build class filter
       let classFilter = selectedClass === "all" ? null : selectedClass;
-      if (role === "class_teacher" && classId) {
+      if (userRole === "class_teacher" && classId) {
         classFilter = classId;
       }
 
@@ -426,7 +426,7 @@ export default function AnalyticsDashboard({ schoolId, role, classId }: Analytic
           </SelectContent>
         </Select>
 
-        {role !== "class_teacher" && (
+        {userRole !== "class_teacher" && (
           <Select value={selectedClass} onValueChange={setSelectedClass}>
             <SelectTrigger className="w-[200px]">
               <SelectValue placeholder={t("analyticsShared.selectClass")} />
@@ -481,7 +481,7 @@ export default function AnalyticsDashboard({ schoolId, role, classId }: Analytic
             <BarChart3 className="h-4 w-4" />
             {t("analyticsShared.marksAnalysis")}
           </TabsTrigger>
-          {role !== "class_teacher" && (
+          {userRole !== "class_teacher" && (
             <TabsTrigger value="comparison" className="flex items-center gap-2">
               <PieChartIcon className="h-4 w-4" />
               {t("analyticsShared.classComparison")}
@@ -604,7 +604,7 @@ export default function AnalyticsDashboard({ schoolId, role, classId }: Analytic
         </TabsContent>
 
         {/* Class Comparison Tab */}
-        {role !== "class_teacher" && (
+        {userRole !== "class_teacher" && (
           <TabsContent value="comparison" className="space-y-4">
             <Card>
               <CardHeader>

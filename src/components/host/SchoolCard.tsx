@@ -198,6 +198,7 @@ export function SchoolCard({ school, onUpdate, onToggleStatus }: SchoolCardProps
                 src={school.logo_url}
                 alt={school.name}
                 className="w-12 h-12 rounded-lg object-contain bg-muted p-1"
+                loading="lazy"
               />
             ) : (
               <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">

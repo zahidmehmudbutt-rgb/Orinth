@@ -399,6 +399,7 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
                   src={settings.logo_url}
                   alt="School logo"
                   className="w-20 h-20 rounded-lg object-contain border bg-white"
+                  loading="lazy"
                 />
               ) : (
                 <div className="w-20 h-20 rounded-lg border-2 border-dashed border-muted-foreground/30 flex items-center justify-center">

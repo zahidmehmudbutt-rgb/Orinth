@@ -5,6 +5,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { FullPageLoader } from "@/components/ui/LoadingSpinner";
 import SessionTimeout from "@/components/auth/SessionTimeout";
@@ -16,6 +17,7 @@ import { PWAUpdatePrompt } from "@/components/pwa/PWAUpdatePrompt";
 import { PWAInstallPrompt } from "@/components/pwa/PWAInstallPrompt";
 import { OnlineGuard } from "@/components/pwa/OnlineGuard";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { Analytics } from "@vercel/analytics/react";
 
 // Lazy-loaded dashboards
 const StudentDashboard = lazy(() => import("./pages/student/StudentDashboard"));
@@ -45,11 +47,13 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <ErrorBoundary>
+  <HelmetProvider>
   <QueryClientProvider client={queryClient}>
     <ThemeProvider>
       <TooltipProvider>
         <Toaster />
         <Sonner />
+        <div aria-live="polite" aria-atomic="true" className="sr-only" id="aria-live-announcements" />
         <PWAUpdatePrompt />
         <PWAInstallPrompt />
         <BrowserRouter>
@@ -123,9 +127,11 @@ const App = () => (
           </OnlineGuard>
         </Suspense>
       </BrowserRouter>
+        <Analytics />
       </TooltipProvider>
     </ThemeProvider>
   </QueryClientProvider>
+  </HelmetProvider>
   </ErrorBoundary>
 );
 

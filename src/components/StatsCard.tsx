@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { LucideIcon } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { FadeInView } from "@/components/ui/motion-wrapper";
@@ -8,7 +9,7 @@ interface StatsCardProps {
   label: string;
 }
 
-export const StatsCard = ({ icon: Icon, value, label }: StatsCardProps) => {
+export const StatsCard = memo(function StatsCard({ icon: Icon, value, label }: StatsCardProps) {
   // Extract numeric value and suffix from string like "5,000+" or "15+"
   const numericMatch = value.match(/^([\d,]+)(.*)$/);
   const numericValue = numericMatch ? parseInt(numericMatch[1].replace(/,/g, ""), 10) : 0;
@@ -27,4 +28,4 @@ export const StatsCard = ({ icon: Icon, value, label }: StatsCardProps) => {
       </div>
     </FadeInView>
   );
-};
+});

@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -46,6 +47,8 @@ import { useTour } from "@/hooks/useTour";
 import { TourHelpButton } from "@/components/onboarding/TourHelpButton";
 import { getDateLocale } from "@/lib/utils/date-locale";
 import { BulkStudentImport } from "@/components/import/BulkStudentImport";
+import { List } from "react-window";
+import type { CSSProperties, ReactElement } from "react";
 
 interface Student {
   id: string;
@@ -64,6 +67,92 @@ interface ClassInfo {
   id: string;
   name: string;
   section: string | null;
+}
+
+// Row component for virtualized attendance list (react-window v2 API)
+interface AttendanceRowProps {
+  students: Student[];
+  attendance: AttendanceRecord[];
+  toggleAttendance: (studentId: string) => void;
+  t: (key: string, opts?: Record<string, unknown>) => string;
+}
+
+function AttendanceRow(props: { index: number; style: CSSProperties; ariaAttributes: unknown } & AttendanceRowProps): ReactElement {
+  const { index, style, students, attendance, toggleAttendance, t } = props;
+  const student = students[index];
+  const attendanceRecord = attendance.find(a => a.student_id === student.id);
+  const isPresent = attendanceRecord?.is_present ?? true;
+  return (
+    <div style={{ ...style, paddingBottom: 12 }}>
+      <div
+        className={`flex items-center justify-between p-4 rounded-lg border transition-colors ${
+          isPresent ? 'bg-success/5 border-success/20' : 'bg-destructive/5 border-destructive/20'
+        }`}
+      >
+        <div className="flex items-center gap-3">
+          <Checkbox
+            checked={isPresent}
+            onCheckedChange={() => toggleAttendance(student.id)}
+          />
+          <div>
+            <p className="font-medium text-foreground">{student.full_name}</p>
+            <p className="text-xs text-muted-foreground">{student.student_id}</p>
+          </div>
+        </div>
+        <span className={`px-3 py-1 rounded-lg text-sm font-medium ${
+          isPresent ? 'bg-success text-success-foreground' : 'bg-destructive text-destructive-foreground'
+        }`}>
+          {isPresent ? t("classTeacherDashboard.present") : t("classTeacherDashboard.absent")}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+// Row component for virtualized student list (react-window v2 API)
+interface StudentListRowProps {
+  students: Student[];
+  handleRemoveStudent: (student: Student) => void;
+  t: (key: string, opts?: Record<string, unknown>) => string;
+}
+
+function StudentListRow(props: { index: number; style: CSSProperties; ariaAttributes: unknown } & StudentListRowProps): ReactElement {
+  const { index, style, students, handleRemoveStudent, t } = props;
+  const student = students[index];
+  return (
+    <div style={{ ...style, paddingBottom: 12 }}>
+      <div className="bg-card rounded-xl p-4 shadow-card border border-border flex items-center justify-between">
+        <div>
+          <p className="font-medium text-foreground">{student.full_name}</p>
+          <p className="text-xs text-muted-foreground">{t("classTeacherDashboard.idPrefix", { id: student.student_id })}</p>
+        </div>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10">
+              <Trash2 className="w-4 h-4" />
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{t("classTeacherDashboard.removeStudent")}</AlertDialogTitle>
+              <AlertDialogDescription>
+                {t("classTeacherDashboard.removeStudentConfirm", { name: student.full_name })}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>{t("classTeacherDashboard.cancel")}</AlertDialogCancel>
+              <AlertDialogAction
+                className="bg-destructive text-destructive-foreground"
+                onClick={() => handleRemoveStudent(student)}
+              >
+                {t("classTeacherDashboard.remove")}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
+    </div>
+  );
 }
 
 const ClassTeacherDashboard = () => {
@@ -504,6 +593,7 @@ const ClassTeacherDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-hero">
+      <Helmet><title>Class Teacher Dashboard — School Smart Pakistan</title></Helmet>
       <header className="w-full bg-role-class-teacher text-primary-foreground sticky top-0 z-50" data-tour="ct-header">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -662,36 +752,48 @@ const ClassTeacherDashboard = () => {
                   </span>
                 </div>
 
-                <div className="space-y-3 mb-6">
-                  {students.map((student) => {
-                    const attendanceRecord = attendance.find(a => a.student_id === student.id);
-                    const isPresent = attendanceRecord?.is_present ?? true;
-
-                    return (
-                      <div
-                        key={student.id}
-                        className={`flex items-center justify-between p-4 rounded-lg border transition-colors ${
-                          isPresent ? 'bg-success/5 border-success/20' : 'bg-destructive/5 border-destructive/20'
-                        }`}
-                      >
-                        <div className="flex items-center gap-3">
-                          <Checkbox
-                            checked={isPresent}
-                            onCheckedChange={() => toggleAttendance(student.id)}
-                          />
-                          <div>
-                            <p className="font-medium text-foreground">{student.full_name}</p>
-                            <p className="text-xs text-muted-foreground">{student.student_id}</p>
+                <div className="mb-6">
+                  {students.length > 20 ? (
+                    <div style={{ height: 400 }}>
+                      <List<AttendanceRowProps>
+                        rowCount={students.length}
+                        rowHeight={72}
+                        rowComponent={AttendanceRow}
+                        rowProps={{ students, attendance, toggleAttendance, t }}
+                      />
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {students.map((student) => {
+                        const attendanceRecord = attendance.find(a => a.student_id === student.id);
+                        const isPresent = attendanceRecord?.is_present ?? true;
+                        return (
+                          <div
+                            key={student.id}
+                            className={`flex items-center justify-between p-4 rounded-lg border transition-colors ${
+                              isPresent ? 'bg-success/5 border-success/20' : 'bg-destructive/5 border-destructive/20'
+                            }`}
+                          >
+                            <div className="flex items-center gap-3">
+                              <Checkbox
+                                checked={isPresent}
+                                onCheckedChange={() => toggleAttendance(student.id)}
+                              />
+                              <div>
+                                <p className="font-medium text-foreground">{student.full_name}</p>
+                                <p className="text-xs text-muted-foreground">{student.student_id}</p>
+                              </div>
+                            </div>
+                            <span className={`px-3 py-1 rounded-lg text-sm font-medium ${
+                              isPresent ? 'bg-success text-success-foreground' : 'bg-destructive text-destructive-foreground'
+                            }`}>
+                              {isPresent ? t("classTeacherDashboard.present") : t("classTeacherDashboard.absent")}
+                            </span>
                           </div>
-                        </div>
-                        <span className={`px-3 py-1 rounded-lg text-sm font-medium ${
-                          isPresent ? 'bg-success text-success-foreground' : 'bg-destructive text-destructive-foreground'
-                        }`}>
-                          {isPresent ? t("classTeacherDashboard.present") : t("classTeacherDashboard.absent")}
-                        </span>
-                      </div>
-                    );
-                  })}
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
 
                 <LoadingButton
@@ -774,43 +876,53 @@ const ClassTeacherDashboard = () => {
                       </Button>
                     </FadeInView>
 
-                    <StaggerContainer className="space-y-3">
-                      {students.map((student) => (
-                        <StaggerItem key={student.id}>
-                          <div className="bg-card rounded-xl p-4 shadow-card border border-border flex items-center justify-between">
-                          <div>
-                            <p className="font-medium text-foreground">{student.full_name}</p>
-                            <p className="text-xs text-muted-foreground">{t("classTeacherDashboard.idPrefix", { id: student.student_id })}</p>
-                          </div>
-
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10">
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>{t("classTeacherDashboard.removeStudent")}</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  {t("classTeacherDashboard.removeStudentConfirm", { name: student.full_name })}
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>{t("classTeacherDashboard.cancel")}</AlertDialogCancel>
-                                <AlertDialogAction
-                                  className="bg-destructive text-destructive-foreground"
-                                  onClick={() => handleRemoveStudent(student)}
-                                >
-                                  {t("classTeacherDashboard.remove")}
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
-                        </div>
-                        </StaggerItem>
-                      ))}
-                    </StaggerContainer>
+                    {students.length > 20 ? (
+                      <div style={{ height: 400 }}>
+                        <List<StudentListRowProps>
+                          rowCount={students.length}
+                          rowHeight={72}
+                          rowComponent={StudentListRow}
+                          rowProps={{ students, handleRemoveStudent, t }}
+                        />
+                      </div>
+                    ) : (
+                      <StaggerContainer className="space-y-3">
+                        {students.map((student) => (
+                          <StaggerItem key={student.id}>
+                            <div className="bg-card rounded-xl p-4 shadow-card border border-border flex items-center justify-between">
+                              <div>
+                                <p className="font-medium text-foreground">{student.full_name}</p>
+                                <p className="text-xs text-muted-foreground">{t("classTeacherDashboard.idPrefix", { id: student.student_id })}</p>
+                              </div>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10">
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>{t("classTeacherDashboard.removeStudent")}</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      {t("classTeacherDashboard.removeStudentConfirm", { name: student.full_name })}
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>{t("classTeacherDashboard.cancel")}</AlertDialogCancel>
+                                    <AlertDialogAction
+                                      className="bg-destructive text-destructive-foreground"
+                                      onClick={() => handleRemoveStudent(student)}
+                                    >
+                                      {t("classTeacherDashboard.remove")}
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            </div>
+                          </StaggerItem>
+                        ))}
+                      </StaggerContainer>
+                    )}
                   </>
                 )}
               </div>
@@ -843,7 +955,7 @@ const ClassTeacherDashboard = () => {
             {profile?.school_id && assignedClass && (
               <AnalyticsDashboard
                 schoolId={profile.school_id}
-                role="class_teacher"
+                userRole="class_teacher"
                 classId={assignedClass.id}
               />
             )}

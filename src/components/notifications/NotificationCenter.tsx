@@ -1,6 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import type { CSSProperties, ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 import { Bell, Check, CheckCheck, BookOpen, Calendar, GraduationCap, Megaphone, X } from "lucide-react";
+import { List } from "react-window";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -32,6 +34,54 @@ const notificationColors: Record<NotificationType, string> = {
   welcome: "bg-primary/10 text-primary",
   general: "bg-muted text-muted-foreground",
 };
+
+// Row component for virtualized notification list (react-window v2 API)
+interface NotificationRowProps {
+  notifications: Notification[];
+  handleMarkAsRead: (notification: Notification) => void;
+  formatTime: (dateString: string) => string;
+}
+
+function NotificationRow(props: { index: number; style: CSSProperties; ariaAttributes: unknown } & NotificationRowProps): ReactElement {
+  const { index, style, notifications, handleMarkAsRead, formatTime } = props;
+  const notification = notifications[index];
+  const Icon = notificationIcons[notification.type] || Bell;
+  const colorClass = notificationColors[notification.type] || notificationColors.general;
+  return (
+    <div
+      style={style}
+      role="button"
+      tabIndex={0}
+      className={`p-4 hover:bg-muted/50 cursor-pointer transition-colors border-b ${
+        !notification.is_read ? "bg-primary/5" : ""
+      }`}
+      onClick={() => handleMarkAsRead(notification)}
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") handleMarkAsRead(notification); }}
+    >
+      <div className="flex gap-3">
+        <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${colorClass}`}>
+          <Icon className="w-4 h-4" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-start justify-between gap-2">
+            <p className={`text-sm font-medium truncate ${!notification.is_read ? "text-foreground" : "text-muted-foreground"}`}>
+              {notification.title}
+            </p>
+            {!notification.is_read && (
+              <span className="w-2 h-2 bg-primary rounded-full flex-shrink-0 mt-1.5" />
+            )}
+          </div>
+          <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">
+            {notification.message}
+          </p>
+          <p className="text-xs text-muted-foreground mt-1">
+            {formatTime(notification.created_at)}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function NotificationCenter({ className }: NotificationCenterProps) {
   const { t } = useTranslation();
@@ -122,17 +172,26 @@ export function NotificationCenter({ className }: NotificationCenterProps) {
           )}
         </div>
 
-        <ScrollArea className="h-[300px]">
-          {isLoading ? (
-            <div className="p-4 text-center text-muted-foreground">
-              {t("common.loading")}
-            </div>
-          ) : notifications.length === 0 ? (
-            <div className="p-8 text-center text-muted-foreground">
-              <Bell className="w-10 h-10 mx-auto mb-2 opacity-50" />
-              <p>{t("notifications.noNotifications")}</p>
-            </div>
-          ) : (
+        {isLoading ? (
+          <div className="h-[300px] flex items-center justify-center text-muted-foreground">
+            {t("common.loading")}
+          </div>
+        ) : notifications.length === 0 ? (
+          <div className="h-[300px] flex flex-col items-center justify-center text-muted-foreground">
+            <Bell className="w-10 h-10 mx-auto mb-2 opacity-50" />
+            <p>{t("notifications.noNotifications")}</p>
+          </div>
+        ) : notifications.length > 20 ? (
+          <div style={{ height: 300 }}>
+            <List<NotificationRowProps>
+              rowCount={notifications.length}
+              rowHeight={80}
+              rowComponent={NotificationRow}
+              rowProps={{ notifications, handleMarkAsRead, formatTime }}
+            />
+          </div>
+        ) : (
+          <ScrollArea className="h-[300px]">
             <div className="divide-y">
               {notifications.map((notification) => {
                 const Icon = notificationIcons[notification.type] || Bell;
@@ -141,10 +200,13 @@ export function NotificationCenter({ className }: NotificationCenterProps) {
                 return (
                   <div
                     key={notification.id}
+                    role="button"
+                    tabIndex={0}
                     className={`p-4 hover:bg-muted/50 cursor-pointer transition-colors ${
                       !notification.is_read ? "bg-primary/5" : ""
                     }`}
                     onClick={() => handleMarkAsRead(notification)}
+                    onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") handleMarkAsRead(notification); }}
                   >
                     <div className="flex gap-3">
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${colorClass}`}>
@@ -171,8 +233,8 @@ export function NotificationCenter({ className }: NotificationCenterProps) {
                 );
               })}
             </div>
-          )}
-        </ScrollArea>
+          </ScrollArea>
+        )}
       </PopoverContent>
     </Popover>
   );

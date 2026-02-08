@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -1022,6 +1023,7 @@ const CoordinatorDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-hero">
+      <Helmet><title>Coordinator Dashboard — School Smart Pakistan</title></Helmet>
       {/* Header */}
       <header className="w-full bg-role-coordinator text-primary-foreground sticky top-0 z-50" data-tour="coord-header">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -1942,7 +1944,7 @@ const CoordinatorDashboard = () => {
           <TabsContent value="analytics" className="animate-fade-in">
             <h2 className="text-xl font-bold text-foreground mb-6">{t("coordinatorDashboard.sectionAnalytics")}</h2>
             {profile?.school_id && (
-              <AnalyticsDashboard schoolId={profile.school_id} role="coordinator" />
+              <AnalyticsDashboard schoolId={profile.school_id} userRole="coordinator" />
             )}
           </TabsContent>
 

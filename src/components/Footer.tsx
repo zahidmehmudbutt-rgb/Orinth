@@ -1,9 +1,10 @@
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import { GraduationCap, Mail, Phone, MapPin } from "lucide-react";
 import { FadeInView } from "@/components/ui/motion-wrapper";
 import { useTranslation } from "react-i18next";
 
-export const Footer = () => {
+export const Footer = memo(function Footer() {
   const { t } = useTranslation();
   return (
     <footer className="bg-gradient-footer text-white border-t border-white/10">
@@ -67,11 +68,11 @@ export const Footer = () => {
         <div className="border-t border-white/20 mt-10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm opacity-80">
           <p>&copy; {t("footer.copyright")}</p>
           <div className="flex gap-6">
-            <a href="#" className="hover:opacity-100 transition-opacity">{t("footer.privacyPolicy")}</a>
-            <a href="#" className="hover:opacity-100 transition-opacity">{t("footer.termsOfService")}</a>
+            <button type="button" className="hover:opacity-100 transition-opacity">{t("footer.privacyPolicy")}</button>
+            <button type="button" className="hover:opacity-100 transition-opacity">{t("footer.termsOfService")}</button>
           </div>
         </div>
       </div>
     </footer>
   );
-};
+});

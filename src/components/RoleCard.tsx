@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -11,7 +12,7 @@ interface RoleCardProps {
   colorClass: string;
 }
 
-export const RoleCard = ({ title, description, icon: Icon, href, colorClass }: RoleCardProps) => {
+export const RoleCard = memo(function RoleCard({ title, description, icon: Icon, href, colorClass }: RoleCardProps) {
   const { t } = useTranslation();
   return (
     <motion.div
@@ -42,4 +43,4 @@ export const RoleCard = ({ title, description, icon: Icon, href, colorClass }: R
       </Link>
     </motion.div>
   );
-};
+});

@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -141,7 +142,10 @@ const ResetPassword = () => {
             <p className="text-muted-foreground mb-6">
               {t("resetPassword.successDesc")}
             </p>
-            <Loader2 className="w-6 h-6 animate-spin text-primary mx-auto" />
+            <div role="status" className="flex justify-center">
+              <Loader2 className="w-6 h-6 animate-spin text-primary" aria-hidden="true" />
+              <span className="sr-only">Redirecting...</span>
+            </div>
           </div>
         </FadeIn>
       </div>
@@ -150,6 +154,7 @@ const ResetPassword = () => {
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
+      <Helmet><title>Reset Password — School Smart Pakistan</title></Helmet>
       {/* Left panel - Branding */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-primary relative overflow-hidden items-center justify-center p-12">
         <div className="floating-shapes"><div className="floating-shape" /><div className="floating-shape" /><div className="floating-shape" /></div>

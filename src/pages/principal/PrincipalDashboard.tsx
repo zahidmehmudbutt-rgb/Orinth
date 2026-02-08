@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -426,6 +427,7 @@ const PrincipalDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-hero">
+      <Helmet><title>Principal Dashboard — School Smart Pakistan</title></Helmet>
       <header className="w-full bg-role-principal text-primary-foreground sticky top-0 z-50" data-tour="principal-header">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -718,7 +720,7 @@ const PrincipalDashboard = () => {
           <TabsContent value="analytics" className="animate-fade-in">
             <h2 className="text-xl font-bold text-foreground mb-6">{t("principalDashboard.schoolAnalytics")}</h2>
             {principalData?.schoolId && (
-              <AnalyticsDashboard schoolId={principalData.schoolId} role="principal" />
+              <AnalyticsDashboard schoolId={principalData.schoolId} userRole="principal" />
             )}
           </TabsContent>
 

@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { LogOut, BookOpen, Plus, Users, Settings, Sparkles, ClipboardList, FileText, ExternalLink, Check, X, Award, Calendar, Save, Pencil, Trash2 } from "lucide-react";
@@ -1127,6 +1128,7 @@ const TeacherDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-hero">
+      <Helmet><title>Teacher Dashboard — School Smart Pakistan</title></Helmet>
       <header className="w-full bg-role-teacher text-primary-foreground sticky top-0 z-50" data-tour="teacher-header">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -1743,11 +1745,14 @@ const TeacherDashboard = () => {
                           }`}
                         >
                           <div className="flex justify-between items-start mb-2">
-                            <h3
-                              className="font-semibold text-foreground cursor-pointer hover:text-role-teacher"
-                              onClick={() => setSelectedExamId(exam.id)}
-                            >
-                              {exam.title}
+                            <h3 className="font-semibold text-foreground">
+                              <button
+                                type="button"
+                                className="hover:text-role-teacher text-left"
+                                onClick={() => setSelectedExamId(exam.id)}
+                              >
+                                {exam.title}
+                              </button>
                             </h3>
                             <div className="flex items-center gap-2">
                               <span className={`text-xs px-2 py-1 rounded-full ${getExamTypeBadgeColor(exam.examType)}`}>
@@ -1755,12 +1760,13 @@ const TeacherDashboard = () => {
                               </span>
                             </div>
                           </div>
-                          <p
-                            className="text-sm text-muted-foreground mb-1 cursor-pointer"
+                          <button
+                            type="button"
+                            className="text-sm text-muted-foreground mb-1 cursor-pointer text-left block"
                             onClick={() => setSelectedExamId(exam.id)}
                           >
                             {exam.subject} - {exam.className}
-                          </p>
+                          </button>
                           <p className="text-xs text-muted-foreground mb-3 flex items-center gap-1">
                             <Calendar className="w-3 h-3" />
                             {exam.examDate}

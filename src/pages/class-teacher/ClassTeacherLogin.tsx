@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -123,6 +124,7 @@ const ClassTeacherLogin = () => {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
+      <Helmet><title>Class Teacher Login — School Smart Pakistan</title></Helmet>
       {/* Left panel - Branding */}
       <div className="hidden md:flex md:w-1/2 bg-role-class-teacher noise-overlay relative overflow-hidden items-center justify-center p-12">
         {/* Animated blobs */}

@@ -134,7 +134,10 @@ export function SearchInput({
             onClick={clearSearch}
           >
             {isLoading ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
+                <span className="sr-only">Searching...</span>
+              </>
             ) : (
               <X className="w-4 h-4" />
             )}

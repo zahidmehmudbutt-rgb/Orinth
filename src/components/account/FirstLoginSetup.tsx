@@ -192,7 +192,10 @@ const FirstLoginSetup = ({ onComplete }: FirstLoginSetupProps) => {
                   className="w-full bg-gradient-primary text-primary-foreground shadow-button"
                 >
                   {isLoading ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                      <span className="sr-only">Loading...</span>
+                    </>
                   ) : (
                     <>
                       {t("firstLoginSetup.continue")}
@@ -258,7 +261,10 @@ const FirstLoginSetup = ({ onComplete }: FirstLoginSetupProps) => {
                   className="w-full bg-gradient-primary text-primary-foreground shadow-button"
                 >
                   {isLoading ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                      <span className="sr-only">Loading...</span>
+                    </>
                   ) : (
                     t("firstLoginSetup.completeButton")
                   )}

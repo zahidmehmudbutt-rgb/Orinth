@@ -117,8 +117,9 @@ export function Leaderboard({ classId, currentStudentId, className }: Leaderboar
   if (loading) {
     return (
       <Card className={className}>
-        <CardContent className="py-8 flex justify-center">
-          <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+        <CardContent className="py-8 flex justify-center" role="status">
+          <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" aria-hidden="true" />
+          <span className="sr-only">Loading...</span>
         </CardContent>
       </Card>
     );
