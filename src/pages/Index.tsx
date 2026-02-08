@@ -14,84 +14,25 @@ import {
 } from "lucide-react";
 import { FadeIn, FadeInView, StaggerContainer, StaggerItem } from "@/components/ui/motion-wrapper";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
 import heroImage from "@/assets/hero-classroom.jpg";
 
-const roles = [
-  {
-    title: "Student",
-    description: "View homework, attendance, marks, and school notices",
-    icon: Users,
-    href: "/student/login",
-    colorClass: "bg-role-student",
-  },
-  {
-    title: "Teacher",
-    description: "Manage classes, upload homework, and enter marks",
-    icon: BookOpen,
-    href: "/teacher/login",
-    colorClass: "bg-role-teacher",
-  },
-  {
-    title: "Class Teacher",
-    description: "Mark attendance, add students, and manage your class",
-    icon: UserCheck,
-    href: "/class-teacher/login",
-    colorClass: "bg-role-class-teacher",
-  },
-  {
-    title: "Section Head / Coordinator",
-    description: "Manage teachers, class teachers, and section staff",
-    icon: BookMarked,
-    href: "/coordinator/login",
-    colorClass: "bg-role-coordinator",
-  },
-  {
-    title: "Principal",
-    description: "Oversee school administration and view analytics",
-    icon: Crown,
-    href: "/principal/login",
-    colorClass: "bg-role-principal",
-  },
-  {
-    title: "Parent",
-    description: "Monitor your child's academics, attendance, and progress",
-    icon: UserPlus,
-    href: "/parent/login",
-    colorClass: "bg-role-parent",
-  },
+const roleConfigs = [
+  { titleKey: "roles.student", descKey: "roleDescriptions.student", icon: Users, href: "/student/login", colorClass: "bg-role-student" },
+  { titleKey: "roles.teacher", descKey: "roleDescriptions.teacher", icon: BookOpen, href: "/teacher/login", colorClass: "bg-role-teacher" },
+  { titleKey: "roles.classTeacher", descKey: "roleDescriptions.classTeacher", icon: UserCheck, href: "/class-teacher/login", colorClass: "bg-role-class-teacher" },
+  { titleKey: "roles.coordinator", descKey: "roleDescriptions.coordinator", icon: BookMarked, href: "/coordinator/login", colorClass: "bg-role-coordinator" },
+  { titleKey: "roles.principal", descKey: "roleDescriptions.principal", icon: Crown, href: "/principal/login", colorClass: "bg-role-principal" },
+  { titleKey: "roles.parent", descKey: "roleDescriptions.parent", icon: UserPlus, href: "/parent/login", colorClass: "bg-role-parent" },
 ];
 
-const features = [
-  {
-    icon: ClipboardCheck,
-    title: "Daily Attendance",
-    description: "Real-time attendance tracking for every class. Parents receive instant notifications when their child is marked absent.",
-  },
-  {
-    icon: BookOpen,
-    title: "Homework & Assignments",
-    description: "Teachers post homework with deadlines. Students can submit work online. Parents stay informed about pending tasks.",
-  },
-  {
-    icon: BarChart3,
-    title: "Marks & Result Cards",
-    description: "Complete academic records including weekly tests, monthly exams, and term results. Download printable result cards anytime.",
-  },
-  {
-    icon: Bell,
-    title: "School Announcements",
-    description: "Important notices, event updates, and school news delivered directly to students and parents through the portal.",
-  },
-  {
-    icon: MessageSquare,
-    title: "Parent-Teacher Communication",
-    description: "Direct messaging between parents and teachers. Stay connected about your child's progress and any concerns.",
-  },
-  {
-    icon: Calendar,
-    title: "Academic Calendar",
-    description: "View exam schedules, holidays, events, and important dates. Never miss a school activity or deadline.",
-  },
+const featureConfigs = [
+  { icon: ClipboardCheck, titleKey: "features.dailyAttendance", descKey: "features.dailyAttendanceDesc" },
+  { icon: BookOpen, titleKey: "features.homework", descKey: "features.homeworkDesc" },
+  { icon: BarChart3, titleKey: "features.marksResults", descKey: "features.marksResultsDesc" },
+  { icon: Bell, titleKey: "features.announcements", descKey: "features.announcementsDesc" },
+  { icon: MessageSquare, titleKey: "features.communication", descKey: "features.communicationDesc" },
+  { icon: Calendar, titleKey: "features.calendar", descKey: "features.calendarDesc" },
 ];
 
 interface Stats {
@@ -153,6 +94,7 @@ const faqs = [
 ];
 
 const Index = () => {
+  const { t } = useTranslation();
   const [stats, setStats] = useState<Stats>({ students: 0, teachers: 0, classes: 0, schools: 0 });
   const [isLoading, setIsLoading] = useState(true);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -185,10 +127,10 @@ const Index = () => {
   };
 
   const statsData = [
-    { icon: Users, value: stats.students.toLocaleString(), label: "Students Enrolled" },
-    { icon: GraduationCap, value: stats.teachers.toLocaleString(), label: "Teachers" },
-    { icon: BookOpen, value: stats.classes.toLocaleString(), label: "Active Classes" },
-    { icon: Award, value: stats.schools.toLocaleString(), label: "Schools" },
+    { icon: Users, value: stats.students.toLocaleString(), label: t("landing.students") },
+    { icon: GraduationCap, value: stats.teachers.toLocaleString(), label: t("landing.teachers") },
+    { icon: BookOpen, value: stats.classes.toLocaleString(), label: t("landing.classes") },
+    { icon: Award, value: stats.schools.toLocaleString(), label: t("landing.schools") },
   ];
 
   return (
@@ -211,24 +153,23 @@ const Index = () => {
               <div>
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 dark:bg-primary/15 border border-primary/20 dark:border-primary/30 text-primary text-sm font-medium mb-6 backdrop-blur-sm">
                   <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                  Welcome to Our School Portal
+                  {t("landing.welcomeBadge")}
                 </div>
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-foreground mb-6 leading-[1.1] tracking-tight">
-                  Excellence in{" "}
-                  <span className="text-gradient">Education</span>
+                  {t("landing.heroTitle")}
                 </h1>
                 <p className="text-lg lg:text-xl text-muted-foreground mb-8 max-w-lg leading-relaxed">
-                  Access your academic records, homework, attendance, and stay connected with teachers and school activities through our integrated portal system.
+                  {t("landing.heroSubtitle")}
                 </p>
                 <div className="flex flex-wrap gap-4">
                   <Button asChild size="lg" className="btn-gradient-animated text-white shadow-button hover:shadow-lg hover:-translate-y-0.5 transition-all h-12 px-8 text-base">
                     <a href="#portals">
-                      Login to Portal
+                      {t("landing.getStarted")}
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </a>
                   </Button>
                   <Button asChild variant="outline" size="lg" className="h-12 px-8 text-base backdrop-blur-sm">
-                    <a href="#features">Explore Features</a>
+                    <a href="#features">{t("landing.learnMore")}</a>
                   </Button>
                 </div>
               </div>
@@ -261,7 +202,7 @@ const Index = () => {
           <FadeInView>
             <div className="text-center mb-10">
               <h2 className="text-2xl lg:text-3xl font-extrabold text-foreground">
-                Platform <span className="heading-gradient">Overview</span>
+                {t("landing.portalOverview")}
               </h2>
             </div>
           </FadeInView>
@@ -284,20 +225,20 @@ const Index = () => {
         <div className="container mx-auto px-4 relative z-10">
           <FadeInView>
             <div className="text-center mb-14">
-              <span className="inline-block px-4 py-1.5 bg-primary/10 dark:bg-primary/15 text-primary rounded-full text-sm font-medium mb-4 backdrop-blur-sm border border-transparent dark:border-primary/20">Login</span>
+              <span className="inline-block px-4 py-1.5 bg-primary/10 dark:bg-primary/15 text-primary rounded-full text-sm font-medium mb-4 backdrop-blur-sm border border-transparent dark:border-primary/20">{t("landing.loginAs")}</span>
               <h2 className="text-3xl lg:text-4xl font-extrabold text-foreground mb-4">
-                Access Your <span className="heading-gradient">Portal</span>
+                {t("landing.accessPortal")}
               </h2>
               <p className="text-muted-foreground max-w-xl mx-auto">
-                Select your role to login and access your personalized dashboard
+                {t("landing.selectRoleDesc")}
               </p>
             </div>
           </FadeInView>
 
           <StaggerContainer className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {roles.map((role) => (
-              <StaggerItem key={role.title}>
-                <RoleCard {...role} />
+            {roleConfigs.map((role) => (
+              <StaggerItem key={role.titleKey}>
+                <RoleCard title={t(role.titleKey)} description={t(role.descKey)} icon={role.icon} href={role.href} colorClass={role.colorClass} />
               </StaggerItem>
             ))}
           </StaggerContainer>
@@ -310,27 +251,27 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <FadeInView>
             <div className="text-center mb-14 max-w-2xl mx-auto">
-              <span className="inline-block px-4 py-1.5 bg-primary/10 dark:bg-primary/15 text-primary rounded-full text-sm font-medium mb-4 border border-transparent dark:border-primary/20">Portal Features</span>
+              <span className="inline-block px-4 py-1.5 bg-primary/10 dark:bg-primary/15 text-primary rounded-full text-sm font-medium mb-4 border border-transparent dark:border-primary/20">{t("landing.portalFeatures")}</span>
               <h2 className="text-3xl lg:text-4xl font-extrabold text-foreground mb-4">
-                What You <span className="heading-gradient">Can Do</span>
+                {t("landing.whatYouCanDo")}
               </h2>
               <p className="text-muted-foreground text-lg">
-                Our school portal provides comprehensive tools for students, parents, and teachers to stay connected and informed.
+                {t("landing.portalFeaturesDesc")}
               </p>
             </div>
           </FadeInView>
 
           <StaggerContainer className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            {features.map((feature) => (
-              <StaggerItem key={feature.title}>
+            {featureConfigs.map((feature) => (
+              <StaggerItem key={feature.titleKey}>
                 <div className="relative bg-card/80 dark:bg-card/70 backdrop-blur-xl rounded-xl p-6 border border-white/20 dark:border-white/[0.08] shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 h-full group overflow-hidden dark:hover:border-primary/20">
                   {/* Gradient border glow on hover */}
                   <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10 bg-gradient-to-br from-primary/10 via-transparent to-accent/10 dark:from-primary/15 dark:to-accent/15" />
                   <div className="w-12 h-12 rounded-xl bg-primary/10 dark:bg-primary/15 flex items-center justify-center mb-4 group-hover:bg-primary/20 group-hover:scale-110 transition-all duration-300">
                     <feature.icon className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="text-lg font-semibold text-foreground mb-2">{feature.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{feature.description}</p>
+                  <h3 className="text-lg font-semibold text-foreground mb-2">{t(feature.titleKey)}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{t(feature.descKey)}</p>
                 </div>
               </StaggerItem>
             ))}
@@ -347,12 +288,12 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <FadeInView>
             <div className="text-center mb-14 max-w-2xl mx-auto">
-              <span className="inline-block px-4 py-1.5 bg-primary/10 dark:bg-primary/15 text-primary rounded-full text-sm font-medium mb-4 border border-transparent dark:border-primary/20">Help & Support</span>
+              <span className="inline-block px-4 py-1.5 bg-primary/10 dark:bg-primary/15 text-primary rounded-full text-sm font-medium mb-4 border border-transparent dark:border-primary/20">{t("landing.helpSupport")}</span>
               <h2 className="text-3xl lg:text-4xl font-extrabold text-foreground mb-4">
-                Frequently Asked <span className="heading-gradient">Questions</span>
+                {t("landing.faqTitle")}
               </h2>
               <p className="text-muted-foreground text-lg">
-                Common issues and solutions for students, teachers, and parents
+                {t("landing.faqCommonIssues")}
               </p>
             </div>
           </FadeInView>
@@ -386,7 +327,7 @@ const Index = () => {
                   onClick={() => setShowAllFaqs(true)}
                   className="gap-2"
                 >
-                  Show More Questions
+                  {t("landing.showMoreFaqs")}
                   <ChevronDown className="w-4 h-4" />
                 </Button>
               </div>
@@ -396,7 +337,7 @@ const Index = () => {
           <FadeInView delay={0.4}>
             <div className="text-center mt-10">
               <p className="text-muted-foreground text-sm">
-                Still need help? Contact your class teacher or school administration for assistance.
+                {t("landing.stillNeedHelp")}
               </p>
             </div>
           </FadeInView>
