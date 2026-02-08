@@ -281,5 +281,114 @@
   },
   "tour": {
     "helpButton": "Take a guided tour"
+  },
+  "notFound": {
+    "title": "Oops! Page not found",
+    "backHome": "Return to Home"
+  },
+  "offline": {
+    "title": "You're Offline",
+    "description": "Please check your internet connection and try again.",
+    "tryAgain": "Try Again"
+  },
+  "pwa": {
+    "installTitle": "Install School Smart",
+    "installDesc": "Install for quick access and offline support",
+    "install": "Install",
+    "notNow": "Not now",
+    "dismissInstall": "Dismiss install prompt",
+    "offlineReady": "App ready for offline use",
+    "offlineReadyDesc": "School Smart Pakistan can now work offline.",
+    "updateAvailable": "Update available",
+    "updateAvailableDesc": "A new version of School Smart Pakistan is available.",
+    "update": "Update"
+  },
+  "leaderboard": {
+    "title": "Class Leaderboard",
+    "you": "(You)",
+    "exams": "{{count}} exams"
+  },
+  "performance": {
+    "overallScore": "Overall Score",
+    "attendance": "Attendance",
+    "examsTaken": "Exams Taken",
+    "subjectPerformance": "Subject Performance",
+    "progressOverTime": "Progress Over Time",
+    "gradeDistribution": "Grade Distribution",
+    "average": "Average",
+    "score": "Score"
+  },
+  "account": {
+    "profileTab": "Account Information",
+    "securityTab": "Change Password",
+    "changePhoto": "Click to change photo (max 2MB)",
+    "emailLabel": "Email Address",
+    "emailHelp": "Email cannot be changed. Contact admin for assistance.",
+    "fullName": "Full Name *",
+    "fullNamePlaceholder": "Enter your full name",
+    "phoneLabel": "Phone Number",
+    "whatsappLabel": "WhatsApp Number",
+    "addressLabel": "Address",
+    "addressPlaceholder": "Enter your address",
+    "newPasswordLabel": "New Password",
+    "newPasswordPlaceholder": "Enter new password",
+    "passwordMinLength": "Must be at least 8 characters",
+    "confirmPasswordLabel": "Confirm New Password",
+    "confirmPasswordPlaceholder": "Confirm new password",
+    "validationError": "Validation Error",
+    "fullNameRequired": "Full name is required.",
+    "profileUpdated": "Profile Updated",
+    "profileUpdatedDesc": "Your profile has been updated successfully.",
+    "profileUpdateError": "Could not update your profile. Check your connection and try again.",
+    "fileTooLarge": "File too large",
+    "fileTooLargeDesc": "Avatar must be under 2MB.",
+    "invalidFile": "Invalid file",
+    "invalidFileDesc": "Please select an image file.",
+    "avatarUpdated": "Avatar Updated",
+    "avatarUpdatedDesc": "Your profile picture has been updated.",
+    "uploadFailed": "Upload Failed",
+    "uploadFailedDesc": "Could not upload avatar. The storage bucket may not be set up yet.",
+    "fillPasswordFields": "Please fill in all password fields.",
+    "passwordMinLengthError": "New password must be at least 8 characters.",
+    "passwordsNoMatch": "Passwords do not match.",
+    "passwordChanged": "Password Changed",
+    "passwordChangedDesc": "Your password has been updated successfully.",
+    "passwordChangeError": "Could not change your password. Your session may have expired.",
+    "error": "Error"
+  },
+  "forgotPassword": {
+    "title": "Reset Your Password",
+    "subtitle": "Don't worry, it happens to everyone. We'll send you a secure link to reset your password.",
+    "secureResetLink": "Receive a secure reset link via email",
+    "accountProtected": "Your account stays protected",
+    "checkEmail": "Check Your Email",
+    "checkEmailDesc": "We've sent a password reset link to",
+    "checkEmailFollow": "Please check your inbox and follow the instructions.",
+    "heading": "Forgot Password",
+    "description": "Enter your email address and we'll send you a link to reset your password.",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "Enter your email",
+    "sending": "Sending...",
+    "sendResetLink": "Send Reset Link",
+    "resetLinkSent": "Reset Link Sent",
+    "resetLinkSentDesc": "Please check your email for the password reset link.",
+    "sendError": "Could not send the reset link. Verify your email address and try again.",
+    "connectionError": "Could not connect to the server. Check your internet connection.",
+    "validationError": "Validation Error",
+    "enterEmail": "Please enter your email address.",
+    "error": "Error"
+  },
+  "chat": {
+    "title": "Group Chat",
+    "selectChat": "Select a chat to start messaging"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Mark all read",
+    "noNotifications": "No notifications yet",
+    "recently": "recently"
+  },
+  "welcomeBanner": {
+    "quickTips": "Quick tips:"
   }
 }

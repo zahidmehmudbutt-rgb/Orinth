@@ -281,5 +281,114 @@
   },
   "tour": {
     "helpButton": "گائیڈڈ ٹور لیں"
+  },
+  "notFound": {
+    "title": "افوہ! صفحہ نہیں ملا",
+    "backHome": "ہوم پیج پر واپس جائیں"
+  },
+  "offline": {
+    "title": "آپ آف لائن ہیں",
+    "description": "براہ کرم اپنا انٹرنیٹ کنکشن چیک کریں اور دوبارہ کوشش کریں۔",
+    "tryAgain": "دوبارہ کوشش کریں"
+  },
+  "pwa": {
+    "installTitle": "اسکول سمارٹ انسٹال کریں",
+    "installDesc": "فوری رسائی اور آف لائن سپورٹ کے لیے انسٹال کریں",
+    "install": "انسٹال کریں",
+    "notNow": "ابھی نہیں",
+    "dismissInstall": "انسٹال پرامپٹ بند کریں",
+    "offlineReady": "ایپ آف لائن استعمال کے لیے تیار ہے",
+    "offlineReadyDesc": "اسکول سمارٹ پاکستان اب آف لائن کام کر سکتا ہے۔",
+    "updateAvailable": "اپ ڈیٹ دستیاب ہے",
+    "updateAvailableDesc": "اسکول سمارٹ پاکستان کا نیا ورژن دستیاب ہے۔",
+    "update": "اپ ڈیٹ کریں"
+  },
+  "leaderboard": {
+    "title": "کلاس لیڈر بورڈ",
+    "you": "(آپ)",
+    "exams": "{{count}} امتحانات"
+  },
+  "performance": {
+    "overallScore": "مجموعی اسکور",
+    "attendance": "حاضری",
+    "examsTaken": "دیے گئے امتحانات",
+    "subjectPerformance": "مضمون کی کارکردگی",
+    "progressOverTime": "وقت کے ساتھ ترقی",
+    "gradeDistribution": "گریڈ کی تقسیم",
+    "average": "اوسط",
+    "score": "اسکور"
+  },
+  "account": {
+    "profileTab": "اکاؤنٹ کی معلومات",
+    "securityTab": "پاس ورڈ تبدیل کریں",
+    "changePhoto": "تصویر تبدیل کرنے کے لیے کلک کریں (زیادہ سے زیادہ 2MB)",
+    "emailLabel": "ای میل ایڈریس",
+    "emailHelp": "ای میل تبدیل نہیں ہو سکتا۔ مدد کے لیے ایڈمن سے رابطہ کریں۔",
+    "fullName": "پورا نام *",
+    "fullNamePlaceholder": "اپنا پورا نام درج کریں",
+    "phoneLabel": "فون نمبر",
+    "whatsappLabel": "واٹس ایپ نمبر",
+    "addressLabel": "پتہ",
+    "addressPlaceholder": "اپنا پتہ درج کریں",
+    "newPasswordLabel": "نیا پاس ورڈ",
+    "newPasswordPlaceholder": "نیا پاس ورڈ درج کریں",
+    "passwordMinLength": "کم از کم 8 حروف ہونے چاہئیں",
+    "confirmPasswordLabel": "نئے پاس ورڈ کی تصدیق",
+    "confirmPasswordPlaceholder": "نئے پاس ورڈ کی تصدیق کریں",
+    "validationError": "توثیق کی خرابی",
+    "fullNameRequired": "پورا نام ضروری ہے۔",
+    "profileUpdated": "پروفائل اپ ڈیٹ ہو گئی",
+    "profileUpdatedDesc": "آپ کی پروفائل کامیابی سے اپ ڈیٹ ہو گئی ہے۔",
+    "profileUpdateError": "آپ کی پروفائل اپ ڈیٹ نہیں ہو سکی۔ اپنا کنکشن چیک کریں اور دوبارہ کوشش کریں۔",
+    "fileTooLarge": "فائل بہت بڑی ہے",
+    "fileTooLargeDesc": "اوتار 2MB سے کم ہونا چاہیے۔",
+    "invalidFile": "غلط فائل",
+    "invalidFileDesc": "براہ کرم تصویری فائل منتخب کریں۔",
+    "avatarUpdated": "اوتار اپ ڈیٹ ہو گیا",
+    "avatarUpdatedDesc": "آپ کی پروفائل تصویر اپ ڈیٹ ہو گئی ہے۔",
+    "uploadFailed": "اپ لوڈ ناکام",
+    "uploadFailedDesc": "اوتار اپ لوڈ نہیں ہو سکا۔ سٹوریج بکٹ ابھی سیٹ اپ نہیں ہوئی ہو سکتی۔",
+    "fillPasswordFields": "براہ کرم تمام پاس ورڈ فیلڈز بھریں۔",
+    "passwordMinLengthError": "نیا پاس ورڈ کم از کم 8 حروف کا ہونا چاہیے۔",
+    "passwordsNoMatch": "پاس ورڈ مماثل نہیں ہیں۔",
+    "passwordChanged": "پاس ورڈ تبدیل ہو گیا",
+    "passwordChangedDesc": "آپ کا پاس ورڈ کامیابی سے اپ ڈیٹ ہو گیا ہے۔",
+    "passwordChangeError": "آپ کا پاس ورڈ تبدیل نہیں ہو سکا۔ آپ کا سیشن ختم ہو چکا ہو سکتا ہے۔",
+    "error": "خرابی"
+  },
+  "forgotPassword": {
+    "title": "اپنا پاس ورڈ ری سیٹ کریں",
+    "subtitle": "فکر نہ کریں، یہ سب کے ساتھ ہوتا ہے۔ ہم آپ کو پاس ورڈ ری سیٹ کرنے کا محفوظ لنک بھیجیں گے۔",
+    "secureResetLink": "ای میل کے ذریعے محفوظ ری سیٹ لنک حاصل کریں",
+    "accountProtected": "آپ کا اکاؤنٹ محفوظ رہے گا",
+    "checkEmail": "اپنا ای میل چیک کریں",
+    "checkEmailDesc": "ہم نے پاس ورڈ ری سیٹ لنک بھیج دیا ہے",
+    "checkEmailFollow": "براہ کرم اپنا ان باکس چیک کریں اور ہدایات پر عمل کریں۔",
+    "heading": "پاس ورڈ بھول گئے",
+    "description": "اپنا ای میل ایڈریس درج کریں اور ہم آپ کو پاس ورڈ ری سیٹ کرنے کا لنک بھیجیں گے۔",
+    "emailLabel": "ای میل ایڈریس",
+    "emailPlaceholder": "اپنا ای میل درج کریں",
+    "sending": "بھیج رہا ہے...",
+    "sendResetLink": "ری سیٹ لنک بھیجیں",
+    "resetLinkSent": "ری سیٹ لنک بھیج دیا گیا",
+    "resetLinkSentDesc": "براہ کرم پاس ورڈ ری سیٹ لنک کے لیے اپنا ای میل چیک کریں۔",
+    "sendError": "ری سیٹ لنک نہیں بھیجا جا سکا۔ اپنا ای میل ایڈریس چیک کریں اور دوبارہ کوشش کریں۔",
+    "connectionError": "سرور سے رابطہ نہیں ہو سکا۔ اپنا انٹرنیٹ کنکشن چیک کریں۔",
+    "validationError": "توثیق کی خرابی",
+    "enterEmail": "براہ کرم اپنا ای میل ایڈریس درج کریں۔",
+    "error": "خرابی"
+  },
+  "chat": {
+    "title": "گروپ چیٹ",
+    "selectChat": "پیغام بھیجنے کے لیے چیٹ منتخب کریں"
+  },
+  "notifications": {
+    "title": "اطلاعات",
+    "markAllRead": "سب پڑھا ہوا نشان لگائیں",
+    "noNotifications": "ابھی تک کوئی اطلاع نہیں",
+    "recently": "حال ہی میں"
+  },
+  "welcomeBanner": {
+    "quickTips": "فوری تجاویز:"
   }
 }

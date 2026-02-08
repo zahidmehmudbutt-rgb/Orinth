@@ -3,9 +3,11 @@ import { useEffect } from "react";
 import { FadeIn } from "@/components/ui/motion-wrapper";
 import { Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
 
 const NotFound = () => {
   const location = useLocation();
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (import.meta.env.DEV) console.error("404 Error: User attempted to access non-existent route:", location.pathname);
@@ -20,11 +22,11 @@ const NotFound = () => {
       </div>
       <FadeIn className="text-center relative z-10">
         <div className="text-8xl font-bold text-gradient mb-4">404</div>
-        <p className="text-xl text-muted-foreground mb-8">Oops! Page not found</p>
+        <p className="text-xl text-muted-foreground mb-8">{t("notFound.title")}</p>
         <Button asChild>
           <Link to="/" className="inline-flex items-center gap-2">
             <Home className="w-4 h-4" />
-            Return to Home
+            {t("notFound.backHome")}
           </Link>
         </Button>
       </FadeIn>

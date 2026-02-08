@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Bell, Check, CheckCheck, BookOpen, Calendar, GraduationCap, Megaphone, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -33,6 +34,7 @@ const notificationColors: Record<NotificationType, string> = {
 };
 
 export function NotificationCenter({ className }: NotificationCenterProps) {
+  const { t } = useTranslation();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
@@ -84,7 +86,7 @@ export function NotificationCenter({ className }: NotificationCenterProps) {
     try {
       return formatDistanceToNow(new Date(dateString), { addSuffix: true });
     } catch {
-      return "recently";
+      return t("notifications.recently");
     }
   };
 
@@ -106,7 +108,7 @@ export function NotificationCenter({ className }: NotificationCenterProps) {
       </PopoverTrigger>
       <PopoverContent className="w-80 p-0" align="end">
         <div className="flex items-center justify-between p-4 border-b">
-          <h3 className="font-semibold text-foreground">Notifications</h3>
+          <h3 className="font-semibold text-foreground">{t("notifications.title")}</h3>
           {unreadCount > 0 && (
             <Button
               variant="ghost"
@@ -115,7 +117,7 @@ export function NotificationCenter({ className }: NotificationCenterProps) {
               onClick={handleMarkAllAsRead}
             >
               <CheckCheck className="w-3 h-3 mr-1" />
-              Mark all read
+              {t("notifications.markAllRead")}
             </Button>
           )}
         </div>
@@ -123,12 +125,12 @@ export function NotificationCenter({ className }: NotificationCenterProps) {
         <ScrollArea className="h-[300px]">
           {isLoading ? (
             <div className="p-4 text-center text-muted-foreground">
-              Loading...
+              {t("common.loading")}
             </div>
           ) : notifications.length === 0 ? (
             <div className="p-8 text-center text-muted-foreground">
               <Bell className="w-10 h-10 mx-auto mb-2 opacity-50" />
-              <p>No notifications yet</p>
+              <p>{t("notifications.noNotifications")}</p>
             </div>
           ) : (
             <div className="divide-y">

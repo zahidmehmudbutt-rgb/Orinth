@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Trophy, Medal, Award, TrendingUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,6 +27,7 @@ const RANK_ICONS = [
 export function Leaderboard({ classId, currentStudentId, className }: LeaderboardProps) {
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!classId) return;
@@ -129,7 +131,7 @@ export function Leaderboard({ classId, currentStudentId, className }: Leaderboar
       <CardHeader className="pb-3">
         <CardTitle className="text-base flex items-center gap-2">
           <Trophy className="w-5 h-5 text-yellow-500" />
-          Class Leaderboard
+          {t("leaderboard.title")}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -157,9 +159,9 @@ export function Leaderboard({ classId, currentStudentId, className }: Leaderboar
                 <div className="flex-1 min-w-0">
                   <p className={`text-sm font-medium truncate ${isCurrentStudent ? "text-primary" : "text-foreground"}`}>
                     {entry.studentName}
-                    {isCurrentStudent && <span className="text-xs ml-1">(You)</span>}
+                    {isCurrentStudent && <span className="text-xs ml-1">{t("leaderboard.you")}</span>}
                   </p>
-                  <p className="text-xs text-muted-foreground">{entry.examCount} exams</p>
+                  <p className="text-xs text-muted-foreground">{t("leaderboard.exams", { count: entry.examCount })}</p>
                 </div>
                 <div className="flex items-center gap-1 flex-shrink-0">
                   <TrendingUp className="w-3.5 h-3.5 text-muted-foreground" />

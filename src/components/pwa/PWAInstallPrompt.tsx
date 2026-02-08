@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Download, X } from "lucide-react";
 import { usePWAInstall } from "@/hooks/usePWAInstall";
 
 export function PWAInstallPrompt() {
   const { canInstall, install, isStandalone } = usePWAInstall();
+  const { t } = useTranslation();
   const [showBanner, setShowBanner] = useState(false);
 
   useEffect(() => {
@@ -39,23 +41,23 @@ export function PWAInstallPrompt() {
         <Download className="w-5 h-5 text-white" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="font-semibold text-foreground text-sm">Install School Smart</p>
+        <p className="font-semibold text-foreground text-sm">{t("pwa.installTitle")}</p>
         <p className="text-xs text-muted-foreground mt-0.5">
-          Install for quick access and offline support
+          {t("pwa.installDesc")}
         </p>
         <div className="flex gap-2 mt-2">
           <Button size="sm" onClick={handleInstall} className="text-xs h-8">
-            Install
+            {t("pwa.install")}
           </Button>
           <Button size="sm" variant="ghost" onClick={handleDismiss} className="text-xs h-8">
-            Not now
+            {t("pwa.notNow")}
           </Button>
         </div>
       </div>
       <button
         onClick={handleDismiss}
         className="text-muted-foreground hover:text-foreground p-1"
-        aria-label="Dismiss install prompt"
+        aria-label={t("pwa.dismissInstall")}
       >
         <X className="w-4 h-4" />
       </button>

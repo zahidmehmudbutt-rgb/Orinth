@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,6 +15,7 @@ interface AccountSettingsProps {
 }
 
 const AccountSettings = ({ roleColor = "bg-primary" }: AccountSettingsProps) => {
+  const { t } = useTranslation();
   const { user, profile, refreshUserData } = useAuth();
   const { toast } = useToast();
   
@@ -39,8 +41,8 @@ const AccountSettings = ({ roleColor = "bg-primary" }: AccountSettingsProps) => 
     if (!fullName.trim()) {
       toast({
         variant: "destructive",
-        title: "Validation Error",
-        description: "Full name is required.",
+        title: t("account.validationError"),
+        description: t("account.fullNameRequired"),
       });
       return;
     }
@@ -61,8 +63,8 @@ const AccountSettings = ({ roleColor = "bg-primary" }: AccountSettingsProps) => 
       if (error) throw error;
 
       toast({
-        title: "Profile Updated",
-        description: "Your profile has been updated successfully.",
+        title: t("account.profileUpdated"),
+        description: t("account.profileUpdatedDesc"),
       });
 
       refreshUserData();
@@ -70,8 +72,8 @@ const AccountSettings = ({ roleColor = "bg-primary" }: AccountSettingsProps) => 
       if (import.meta.env.DEV) console.error("Error updating profile:", error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Could not update your profile. Check your connection and try again.",
+        title: t("account.error"),
+        description: t("account.profileUpdateError"),
       });
     } finally {
       setIsUpdatingProfile(false);
@@ -81,11 +83,11 @@ const AccountSettings = ({ roleColor = "bg-primary" }: AccountSettingsProps) => 
   const handleAvatarUpload = async (file: File) => {
     if (!user?.id) return;
     if (file.size > 2 * 1024 * 1024) {
-      toast({ variant: "destructive", title: "File too large", description: "Avatar must be under 2MB." });
+      toast({ variant: "destructive", title: t("account.fileTooLarge"), description: t("account.fileTooLargeDesc") });
       return;
     }
     if (!file.type.startsWith("image/")) {
-      toast({ variant: "destructive", title: "Invalid file", description: "Please select an image file." });
+      toast({ variant: "destructive", title: t("account.invalidFile"), description: t("account.invalidFileDesc") });
       return;
     }
 
@@ -113,11 +115,11 @@ const AccountSettings = ({ roleColor = "bg-primary" }: AccountSettingsProps) => 
 
       if (updateError) throw updateError;
 
-      toast({ title: "Avatar Updated", description: "Your profile picture has been updated." });
+      toast({ title: t("account.avatarUpdated"), description: t("account.avatarUpdatedDesc") });
       refreshUserData();
     } catch (error) {
       if (import.meta.env.DEV) console.error("Avatar upload error:", error);
-      toast({ variant: "destructive", title: "Upload Failed", description: "Could not upload avatar. The storage bucket may not be set up yet." });
+      toast({ variant: "destructive", title: t("account.uploadFailed"), description: t("account.uploadFailedDesc") });
     } finally {
       setIsUploadingAvatar(false);
     }
@@ -127,8 +129,8 @@ const AccountSettings = ({ roleColor = "bg-primary" }: AccountSettingsProps) => 
     if (!newPassword || !confirmPassword) {
       toast({
         variant: "destructive",
-        title: "Validation Error",
-        description: "Please fill in all password fields.",
+        title: t("account.validationError"),
+        description: t("account.fillPasswordFields"),
       });
       return;
     }
@@ -136,8 +138,8 @@ const AccountSettings = ({ roleColor = "bg-primary" }: AccountSettingsProps) => 
     if (newPassword.length < 8) {
       toast({
         variant: "destructive",
-        title: "Validation Error",
-        description: "New password must be at least 8 characters.",
+        title: t("account.validationError"),
+        description: t("account.passwordMinLengthError"),
       });
       return;
     }
@@ -145,8 +147,8 @@ const AccountSettings = ({ roleColor = "bg-primary" }: AccountSettingsProps) => 
     if (newPassword !== confirmPassword) {
       toast({
         variant: "destructive",
-        title: "Validation Error",
-        description: "Passwords do not match.",
+        title: t("account.validationError"),
+        description: t("account.passwordsNoMatch"),
       });
       return;
     }
@@ -161,8 +163,8 @@ const AccountSettings = ({ roleColor = "bg-primary" }: AccountSettingsProps) => 
       if (error) throw error;
 
       toast({
-        title: "Password Changed",
-        description: "Your password has been updated successfully.",
+        title: t("account.passwordChanged"),
+        description: t("account.passwordChangedDesc"),
       });
 
       setCurrentPassword("");
@@ -172,8 +174,8 @@ const AccountSettings = ({ roleColor = "bg-primary" }: AccountSettingsProps) => 
       if (import.meta.env.DEV) console.error("Error changing password:", error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: error instanceof Error ? error.message : "Could not change your password. Your session may have expired.",
+        title: t("account.error"),
+        description: error instanceof Error ? error.message : t("account.passwordChangeError"),
       });
     } finally {
       setIsUpdatingPassword(false);
@@ -185,10 +187,10 @@ const AccountSettings = ({ roleColor = "bg-primary" }: AccountSettingsProps) => 
       <Tabs defaultValue="profile" className="w-full">
         <TabsList className="w-full grid grid-cols-2 rounded-t-xl rounded-b-none border-b">
           <TabsTrigger value="profile" className={`data-[state=active]:${roleColor} data-[state=active]:text-primary-foreground`}>
-            Account Information
+            {t("account.profileTab")}
           </TabsTrigger>
           <TabsTrigger value="security" className={`data-[state=active]:${roleColor} data-[state=active]:text-primary-foreground`}>
-            Change Password
+            {t("account.securityTab")}
           </TabsTrigger>
         </TabsList>
 
@@ -226,13 +228,13 @@ const AccountSettings = ({ roleColor = "bg-primary" }: AccountSettingsProps) => 
                   }}
                 />
               </div>
-              <p className="text-xs text-muted-foreground">Click to change photo (max 2MB)</p>
+              <p className="text-xs text-muted-foreground">{t("account.changePhoto")}</p>
             </div>
 
             <div className="space-y-2">
               <Label className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-muted-foreground" />
-                Email Address
+                {t("account.emailLabel")}
               </Label>
               <Input
                 value={user?.email || ""}
@@ -240,16 +242,16 @@ const AccountSettings = ({ roleColor = "bg-primary" }: AccountSettingsProps) => 
                 className="bg-muted"
               />
               <p className="text-xs text-muted-foreground">
-                Email cannot be changed. Contact admin for assistance.
+                {t("account.emailHelp")}
               </p>
             </div>
 
             <div className="space-y-2">
-              <Label>Full Name *</Label>
+              <Label>{t("account.fullName")}</Label>
               <Input
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                placeholder="Enter your full name"
+                placeholder={t("account.fullNamePlaceholder")}
               />
             </div>
 
@@ -257,7 +259,7 @@ const AccountSettings = ({ roleColor = "bg-primary" }: AccountSettingsProps) => 
               <div className="space-y-2">
                 <Label className="flex items-center gap-2">
                   <Phone className="w-4 h-4 text-muted-foreground" />
-                  Phone Number
+                  {t("account.phoneLabel")}
                 </Label>
                 <Input
                   value={phone}
@@ -269,7 +271,7 @@ const AccountSettings = ({ roleColor = "bg-primary" }: AccountSettingsProps) => 
               <div className="space-y-2">
                 <Label className="flex items-center gap-2">
                   <MessageCircle className="w-4 h-4 text-muted-foreground" />
-                  WhatsApp Number
+                  {t("account.whatsappLabel")}
                 </Label>
                 <Input
                   value={whatsapp}
@@ -282,12 +284,12 @@ const AccountSettings = ({ roleColor = "bg-primary" }: AccountSettingsProps) => 
             <div className="space-y-2">
               <Label className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-muted-foreground" />
-                Address
+                {t("account.addressLabel")}
               </Label>
               <Input
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                placeholder="Enter your address"
+                placeholder={t("account.addressPlaceholder")}
               />
             </div>
 
@@ -299,12 +301,12 @@ const AccountSettings = ({ roleColor = "bg-primary" }: AccountSettingsProps) => 
               {isUpdatingProfile ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Saving...
+                  {t("common.saving")}
                 </>
               ) : (
                 <>
                   <Save className="mr-2 h-4 w-4" />
-                  Save Changes
+                  {t("common.save")}
                 </>
               )}
             </Button>
@@ -316,14 +318,14 @@ const AccountSettings = ({ roleColor = "bg-primary" }: AccountSettingsProps) => 
             <div className="space-y-2">
               <Label className="flex items-center gap-2">
                 <Lock className="w-4 h-4 text-muted-foreground" />
-                New Password
+                {t("account.newPasswordLabel")}
               </Label>
               <div className="relative">
                 <Input
                   type={showPasswords ? "text" : "password"}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="Enter new password"
+                  placeholder={t("account.newPasswordPlaceholder")}
                   className="pr-10"
                 />
                 <button
@@ -334,16 +336,16 @@ const AccountSettings = ({ roleColor = "bg-primary" }: AccountSettingsProps) => 
                   {showPasswords ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
-              <p className="text-xs text-muted-foreground">Must be at least 8 characters</p>
+              <p className="text-xs text-muted-foreground">{t("account.passwordMinLength")}</p>
             </div>
 
             <div className="space-y-2">
-              <Label>Confirm New Password</Label>
+              <Label>{t("account.confirmPasswordLabel")}</Label>
               <Input
                 type={showPasswords ? "text" : "password"}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Confirm new password"
+                placeholder={t("account.confirmPasswordPlaceholder")}
               />
             </div>
 
@@ -355,12 +357,12 @@ const AccountSettings = ({ roleColor = "bg-primary" }: AccountSettingsProps) => 
               {isUpdatingPassword ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Updating...
+                  {t("common.saving")}
                 </>
               ) : (
                 <>
                   <Lock className="mr-2 h-4 w-4" />
-                  Change Password
+                  {t("common.changePassword")}
                 </>
               )}
             </Button>

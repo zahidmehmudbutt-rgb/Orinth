@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { MessageSquare, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,6 +19,7 @@ interface GroupChatProps {
 }
 
 export function GroupChat({ className, triggerClassName }: GroupChatProps) {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<ChatRoomType | null>(null);
 
@@ -38,7 +40,7 @@ export function GroupChat({ className, triggerClassName }: GroupChatProps) {
       </DialogTrigger>
       <DialogContent className={`max-w-2xl h-[600px] p-0 gap-0 ${className}`}>
         <DialogHeader className="sr-only">
-          <DialogTitle>Group Chat</DialogTitle>
+          <DialogTitle>{t("chat.title")}</DialogTitle>
         </DialogHeader>
 
         <div className="flex h-full">
@@ -69,7 +71,7 @@ export function GroupChat({ className, triggerClassName }: GroupChatProps) {
               <div className="flex flex-col items-center justify-center h-full text-center p-8">
                 <MessageSquare className="w-16 h-16 text-muted-foreground opacity-30 mb-4" />
                 <p className="text-muted-foreground">
-                  Select a chat to start messaging
+                  {t("chat.selectChat")}
                 </p>
               </div>
             )}
@@ -82,6 +84,7 @@ export function GroupChat({ className, triggerClassName }: GroupChatProps) {
 
 // Standalone chat page component for full-page chat view
 export function GroupChatPage() {
+  const { t } = useTranslation();
   const [selectedRoom, setSelectedRoom] = useState<ChatRoomType | null>(null);
 
   return (
@@ -111,7 +114,7 @@ export function GroupChatPage() {
           <div className="flex flex-col items-center justify-center h-full text-center p-8">
             <MessageSquare className="w-16 h-16 text-muted-foreground opacity-30 mb-4" />
             <p className="text-muted-foreground">
-              Select a chat to start messaging
+              {t("chat.selectChat")}
             </p>
           </div>
         )}

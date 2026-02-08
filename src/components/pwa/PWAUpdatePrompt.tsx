@@ -1,4 +1,5 @@
 import { useRegisterSW } from "virtual:pwa-register/react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { useEffect } from "react";
 
@@ -22,10 +23,12 @@ export function PWAUpdatePrompt() {
     },
   });
 
+  const { t } = useTranslation();
+
   useEffect(() => {
     if (offlineReady) {
-      toast.success("App ready for offline use", {
-        description: "School Smart Pakistan can now work offline.",
+      toast.success(t("pwa.offlineReady"), {
+        description: t("pwa.offlineReadyDesc"),
         duration: 5000,
       });
     }
@@ -33,10 +36,10 @@ export function PWAUpdatePrompt() {
 
   useEffect(() => {
     if (needRefresh) {
-      toast("Update available", {
-        description: "A new version of School Smart Pakistan is available.",
+      toast(t("pwa.updateAvailable"), {
+        description: t("pwa.updateAvailableDesc"),
         action: {
-          label: "Update",
+          label: t("pwa.update"),
           onClick: () => updateServiceWorker(true),
         },
         duration: Infinity,

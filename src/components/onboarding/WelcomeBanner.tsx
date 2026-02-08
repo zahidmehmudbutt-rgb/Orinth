@@ -1,5 +1,6 @@
 import { LucideIcon, X } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -30,6 +31,7 @@ export function WelcomeBanner({
     }
     return false;
   });
+  const { t } = useTranslation();
 
   if (dismissed) return null;
 
@@ -69,7 +71,7 @@ export function WelcomeBanner({
           
           {tips && tips.length > 0 && (
             <div className="mt-4 space-y-2">
-              <p className="text-sm font-medium text-foreground">Quick tips:</p>
+              <p className="text-sm font-medium text-foreground">{t("welcomeBanner.quickTips")}</p>
               <ul className="text-sm text-muted-foreground space-y-1">
                 {tips.map((tip, index) => (
                   <li key={index} className="flex items-start gap-2">

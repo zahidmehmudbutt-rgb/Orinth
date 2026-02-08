@@ -8,6 +8,7 @@ import {
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp, Target, BookOpen } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { ExamResult } from "@/types/exam";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8", "#82ca9d", "#ffc658", "#d0ed57"];
@@ -21,6 +22,7 @@ interface PerformanceTrendsProps {
 export function PerformanceTrends({ examResults, attendanceData, className }: PerformanceTrendsProps) {
   // Only graded results (not absent, has marks)
   const graded = examResults.filter(r => r.marksObtained !== null && !r.isAbsent);
+  const { t } = useTranslation();
 
   if (graded.length === 0) return null;
 
@@ -80,21 +82,21 @@ export function PerformanceTrends({ examResults, attendanceData, className }: Pe
           <CardContent className="p-4 text-center">
             <TrendingUp className="w-5 h-5 text-primary mx-auto mb-1" />
             <p className="text-2xl font-bold text-foreground">{overallPercentage}%</p>
-            <p className="text-xs text-muted-foreground">Overall Score</p>
+            <p className="text-xs text-muted-foreground">{t("performance.overallScore")}</p>
           </CardContent>
         </Card>
         <Card className="bg-card border-border">
           <CardContent className="p-4 text-center">
             <Target className="w-5 h-5 text-success mx-auto mb-1" />
             <p className="text-2xl font-bold text-foreground">{attendanceData.percentage}%</p>
-            <p className="text-xs text-muted-foreground">Attendance</p>
+            <p className="text-xs text-muted-foreground">{t("performance.attendance")}</p>
           </CardContent>
         </Card>
         <Card className="bg-card border-border">
           <CardContent className="p-4 text-center">
             <BookOpen className="w-5 h-5 text-warning mx-auto mb-1" />
             <p className="text-2xl font-bold text-foreground">{graded.length}</p>
-            <p className="text-xs text-muted-foreground">Exams Taken</p>
+            <p className="text-xs text-muted-foreground">{t("performance.examsTaken")}</p>
           </CardContent>
         </Card>
       </div>
@@ -103,7 +105,7 @@ export function PerformanceTrends({ examResults, attendanceData, className }: Pe
       {subjectData.length > 0 && (
         <Card className="bg-card border-border mb-6">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base text-foreground">Subject Performance</CardTitle>
+            <CardTitle className="text-base text-foreground">{t("performance.subjectPerformance")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-[250px]">
@@ -119,7 +121,7 @@ export function PerformanceTrends({ examResults, attendanceData, className }: Pe
                       borderRadius: "var(--radius)",
                       color: "hsl(var(--foreground))",
                     }}
-                    formatter={(value: number) => [`${value}%`, "Average"]}
+                    formatter={(value: number) => [`${value}%`, t("performance.average")]}
                     labelFormatter={(label: string, payload: any[]) => payload?.[0]?.payload?.fullSubject || label}
                   />
                   <Bar dataKey="percentage" radius={[6, 6, 0, 0]}>
@@ -139,7 +141,7 @@ export function PerformanceTrends({ examResults, attendanceData, className }: Pe
         {timelineData.length > 1 && (
           <Card className="bg-card border-border">
             <CardHeader className="pb-2">
-              <CardTitle className="text-base text-foreground">Progress Over Time</CardTitle>
+              <CardTitle className="text-base text-foreground">{t("performance.progressOverTime")}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="h-[200px]">
@@ -155,7 +157,7 @@ export function PerformanceTrends({ examResults, attendanceData, className }: Pe
                         borderRadius: "var(--radius)",
                         color: "hsl(var(--foreground))",
                       }}
-                      formatter={(value: number) => [`${value}%`, "Score"]}
+                      formatter={(value: number) => [`${value}%`, t("performance.score")]}
                       labelFormatter={(_, payload: any[]) => payload?.[0]?.payload?.title || ""}
                     />
                     <Line type="monotone" dataKey="percentage" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ fill: "hsl(var(--primary))", r: 4 }} />
@@ -170,7 +172,7 @@ export function PerformanceTrends({ examResults, attendanceData, className }: Pe
         {gradeData.length > 0 && (
           <Card className="bg-card border-border">
             <CardHeader className="pb-2">
-              <CardTitle className="text-base text-foreground">Grade Distribution</CardTitle>
+              <CardTitle className="text-base text-foreground">{t("performance.gradeDistribution")}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="h-[200px]">

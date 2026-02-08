@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,6 +14,7 @@ const ForgotPassword = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,8 +22,8 @@ const ForgotPassword = () => {
     if (!email) {
       toast({
         variant: "destructive",
-        title: "Validation Error",
-        description: "Please enter your email address.",
+        title: t("forgotPassword.validationError"),
+        description: t("forgotPassword.enterEmail"),
       });
       return;
     }
@@ -39,8 +41,8 @@ const ForgotPassword = () => {
         }
         toast({
           variant: "destructive",
-          title: "Error",
-          description: "Could not send the reset link. Verify your email address and try again.",
+          title: t("forgotPassword.error"),
+          description: t("forgotPassword.sendError"),
         });
         setIsLoading(false);
         return;
@@ -48,14 +50,14 @@ const ForgotPassword = () => {
 
       setIsSuccess(true);
       toast({
-        title: "Reset Link Sent",
-        description: "Please check your email for the password reset link.",
+        title: t("forgotPassword.resetLinkSent"),
+        description: t("forgotPassword.resetLinkSentDesc"),
       });
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Could not connect to the server. Check your internet connection.",
+        title: t("forgotPassword.error"),
+        description: t("forgotPassword.connectionError"),
       });
     } finally {
       setIsLoading(false);
@@ -75,14 +77,14 @@ const ForgotPassword = () => {
             <div className="inline-flex items-center justify-center w-16 h-16 bg-success/10 rounded-full mb-6">
               <CheckCircle className="w-8 h-8 text-success" />
             </div>
-            <h1 className="text-2xl font-bold text-foreground mb-3">Check Your Email</h1>
+            <h1 className="text-2xl font-bold text-foreground mb-3">{t("forgotPassword.checkEmail")}</h1>
             <p className="text-muted-foreground mb-6">
-              We've sent a password reset link to <strong className="text-foreground">{email}</strong>.
-              Please check your inbox and follow the instructions.
+              {t("forgotPassword.checkEmailDesc")} <strong className="text-foreground">{email}</strong>.
+              {" "}{t("forgotPassword.checkEmailFollow")}
             </p>
             <Link to="/">
               <Button className="w-full bg-gradient-primary text-white shadow-button">
-                Back to Home
+                {t("common.backToHome")}
               </Button>
             </Link>
           </div>
@@ -105,22 +107,22 @@ const ForgotPassword = () => {
             <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mb-8 backdrop-blur-sm">
               <KeyRound className="w-8 h-8" />
             </div>
-            <h1 className="text-4xl font-bold mb-4">Reset Your Password</h1>
+            <h1 className="text-4xl font-bold mb-4">{t("forgotPassword.title")}</h1>
             <p className="text-lg opacity-90 mb-8">
-              Don't worry, it happens to everyone. We'll send you a secure link to reset your password.
+              {t("forgotPassword.subtitle")}
             </p>
             <div className="space-y-4">
               <div className="flex items-center gap-3 text-sm opacity-80">
                 <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
                   <Mail className="w-4 h-4" />
                 </div>
-                <span>Receive a secure reset link via email</span>
+                <span>{t("forgotPassword.secureResetLink")}</span>
               </div>
               <div className="flex items-center gap-3 text-sm opacity-80">
                 <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
                   <Shield className="w-4 h-4" />
                 </div>
-                <span>Your account stays protected</span>
+                <span>{t("forgotPassword.accountProtected")}</span>
               </div>
             </div>
           </FadeIn>
@@ -136,8 +138,8 @@ const ForgotPassword = () => {
                 <GraduationCap className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-lg font-bold text-foreground">School Portal</h1>
-                <p className="text-xs text-muted-foreground">Education Hub</p>
+                <h1 className="text-lg font-bold text-foreground">{t("login.schoolPortal")}</h1>
+                <p className="text-xs text-muted-foreground">{t("login.educationHub")}</p>
               </div>
             </Link>
           </div>
@@ -147,7 +149,7 @@ const ForgotPassword = () => {
           <FadeIn className="w-full max-w-md">
             <Link to="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8 transition-colors">
               <ArrowLeft className="w-4 h-4" />
-              Back to Home
+              {t("common.backToHome")}
             </Link>
 
             <div>
@@ -155,15 +157,15 @@ const ForgotPassword = () => {
                 <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mb-4 lg:hidden">
                   <Mail className="w-7 h-7 text-primary" />
                 </div>
-                <h2 className="text-2xl font-bold text-foreground">Forgot Password</h2>
+                <h2 className="text-2xl font-bold text-foreground">{t("forgotPassword.heading")}</h2>
                 <p className="text-muted-foreground mt-2 text-sm">
-                  Enter your email address and we'll send you a link to reset your password.
+                  {t("forgotPassword.description")}
                 </p>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email Address</Label>
+                  <Label htmlFor="email">{t("forgotPassword.emailLabel")}</Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                     <Input
@@ -172,7 +174,7 @@ const ForgotPassword = () => {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       className="pl-10 h-12"
-                      placeholder="Enter your email"
+                      placeholder={t("forgotPassword.emailPlaceholder")}
                       autoComplete="email"
                     />
                   </div>
@@ -186,10 +188,10 @@ const ForgotPassword = () => {
                   {isLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Sending...
+                      {t("forgotPassword.sending")}
                     </>
                   ) : (
-                    "Send Reset Link"
+                    t("forgotPassword.sendResetLink")
                   )}
                 </Button>
               </form>
