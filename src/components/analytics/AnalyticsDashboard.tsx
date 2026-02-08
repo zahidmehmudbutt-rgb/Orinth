@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -73,6 +74,7 @@ interface ClassComparisonData {
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8", "#82ca9d"];
 
 export default function AnalyticsDashboard({ schoolId, role, classId }: AnalyticsDashboardProps) {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [timeRange, setTimeRange] = useState("30");
   const [selectedClass, setSelectedClass] = useState(classId || "all");
@@ -377,7 +379,7 @@ export default function AnalyticsDashboard({ schoolId, role, classId }: Analytic
             {trend !== undefined && trend !== 0 && (
               <div className={`flex items-center text-sm ${trend > 0 ? "text-success" : "text-destructive"}`}>
                 {trend > 0 ? <TrendingUp className="h-4 w-4 mr-1" /> : <TrendingDown className="h-4 w-4 mr-1" />}
-                {Math.abs(trend)}% from last period
+                {trend > 0 ? t("analyticsShared.trendUp", { value: Math.abs(trend) }) : t("analyticsShared.trendDown", { value: Math.abs(trend) })}
               </div>
             )}
           </div>
@@ -414,23 +416,23 @@ export default function AnalyticsDashboard({ schoolId, role, classId }: Analytic
       <div className="flex flex-wrap gap-4">
         <Select value={timeRange} onValueChange={setTimeRange}>
           <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Time Range" />
+            <SelectValue placeholder={t("analyticsShared.timeRange")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="7">Last 7 days</SelectItem>
-            <SelectItem value="30">Last 30 days</SelectItem>
-            <SelectItem value="90">Last 3 months</SelectItem>
-            <SelectItem value="365">Last year</SelectItem>
+            <SelectItem value="7">{t("analyticsShared.last7Days")}</SelectItem>
+            <SelectItem value="30">{t("analyticsShared.last30Days")}</SelectItem>
+            <SelectItem value="90">{t("analyticsShared.last3Months")}</SelectItem>
+            <SelectItem value="365">{t("analyticsShared.lastYear")}</SelectItem>
           </SelectContent>
         </Select>
 
         {role !== "class_teacher" && (
           <Select value={selectedClass} onValueChange={setSelectedClass}>
             <SelectTrigger className="w-[200px]">
-              <SelectValue placeholder="Select Class" />
+              <SelectValue placeholder={t("analyticsShared.selectClass")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Classes</SelectItem>
+              <SelectItem value="all">{t("analyticsShared.allClasses")}</SelectItem>
               {classes.map((cls) => (
                 <SelectItem key={cls.id} value={cls.id}>
                   {cls.name} {cls.section}
@@ -444,25 +446,25 @@ export default function AnalyticsDashboard({ schoolId, role, classId }: Analytic
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
-          title="Total Students"
+          title={t("analyticsShared.totalStudents")}
           value={stats.totalStudents}
           icon={Users}
         />
         <StatCard
-          title="Average Attendance"
+          title={t("analyticsShared.avgAttendance")}
           value={stats.avgAttendance}
           suffix="%"
           trend={stats.attendanceTrend}
           icon={Calendar}
         />
         <StatCard
-          title="Average Marks"
+          title={t("analyticsShared.avgMarks")}
           value={stats.avgMarks}
           suffix="%"
           icon={BookOpen}
         />
         <StatCard
-          title="Top Performers (90%+)"
+          title={t("analyticsShared.topPerformers")}
           value={stats.topPerformers}
           icon={Award}
         />
@@ -473,16 +475,16 @@ export default function AnalyticsDashboard({ schoolId, role, classId }: Analytic
         <TabsList>
           <TabsTrigger value="attendance" className="flex items-center gap-2">
             <Activity className="h-4 w-4" />
-            Attendance
+            {t("analyticsShared.attendanceTab")}
           </TabsTrigger>
           <TabsTrigger value="marks" className="flex items-center gap-2">
             <BarChart3 className="h-4 w-4" />
-            Marks Analysis
+            {t("analyticsShared.marksAnalysis")}
           </TabsTrigger>
           {role !== "class_teacher" && (
             <TabsTrigger value="comparison" className="flex items-center gap-2">
               <PieChartIcon className="h-4 w-4" />
-              Class Comparison
+              {t("analyticsShared.classComparison")}
             </TabsTrigger>
           )}
         </TabsList>
@@ -492,8 +494,8 @@ export default function AnalyticsDashboard({ schoolId, role, classId }: Analytic
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <Card>
               <CardHeader>
-                <CardTitle>Attendance Trend</CardTitle>
-                <CardDescription>Daily attendance percentage over time</CardDescription>
+                <CardTitle>{t("analyticsShared.attendanceTrend")}</CardTitle>
+                <CardDescription>{t("analyticsShared.attendanceTrendDesc")}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="h-[300px]">
@@ -509,7 +511,7 @@ export default function AnalyticsDashboard({ schoolId, role, classId }: Analytic
                         stroke="#0088FE"
                         fill="#0088FE"
                         fillOpacity={0.3}
-                        name="Attendance %"
+                        name={t("analyticsShared.attendancePercent")}
                       />
                     </AreaChart>
                   </ResponsiveContainer>
@@ -519,8 +521,8 @@ export default function AnalyticsDashboard({ schoolId, role, classId }: Analytic
 
             <Card>
               <CardHeader>
-                <CardTitle>Present vs Absent</CardTitle>
-                <CardDescription>Daily breakdown of attendance</CardDescription>
+                <CardTitle>{t("analyticsShared.presentVsAbsent")}</CardTitle>
+                <CardDescription>{t("analyticsShared.presentVsAbsentDesc")}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="h-[300px]">
@@ -531,8 +533,8 @@ export default function AnalyticsDashboard({ schoolId, role, classId }: Analytic
                       <YAxis tick={{ fontSize: 12 }} />
                       <Tooltip />
                       <Legend />
-                      <Bar dataKey="present" fill="#00C49F" name="Present" stackId="a" />
-                      <Bar dataKey="absent" fill="#FF8042" name="Absent" stackId="a" />
+                      <Bar dataKey="present" fill="#00C49F" name={t("analyticsShared.present")} stackId="a" />
+                      <Bar dataKey="absent" fill="#FF8042" name={t("analyticsShared.absent")} stackId="a" />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -546,8 +548,8 @@ export default function AnalyticsDashboard({ schoolId, role, classId }: Analytic
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <Card>
               <CardHeader>
-                <CardTitle>Marks Distribution</CardTitle>
-                <CardDescription>Student performance categories</CardDescription>
+                <CardTitle>{t("analyticsShared.marksDistribution")}</CardTitle>
+                <CardDescription>{t("analyticsShared.marksDistributionDesc")}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="h-[300px]">
@@ -581,8 +583,8 @@ export default function AnalyticsDashboard({ schoolId, role, classId }: Analytic
 
             <Card>
               <CardHeader>
-                <CardTitle>Subject-wise Performance</CardTitle>
-                <CardDescription>Average marks by subject</CardDescription>
+                <CardTitle>{t("analyticsShared.subjectPerformance")}</CardTitle>
+                <CardDescription>{t("analyticsShared.subjectPerformanceDesc")}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="h-[300px]">
@@ -592,7 +594,7 @@ export default function AnalyticsDashboard({ schoolId, role, classId }: Analytic
                       <XAxis type="number" domain={[0, 100]} tick={{ fontSize: 12 }} />
                       <YAxis dataKey="subject" type="category" tick={{ fontSize: 12 }} width={80} />
                       <Tooltip />
-                      <Bar dataKey="average" fill="#8884d8" name="Average %" />
+                      <Bar dataKey="average" fill="#8884d8" name={t("analyticsShared.averagePercent")} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -606,8 +608,8 @@ export default function AnalyticsDashboard({ schoolId, role, classId }: Analytic
           <TabsContent value="comparison" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>Class Performance Comparison</CardTitle>
-                <CardDescription>Attendance and marks comparison across classes</CardDescription>
+                <CardTitle>{t("analyticsShared.classPerformance")}</CardTitle>
+                <CardDescription>{t("analyticsShared.classPerformanceDesc")}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="h-[400px]">
@@ -618,8 +620,8 @@ export default function AnalyticsDashboard({ schoolId, role, classId }: Analytic
                       <YAxis domain={[0, 100]} tick={{ fontSize: 12 }} />
                       <Tooltip />
                       <Legend />
-                      <Bar dataKey="attendance" fill="#0088FE" name="Attendance %" />
-                      <Bar dataKey="marks" fill="#00C49F" name="Avg Marks %" />
+                      <Bar dataKey="attendance" fill="#0088FE" name={t("analyticsShared.attendancePercent")} />
+                      <Bar dataKey="marks" fill="#00C49F" name={t("analyticsShared.avgMarksPercent")} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>

@@ -4,37 +4,12 @@ import { FadeInView } from "@/components/ui/motion-wrapper";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 
-const testimonials = [
-  {
-    name: "Ayesha Khan",
-    role: "Parent",
-    text: "I can now track my son's attendance and homework from my phone. The instant notifications when he's absent have been a lifesaver. No more surprises at parent-teacher meetings!",
-    rating: 5,
-  },
-  {
-    name: "Mohammad Usman",
-    role: "Teacher",
-    text: "Uploading homework and entering marks used to take hours with paper registers. Now I do it in minutes. The system is simple enough that even less tech-savvy colleagues picked it up quickly.",
-    rating: 5,
-  },
-  {
-    name: "Fatima Riaz",
-    role: "Principal",
-    text: "Having all school data in one dashboard has transformed how I oversee operations. Attendance trends, exam results, teacher performance - everything is just a click away.",
-    rating: 5,
-  },
-  {
-    name: "Ali Ahmed",
-    role: "Student",
-    text: "I love checking my marks and attendance online. The result cards look great and I can download them anytime. It's way better than waiting for paper reports.",
-    rating: 4,
-  },
-  {
-    name: "Saima Nazir",
-    role: "Coordinator",
-    text: "Managing multiple class teachers and tracking section performance used to be chaotic. This platform gave us real structure and visibility into every classroom.",
-    rating: 5,
-  },
+const testimonialConfigs = [
+  { name: "Ayesha Khan", roleKey: "testimonials.item1Role", textKey: "testimonials.item1Text", rating: 5 },
+  { name: "Mohammad Usman", roleKey: "testimonials.item2Role", textKey: "testimonials.item2Text", rating: 5 },
+  { name: "Fatima Riaz", roleKey: "testimonials.item3Role", textKey: "testimonials.item3Text", rating: 5 },
+  { name: "Ali Ahmed", roleKey: "testimonials.item4Role", textKey: "testimonials.item4Text", rating: 4 },
+  { name: "Saima Nazir", roleKey: "testimonials.item5Role", textKey: "testimonials.item5Text", rating: 5 },
 ];
 
 export const Testimonials = () => {
@@ -45,7 +20,7 @@ export const Testimonials = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       setDirection(1);
-      setCurrent((prev) => (prev + 1) % testimonials.length);
+      setCurrent((prev) => (prev + 1) % testimonialConfigs.length);
     }, 6000);
     return () => clearInterval(timer);
   }, []);
@@ -57,15 +32,15 @@ export const Testimonials = () => {
 
   const prev = () => {
     setDirection(-1);
-    setCurrent((c) => (c - 1 + testimonials.length) % testimonials.length);
+    setCurrent((c) => (c - 1 + testimonialConfigs.length) % testimonialConfigs.length);
   };
 
   const next = () => {
     setDirection(1);
-    setCurrent((c) => (c + 1) % testimonials.length);
+    setCurrent((c) => (c + 1) % testimonialConfigs.length);
   };
 
-  const item = testimonials[current];
+  const item = testimonialConfigs[current];
 
   return (
     <section className="py-20 bg-gradient-hero relative overflow-hidden">
@@ -114,12 +89,12 @@ export const Testimonials = () => {
                 </div>
 
                 <blockquote className="text-foreground text-lg leading-relaxed mb-6 italic">
-                  "{item.text}"
+                  "{t(item.textKey)}"
                 </blockquote>
 
                 <div>
                   <p className="font-semibold text-foreground">{item.name}</p>
-                  <p className="text-sm text-primary font-medium">{item.role}</p>
+                  <p className="text-sm text-primary font-medium">{t(item.roleKey)}</p>
                 </div>
               </motion.div>
             </AnimatePresence>
@@ -143,7 +118,7 @@ export const Testimonials = () => {
 
           {/* Dots */}
           <div className="flex items-center justify-center gap-2 mt-6">
-            {testimonials.map((_, i) => (
+            {testimonialConfigs.map((_, i) => (
               <button
                 key={i}
                 onClick={() => goTo(i)}

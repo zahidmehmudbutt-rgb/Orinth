@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -43,6 +44,7 @@ const priorityColors: Record<string, string> = {
 };
 
 export default function AnnouncementManager({ schoolId }: AnnouncementManagerProps) {
+  const { t } = useTranslation();
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -83,15 +85,15 @@ export default function AnnouncementManager({ schoolId }: AnnouncementManagerPro
 
       setAnnouncements(announcements.filter(a => a.id !== deleteId));
       toast({
-        title: "Announcement Deleted",
-        description: "The announcement has been removed.",
+        title: t("announcements.deleted"),
+        description: t("announcements.deletedDesc"),
       });
     } catch (error) {
       if (import.meta.env.DEV) console.error("Error deleting announcement:", error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Could not delete the announcement. Check your connection and try again.",
+        title: t("announcements.error"),
+        description: t("announcements.deleteFailed"),
       });
     } finally {
       setDeleteId(null);
@@ -112,8 +114,8 @@ export default function AnnouncementManager({ schoolId }: AnnouncementManagerPro
       ));
 
       toast({
-        title: currentPinned ? "Unpinned" : "Pinned",
-        description: `Announcement has been ${currentPinned ? "unpinned" : "pinned"}.`,
+        title: currentPinned ? t("announcements.unpinned") : t("announcements.pinned"),
+        description: t("announcements.pinnedDesc", { action: currentPinned ? "unpinned" : "pinned" }),
       });
     } catch (error) {
       if (import.meta.env.DEV) console.error("Error toggling pin:", error);
@@ -121,7 +123,7 @@ export default function AnnouncementManager({ schoolId }: AnnouncementManagerPro
   };
 
   const formatAudience = (audience: string[]) => {
-    if (audience.includes("all")) return "Everyone";
+    if (audience.includes("all")) return t("announcements.everyone");
     return audience.map(a => a.replaceAll("_", " ")).join(", ");
   };
 
@@ -130,7 +132,7 @@ export default function AnnouncementManager({ schoolId }: AnnouncementManagerPro
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="flex items-center gap-2">
           <Megaphone className="h-5 w-5" />
-          Manage Announcements
+          {t("announcements.manageTitle")}
         </CardTitle>
         <CreateAnnouncement schoolId={schoolId} onCreated={fetchAnnouncements} />
       </CardHeader>
@@ -147,8 +149,8 @@ export default function AnnouncementManager({ schoolId }: AnnouncementManagerPro
         ) : announcements.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
             <Megaphone className="h-12 w-12 mx-auto mb-3 opacity-50" />
-            <p>No announcements yet</p>
-            <p className="text-sm">Create your first announcement to get started.</p>
+            <p>{t("announcements.empty")}</p>
+            <p className="text-sm">{t("announcements.emptyDesc")}</p>
           </div>
         ) : (
           <ScrollArea className="h-[500px]">
@@ -185,7 +187,7 @@ export default function AnnouncementManager({ schoolId }: AnnouncementManagerPro
                         </span>
                         {announcement.expires_at && (
                           <span className="text-warning">
-                            Expires: {format(new Date(announcement.expires_at), "PP")}
+                            {t("announcements.expiresLabel", { date: format(new Date(announcement.expires_at), "PP") })}
                           </span>
                         )}
                       </div>
@@ -219,15 +221,15 @@ export default function AnnouncementManager({ schoolId }: AnnouncementManagerPro
       <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Announcement?</AlertDialogTitle>
+            <AlertDialogTitle>{t("announcements.deleteTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. The announcement will be permanently removed.
+              {t("announcements.deleteDesc")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("announcements.cancel")}</AlertDialogCancel>
             <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground">
-              Delete
+              {t("announcements.delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

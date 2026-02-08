@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Save, Upload, ExternalLink, Palette } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -71,6 +72,7 @@ function saveExtendedSettings(schoolId: string, settings: ExtendedSettings): voi
 }
 
 export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProps) {
+  const { t } = useTranslation();
   const [settings, setSettings] = useState<SchoolSettings | null>(null);
   const [extended, setExtended] = useState<ExtendedSettings>(loadExtendedSettings(schoolId));
   const [isLoading, setIsLoading] = useState(true);
@@ -97,8 +99,8 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
       if (import.meta.env.DEV) console.error("Error fetching settings:", error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Could not load school settings. Check your connection and refresh.",
+        title: t("schoolSettings.error"),
+        description: t("schoolSettings.loadError"),
       });
     } finally {
       setIsLoading(false);
@@ -124,8 +126,8 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
     if (file.size > maxSize) {
       toast({
         variant: "destructive",
-        title: "File Too Large",
-        description: "Logo must be less than 2MB.",
+        title: t("schoolSettings.fileTooLarge"),
+        description: t("schoolSettings.fileTooLargeDesc"),
       });
       return;
     }
@@ -133,8 +135,8 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
     if (!allowedTypes.includes(file.type)) {
       toast({
         variant: "destructive",
-        title: "Invalid File Type",
-        description: "Please upload a JPG, PNG, GIF, or WebP image.",
+        title: t("schoolSettings.invalidFileType"),
+        description: t("schoolSettings.invalidFileTypeDesc"),
       });
       return;
     }
@@ -158,15 +160,15 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
       setSettings({ ...settings, logo_url: urlData.publicUrl });
 
       toast({
-        title: "Logo Uploaded",
-        description: "School logo has been uploaded successfully.",
+        title: t("schoolSettings.logoUploaded"),
+        description: t("schoolSettings.logoUploadedDesc"),
       });
     } catch (error) {
       if (import.meta.env.DEV) console.error("Upload error:", error);
       toast({
         variant: "destructive",
-        title: "Upload Failed",
-        description: "Could not upload the logo. Ensure the file is a valid image under 2MB.",
+        title: t("schoolSettings.uploadFailed"),
+        description: t("schoolSettings.uploadFailedDesc"),
       });
     } finally {
       setIsUploading(false);
@@ -196,8 +198,8 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
       saveExtendedSettings(schoolId, extended);
 
       toast({
-        title: "Settings Saved",
-        description: "School settings have been updated successfully.",
+        title: t("schoolSettings.saved"),
+        description: t("schoolSettings.savedDesc"),
       });
 
       onSaved?.();
@@ -205,8 +207,8 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
       if (import.meta.env.DEV) console.error("Save error:", error);
       toast({
         variant: "destructive",
-        title: "Save Failed",
-        description: "Could not save settings. Check your connection and try again.",
+        title: t("schoolSettings.saveFailed"),
+        description: t("schoolSettings.saveFailedDesc"),
       });
     } finally {
       setIsSaving(false);
@@ -223,7 +225,7 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
       <div className="flex items-center justify-center p-8">
         <div className="text-center">
           <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-          <p className="text-sm text-muted-foreground">Loading settings...</p>
+          <p className="text-sm text-muted-foreground">{t("schoolSettings.loading")}</p>
         </div>
       </div>
     );
@@ -232,7 +234,7 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
   if (!settings) {
     return (
       <div className="text-center p-8 text-muted-foreground">
-        Could not load settings. Please refresh the page.
+        {t("schoolSettings.loadFailed")}
       </div>
     );
   }
@@ -244,15 +246,15 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
         <CardContent className="pt-6">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <p className="font-medium text-foreground">Your School's Public Page</p>
-              <p className="text-sm text-muted-foreground">Share this link with prospective students and parents</p>
+              <p className="font-medium text-foreground">{t("schoolSettings.publicPage")}</p>
+              <p className="text-sm text-muted-foreground">{t("schoolSettings.publicPageDesc")}</p>
             </div>
             <Button
               variant="outline"
               onClick={() => window.open(getPublicPageUrl(), "_blank")}
             >
               <ExternalLink className="w-4 h-4 mr-2" />
-              View Page
+              {t("schoolSettings.viewPage")}
             </Button>
           </div>
           <div className="mt-3 p-2 bg-background rounded border text-sm font-mono text-muted-foreground break-all">
@@ -264,27 +266,27 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
       {/* Basic Information */}
       <Card>
         <CardHeader>
-          <CardTitle>Basic Information</CardTitle>
-          <CardDescription>General school information displayed on your public page</CardDescription>
+          <CardTitle>{t("schoolSettings.basicInfo")}</CardTitle>
+          <CardDescription>{t("schoolSettings.basicInfoDesc")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="name">School Name</Label>
+              <Label htmlFor="name">{t("schoolSettings.schoolName")}</Label>
               <Input
                 id="name"
                 value={settings.name}
                 disabled
                 className="bg-muted"
               />
-              <p className="text-xs text-muted-foreground mt-1">School name cannot be changed from settings</p>
+              <p className="text-xs text-muted-foreground mt-1">{t("schoolSettings.schoolNameDisabled")}</p>
             </div>
             <div>
-              <Label htmlFor="established_year">Established Year</Label>
+              <Label htmlFor="established_year">{t("schoolSettings.establishedYear")}</Label>
               <Input
                 id="established_year"
                 type="number"
-                placeholder="e.g., 1995"
+                placeholder={t("schoolSettings.establishedYearPlaceholder")}
                 value={extended.established_year || ""}
                 onChange={(e) => handleExtendedChange("established_year", e.target.value ? parseInt(e.target.value) : null)}
               />
@@ -292,20 +294,20 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
           </div>
 
           <div>
-            <Label htmlFor="motto">School Motto</Label>
+            <Label htmlFor="motto">{t("schoolSettings.motto")}</Label>
             <Input
               id="motto"
-              placeholder="e.g., Excellence in Education"
+              placeholder={t("schoolSettings.mottoPlaceholder")}
               value={extended.motto || ""}
               onChange={(e) => handleExtendedChange("motto", e.target.value || null)}
             />
           </div>
 
           <div>
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">{t("schoolSettings.description")}</Label>
             <Textarea
               id="description"
-              placeholder="Tell visitors about your school..."
+              placeholder={t("schoolSettings.descriptionPlaceholder")}
               rows={4}
               value={extended.description || ""}
               onChange={(e) => handleExtendedChange("description", e.target.value || null)}
@@ -317,15 +319,15 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
       {/* Contact Information */}
       <Card>
         <CardHeader>
-          <CardTitle>Contact Information</CardTitle>
-          <CardDescription>How visitors can reach your school</CardDescription>
+          <CardTitle>{t("schoolSettings.contactInfo")}</CardTitle>
+          <CardDescription>{t("schoolSettings.contactInfoDesc")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <Label htmlFor="address">Address</Label>
+            <Label htmlFor="address">{t("schoolSettings.address")}</Label>
             <Textarea
               id="address"
-              placeholder="Full school address"
+              placeholder={t("schoolSettings.addressPlaceholder")}
               rows={2}
               value={settings.address || ""}
               onChange={(e) => handleChange("address", e.target.value || null)}
@@ -334,21 +336,21 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
 
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="phone">Phone Number</Label>
+              <Label htmlFor="phone">{t("schoolSettings.phone")}</Label>
               <Input
                 id="phone"
                 type="tel"
-                placeholder="+92 300 1234567"
+                placeholder={t("schoolSettings.phonePlaceholder")}
                 value={settings.phone || ""}
                 onChange={(e) => handleChange("phone", e.target.value || null)}
               />
             </div>
             <div>
-              <Label htmlFor="email">Email Address</Label>
+              <Label htmlFor="email">{t("schoolSettings.email")}</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="info@school.edu.pk"
+                placeholder={t("schoolSettings.emailPlaceholder")}
                 value={settings.email || ""}
                 onChange={(e) => handleChange("email", e.target.value || null)}
               />
@@ -356,11 +358,11 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
           </div>
 
           <div>
-            <Label htmlFor="website">Website URL</Label>
+            <Label htmlFor="website">{t("schoolSettings.website")}</Label>
             <Input
               id="website"
               type="url"
-              placeholder="https://www.school.edu.pk"
+              placeholder={t("schoolSettings.websitePlaceholder")}
               value={extended.website || ""}
               onChange={(e) => handleExtendedChange("website", e.target.value || null)}
             />
@@ -371,13 +373,13 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
       {/* Branding */}
       <Card>
         <CardHeader>
-          <CardTitle>Branding</CardTitle>
-          <CardDescription>Customize the look of your public page</CardDescription>
+          <CardTitle>{t("schoolSettings.branding")}</CardTitle>
+          <CardDescription>{t("schoolSettings.brandingDesc")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Logo Upload */}
           <div>
-            <Label>School Logo</Label>
+            <Label>{t("schoolSettings.logo")}</Label>
             <div className="flex items-center gap-4 mt-2">
               {settings.logo_url ? (
                 <img
@@ -403,9 +405,9 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
                   onClick={() => document.getElementById("logo-upload")?.click()}
                   disabled={isUploading}
                 >
-                  {isUploading ? "Uploading..." : "Upload Logo"}
+                  {isUploading ? t("schoolSettings.uploading") : t("schoolSettings.uploadLogo")}
                 </Button>
-                <p className="text-xs text-muted-foreground mt-1">JPG, PNG, GIF, or WebP. Max 2MB.</p>
+                <p className="text-xs text-muted-foreground mt-1">{t("schoolSettings.logoHelp")}</p>
               </div>
             </div>
           </div>
@@ -414,7 +416,7 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
           <div>
             <Label className="flex items-center gap-2">
               <Palette className="w-4 h-4" />
-              Primary Color
+              {t("schoolSettings.primaryColor")}
             </Label>
             <div className="flex flex-wrap gap-2 mt-2">
               {colorPresets.map((color) => (
@@ -437,7 +439,7 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
                   onChange={(e) => handleExtendedChange("primary_color", e.target.value)}
                   className="w-10 h-10 p-1 cursor-pointer"
                 />
-                <span className="text-sm text-muted-foreground">Custom</span>
+                <span className="text-sm text-muted-foreground">{t("schoolSettings.custom")}</span>
               </div>
             </div>
           </div>
@@ -453,7 +455,7 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
           className="px-8"
         >
           <Save className="w-4 h-4 mr-2" />
-          Save Settings
+          {t("schoolSettings.saveButton")}
         </LoadingButton>
       </div>
     </div>
