@@ -72,7 +72,7 @@ export function PerformanceTrends({ examResults, attendanceData, className }: Pe
   // --- Overall stats ---
   const totalObtained = graded.reduce((sum, r) => sum + r.marksObtained!, 0);
   const totalMax = graded.reduce((sum, r) => sum + r.maxMarks, 0);
-  const overallPercentage = Math.round((totalObtained / totalMax) * 100);
+  const overallPercentage = totalMax > 0 ? Math.round((totalObtained / totalMax) * 100) : 0;
 
   return (
     <div className={className}>
