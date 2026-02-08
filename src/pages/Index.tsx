@@ -42,56 +42,7 @@ interface Stats {
   schools: number;
 }
 
-const faqs = [
-  {
-    q: "I can't login - it says 'Invalid credentials' or 'Student ID not found'",
-    a: "Make sure you're using the correct portal for your role (e.g., students should use Student Portal, not Teacher Portal). Double-check your Student ID or email for typos. If you're a new user, your account may not be set up yet - contact your class teacher or school office.",
-  },
-  {
-    q: "How do I reset my password if I forgot it?",
-    a: "Click 'Forgot Password?' on any login page. Enter your registered email address and you'll receive a reset link. Check your spam folder if you don't see it. The link expires after 1 hour, so use it promptly. If you never received initial credentials, contact your school administration.",
-  },
-  {
-    q: "My homework file won't upload - what should I do?",
-    a: "Check that your file is under 10MB and in an accepted format (PDF, Word documents, or images like JPG/PNG). If your file is too large, try compressing it or converting to PDF. Make sure you have a stable internet connection and try again.",
-  },
-  {
-    q: "I submitted homework but my teacher says they don't see it",
-    a: "The upload may not have completed successfully. Go back to the homework section, check if it shows 'Submitted' status, and try re-uploading if needed. Ask your teacher to refresh their page. If the problem persists, contact your class teacher.",
-  },
-  {
-    q: "Why can't I see my marks or attendance?",
-    a: "Your class teacher needs to add you to subjects and mark your attendance first. If you're newly enrolled, wait for your class teacher to complete the setup. If you've been a student for a while and still see no data, contact your class teacher to verify your enrollment.",
-  },
-  {
-    q: "As a parent, how do I link my account to my child?",
-    a: "Parent-student linking is done by the school administration. Contact the school office with your child's name and class to have them link your accounts. Once linked, you'll see your child's information automatically when you login.",
-  },
-  {
-    q: "The page shows 'Network Error' or won't load properly",
-    a: "Check your internet connection and try refreshing the page. If the problem continues, try clearing your browser cache or using a different browser. Wait a few minutes and try again - the server may be temporarily busy.",
-  },
-  {
-    q: "I'm getting 'Access Denied' even with correct login",
-    a: "This means your account exists but doesn't have the required role. Make sure you're using the correct portal for your role. If you recently changed roles (e.g., became a class teacher), contact school administration to update your permissions.",
-  },
-  {
-    q: "How do I change my password after logging in?",
-    a: "Go to your Account Settings (usually accessible from the profile menu or settings icon). Select 'Change Password', enter your current password, then your new password twice. Your new password must be at least 8 characters with uppercase, lowercase, numbers, and special characters.",
-  },
-  {
-    q: "Why is my attendance showing incorrectly?",
-    a: "Attendance is marked daily by your class teacher. If you believe there's an error, contact your class teacher directly - they can review and correct attendance records. Keep track of dates you were present in case verification is needed.",
-  },
-  {
-    q: "Can I print my result card?",
-    a: "Yes! Go to the 'Yearly Results' or 'Result Card' section in your dashboard. Click the 'Print Result Card' button to generate a printable version. You can print it directly or save as PDF for your records.",
-  },
-  {
-    q: "As a teacher, why can't I mark attendance?",
-    a: "Only Class Teachers can mark attendance, not subject teachers. If you're a subject teacher and need attendance for your class, ask the assigned class teacher for that information. If you should be a class teacher, contact your coordinator to update your role.",
-  },
-];
+const FAQ_COUNT = 12;
 
 const Index = () => {
   const { t } = useTranslation();
@@ -99,6 +50,11 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [showAllFaqs, setShowAllFaqs] = useState(false);
+
+  const faqs = Array.from({ length: FAQ_COUNT }, (_, i) => ({
+    q: t(`landing.faq${i + 1}q`),
+    a: t(`landing.faq${i + 1}a`),
+  }));
 
   useEffect(() => {
     fetchStats();

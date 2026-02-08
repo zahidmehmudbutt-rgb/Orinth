@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { GraduationCap, Lock, Loader2, CheckCircle, Eye, EyeOff, ArrowLeft, KeyRound, Shield } from "lucide-react";
 import { FadeIn } from "@/components/ui/motion-wrapper";
+import { validateNewPassword } from "@/lib/validation";
 
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
@@ -49,8 +50,9 @@ const ResetPassword = () => {
       return;
     }
 
-    if (password.length < 8) {
-      toast({ variant: "destructive", title: t("resetPassword.validationError"), description: t("resetPassword.passwordMin8") });
+    const passwordValidation = validateNewPassword(password);
+    if (!passwordValidation.valid) {
+      toast({ variant: "destructive", title: t("resetPassword.validationError"), description: passwordValidation.error || t("resetPassword.passwordMin8") });
       return;
     }
 
