@@ -264,7 +264,7 @@ export default function TwoFactorAuth() {
                   <p className="text-sm text-muted-foreground">
                     {t("twoFactor.isEnabledDesc")}
                     {settings.last_used_at && (
-                      <> Last used: {new Date(settings.last_used_at).toLocaleDateString()}</>
+                      <> {t("twoFactor.lastUsed", { date: new Date(settings.last_used_at).toLocaleDateString() })}</>
                     )}
                   </p>
                 </div>

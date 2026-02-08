@@ -55,9 +55,9 @@ const ProtectedRoute = ({ children, requiredRole, redirectTo }: ProtectedRoutePr
       // If logged in but doesn't have the required role
       if (!hasRequiredRole) {
         // For security, sign them out if trying to access wrong role's dashboard
-        supabase.auth.signOut().then(() => {
-          navigate(loginPage, { replace: true });
-        });
+        supabase.auth.signOut()
+          .then(() => navigate(loginPage, { replace: true }))
+          .catch(() => navigate(loginPage, { replace: true }));
       }
     }
   }, [loading, user, hasRequiredRole, navigate, loginPage]);

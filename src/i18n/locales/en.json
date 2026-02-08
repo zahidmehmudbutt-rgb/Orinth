@@ -1315,5 +1315,8 @@
     "enableDesc": "This will allow users to access this school again.",
     "principal": "Principal",
     "error": "Error"
+  },
+  "homeworkCalendar": {
+    "homeworkFor": "Homework for {{date}}"
   }
 }

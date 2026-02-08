@@ -1315,5 +1315,8 @@
     "enableDesc": "یہ صارفین کو اس اسکول تک رسائی دوبارہ دے گا۔",
     "principal": "پرنسپل",
     "error": "خرابی"
+  },
+  "homeworkCalendar": {
+    "homeworkFor": "{{date}} کا ہوم ورک"
   }
 }

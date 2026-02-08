@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, BookOpen, CheckCircle, AlertCircle, Clock } 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 interface HomeworkItem {
   id: string;
@@ -19,9 +20,11 @@ interface HomeworkCalendarProps {
 }
 
 export function HomeworkCalendar({ homework, onSelectDate, onSelectHomework }: HomeworkCalendarProps) {
+  const { t, i18n } = useTranslation();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
+  const locale = i18n.language === "ur" ? "ur-PK" : "en-US";
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
 
@@ -30,12 +33,13 @@ export function HomeworkCalendar({ homework, onSelectDate, onSelectHomework }: H
   const startingDayOfWeek = firstDayOfMonth.getDay();
   const daysInMonth = lastDayOfMonth.getDate();
 
-  const monthNames = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-  ];
+  const monthNames = Array.from({ length: 12 }, (_, i) =>
+    new Date(2024, i, 1).toLocaleDateString(locale, { month: "long" })
+  );
 
-  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const dayNames = Array.from({ length: 7 }, (_, i) =>
+    new Date(2024, 0, i).toLocaleDateString(locale, { weekday: "short" })
+  );
 
   const prevMonth = () => {
     setCurrentDate(new Date(year, month - 1, 1));
@@ -212,7 +216,7 @@ export function HomeworkCalendar({ homework, onSelectDate, onSelectHomework }: H
         <div className="border rounded-lg p-4 bg-card space-y-3">
           <h4 className="font-medium text-foreground flex items-center gap-2">
             <BookOpen className="w-4 h-4 text-primary" />
-            Homework for {selectedDate.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+            {t("homeworkCalendar.homeworkFor", { date: selectedDate.toLocaleDateString(locale, { month: "short", day: "numeric" }) })}
           </h4>
           <div className="space-y-2">
             {selectedDateHomework.map((hw) => (
