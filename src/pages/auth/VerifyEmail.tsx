@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,6 +13,7 @@ const VerifyEmail = () => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
@@ -33,11 +35,11 @@ const VerifyEmail = () => {
 
         setIsSuccess(true);
         toast({
-          title: "Email Verified",
-          description: "Your email has been successfully verified.",
+          title: t("verifyEmail.emailVerified"),
+          description: t("verifyEmail.emailVerifiedDesc"),
         });
       } else {
-        setError("Could not verify your email. The link may have expired — request a new one.");
+        setError(t("verifyEmail.verifyError"));
       }
 
       setIsVerifying(false);
@@ -60,7 +62,7 @@ const VerifyEmail = () => {
         <div className="floating-shapes"><div className="floating-shape" /><div className="floating-shape" /><div className="floating-shape" /></div>
         <div className="text-center relative z-10">
           <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto mb-4" />
-          <p className="text-muted-foreground">Verifying your email...</p>
+          <p className="text-muted-foreground">{t("verifyEmail.verifying")}</p>
         </div>
       </div>
     );
@@ -76,15 +78,15 @@ const VerifyEmail = () => {
               <div className="inline-flex items-center justify-center w-16 h-16 bg-success/10 rounded-full mb-6">
                 <CheckCircle className="w-8 h-8 text-success" />
               </div>
-              <h1 className="text-2xl font-bold text-foreground mb-3">Email Verified!</h1>
+              <h1 className="text-2xl font-bold text-foreground mb-3">{t("verifyEmail.successTitle")}</h1>
               <p className="text-muted-foreground mb-6">
-                Your email has been successfully verified. You can now access all features of your account.
+                {t("verifyEmail.successDesc")}
               </p>
               <Button
                 onClick={() => navigate("/")}
                 className="w-full bg-gradient-primary text-white shadow-button"
               >
-                Go to Home
+                {t("verifyEmail.goHome")}
               </Button>
             </>
           ) : (
@@ -92,15 +94,15 @@ const VerifyEmail = () => {
               <div className="inline-flex items-center justify-center w-16 h-16 bg-destructive/10 rounded-full mb-6">
                 <XCircle className="w-8 h-8 text-destructive" />
               </div>
-              <h1 className="text-2xl font-bold text-foreground mb-3">Verification Failed</h1>
+              <h1 className="text-2xl font-bold text-foreground mb-3">{t("verifyEmail.failedTitle")}</h1>
               <p className="text-muted-foreground mb-6">
-                {error || "We couldn't verify your email. The link may have expired."}
+                {error || t("verifyEmail.failedDefault")}
               </p>
               <Button
                 onClick={() => navigate("/")}
                 className="w-full bg-gradient-primary text-white shadow-button"
               >
-                Go to Home
+                {t("verifyEmail.goHome")}
               </Button>
             </>
           )}

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { Send, Paperclip, Image, X, Users, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,6 +40,7 @@ export function ChatRoom({ room, onBack }: ChatRoomProps) {
   const [members, setMembers] = useState<Array<{ user_id: string; role: string; full_name: string }>>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
   const channelRef = useRef<RealtimeChannel | null>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     loadCurrentUser();
@@ -158,7 +160,7 @@ export function ChatRoom({ room, onBack }: ChatRoomProps) {
           <div>
             <h2 className="font-semibold text-foreground">{room.name}</h2>
             <p className="text-xs text-muted-foreground">
-              {members.length} members
+              {t("chat.members", { count: members.length })}
             </p>
           </div>
         </div>
@@ -171,7 +173,7 @@ export function ChatRoom({ room, onBack }: ChatRoomProps) {
           </SheetTrigger>
           <SheetContent>
             <SheetHeader>
-              <SheetTitle>Group Members</SheetTitle>
+              <SheetTitle>{t("chat.groupMembers")}</SheetTitle>
             </SheetHeader>
             <ScrollArea className="h-[calc(100vh-100px)] mt-4">
               <div className="space-y-3">
@@ -210,13 +212,13 @@ export function ChatRoom({ room, onBack }: ChatRoomProps) {
       >
         {isLoading ? (
           <div className="flex items-center justify-center h-full">
-            <p className="text-muted-foreground">Loading messages...</p>
+            <p className="text-muted-foreground">{t("chat.loadingMessages")}</p>
           </div>
         ) : messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center">
-            <p className="text-muted-foreground">No messages yet</p>
+            <p className="text-muted-foreground">{t("chat.noMessages")}</p>
             <p className="text-sm text-muted-foreground">
-              Be the first to send a message!
+              {t("chat.beFirst")}
             </p>
           </div>
         ) : (
@@ -281,7 +283,7 @@ export function ChatRoom({ room, onBack }: ChatRoomProps) {
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="Type a message..."
+            placeholder={t("chat.typeMessage")}
             className="flex-1"
             disabled={isSending}
           />

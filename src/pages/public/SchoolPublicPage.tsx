@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   GraduationCap,
   MapPin,
@@ -47,6 +48,7 @@ const SchoolPublicPage = () => {
   const [stats, setStats] = useState<SchoolStats>({ totalStudents: 0, totalTeachers: 0, totalClasses: 0 });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (schoolSlug) {
@@ -80,7 +82,7 @@ const SchoolPublicPage = () => {
           .single();
 
         if (idError || !schoolById) {
-          setError("School not found");
+          setError(t("schoolPublicPage.schoolNotFound"));
           return;
         }
         setSchool(schoolById);
@@ -91,7 +93,7 @@ const SchoolPublicPage = () => {
       }
     } catch (err) {
       if (import.meta.env.DEV) console.error("Error fetching school:", err);
-      setError("Could not load school information. The page may not exist or check your connection.");
+      setError(t("schoolPublicPage.loadError"));
     } finally {
       setIsLoading(false);
     }
@@ -136,7 +138,7 @@ const SchoolPublicPage = () => {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading school information...</p>
+          <p className="text-muted-foreground">{t("schoolPublicPage.loading")}</p>
         </div>
       </div>
     );
@@ -148,12 +150,12 @@ const SchoolPublicPage = () => {
         <Card className="max-w-md mx-4">
           <CardContent className="pt-6 text-center">
             <School className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-            <h2 className="text-xl font-bold text-foreground mb-2">School Not Found</h2>
+            <h2 className="text-xl font-bold text-foreground mb-2">{t("schoolPublicPage.notFoundTitle")}</h2>
             <p className="text-muted-foreground mb-6">
-              The school you're looking for doesn't exist or is no longer active.
+              {t("schoolPublicPage.notFoundDesc")}
             </p>
             <Link to="/">
-              <Button>Return to Home</Button>
+              <Button>{t("notFound.backHome")}</Button>
             </Link>
           </CardContent>
         </Card>
@@ -184,7 +186,7 @@ const SchoolPublicPage = () => {
                 {school.name}
               </h1>
               <p className="text-lg opacity-90">
-                Welcome to our school portal
+                {t("schoolPublicPage.welcomePortal")}
               </p>
             </div>
           </div>
@@ -198,21 +200,21 @@ const SchoolPublicPage = () => {
             <CardContent className="pt-6">
               <Users className="w-8 h-8 mx-auto mb-2 text-primary" />
               <p className="text-2xl md:text-3xl font-bold text-foreground">{stats.totalStudents}</p>
-              <p className="text-sm text-muted-foreground">Students</p>
+              <p className="text-sm text-muted-foreground">{t("schoolPublicPage.students")}</p>
             </CardContent>
           </Card>
           <Card className="text-center">
             <CardContent className="pt-6">
               <BookOpen className="w-8 h-8 mx-auto mb-2 text-primary" />
               <p className="text-2xl md:text-3xl font-bold text-foreground">{stats.totalTeachers}</p>
-              <p className="text-sm text-muted-foreground">Teachers</p>
+              <p className="text-sm text-muted-foreground">{t("schoolPublicPage.teachers")}</p>
             </CardContent>
           </Card>
           <Card className="text-center">
             <CardContent className="pt-6">
               <Award className="w-8 h-8 mx-auto mb-2 text-primary" />
               <p className="text-2xl md:text-3xl font-bold text-foreground">{stats.totalClasses}</p>
-              <p className="text-sm text-muted-foreground">Classes</p>
+              <p className="text-sm text-muted-foreground">{t("schoolPublicPage.classes")}</p>
             </CardContent>
           </Card>
         </div>
@@ -228,13 +230,12 @@ const SchoolPublicPage = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <School className="w-5 h-5 text-primary" />
-                  About Our School
+                  {t("schoolPublicPage.aboutSchool")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground leading-relaxed">
-                  Welcome to {school.name}. We are committed to providing quality education
-                  and nurturing the next generation of leaders.
+                  {t("schoolPublicPage.aboutSchoolDesc", { name: school.name })}
                 </p>
               </CardContent>
             </Card>
@@ -244,13 +245,13 @@ const SchoolPublicPage = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Megaphone className="w-5 h-5 text-primary" />
-                  Latest Announcements
+                  {t("schoolPublicPage.latestAnnouncements")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 {notices.length === 0 ? (
                   <p className="text-muted-foreground text-center py-8">
-                    No public announcements at this time.
+                    {t("schoolPublicPage.noAnnouncements")}
                   </p>
                 ) : (
                   <div className="space-y-4">
@@ -283,7 +284,7 @@ const SchoolPublicPage = () => {
             {/* Contact Information */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Contact Information</CardTitle>
+                <CardTitle className="text-lg">{t("schoolPublicPage.contactInfo")}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {school.address && (
@@ -314,24 +315,24 @@ const SchoolPublicPage = () => {
             {/* Login Portal Links */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Portal Access</CardTitle>
+                <CardTitle className="text-lg">{t("schoolPublicPage.portalAccess")}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 <Link to="/student/login" className="block">
                   <Button variant="outline" className="w-full justify-between">
-                    Student Portal
+                    {t("schoolPublicPage.studentPortal")}
                     <ChevronRight className="w-4 h-4" />
                   </Button>
                 </Link>
                 <Link to="/parent/login" className="block">
                   <Button variant="outline" className="w-full justify-between">
-                    Parent Portal
+                    {t("schoolPublicPage.parentPortal")}
                     <ChevronRight className="w-4 h-4" />
                   </Button>
                 </Link>
                 <Link to="/teacher/login" className="block">
                   <Button variant="outline" className="w-full justify-between">
-                    Teacher Portal
+                    {t("schoolPublicPage.teacherPortal")}
                     <ChevronRight className="w-4 h-4" />
                   </Button>
                 </Link>
@@ -345,10 +346,10 @@ const SchoolPublicPage = () => {
       <footer className="bg-gradient-footer text-white py-8 mt-12">
         <div className="container mx-auto px-4 text-center">
           <p className="opacity-80">
-            &copy; {new Date().getFullYear()} {school.name}. All rights reserved.
+            &copy; {new Date().getFullYear()} {school.name}{`. ${t("schoolPublicPage.allRightsReserved")}`}
           </p>
           <p className="opacity-60 text-sm mt-2">
-            Powered by{" "}
+            {t("schoolPublicPage.poweredBy")}{" "}
             <Link to="/" className="hover:underline">
               School Smart Pakistan
             </Link>

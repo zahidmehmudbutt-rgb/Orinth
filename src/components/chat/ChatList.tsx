@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { MessageSquare, Users } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChatRoom, getChatRooms } from "@/lib/chat";
@@ -11,6 +12,7 @@ interface ChatListProps {
 export function ChatList({ onSelectRoom, selectedRoomId }: ChatListProps) {
   const [rooms, setRooms] = useState<ChatRoom[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { t } = useTranslation();
 
   useEffect(() => {
     loadRooms();
@@ -30,7 +32,7 @@ export function ChatList({ onSelectRoom, selectedRoomId }: ChatListProps) {
   if (isLoading) {
     return (
       <div className="p-4 text-center text-muted-foreground">
-        Loading chats...
+        {t("chat.loadingChats")}
       </div>
     );
   }
@@ -39,9 +41,9 @@ export function ChatList({ onSelectRoom, selectedRoomId }: ChatListProps) {
     return (
       <div className="p-8 text-center">
         <MessageSquare className="w-12 h-12 mx-auto mb-3 text-muted-foreground opacity-50" />
-        <p className="text-muted-foreground">No chat rooms available</p>
+        <p className="text-muted-foreground">{t("chat.noRooms")}</p>
         <p className="text-sm text-muted-foreground mt-1">
-          You'll see class group chats here once you're added to classes
+          {t("chat.noRoomsDesc")}
         </p>
       </div>
     );
@@ -52,7 +54,7 @@ export function ChatList({ onSelectRoom, selectedRoomId }: ChatListProps) {
       <div className="p-4 border-b">
         <h2 className="font-semibold text-lg flex items-center gap-2">
           <MessageSquare className="w-5 h-5" />
-          Group Chats
+          {t("chat.groupChats")}
           {getTotalUnread() > 0 && (
             <span className="ml-auto bg-primary text-primary-foreground text-xs px-2 py-0.5 rounded-full">
               {getTotalUnread()}
