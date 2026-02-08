@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,6 +26,7 @@ interface CreateSchoolFormProps {
 }
 
 export function CreateSchoolForm({ onCreated, onCancel }: CreateSchoolFormProps) {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const [isCreating, setIsCreating] = useState(false);
   const [formData, setFormData] = useState({
@@ -41,8 +43,8 @@ export function CreateSchoolForm({ onCreated, onCancel }: CreateSchoolFormProps)
     if (!formData.name.trim()) {
       toast({
         variant: "destructive",
-        title: "Validation Error",
-        description: "School name is required.",
+        title: t("hostSchool.validationError"),
+        description: t("hostSchool.schoolNameRequired"),
       });
       return;
     }
@@ -65,8 +67,8 @@ export function CreateSchoolForm({ onCreated, onCancel }: CreateSchoolFormProps)
       if (error) throw error;
 
       toast({
-        title: "School Created",
-        description: `"${formData.name}" has been created. Public page available at /school/${slug}`,
+        title: t("hostSchool.schoolCreated"),
+        description: t("hostSchool.schoolCreatedDesc", { name: formData.name, slug }),
       });
 
       onCreated(data as School);
@@ -74,8 +76,8 @@ export function CreateSchoolForm({ onCreated, onCancel }: CreateSchoolFormProps)
       if (import.meta.env.DEV) console.error('Error creating school:', error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Could not create the school. Ensure all required fields are filled.",
+        title: t("hostSchool.error"),
+        description: t("hostSchool.createError"),
       });
     } finally {
       setIsCreating(false);
@@ -85,19 +87,19 @@ export function CreateSchoolForm({ onCreated, onCancel }: CreateSchoolFormProps)
   return (
     <Card className="mb-6">
       <CardHeader>
-        <CardTitle>Create New School</CardTitle>
+        <CardTitle>{t("hostSchool.createTitle")}</CardTitle>
         <CardDescription>
-          Each school will have its own isolated website and data
+          {t("hostSchool.createDesc")}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label>School Name *</Label>
+            <Label>{t("hostSchool.schoolNameLabel")}</Label>
             <Input
               value={formData.name}
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-              placeholder="Enter school name"
+              placeholder={t("hostSchool.schoolNamePlaceholder")}
             />
             {formData.name && (
               <p className="text-xs text-muted-foreground">
@@ -106,42 +108,42 @@ export function CreateSchoolForm({ onCreated, onCancel }: CreateSchoolFormProps)
             )}
           </div>
           <div className="space-y-2">
-            <Label>Email</Label>
+            <Label>{t("hostSchool.emailLabel")}</Label>
             <Input
               type="email"
               value={formData.email}
               onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-              placeholder="school@example.com"
+              placeholder={t("hostSchool.emailPlaceholder")}
             />
           </div>
           <div className="space-y-2">
-            <Label>Phone</Label>
+            <Label>{t("hostSchool.phoneLabel")}</Label>
             <Input
               value={formData.phone}
               onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-              placeholder="+92 300 1234567"
+              placeholder={t("hostSchool.phonePlaceholder")}
             />
           </div>
           <div className="space-y-2">
-            <Label>Address</Label>
+            <Label>{t("hostSchool.addressLabel")}</Label>
             <Input
               value={formData.address}
               onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
-              placeholder="Enter address"
+              placeholder={t("hostSchool.addressPlaceholder")}
             />
           </div>
           <div className="col-span-2 space-y-2">
             <Label>
               <Image className="w-4 h-4 inline mr-2" />
-              Logo URL
+              {t("hostSchool.logoUrlLabel")}
             </Label>
             <Input
               value={formData.logo_url}
               onChange={(e) => setFormData(prev => ({ ...prev, logo_url: e.target.value }))}
-              placeholder="https://example.com/logo.png"
+              placeholder={t("hostSchool.logoUrlPlaceholder")}
             />
             <p className="text-xs text-muted-foreground">
-              The logo will appear on the school's public page, login screens, and dashboards
+              {t("hostSchool.logoUrlHelp")}
             </p>
           </div>
         </div>
@@ -151,7 +153,7 @@ export function CreateSchoolForm({ onCreated, onCancel }: CreateSchoolFormProps)
             variant="outline"
             onClick={onCancel}
           >
-            Cancel
+            {t("hostSchool.cancel")}
           </Button>
           <Button
             onClick={handleSubmit}
@@ -163,7 +165,7 @@ export function CreateSchoolForm({ onCreated, onCancel }: CreateSchoolFormProps)
             ) : (
               <Plus className="w-4 h-4 mr-2" />
             )}
-            Create School
+            {t("hostSchool.createSchool")}
           </Button>
         </div>
       </CardContent>

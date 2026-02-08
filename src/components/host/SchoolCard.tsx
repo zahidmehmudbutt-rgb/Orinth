@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -52,6 +53,7 @@ export function SchoolCard({ school, onUpdate, onToggleStatus }: SchoolCardProps
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
+  const { t } = useTranslation();
   const [editData, setEditData] = useState(school);
   const [isUpdating, setIsUpdating] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -63,8 +65,8 @@ export function SchoolCard({ school, onUpdate, onToggleStatus }: SchoolCardProps
     if (!editData.name.trim()) {
       toast({
         variant: "destructive",
-        title: "Validation Error",
-        description: "School name is required.",
+        title: t("hostSchool.validationError"),
+        description: t("hostSchool.schoolNameRequired"),
       });
       return;
     }
@@ -85,8 +87,8 @@ export function SchoolCard({ school, onUpdate, onToggleStatus }: SchoolCardProps
       if (error) throw error;
 
       toast({
-        title: "Success",
-        description: "School updated successfully.",
+        title: t("hostSchool.success"),
+        description: t("hostSchool.schoolUpdated"),
       });
 
       onUpdate({ ...school, ...editData });
@@ -95,8 +97,8 @@ export function SchoolCard({ school, onUpdate, onToggleStatus }: SchoolCardProps
       if (import.meta.env.DEV) console.error('Error updating school:', error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Could not update school details. Check your connection and try again.",
+        title: t("hostSchool.error"),
+        description: t("hostSchool.updateError"),
       });
     } finally {
       setIsUpdating(false);
@@ -109,8 +111,8 @@ export function SchoolCard({ school, onUpdate, onToggleStatus }: SchoolCardProps
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
     toast({
-      title: "Copied!",
-      description: "Public page URL copied to clipboard.",
+      title: t("hostSchool.copied"),
+      description: t("hostSchool.copiedDesc"),
     });
   };
 
@@ -120,14 +122,14 @@ export function SchoolCard({ school, onUpdate, onToggleStatus }: SchoolCardProps
         <CardContent className="p-6 space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>School Name *</Label>
+              <Label>{t("hostSchool.schoolNameLabel")}</Label>
               <Input
                 value={editData.name}
                 onChange={(e) => setEditData(prev => ({ ...prev, name: e.target.value }))}
               />
             </div>
             <div className="space-y-2">
-              <Label>Email</Label>
+              <Label>{t("hostSchool.emailLabel")}</Label>
               <Input
                 type="email"
                 value={editData.email || ""}
@@ -135,14 +137,14 @@ export function SchoolCard({ school, onUpdate, onToggleStatus }: SchoolCardProps
               />
             </div>
             <div className="space-y-2">
-              <Label>Phone</Label>
+              <Label>{t("hostSchool.phoneLabel")}</Label>
               <Input
                 value={editData.phone || ""}
                 onChange={(e) => setEditData(prev => ({ ...prev, phone: e.target.value }))}
               />
             </div>
             <div className="space-y-2">
-              <Label>Address</Label>
+              <Label>{t("hostSchool.addressLabel")}</Label>
               <Input
                 value={editData.address || ""}
                 onChange={(e) => setEditData(prev => ({ ...prev, address: e.target.value }))}
@@ -151,14 +153,14 @@ export function SchoolCard({ school, onUpdate, onToggleStatus }: SchoolCardProps
             <div className="col-span-2 space-y-2">
               <Label>
                 <Image className="w-4 h-4 inline mr-2" />
-                Logo URL
+                {t("hostSchool.logoUrlLabel")}
               </Label>
               <Input
                 value={editData.logo_url || ""}
                 onChange={(e) => setEditData(prev => ({ ...prev, logo_url: e.target.value }))}
-                placeholder="https://example.com/logo.png"
+                placeholder={t("hostSchool.logoUrlPlaceholder")}
               />
-              <p className="text-xs text-muted-foreground">Enter a direct URL to the school logo image</p>
+              <p className="text-xs text-muted-foreground">{t("hostSchool.logoUrlEditHelp")}</p>
             </div>
           </div>
 
@@ -170,7 +172,7 @@ export function SchoolCard({ school, onUpdate, onToggleStatus }: SchoolCardProps
                 setEditData(school);
               }}
             >
-              Cancel
+              {t("hostSchool.cancel")}
             </Button>
             <Button
               onClick={handleSave}
@@ -178,7 +180,7 @@ export function SchoolCard({ school, onUpdate, onToggleStatus }: SchoolCardProps
               className="bg-amber-600 hover:bg-amber-700 text-white"
             >
               {isUpdating && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-              Save Changes
+              {t("hostSchool.saveChanges")}
             </Button>
           </div>
         </CardContent>
@@ -209,15 +211,15 @@ export function SchoolCard({ school, onUpdate, onToggleStatus }: SchoolCardProps
                   variant={school.is_active ? "default" : "secondary"}
                   className={school.is_active ? "bg-green-600" : "bg-muted"}
                 >
-                  {school.is_active ? "Active" : "Inactive"}
+                  {school.is_active ? t("hostSchool.active") : t("hostSchool.inactive")}
                 </Badge>
               </div>
               <div className="space-y-1 text-sm text-muted-foreground">
-                {school.email && <p>Email: {school.email}</p>}
-                {school.phone && <p>Phone: {school.phone}</p>}
-                {school.address && <p>Address: {school.address}</p>}
+                {school.email && <p>{t("hostSchool.emailField")}: {school.email}</p>}
+                {school.phone && <p>{t("hostSchool.phoneField")}: {school.phone}</p>}
+                {school.address && <p>{t("hostSchool.addressField")}: {school.address}</p>}
                 <div className="flex items-center gap-2 mt-2">
-                  <span className="text-xs text-muted-foreground">Public URL:</span>
+                  <span className="text-xs text-muted-foreground">{t("hostSchool.publicUrl")}:</span>
                   <code className="text-xs bg-muted px-2 py-0.5 rounded text-amber-600 dark:text-amber-400">
                     /school/{slug}
                   </code>
@@ -241,7 +243,7 @@ export function SchoolCard({ school, onUpdate, onToggleStatus }: SchoolCardProps
               onClick={() => window.open(publicUrl, '_blank')}
             >
               <ExternalLink className="w-4 h-4 mr-1" />
-              View Page
+              {t("hostSchool.viewPage")}
             </Button>
 
             <Button
@@ -250,7 +252,7 @@ export function SchoolCard({ school, onUpdate, onToggleStatus }: SchoolCardProps
               onClick={() => setIsEditing(true)}
             >
               <Edit className="w-4 h-4 mr-1" />
-              Edit
+              {t("hostSchool.edit")}
             </Button>
 
             <AlertDialog>
@@ -265,29 +267,29 @@ export function SchoolCard({ school, onUpdate, onToggleStatus }: SchoolCardProps
                   }`}
                 >
                   <Power className="w-4 h-4 mr-1" />
-                  {school.is_active ? "Disable" : "Enable"}
+                  {school.is_active ? t("hostSchool.disable") : t("hostSchool.enable")}
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>
-                    {school.is_active ? "Disable" : "Enable"} School?
+                    {school.is_active ? t("hostSchool.disableTitle") : t("hostSchool.enableTitle")}
                   </AlertDialogTitle>
                   <AlertDialogDescription>
                     {school.is_active
-                      ? "This will prevent all users from logging in to this school. The school can be re-enabled later."
-                      : "This will allow users to access this school again."}
+                      ? t("hostSchool.disableDesc")
+                      : t("hostSchool.enableDesc")}
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>
-                    Cancel
+                    {t("hostSchool.cancel")}
                   </AlertDialogCancel>
                   <AlertDialogAction
                     onClick={() => onToggleStatus(school)}
                     className={school.is_active ? "bg-red-600 hover:bg-red-700" : "bg-green-600 hover:bg-green-700"}
                   >
-                    {school.is_active ? "Disable" : "Enable"}
+                    {school.is_active ? t("hostSchool.disable") : t("hostSchool.enable")}
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
@@ -300,7 +302,7 @@ export function SchoolCard({ school, onUpdate, onToggleStatus }: SchoolCardProps
               className="text-amber-600 dark:text-amber-400 hover:bg-amber-500/10"
             >
               <Crown className="w-4 h-4 mr-1" />
-              Principal
+              {t("hostSchool.principal")}
             </Button>
           </div>
         </div>
