@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -30,6 +31,7 @@ interface LoginRecord {
 export default function LoginHistory() {
   const [history, setHistory] = useState<LoginRecord[]>([]);
   const [loading, setLoading] = useState(true);
+  const { t } = useTranslation();
 
   useEffect(() => {
     fetchHistory();
@@ -73,21 +75,21 @@ export default function LoginHistory() {
         return (
           <Badge className="bg-success/10 text-success">
             <CheckCircle className="h-3 w-3 mr-1" />
-            Success
+            {t("loginHistory.success")}
           </Badge>
         );
       case "failed":
         return (
           <Badge className="bg-destructive/10 text-destructive">
             <XCircle className="h-3 w-3 mr-1" />
-            Failed
+            {t("loginHistory.failed")}
           </Badge>
         );
       case "blocked":
         return (
           <Badge className="bg-warning/10 text-warning">
             <Shield className="h-3 w-3 mr-1" />
-            Blocked
+            {t("loginHistory.blocked")}
           </Badge>
         );
       default:
@@ -101,7 +103,7 @@ export default function LoginHistory() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <History className="h-5 w-5" />
-            Login History
+            {t("loginHistory.title")}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -126,17 +128,17 @@ export default function LoginHistory() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <History className="h-5 w-5" />
-          Login History
+          {t("loginHistory.title")}
         </CardTitle>
         <CardDescription>
-          Recent login activity on your account (last 50 records)
+          {t("loginHistory.subtitle")}
         </CardDescription>
       </CardHeader>
       <CardContent>
         {history.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
             <History className="h-12 w-12 mx-auto mb-3 opacity-50" />
-            <p>No login history available</p>
+            <p>{t("loginHistory.empty")}</p>
           </div>
         ) : (
           <>
@@ -148,8 +150,8 @@ export default function LoginHistory() {
                   <div className="flex items-center gap-2">
                     {getDeviceIcon(record.device_type)}
                     <div>
-                      <p className="text-sm font-medium">{record.device_type || "Unknown"}</p>
-                      <p className="text-xs text-muted-foreground">{record.browser || "Unknown"} &middot; {record.os || "Unknown OS"}</p>
+                      <p className="text-sm font-medium">{record.device_type || t("loginHistory.unknown")}</p>
+                      <p className="text-xs text-muted-foreground">{record.browser || t("loginHistory.unknown")} &middot; {record.os || t("loginHistory.unknownOS")}</p>
                     </div>
                   </div>
                   {getStatusBadge(record.login_status)}
@@ -158,7 +160,7 @@ export default function LoginHistory() {
                   <span>{format(new Date(record.login_at), "PPp")}</span>
                   <div className="flex items-center gap-1">
                     <Globe className="h-3 w-3" />
-                    <span>{record.ip_address || "Unknown"}</span>
+                    <span>{record.ip_address || t("loginHistory.unknown")}</span>
                   </div>
                 </div>
                 {record.failure_reason && (
@@ -174,11 +176,11 @@ export default function LoginHistory() {
               <Table aria-label="Login history">
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Date & Time</TableHead>
-                    <TableHead>Device</TableHead>
-                    <TableHead>Browser</TableHead>
-                    <TableHead>IP Address</TableHead>
-                    <TableHead>Status</TableHead>
+                    <TableHead>{t("loginHistory.dateTime")}</TableHead>
+                    <TableHead>{t("loginHistory.device")}</TableHead>
+                    <TableHead>{t("loginHistory.browser")}</TableHead>
+                    <TableHead>{t("loginHistory.ipAddress")}</TableHead>
+                    <TableHead>{t("loginHistory.status")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -198,16 +200,16 @@ export default function LoginHistory() {
                         <div className="flex items-center gap-2">
                           {getDeviceIcon(record.device_type)}
                           <div>
-                            <p className="text-sm">{record.device_type || "Unknown"}</p>
-                            <p className="text-xs text-muted-foreground">{record.os || "Unknown OS"}</p>
+                            <p className="text-sm">{record.device_type || t("loginHistory.unknown")}</p>
+                            <p className="text-xs text-muted-foreground">{record.os || t("loginHistory.unknownOS")}</p>
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell>{record.browser || "Unknown"}</TableCell>
+                      <TableCell>{record.browser || t("loginHistory.unknown")}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1">
                           <Globe className="h-3 w-3 text-muted-foreground" />
-                          <span className="text-sm">{record.ip_address || "Unknown"}</span>
+                          <span className="text-sm">{record.ip_address || t("loginHistory.unknown")}</span>
                         </div>
                         {record.location_city && (
                           <p className="text-xs text-muted-foreground">

@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2, ShieldAlert } from "lucide-react";
 import type { AppRole } from "@/lib/auth";
+import { useTranslation } from "react-i18next";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -17,6 +18,7 @@ interface ProtectedRouteProps {
  */
 const ProtectedRoute = ({ children, requiredRole, redirectTo }: ProtectedRouteProps) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { user, roles, loading, isPrincipal, isCoordinator, isClassTeacher, isTeacher, isStudent, isParent } = useAuth();
 
   // Map roles to their boolean flags
@@ -66,7 +68,7 @@ const ProtectedRoute = ({ children, requiredRole, redirectTo }: ProtectedRoutePr
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
-          <p className="text-muted-foreground">Verifying access...</p>
+          <p className="text-muted-foreground">{t("protectedRoute.verifying")}</p>
         </div>
       </div>
     );
@@ -80,9 +82,9 @@ const ProtectedRoute = ({ children, requiredRole, redirectTo }: ProtectedRoutePr
           <div className="w-16 h-16 bg-destructive/10 rounded-full flex items-center justify-center">
             <ShieldAlert className="w-8 h-8 text-destructive" />
           </div>
-          <h1 className="text-xl font-bold text-foreground">Access Denied</h1>
+          <h1 className="text-xl font-bold text-foreground">{t("protectedRoute.accessDenied")}</h1>
           <p className="text-muted-foreground max-w-sm">
-            You don't have permission to access this page. Redirecting to login...
+            {t("protectedRoute.noPermission")}
           </p>
         </div>
       </div>

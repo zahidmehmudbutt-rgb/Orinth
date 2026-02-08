@@ -1,5 +1,6 @@
 import { Check, Circle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 export interface ChecklistItem {
   id: string;
@@ -17,6 +18,7 @@ interface OnboardingChecklistProps {
 }
 
 export function OnboardingChecklist({ title, subtitle, items, className }: OnboardingChecklistProps) {
+  const { t } = useTranslation();
   const completedCount = items.filter(item => item.completed).length;
   const progress = (completedCount / items.length) * 100;
 
@@ -29,8 +31,8 @@ export function OnboardingChecklist({ title, subtitle, items, className }: Onboa
         {/* Progress bar */}
         <div className="mt-4">
           <div className="flex justify-between text-sm mb-2">
-            <span className="text-muted-foreground">Progress</span>
-            <span className="font-medium text-foreground">{completedCount}/{items.length} completed</span>
+            <span className="text-muted-foreground">{t("onboarding.progress")}</span>
+            <span className="font-medium text-foreground">{t("onboarding.completed", { completed: completedCount, total: items.length })}</span>
           </div>
           <div className="h-2 bg-muted rounded-full overflow-hidden">
             <div 

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,6 +15,7 @@ interface FirstLoginSetupProps {
 const FirstLoginSetup = ({ onComplete }: FirstLoginSetupProps) => {
   const { user, profile, refreshUserData } = useAuth();
   const { toast } = useToast();
+  const { t } = useTranslation();
   
   const [step, setStep] = useState(1);
   
@@ -33,8 +35,8 @@ const FirstLoginSetup = ({ onComplete }: FirstLoginSetupProps) => {
     if (!newPassword || !confirmPassword) {
       toast({
         variant: "destructive",
-        title: "Validation Error",
-        description: "Please fill in both password fields.",
+        title: t("firstLoginSetup.validationError"),
+        description: t("firstLoginSetup.fillPassword"),
       });
       return;
     }
@@ -42,8 +44,8 @@ const FirstLoginSetup = ({ onComplete }: FirstLoginSetupProps) => {
     if (newPassword.length < 8) {
       toast({
         variant: "destructive",
-        title: "Validation Error",
-        description: "Password must be at least 8 characters.",
+        title: t("firstLoginSetup.validationError"),
+        description: t("firstLoginSetup.passwordMin"),
       });
       return;
     }
@@ -51,8 +53,8 @@ const FirstLoginSetup = ({ onComplete }: FirstLoginSetupProps) => {
     if (newPassword !== confirmPassword) {
       toast({
         variant: "destructive",
-        title: "Validation Error",
-        description: "Passwords do not match.",
+        title: t("firstLoginSetup.validationError"),
+        description: t("firstLoginSetup.passwordsMismatch"),
       });
       return;
     }
@@ -67,15 +69,15 @@ const FirstLoginSetup = ({ onComplete }: FirstLoginSetupProps) => {
       if (error) throw error;
 
       toast({
-        title: "Password Set",
-        description: "Your new password has been saved.",
+        title: t("firstLoginSetup.passwordSet"),
+        description: t("firstLoginSetup.passwordSetDesc"),
       });
 
       setStep(2);
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Error",
+        title: t("firstLoginSetup.error"),
         description: error instanceof Error ? error.message : "Failed to set password.",
       });
     } finally {
@@ -100,8 +102,8 @@ const FirstLoginSetup = ({ onComplete }: FirstLoginSetupProps) => {
       if (error) throw error;
 
       toast({
-        title: "Profile Complete",
-        description: "Welcome! Your account is now fully set up.",
+        title: t("firstLoginSetup.profileComplete"),
+        description: t("firstLoginSetup.profileCompleteDesc"),
       });
 
       refreshUserData();
@@ -110,8 +112,8 @@ const FirstLoginSetup = ({ onComplete }: FirstLoginSetupProps) => {
       if (import.meta.env.DEV) console.error("Error updating profile:", error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Could not save your profile. Check your connection and try again.",
+        title: t("firstLoginSetup.error"),
+        description: t("firstLoginSetup.errorSave"),
       });
     } finally {
       setIsLoading(false);
@@ -129,7 +131,7 @@ const FirstLoginSetup = ({ onComplete }: FirstLoginSetupProps) => {
             <div className={`w-3 h-3 rounded-full ${step >= 2 ? 'bg-primary' : 'bg-muted'}`} />
           </div>
           <p className="text-center text-xs text-muted-foreground mb-6">
-            Step {step} of 2: {step === 1 ? 'Set Password' : 'Complete Profile'}
+            {t("firstLoginSetup.step", { step, label: step === 1 ? t("firstLoginSetup.setPassword") : t("firstLoginSetup.completeProfileLabel") })}
           </p>
 
           {step === 1 ? (
@@ -139,21 +141,21 @@ const FirstLoginSetup = ({ onComplete }: FirstLoginSetupProps) => {
                 <div className="inline-flex items-center justify-center w-14 h-14 bg-primary/10 rounded-xl mb-4">
                   <Lock className="w-7 h-7 text-primary" />
                 </div>
-                <h1 className="text-2xl font-bold text-foreground mb-2">Welcome!</h1>
+                <h1 className="text-2xl font-bold text-foreground mb-2">{t("firstLoginSetup.welcome")}</h1>
                 <p className="text-muted-foreground text-sm">
-                  First, let's set up a secure password for your account.
+                  {t("firstLoginSetup.welcomeDesc")}
                 </p>
               </div>
 
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label>New Password</Label>
+                  <Label>{t("firstLoginSetup.newPassword")}</Label>
                   <div className="relative">
                     <Input
                       type={showPassword ? "text" : "password"}
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
-                      placeholder="Enter a secure password"
+                      placeholder={t("firstLoginSetup.newPasswordPlaceholder")}
                       className="pr-10"
                     />
                     <button
@@ -166,21 +168,21 @@ const FirstLoginSetup = ({ onComplete }: FirstLoginSetupProps) => {
                   </div>
                   <div className="space-y-1 mt-1">
                     <p className={`text-xs flex items-center gap-1 ${newPassword.length >= 8 ? 'text-green-600' : 'text-muted-foreground'}`}>
-                      {newPassword.length >= 8 ? '✓' : '○'} At least 8 characters
+                      {newPassword.length >= 8 ? '✓' : '○'} {t("firstLoginSetup.requirement8")}
                     </p>
                     <p className={`text-xs flex items-center gap-1 ${newPassword && newPassword === confirmPassword ? 'text-green-600' : 'text-muted-foreground'}`}>
-                      {newPassword && newPassword === confirmPassword ? '✓' : '○'} Passwords match
+                      {newPassword && newPassword === confirmPassword ? '✓' : '○'} {t("firstLoginSetup.requirementMatch")}
                     </p>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Confirm Password</Label>
+                  <Label>{t("firstLoginSetup.confirmPassword")}</Label>
                   <Input
                     type={showPassword ? "text" : "password"}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="Confirm your password"
+                    placeholder={t("firstLoginSetup.confirmPasswordPlaceholder")}
                   />
                 </div>
 
@@ -193,7 +195,7 @@ const FirstLoginSetup = ({ onComplete }: FirstLoginSetupProps) => {
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
                     <>
-                      Continue
+                      {t("firstLoginSetup.continue")}
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </>
                   )}
@@ -207,9 +209,9 @@ const FirstLoginSetup = ({ onComplete }: FirstLoginSetupProps) => {
                 <div className="inline-flex items-center justify-center w-14 h-14 bg-primary/10 rounded-xl mb-4">
                   <User className="w-7 h-7 text-primary" />
                 </div>
-                <h1 className="text-2xl font-bold text-foreground mb-2">Complete Your Profile</h1>
+                <h1 className="text-2xl font-bold text-foreground mb-2">{t("firstLoginSetup.completeProfile")}</h1>
                 <p className="text-muted-foreground text-sm">
-                  Add your contact information (optional but recommended).
+                  {t("firstLoginSetup.completeProfileDesc")}
                 </p>
               </div>
 
@@ -217,7 +219,7 @@ const FirstLoginSetup = ({ onComplete }: FirstLoginSetupProps) => {
                 <div className="space-y-2">
                   <Label className="flex items-center gap-2">
                     <Phone className="w-4 h-4 text-muted-foreground" />
-                    Phone Number
+                    {t("firstLoginSetup.phoneLabel")}
                   </Label>
                   <Input
                     value={phone}
@@ -229,7 +231,7 @@ const FirstLoginSetup = ({ onComplete }: FirstLoginSetupProps) => {
                 <div className="space-y-2">
                   <Label className="flex items-center gap-2">
                     <MessageCircle className="w-4 h-4 text-muted-foreground" />
-                    WhatsApp Number
+                    {t("firstLoginSetup.whatsappLabel")}
                   </Label>
                   <Input
                     value={whatsapp}
@@ -241,12 +243,12 @@ const FirstLoginSetup = ({ onComplete }: FirstLoginSetupProps) => {
                 <div className="space-y-2">
                   <Label className="flex items-center gap-2">
                     <MapPin className="w-4 h-4 text-muted-foreground" />
-                    Address
+                    {t("firstLoginSetup.addressLabel")}
                   </Label>
                   <Input
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
-                    placeholder="Enter your address"
+                    placeholder={t("firstLoginSetup.addressPlaceholder")}
                   />
                 </div>
 
@@ -258,7 +260,7 @@ const FirstLoginSetup = ({ onComplete }: FirstLoginSetupProps) => {
                   {isLoading ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
-                    "Complete Setup"
+                    t("firstLoginSetup.completeButton")
                   )}
                 </Button>
 
@@ -266,7 +268,7 @@ const FirstLoginSetup = ({ onComplete }: FirstLoginSetupProps) => {
                   onClick={handleProfileSubmit}
                   className="w-full text-sm text-muted-foreground hover:text-foreground"
                 >
-                  Skip for now
+                  {t("firstLoginSetup.skip")}
                 </button>
               </div>
             </>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -41,6 +42,7 @@ export default function TwoFactorAuth() {
   const [processing, setProcessing] = useState(false);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   useEffect(() => {
     fetchSettings();
@@ -104,8 +106,8 @@ export default function TwoFactorAuth() {
     if (verificationCode.length !== 6) {
       toast({
         variant: "destructive",
-        title: "Invalid Code",
-        description: "Please enter a 6-digit verification code.",
+        title: t("twoFactor.invalidCode"),
+        description: t("twoFactor.invalidCodeDesc"),
       });
       return;
     }
@@ -138,15 +140,15 @@ export default function TwoFactorAuth() {
       setSetupStep("backup");
 
       toast({
-        title: "2FA Enabled",
-        description: "Two-factor authentication has been enabled on your account.",
+        title: t("twoFactor.enabledSuccess"),
+        description: t("twoFactor.enabledSuccessDesc"),
       });
     } catch (error) {
       if (import.meta.env.DEV) console.error("Error enabling 2FA:", error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Could not enable 2FA. Your session may have expired — try logging in again.",
+        title: t("twoFactor.error"),
+        description: t("twoFactor.enableError"),
       });
     } finally {
       setProcessing(false);
@@ -176,15 +178,15 @@ export default function TwoFactorAuth() {
       setDisableOpen(false);
 
       toast({
-        title: "2FA Disabled",
-        description: "Two-factor authentication has been disabled on your account.",
+        title: t("twoFactor.disabledSuccess"),
+        description: t("twoFactor.disabledSuccessDesc"),
       });
     } catch (error) {
       if (import.meta.env.DEV) console.error("Error disabling 2FA:", error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Could not disable 2FA. Your session may have expired — try logging in again.",
+        title: t("twoFactor.error"),
+        description: t("twoFactor.disableError"),
       });
     } finally {
       setProcessing(false);
@@ -203,7 +205,7 @@ export default function TwoFactorAuth() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Shield className="h-5 w-5" />
-            Two-Factor Authentication
+            {t("twoFactor.title")}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -224,16 +226,16 @@ export default function TwoFactorAuth() {
             <div>
               <CardTitle className="flex items-center gap-2">
                 <Shield className="h-5 w-5" />
-                Two-Factor Authentication
+                {t("twoFactor.title")}
               </CardTitle>
               <CardDescription>
-                Add an extra layer of security to your account
+                {t("twoFactor.subtitle")}
               </CardDescription>
             </div>
             {settings?.is_enabled && (
               <Badge className="bg-success/10 text-success">
                 <CheckCircle className="h-3 w-3 mr-1" />
-                Enabled
+                {t("twoFactor.enabled")}
               </Badge>
             )}
           </div>
@@ -244,9 +246,9 @@ export default function TwoFactorAuth() {
               <div className="flex items-start gap-3 p-4 bg-success/5 border border-success/20 rounded-lg">
                 <CheckCircle className="h-5 w-5 text-success mt-0.5" />
                 <div>
-                  <p className="font-medium text-success">2FA is enabled</p>
+                  <p className="font-medium text-success">{t("twoFactor.isEnabled")}</p>
                   <p className="text-sm text-muted-foreground">
-                    Your account is protected with two-factor authentication.
+                    {t("twoFactor.isEnabledDesc")}
                     {settings.last_used_at && (
                       <> Last used: {new Date(settings.last_used_at).toLocaleDateString()}</>
                     )}
@@ -257,10 +259,10 @@ export default function TwoFactorAuth() {
               <div className="flex gap-2">
                 <Button variant="outline" onClick={() => startSetup(true)}>
                   <Key className="h-4 w-4 mr-2" />
-                  View Backup Codes
+                  {t("twoFactor.viewBackupCodes")}
                 </Button>
                 <Button variant="destructive" onClick={() => setDisableOpen(true)}>
-                  Disable 2FA
+                  {t("twoFactor.disable")}
                 </Button>
               </div>
             </>
@@ -269,16 +271,16 @@ export default function TwoFactorAuth() {
               <div className="flex items-start gap-3 p-4 bg-warning/5 border border-warning/20 rounded-lg">
                 <AlertTriangle className="h-5 w-5 text-warning mt-0.5" />
                 <div>
-                  <p className="font-medium">2FA is not enabled</p>
+                  <p className="font-medium">{t("twoFactor.notEnabled")}</p>
                   <p className="text-sm text-muted-foreground">
-                    Enable two-factor authentication to add an extra layer of security to your account.
+                    {t("twoFactor.notEnabledDesc")}
                   </p>
                 </div>
               </div>
 
               <Button onClick={startSetup}>
                 <Shield className="h-4 w-4 mr-2" />
-                Enable 2FA
+                {t("twoFactor.enable")}
               </Button>
             </>
           )}
@@ -291,19 +293,19 @@ export default function TwoFactorAuth() {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Shield className="h-5 w-5" />
-              {setupStep === "backup" ? "Save Backup Codes" : "Set Up 2FA"}
+              {setupStep === "backup" ? t("twoFactor.saveBackupCodes") : t("twoFactor.setUp")}
             </DialogTitle>
             <DialogDescription>
-              {setupStep === "intro" && "Use an authenticator app to generate verification codes."}
-              {setupStep === "verify" && "Enter the 6-digit code from your authenticator app."}
-              {setupStep === "backup" && "Save these backup codes in a secure location."}
+              {setupStep === "intro" && t("twoFactor.introDesc")}
+              {setupStep === "verify" && t("twoFactor.verifyDesc")}
+              {setupStep === "backup" && t("twoFactor.backupDesc")}
             </DialogDescription>
           </DialogHeader>
 
           {setupStep === "intro" && (
             <div className="space-y-4">
               <div className="p-4 bg-muted rounded-lg text-center">
-                <p className="text-sm text-muted-foreground mb-2">Your secret key:</p>
+                <p className="text-sm text-muted-foreground mb-2">{t("twoFactor.secretKey")}</p>
                 <div className="flex items-center justify-center gap-2">
                   <code className="text-lg font-mono tracking-wider">{generatedSecret}</code>
                   <Button
@@ -321,12 +323,12 @@ export default function TwoFactorAuth() {
               </div>
 
               <div className="space-y-2 text-sm">
-                <p className="font-medium">Instructions:</p>
+                <p className="font-medium">{t("twoFactor.instructions")}</p>
                 <ol className="list-decimal list-inside space-y-1 text-muted-foreground">
-                  <li>Open your authenticator app (Google Authenticator, Authy, etc.)</li>
-                  <li>Add a new account manually</li>
-                  <li>Enter the secret key shown above</li>
-                  <li>Click "Next" and enter the generated code</li>
+                  <li>{t("twoFactor.instruction1")}</li>
+                  <li>{t("twoFactor.instruction2")}</li>
+                  <li>{t("twoFactor.instruction3")}</li>
+                  <li>{t("twoFactor.instruction4")}</li>
                 </ol>
               </div>
             </div>
@@ -354,7 +356,7 @@ export default function TwoFactorAuth() {
                 </InputOTP>
               </div>
               <p className="text-center text-sm text-muted-foreground">
-                Enter the 6-digit code from your authenticator app
+                {t("twoFactor.enterCode")}
               </p>
             </div>
           )}
@@ -364,7 +366,7 @@ export default function TwoFactorAuth() {
               <div className="p-4 bg-warning/5 border border-warning/20 rounded-lg">
                 <p className="text-sm text-warning flex items-center gap-2">
                   <AlertTriangle className="h-4 w-4" />
-                  Save these codes! You won't be able to see them again.
+                  {t("twoFactor.backupWarning")}
                 </p>
               </div>
 
@@ -397,7 +399,7 @@ export default function TwoFactorAuth() {
                 onClick={() => copyToClipboard(backupCodes.join("\n"))}
               >
                 <Copy className="h-4 w-4 mr-2" />
-                Copy All Codes
+                {t("twoFactor.copyAll")}
               </Button>
             </div>
           )}
@@ -406,33 +408,33 @@ export default function TwoFactorAuth() {
             {setupStep === "intro" && (
               <>
                 <Button variant="outline" onClick={() => setSetupOpen(false)}>
-                  Cancel
+                  {t("twoFactor.cancel")}
                 </Button>
                 <Button onClick={() => setSetupStep("verify")}>
-                  Next
+                  {t("twoFactor.next")}
                 </Button>
               </>
             )}
             {setupStep === "verify" && (
               <>
                 <Button variant="outline" onClick={() => setSetupStep("intro")}>
-                  Back
+                  {t("twoFactor.back")}
                 </Button>
                 <Button onClick={verifyAndEnable} disabled={processing}>
                   {processing ? (
                     <>
                       <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Verifying...
+                      {t("twoFactor.verifying")}
                     </>
                   ) : (
-                    "Verify & Enable"
+                    t("twoFactor.verifyEnable")
                   )}
                 </Button>
               </>
             )}
             {setupStep === "backup" && (
               <Button onClick={() => setSetupOpen(false)} className="w-full">
-                I've Saved My Codes
+                {t("twoFactor.savedCodes")}
               </Button>
             )}
           </DialogFooter>
@@ -443,24 +445,23 @@ export default function TwoFactorAuth() {
       <Dialog open={disableOpen} onOpenChange={setDisableOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Disable Two-Factor Authentication?</DialogTitle>
+            <DialogTitle>{t("twoFactor.disableTitle")}</DialogTitle>
             <DialogDescription>
-              This will remove the extra layer of security from your account.
-              You can always enable it again later.
+              {t("twoFactor.disableDesc")}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDisableOpen(false)}>
-              Cancel
+              {t("twoFactor.cancel")}
             </Button>
             <Button variant="destructive" onClick={disable2FA} disabled={processing}>
               {processing ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Disabling...
+                  {t("twoFactor.disabling")}
                 </>
               ) : (
-                "Disable 2FA"
+                t("twoFactor.disable")
               )}
             </Button>
           </DialogFooter>

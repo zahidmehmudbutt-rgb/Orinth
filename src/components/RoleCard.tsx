@@ -1,6 +1,7 @@
 import { LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 interface RoleCardProps {
   title: string;
@@ -11,6 +12,7 @@ interface RoleCardProps {
 }
 
 export const RoleCard = ({ title, description, icon: Icon, href, colorClass }: RoleCardProps) => {
+  const { t } = useTranslation();
   return (
     <motion.div
       whileHover={{ y: -6, scale: 1.02 }}
@@ -27,7 +29,7 @@ export const RoleCard = ({ title, description, icon: Icon, href, colorClass }: R
         <h3 className="text-lg font-semibold text-foreground mb-2">{title}</h3>
         <p className="text-sm text-muted-foreground mb-4 flex-1">{description}</p>
         <div className="flex items-center text-primary font-medium text-sm group-hover:gap-2 transition-all duration-300">
-          Enter Portal
+          {t("roleCard.enterPortal")}
           <svg
             className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform duration-300"
             fill="none"

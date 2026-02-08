@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Megaphone, Pin, Clock, AlertTriangle, Info, AlertCircle } from "lucide-react";
 import { format, formatDistanceToNow } from "date-fns";
+import { useTranslation } from "react-i18next";
 
 interface Announcement {
   id: string;
@@ -26,6 +27,7 @@ const priorityConfig = {
 };
 
 export default function AnnouncementList() {
+  const { t } = useTranslation();
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -57,7 +59,7 @@ export default function AnnouncementList() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Megaphone className="h-5 w-5" />
-            Announcements
+            {t("announcements.title")}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -80,13 +82,13 @@ export default function AnnouncementList() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Megaphone className="h-5 w-5" />
-            Announcements
+            {t("announcements.title")}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center py-8 text-muted-foreground">
             <Megaphone className="h-12 w-12 mx-auto mb-3 opacity-50" />
-            <p>No announcements at this time</p>
+            <p>{t("announcements.noAnnouncements")}</p>
           </div>
         </CardContent>
       </Card>
@@ -98,7 +100,7 @@ export default function AnnouncementList() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Megaphone className="h-5 w-5" />
-          Announcements
+          {t("announcements.title")}
           {announcements.length > 0 && (
             <Badge variant="secondary" className="ml-2">
               {announcements.length}
@@ -140,7 +142,7 @@ export default function AnnouncementList() {
                   </p>
 
                   <div className="flex items-center justify-between text-xs text-muted-foreground">
-                    <span>By {announcement.creator_name}</span>
+                    <span>{t("announcements.by", { name: announcement.creator_name })}</span>
                     <div className="flex items-center gap-1">
                       <Clock className="h-3 w-3" />
                       {formatDistanceToNow(new Date(announcement.created_at), {
@@ -151,7 +153,7 @@ export default function AnnouncementList() {
 
                   {announcement.expires_at && (
                     <div className="mt-2 text-xs text-warning">
-                      Expires: {format(new Date(announcement.expires_at), "PPp")}
+                      {t("announcements.expires", { date: format(new Date(announcement.expires_at), "PPp") })}
                     </div>
                   )}
                 </div>

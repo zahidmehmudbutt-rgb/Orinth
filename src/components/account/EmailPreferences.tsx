@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Mail, Bell, Calendar, GraduationCap, Megaphone, Save } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
@@ -47,6 +48,7 @@ export function EmailPreferences() {
   const [preferences, setPreferences] = useState<EmailPreferencesData>(loadFromStorage);
   const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const handleToggle = (key: keyof EmailPreferencesData) => {
     setPreferences((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -59,15 +61,15 @@ export function EmailPreferences() {
       saveToStorage(preferences);
       
       toast({
-        title: "Preferences Saved",
-        description: "Your email notification preferences have been updated.",
+        title: t("emailPreferences.saved"),
+        description: t("emailPreferences.savedDesc"),
       });
     } catch (error) {
       if (import.meta.env.DEV) console.error("Error saving preferences:", error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Could not save preferences. Your browser storage may be full.",
+        title: t("emailPreferences.error"),
+        description: t("emailPreferences.errorDesc"),
       });
     } finally {
       setIsSaving(false);
@@ -79,10 +81,10 @@ export function EmailPreferences() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Mail className="w-5 h-5" />
-          Email Notifications
+          {t("emailPreferences.title")}
         </CardTitle>
         <CardDescription>
-          Choose which notifications you'd like to receive via email
+          {t("emailPreferences.subtitle")}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -93,10 +95,10 @@ export function EmailPreferences() {
             </div>
             <div>
               <Label htmlFor="homework" className="font-medium">
-                Homework Assignments
+                {t("emailPreferences.homework")}
               </Label>
               <p className="text-sm text-muted-foreground">
-                Get notified when new homework is assigned
+                {t("emailPreferences.homeworkDesc")}
               </p>
             </div>
           </div>
@@ -114,10 +116,10 @@ export function EmailPreferences() {
             </div>
             <div>
               <Label htmlFor="attendance" className="font-medium">
-                Attendance Alerts
+                {t("emailPreferences.attendance")}
               </Label>
               <p className="text-sm text-muted-foreground">
-                Get notified when your child is marked absent
+                {t("emailPreferences.attendanceDesc")}
               </p>
             </div>
           </div>
@@ -135,10 +137,10 @@ export function EmailPreferences() {
             </div>
             <div>
               <Label htmlFor="grades" className="font-medium">
-                Grades Published
+                {t("emailPreferences.grades")}
               </Label>
               <p className="text-sm text-muted-foreground">
-                Get notified when homework is graded
+                {t("emailPreferences.gradesDesc")}
               </p>
             </div>
           </div>
@@ -156,10 +158,10 @@ export function EmailPreferences() {
             </div>
             <div>
               <Label htmlFor="notices" className="font-medium">
-                School Notices
+                {t("emailPreferences.notices")}
               </Label>
               <p className="text-sm text-muted-foreground">
-                Get notified about important announcements
+                {t("emailPreferences.noticesDesc")}
               </p>
             </div>
           </div>
@@ -174,11 +176,11 @@ export function EmailPreferences() {
           <LoadingButton
             onClick={handleSave}
             loading={isSaving}
-            loadingText="Saving..."
+            loadingText={t("emailPreferences.saving")}
             className="w-full sm:w-auto"
           >
             <Save className="w-4 h-4 mr-2" />
-            Save Preferences
+            {t("emailPreferences.saveButton")}
           </LoadingButton>
         </div>
       </CardContent>

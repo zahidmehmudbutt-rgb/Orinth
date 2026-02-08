@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Quote, ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { FadeInView } from "@/components/ui/motion-wrapper";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 const testimonials = [
   {
@@ -37,6 +38,7 @@ const testimonials = [
 ];
 
 export const Testimonials = () => {
+  const { t } = useTranslation();
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState(0);
 
@@ -63,7 +65,7 @@ export const Testimonials = () => {
     setCurrent((c) => (c + 1) % testimonials.length);
   };
 
-  const t = testimonials[current];
+  const item = testimonials[current];
 
   return (
     <section className="py-20 bg-gradient-hero relative overflow-hidden">
@@ -71,13 +73,13 @@ export const Testimonials = () => {
         <FadeInView>
           <div className="text-center mb-14 max-w-2xl mx-auto">
             <span className="inline-block px-4 py-1.5 bg-primary/10 dark:bg-primary/15 text-primary rounded-full text-sm font-medium mb-4 border border-transparent dark:border-primary/20">
-              Testimonials
+              {t("testimonials.badge")}
             </span>
             <h2 className="text-3xl lg:text-4xl font-extrabold text-foreground mb-4">
-              What People <span className="heading-gradient">Are Saying</span>
+              {t("testimonials.heading")}
             </h2>
             <p className="text-muted-foreground text-lg">
-              Hear from students, parents, and teachers who use our platform daily
+              {t("testimonials.subtitle")}
             </p>
           </div>
         </FadeInView>
@@ -103,7 +105,7 @@ export const Testimonials = () => {
                     <Star
                       key={i}
                       className={`w-4 h-4 ${
-                        i < t.rating
+                        i < item.rating
                           ? "text-yellow-400 fill-yellow-400"
                           : "text-muted-foreground/30"
                       }`}
@@ -112,12 +114,12 @@ export const Testimonials = () => {
                 </div>
 
                 <blockquote className="text-foreground text-lg leading-relaxed mb-6 italic">
-                  "{t.text}"
+                  "{item.text}"
                 </blockquote>
 
                 <div>
-                  <p className="font-semibold text-foreground">{t.name}</p>
-                  <p className="text-sm text-primary font-medium">{t.role}</p>
+                  <p className="font-semibold text-foreground">{item.name}</p>
+                  <p className="text-sm text-primary font-medium">{item.role}</p>
                 </div>
               </motion.div>
             </AnimatePresence>

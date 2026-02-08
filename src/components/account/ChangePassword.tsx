@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,6 +11,7 @@ import { Lock, Eye, EyeOff, Loader2, CheckCircle, AlertCircle } from "lucide-rea
 import { validateNewPassword } from "@/lib/validation";
 
 export default function ChangePassword() {
+  const { t } = useTranslation();
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -30,9 +32,9 @@ export default function ChangePassword() {
     if (/[0-9]/.test(password)) score += 15;
     if (/[^a-zA-Z0-9]/.test(password)) score += 15;
 
-    if (score >= 80) return { score, label: "Strong", color: "bg-success" };
-    if (score >= 50) return { score, label: "Medium", color: "bg-warning" };
-    return { score, label: "Weak", color: "bg-destructive" };
+    if (score >= 80) return { score, label: t("changePassword.strong"), color: "bg-success" };
+    if (score >= 50) return { score, label: t("changePassword.medium"), color: "bg-warning" };
+    return { score, label: t("changePassword.weak"), color: "bg-destructive" };
   };
 
   const strength = getPasswordStrength(newPassword);
@@ -41,7 +43,7 @@ export default function ChangePassword() {
     const newErrors: typeof errors = {};
 
     if (!currentPassword) {
-      newErrors.current = "Current password is required";
+      newErrors.current = t("changePassword.currentRequired");
     }
 
     const passwordValidation = validateNewPassword(newPassword);
@@ -50,9 +52,9 @@ export default function ChangePassword() {
     }
 
     if (!confirmPassword) {
-      newErrors.confirm = "Please confirm your new password";
+      newErrors.confirm = t("changePassword.confirmRequired");
     } else if (newPassword !== confirmPassword) {
-      newErrors.confirm = "Passwords do not match";
+      newErrors.confirm = t("changePassword.noMatch");
     }
 
     setErrors(newErrors);
@@ -78,7 +80,7 @@ export default function ChangePassword() {
       });
 
       if (signInError) {
-        setErrors({ current: "Current password is incorrect" });
+        setErrors({ current: t("changePassword.incorrectCurrent") });
         setLoading(false);
         return;
       }
@@ -93,8 +95,8 @@ export default function ChangePassword() {
       }
 
       toast({
-        title: "Password Changed",
-        description: "Your password has been updated successfully.",
+        title: t("changePassword.success"),
+        description: t("changePassword.successDesc"),
       });
 
       // Clear form
@@ -106,8 +108,8 @@ export default function ChangePassword() {
       if (import.meta.env.DEV) console.error("Error changing password:", error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Could not change your password. Your session may have expired — try logging in again.",
+        title: t("changePassword.error"),
+        description: t("changePassword.errorDesc"),
       });
     } finally {
       setLoading(false);
@@ -119,17 +121,17 @@ export default function ChangePassword() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Lock className="h-5 w-5" />
-          Change Password
+          {t("changePassword.title")}
         </CardTitle>
         <CardDescription>
-          Update your password to keep your account secure
+          {t("changePassword.description")}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Current Password */}
           <div className="space-y-2">
-            <Label htmlFor="current-password">Current Password</Label>
+            <Label htmlFor="current-password">{t("changePassword.currentLabel")}</Label>
             <div className="relative">
               <Input
                 id="current-password"
@@ -140,7 +142,7 @@ export default function ChangePassword() {
                   setErrors({ ...errors, current: undefined });
                 }}
                 className={errors.current ? "border-destructive" : ""}
-                placeholder="Enter current password"
+                placeholder={t("changePassword.currentPlaceholder")}
               />
               <button
                 type="button"
@@ -160,7 +162,7 @@ export default function ChangePassword() {
 
           {/* New Password */}
           <div className="space-y-2">
-            <Label htmlFor="new-password">New Password</Label>
+            <Label htmlFor="new-password">{t("changePassword.newLabel")}</Label>
             <div className="relative">
               <Input
                 id="new-password"
@@ -171,7 +173,7 @@ export default function ChangePassword() {
                   setErrors({ ...errors, new: undefined });
                 }}
                 className={errors.new ? "border-destructive" : ""}
-                placeholder="Enter new password"
+                placeholder={t("changePassword.newPlaceholder")}
               />
               <button
                 type="button"
@@ -199,7 +201,7 @@ export default function ChangePassword() {
                     ) : (
                       <AlertCircle className="h-3 w-3 text-muted-foreground" />
                     )}
-                    At least 8 characters
+                    {t("changePassword.requirement8Chars")}
                   </p>
                   <p className="flex items-center gap-1">
                     {/[A-Z]/.test(newPassword) && /[a-z]/.test(newPassword) ? (
@@ -207,7 +209,7 @@ export default function ChangePassword() {
                     ) : (
                       <AlertCircle className="h-3 w-3 text-muted-foreground" />
                     )}
-                    Uppercase and lowercase letters
+                    {t("changePassword.requirementCase")}
                   </p>
                   <p className="flex items-center gap-1">
                     {/[0-9]/.test(newPassword) ? (
@@ -215,7 +217,7 @@ export default function ChangePassword() {
                     ) : (
                       <AlertCircle className="h-3 w-3 text-muted-foreground" />
                     )}
-                    At least one number
+                    {t("changePassword.requirementNumber")}
                   </p>
                   <p className="flex items-center gap-1">
                     {/[^a-zA-Z0-9]/.test(newPassword) ? (
@@ -223,7 +225,7 @@ export default function ChangePassword() {
                     ) : (
                       <AlertCircle className="h-3 w-3 text-muted-foreground" />
                     )}
-                    At least one special character
+                    {t("changePassword.requirementSpecial")}
                   </p>
                 </div>
               </div>
@@ -238,7 +240,7 @@ export default function ChangePassword() {
 
           {/* Confirm Password */}
           <div className="space-y-2">
-            <Label htmlFor="confirm-password">Confirm New Password</Label>
+            <Label htmlFor="confirm-password">{t("changePassword.confirmLabel")}</Label>
             <Input
               id="confirm-password"
               type="password"
@@ -248,7 +250,7 @@ export default function ChangePassword() {
                 setErrors({ ...errors, confirm: undefined });
               }}
               className={errors.confirm ? "border-destructive" : ""}
-              placeholder="Confirm new password"
+              placeholder={t("changePassword.confirmPlaceholder")}
             />
             {errors.confirm && (
               <p className="text-sm text-destructive flex items-center gap-1">
@@ -259,7 +261,7 @@ export default function ChangePassword() {
             {confirmPassword && newPassword === confirmPassword && (
               <p className="text-sm text-success flex items-center gap-1">
                 <CheckCircle className="h-3 w-3" />
-                Passwords match
+                {t("changePassword.passwordsMatch")}
               </p>
             )}
           </div>
@@ -268,10 +270,10 @@ export default function ChangePassword() {
             {loading ? (
               <>
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                Changing Password...
+                {t("changePassword.changing")}
               </>
             ) : (
-              "Change Password"
+              t("changePassword.button")
             )}
           </Button>
         </form>
