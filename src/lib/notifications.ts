@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { getDateLocale } from "@/lib/utils/date-locale";
 
 // =============================================
 // NOTIFICATION TYPES
@@ -115,7 +116,7 @@ export async function sendAbsenceNotification(
     data: {
       studentName,
       className,
-      date: date || new Date().toLocaleDateString("en-PK"),
+      date: date || new Date().toLocaleDateString(getDateLocale()),
     },
   });
 }

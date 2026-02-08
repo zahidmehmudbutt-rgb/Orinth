@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Activity, RefreshCw, Loader2, Building, Crown, Power, Edit, Plus } from "lucide-react";
+import { getDateLocale } from "@/lib/utils/date-locale";
 
 interface ActivityLog {
   id: string;
@@ -127,7 +128,7 @@ export function ActivityLogList({ logs, isLoading, onRefresh }: ActivityLogListP
                     </div>
                   )}
                   <p className="text-xs text-muted-foreground mt-2">
-                    {new Date(log.created_at).toLocaleString()}
+                    {new Date(log.created_at).toLocaleString(getDateLocale())}
                   </p>
                 </div>
               </div>

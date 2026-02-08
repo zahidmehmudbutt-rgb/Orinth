@@ -32,6 +32,7 @@ import { getExamTypeBadgeColor } from "@/utils/exam";
 import { calculateGrade, getGradeColors, calculatePercentage, formatPercentage, calculateResultTotals, GRADING_SCALE } from "@/utils/grades";
 import { PerformanceTrends } from "@/components/performance/PerformanceTrends";
 import { Leaderboard } from "@/components/leaderboard/Leaderboard";
+import { getDateLocale } from "@/lib/utils/date-locale";
 
 interface StudentData {
   id: string;
@@ -104,6 +105,7 @@ const StudentDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { startTour, hasCompletedTour } = useTour("student");
+  const dateLocale = getDateLocale();
 
   useEffect(() => {
     fetchStudentData();
@@ -241,7 +243,7 @@ const StudentDashboard = () => {
         subject: hw.subject,
         title: hw.title,
         description: hw.description || "",
-        dueDate: new Date(hw.due_date).toLocaleDateString("en-US", {
+        dueDate: new Date(hw.due_date).toLocaleDateString(dateLocale, {
           month: "short",
           day: "numeric",
           year: "numeric",
@@ -300,11 +302,11 @@ const StudentDashboard = () => {
 
       setRecentAttendance(
         attendanceRecords.slice(0, 14).map(r => ({
-          date: new Date(r.date).toLocaleDateString("en-US", {
+          date: new Date(r.date).toLocaleDateString(dateLocale, {
             month: "short",
             day: "numeric",
           }),
-          day: new Date(r.date).toLocaleDateString("en-US", { weekday: "long" }),
+          day: new Date(r.date).toLocaleDateString(dateLocale, { weekday: "long" }),
           status: r.is_present ? "present" : "absent",
         }))
       );
@@ -339,7 +341,7 @@ const StudentDashboard = () => {
           id: n.id,
           title: n.title,
           content: n.content,
-          date: new Date(n.created_at).toLocaleDateString("en-US", {
+          date: new Date(n.created_at).toLocaleDateString(dateLocale, {
             month: "short",
             day: "numeric",
             year: "numeric",
@@ -397,7 +399,7 @@ const StudentDashboard = () => {
           title: exam.title,
           subject: exam.subject,
           examType: exam.exam_type as ExamType,
-          examDate: new Date(exam.exam_date).toLocaleDateString("en-US", {
+          examDate: new Date(exam.exam_date).toLocaleDateString(dateLocale, {
             month: "short",
             day: "numeric",
             year: "numeric",
@@ -1365,7 +1367,7 @@ const StudentDashboard = () => {
                       </div>
                       <div className="text-right">
                         <p className="text-xs text-slate-500 uppercase tracking-wide mb-1">{t("studentDashboard.generatedOn")}</p>
-                        <p className="text-sm text-slate-600">{new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                        <p className="text-sm text-slate-600">{new Date().toLocaleDateString(dateLocale, { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                       </div>
                     </div>
                     <div className="mt-6 pt-4 border-t border-slate-300 text-center">

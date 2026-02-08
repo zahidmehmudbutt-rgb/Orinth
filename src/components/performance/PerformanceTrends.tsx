@@ -9,6 +9,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp, Target, BookOpen } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { getDateLocale } from "@/lib/utils/date-locale";
 import type { ExamResult } from "@/types/exam";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8", "#82ca9d", "#ffc658", "#d0ed57"];
@@ -48,7 +49,7 @@ export function PerformanceTrends({ examResults, attendanceData, className }: Pe
     .sort((a, b) => new Date(a.examDate!).getTime() - new Date(b.examDate!).getTime());
 
   const timelineData = sortedByDate.map(r => ({
-    date: new Date(r.examDate!).toLocaleDateString("en-PK", { month: "short", day: "numeric" }),
+    date: new Date(r.examDate!).toLocaleDateString(getDateLocale(), { month: "short", day: "numeric" }),
     percentage: Math.round((r.marksObtained! / r.maxMarks) * 100),
     title: r.title,
   }));

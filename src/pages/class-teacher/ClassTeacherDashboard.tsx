@@ -44,6 +44,7 @@ import ChangePassword from "@/components/account/ChangePassword";
 import LoginHistory from "@/components/account/LoginHistory";
 import { useTour } from "@/hooks/useTour";
 import { TourHelpButton } from "@/components/onboarding/TourHelpButton";
+import { getDateLocale } from "@/lib/utils/date-locale";
 
 interface Student {
   id: string;
@@ -656,7 +657,7 @@ const ClassTeacherDashboard = () => {
                     )}
                   </div>
                   <span className="text-sm text-muted-foreground">
-                    {new Date().toLocaleDateString('en-PK', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                    {new Date().toLocaleDateString(getDateLocale(), { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                   </span>
                 </div>
 

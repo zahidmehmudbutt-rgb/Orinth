@@ -1,6 +1,7 @@
 // Exam utility functions shared across dashboards
 
 import type { ExamType, ExamResult } from '@/types/exam';
+import { getDateLocale } from '@/lib/utils/date-locale';
 
 /**
  * Get badge color classes for exam type
@@ -58,7 +59,7 @@ export function groupResultsByType(results: ExamResult[]): {
  * Format date for display
  */
 export function formatExamDate(dateString: string): string {
-  return new Date(dateString).toLocaleDateString('en-US', {
+  return new Date(dateString).toLocaleDateString(getDateLocale(), {
     month: 'short',
     day: 'numeric',
     year: 'numeric',

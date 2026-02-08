@@ -44,6 +44,7 @@ import { calculateGrade, getGradeColors, calculatePercentage, formatPercentage, 
 import { useTour } from "@/hooks/useTour";
 import { TourHelpButton } from "@/components/onboarding/TourHelpButton";
 import { PerformanceTrends } from "@/components/performance/PerformanceTrends";
+import { getDateLocale } from "@/lib/utils/date-locale";
 
 interface Child {
   id: string;
@@ -98,6 +99,7 @@ interface Notice {
 
 const ParentDashboard = () => {
   const { t } = useTranslation();
+  const dateLocale = getDateLocale();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user, profile, loading: authLoading } = useAuth();
@@ -313,7 +315,7 @@ const ParentDashboard = () => {
             title: exam.title,
             subject: exam.subject,
             examType: exam.exam_type as ExamType,
-            examDate: new Date(exam.exam_date).toLocaleDateString('en-US', {
+            examDate: new Date(exam.exam_date).toLocaleDateString(dateLocale, {
               month: 'short',
               day: 'numeric',
               year: 'numeric',
@@ -534,7 +536,7 @@ const ParentDashboard = () => {
                                 )}
                               </div>
                               <p className="text-sm text-muted-foreground mb-2">
-                                {t("parentDashboard.due", { date: new Date(hw.due_date).toLocaleDateString() })}
+                                {t("parentDashboard.due", { date: new Date(hw.due_date).toLocaleDateString(dateLocale) })}
                               </p>
                               {hw.submission?.marks !== null && hw.submission?.marks !== undefined && (
                                 <div className="mt-2 p-2 bg-muted rounded">
@@ -923,7 +925,7 @@ const ParentDashboard = () => {
                           </div>
                           <div className="text-right">
                             <p className="text-xs text-slate-500 uppercase tracking-wide mb-1">{t("parentDashboard.generatedOn")}</p>
-                            <p className="text-sm text-slate-600">{new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                            <p className="text-sm text-slate-600">{new Date().toLocaleDateString(dateLocale, { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                           </div>
                         </div>
                         <div className="mt-6 pt-4 border-t border-slate-300 text-center">
@@ -1006,7 +1008,7 @@ const ParentDashboard = () => {
                           {attendance.slice(0, 15).map(record => (
                             <div key={record.id} className="flex justify-between items-center py-2 border-b last:border-0">
                               <span className="text-sm text-muted-foreground">
-                                {new Date(record.date).toLocaleDateString('en-US', {
+                                {new Date(record.date).toLocaleDateString(dateLocale, {
                                   weekday: 'short',
                                   month: 'short',
                                   day: 'numeric'
@@ -1046,7 +1048,7 @@ const ParentDashboard = () => {
                             <div className="flex justify-between items-start mb-2">
                               <h4 className="font-semibold text-foreground">{notice.title}</h4>
                               <span className="text-xs text-muted-foreground">
-                                {new Date(notice.created_at).toLocaleDateString()}
+                                {new Date(notice.created_at).toLocaleDateString(dateLocale)}
                               </span>
                             </div>
                             <p className="text-sm text-muted-foreground">{notice.content}</p>

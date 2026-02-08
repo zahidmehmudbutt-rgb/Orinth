@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { getDateLocale } from "@/lib/utils/date-locale";
 import { Send, Paperclip, Image, X, Users, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -126,7 +127,7 @@ export function ChatRoom({ room, onBack }: ChatRoomProps) {
   const formatTime = (dateString: string) => {
     try {
       const date = new Date(dateString);
-      return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+      return date.toLocaleTimeString(getDateLocale(), { hour: "2-digit", minute: "2-digit" });
     } catch {
       return "";
     }

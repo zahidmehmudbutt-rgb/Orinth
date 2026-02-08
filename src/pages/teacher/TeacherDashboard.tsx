@@ -26,6 +26,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { ExamType, ExamItem, StudentMarkEntry } from "@/types/exam";
 import { EXAM_TYPE_LABELS } from "@/types/exam";
 import { getExamTypeBadgeColor } from "@/utils/exam";
+import { getDateLocale } from "@/lib/utils/date-locale";
 import { useTour } from "@/hooks/useTour";
 import { TourHelpButton } from "@/components/onboarding/TourHelpButton";
 
@@ -73,6 +74,7 @@ interface StudentSubmission {
 
 const TeacherDashboard = () => {
   const { t } = useTranslation();
+  const dateLocale = getDateLocale();
   const [activeTab, setActiveTab] = useState("homework");
   const [loading, setLoading] = useState(true);
   const [teacherData, setTeacherData] = useState<TeacherData | null>(null);
@@ -297,7 +299,7 @@ const TeacherDashboard = () => {
           subject: hw.subject,
           className: classData ? `${classData.name}-${classData.section}` : "Unknown",
           classId: hw.class_id,
-          dueDate: new Date(hw.due_date).toLocaleDateString("en-US", {
+          dueDate: new Date(hw.due_date).toLocaleDateString(dateLocale, {
             month: "short",
             day: "numeric",
             year: "numeric",
@@ -588,7 +590,7 @@ const TeacherDashboard = () => {
           subject: exam.subject,
           examType: exam.exam_type as ExamType,
           maxMarks: exam.max_marks,
-          examDate: new Date(exam.exam_date).toLocaleDateString("en-US", {
+          examDate: new Date(exam.exam_date).toLocaleDateString(dateLocale, {
             month: "short",
             day: "numeric",
             year: "numeric",
@@ -1460,7 +1462,7 @@ const TeacherDashboard = () => {
                                 {submission.submittedAt ? (
                                   <div className="flex items-center gap-2 text-sm text-success">
                                     <Check className="w-4 h-4" />
-                                    {t("teacherDashboard.submittedDate", { date: new Date(submission.submittedAt).toLocaleDateString() })}
+                                    {t("teacherDashboard.submittedDate", { date: new Date(submission.submittedAt).toLocaleDateString(dateLocale) })}
                                     {submission.fileUrl && (
                                       <a
                                         href={submission.fileUrl}

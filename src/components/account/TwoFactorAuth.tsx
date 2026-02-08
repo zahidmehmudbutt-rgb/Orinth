@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { getDateLocale } from "@/lib/utils/date-locale";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -264,7 +265,7 @@ export default function TwoFactorAuth() {
                   <p className="text-sm text-muted-foreground">
                     {t("twoFactor.isEnabledDesc")}
                     {settings.last_used_at && (
-                      <> {t("twoFactor.lastUsed", { date: new Date(settings.last_used_at).toLocaleDateString() })}</>
+                      <> {t("twoFactor.lastUsed", { date: new Date(settings.last_used_at).toLocaleDateString(getDateLocale()) })}</>
                     )}
                   </p>
                 </div>
