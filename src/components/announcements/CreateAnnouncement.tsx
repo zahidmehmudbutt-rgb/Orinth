@@ -169,6 +169,7 @@ export default function CreateAnnouncement({ schoolId, onCreated }: CreateAnnoun
               onChange={(e) => setContent(e.target.value)}
               placeholder={t("createAnnouncement.contentPlaceholder")}
               rows={4}
+              maxLength={5000}
             />
           </div>
 

@@ -91,6 +91,13 @@ const AccountSettings = ({ roleColor = "bg-primary" }: AccountSettingsProps) => 
       return;
     }
 
+    const allowedExtensions = [".jpg", ".jpeg", ".png", ".gif", ".webp"];
+    const fileExtension = file.name.toLowerCase().slice(file.name.lastIndexOf("."));
+    if (!allowedExtensions.includes(fileExtension)) {
+      toast({ variant: "destructive", title: t("account.invalidFile"), description: "Only JPG, PNG, GIF, and WebP images are allowed." });
+      return;
+    }
+
     setIsUploadingAvatar(true);
     try {
       const fileExt = file.name.split(".").pop() || "jpg";

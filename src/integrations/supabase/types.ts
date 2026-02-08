@@ -296,6 +296,8 @@ export type Database = {
       homework_submissions: {
         Row: {
           created_at: string
+          file_name: string | null
+          file_url: string | null
           homework_id: string
           id: string
           marks: number | null
@@ -306,6 +308,8 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          file_name?: string | null
+          file_url?: string | null
           homework_id: string
           id?: string
           marks?: number | null
@@ -316,6 +320,8 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          file_name?: string | null
+          file_url?: string | null
           homework_id?: string
           id?: string
           marks?: number | null
@@ -1330,6 +1336,20 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_active_announcements: {
+        Args: { p_user_id: string }
+        Returns: {
+          id: string
+          title: string
+          content: string
+          priority: "low" | "normal" | "high" | "urgent"
+          is_pinned: boolean
+          created_by: string
+          creator_name: string
+          created_at: string
+          expires_at: string | null
+        }[]
+      }
       get_school_active_user_count: {
         Args: { _school_id: string }
         Returns: number

@@ -351,6 +351,7 @@ export function NotificationSettings({ schoolId }: NotificationSettingsProps) {
                 value={settings.absence_message_template}
                 onChange={(e) => updateSetting("absence_message_template", e.target.value)}
                 placeholder="Enter absence message template..."
+                maxLength={500}
               />
               <p className="text-xs text-muted-foreground mt-2">
                 Available variables: {"{student_name}"}, {"{class_name}"}, {"{date}"}, {"{school_name}"}
@@ -371,6 +372,7 @@ export function NotificationSettings({ schoolId }: NotificationSettingsProps) {
                 value={settings.low_marks_message_template}
                 onChange={(e) => updateSetting("low_marks_message_template", e.target.value)}
                 placeholder="Enter low marks message template..."
+                maxLength={500}
               />
               <p className="text-xs text-muted-foreground mt-2">
                 Available variables: {"{student_name}"}, {"{class_name}"}, {"{subject}"}, {"{exam_title}"}, {"{marks}"}, {"{max_marks}"}, {"{percentage}"}, {"{school_name}"}

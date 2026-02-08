@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { signIn, signOut, hasRole } from "@/lib/auth";
 import { validateEmail, validatePassword, parseAuthError } from "@/lib/validation";
 import { FadeIn } from "@/components/ui/motion-wrapper";
+import { useLoginRateLimit } from "@/hooks/useLoginRateLimit";
 
 const ParentLogin = () => {
   const [email, setEmail] = useState("");
@@ -19,6 +20,7 @@ const ParentLogin = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useTranslation();
+  const { isLocked, remainingSeconds, recordFailure, recordSuccess, checkLocked } = useLoginRateLimit();
 
   const handleEmailChange = (value: string) => {
     setEmail(value);
@@ -32,6 +34,15 @@ const ParentLogin = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (checkLocked()) {
+      toast({
+        variant: "destructive",
+        title: t("login.tooManyAttempts"),
+        description: `Try again in ${remainingSeconds}s`,
+      });
+      return;
+    }
 
     const emailValidation = validateEmail(email);
     if (!emailValidation.valid) {
@@ -52,6 +63,7 @@ const ParentLogin = () => {
 
       if (error) {
         const errorMessage = parseAuthError(error);
+        recordFailure();
         toast({
           variant: "destructive",
           title: t("login.loginFailed"),
@@ -62,6 +74,7 @@ const ParentLogin = () => {
       }
 
       if (!data.user) {
+        recordFailure();
         toast({
           variant: "destructive",
           title: t("login.loginFailed"),
@@ -75,6 +88,7 @@ const ParentLogin = () => {
 
       if (!isParent) {
         await signOut();
+        recordFailure();
         toast({
           variant: "destructive",
           title: t("login.accessDenied"),
@@ -84,6 +98,7 @@ const ParentLogin = () => {
         return;
       }
 
+      recordSuccess();
       toast({
         title: t("common.welcomeBack"),
         description: t("common.redirecting"),
@@ -95,6 +110,7 @@ const ParentLogin = () => {
         console.error('Login error:', error);
       }
 
+      recordFailure();
       toast({
         variant: "destructive",
         title: t("login.connectionError"),
@@ -242,9 +258,11 @@ const ParentLogin = () => {
                 <Button
                   type="submit"
                   className="w-full h-12 bg-role-parent text-white font-medium hover:opacity-90 shadow-button hover:-translate-y-0.5 transition-all"
-                  disabled={isLoading}
+                  disabled={isLocked || isLoading}
                 >
-                  {isLoading ? (
+                  {isLocked ? (
+                    `Try again in ${remainingSeconds}s`
+                  ) : isLoading ? (
                     <>
                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                       {t("common.signingIn")}

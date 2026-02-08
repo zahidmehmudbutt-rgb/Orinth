@@ -19,6 +19,7 @@ export interface UserProfile {
   phone: string | null;
   whatsapp: string | null;
   address: string | null;
+  avatar_url: string | null;
   email_verified: boolean;
   first_login_complete: boolean;
 }

@@ -141,6 +141,17 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
       return;
     }
 
+    const allowedExtensions = [".jpg", ".jpeg", ".png", ".gif", ".webp"];
+    const fileExtension = file.name.toLowerCase().slice(file.name.lastIndexOf("."));
+    if (!allowedExtensions.includes(fileExtension)) {
+      toast({
+        variant: "destructive",
+        title: t("schoolSettings.invalidFileType"),
+        description: "Only JPG, PNG, GIF, and WebP images are allowed.",
+      });
+      return;
+    }
+
     setIsUploading(true);
 
     try {
@@ -311,6 +322,7 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
               rows={4}
               value={extended.description || ""}
               onChange={(e) => handleExtendedChange("description", e.target.value || null)}
+              maxLength={2000}
             />
           </div>
         </CardContent>
@@ -331,6 +343,7 @@ export function SchoolSettingsForm({ schoolId, onSaved }: SchoolSettingsFormProp
               rows={2}
               value={settings.address || ""}
               onChange={(e) => handleChange("address", e.target.value || null)}
+              maxLength={500}
             />
           </div>
 

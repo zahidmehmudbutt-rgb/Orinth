@@ -758,7 +758,9 @@
     "secureEncryptedAccess": "محفوظ انکرپٹڈ رسائی",
     "monitorAttendance": "حاضری اور ترقی کی نگرانی کریں",
     "trackAcademicPerformance": "تعلیمی کارکردگی ٹریک کریں",
-    "receiveNotifications": "اسکول کی اطلاعات حاصل کریں"
+    "receiveNotifications": "اسکول کی اطلاعات حاصل کریں",
+    "tooManyAttempts": "بہت زیادہ کوششیں",
+    "loginFailed": "لاگ ان ناکام"
   },
   "features": {
     "dailyAttendance": "روزانہ حاضری",

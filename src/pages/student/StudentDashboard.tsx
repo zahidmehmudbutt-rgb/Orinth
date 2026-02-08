@@ -459,6 +459,17 @@ const StudentDashboard = () => {
       return;
     }
 
+    const allowedExtensions = [".jpg", ".jpeg", ".png", ".gif", ".webp", ".pdf", ".doc", ".docx"];
+    const fileExtension = file.name.toLowerCase().slice(file.name.lastIndexOf("."));
+    if (!allowedExtensions.includes(fileExtension)) {
+      toast({
+        variant: "destructive",
+        title: t("studentDashboard.invalidFileType"),
+        description: "Only JPG, PNG, GIF, WebP, PDF, DOC, and DOCX files are allowed.",
+      });
+      return;
+    }
+
     setUploadingId(homeworkId);
 
     try {

@@ -1274,6 +1274,7 @@ const TeacherDashboard = () => {
                         value={homeworkDescription}
                         onChange={(e) => setHomeworkDescription(e.target.value)}
                         disabled={isSubmitting}
+                        maxLength={2000}
                       />
                     </div>
 

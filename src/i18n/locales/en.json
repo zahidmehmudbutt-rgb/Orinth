@@ -758,7 +758,9 @@
     "secureEncryptedAccess": "Secure encrypted access",
     "monitorAttendance": "Monitor attendance & progress",
     "trackAcademicPerformance": "Track academic performance",
-    "receiveNotifications": "Receive school notifications"
+    "receiveNotifications": "Receive school notifications",
+    "tooManyAttempts": "Too Many Attempts",
+    "loginFailed": "Login Failed"
   },
   "features": {
     "dailyAttendance": "Daily Attendance",

@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { hasRole, signIn } from "@/lib/auth";
 import { validateStudentId, validatePassword, parseAuthError } from "@/lib/validation";
 import { FadeIn } from "@/components/ui/motion-wrapper";
+import { useLoginRateLimit } from "@/hooks/useLoginRateLimit";
 
 const StudentLogin = () => {
   const [studentId, setStudentId] = useState("");
@@ -20,6 +21,7 @@ const StudentLogin = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useTranslation();
+  const { isLocked, remainingSeconds, recordFailure, recordSuccess, checkLocked } = useLoginRateLimit();
 
   const handleStudentIdChange = (value: string) => {
     setStudentId(value);
@@ -33,6 +35,15 @@ const StudentLogin = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (checkLocked()) {
+      toast({
+        variant: "destructive",
+        title: t("login.loginFailed"),
+        description: `Try again in ${remainingSeconds}s`,
+      });
+      return;
+    }
 
     const studentIdValidation = validateStudentId(studentId);
     if (!studentIdValidation.valid) {
@@ -64,6 +75,7 @@ const StudentLogin = () => {
           title: t("login.loginFailed"),
           description: t("login.studentLookupError"),
         });
+        recordFailure();
         setIsLoading(false);
         return;
       }
@@ -74,6 +86,7 @@ const StudentLogin = () => {
           title: t("login.loginFailed"),
           description: t("login.studentIdNotFound"),
         });
+        recordFailure();
         setIsLoading(false);
         return;
       }
@@ -93,6 +106,7 @@ const StudentLogin = () => {
           title: t("login.accountError"),
           description: t("login.accountNotConfigured"),
         });
+        recordFailure();
         setIsLoading(false);
         return;
       }
@@ -112,6 +126,7 @@ const StudentLogin = () => {
           title: t("login.loginFailed"),
           description: errorMessage,
         });
+        recordFailure();
         setIsLoading(false);
         return;
       }
@@ -122,6 +137,7 @@ const StudentLogin = () => {
           title: t("login.loginFailed"),
           description: t("login.authFailed"),
         });
+        recordFailure();
         setIsLoading(false);
         return;
       }
@@ -135,10 +151,12 @@ const StudentLogin = () => {
           title: t("login.accessDenied"),
           description: t("login.noStudentAccess"),
         });
+        recordFailure();
         setIsLoading(false);
         return;
       }
 
+      recordSuccess();
       toast({
         title: t("common.welcomeBack"),
         description: t("common.redirecting"),
@@ -297,9 +315,11 @@ const StudentLogin = () => {
                 <Button
                   type="submit"
                   className="w-full h-12 bg-role-student hover:opacity-90 text-white font-medium shadow-button hover:-translate-y-0.5 transition-all"
-                  disabled={isLoading}
+                  disabled={isLocked || isLoading}
                 >
-                  {isLoading ? (
+                  {isLocked ? (
+                    `Try again in ${remainingSeconds}s`
+                  ) : isLoading ? (
                     <>
                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                       {t("common.signingIn")}
