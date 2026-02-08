@@ -20,7 +20,7 @@ interface LeaderboardProps {
 
 const RANK_ICONS = [
   <Trophy className="w-5 h-5 text-yellow-500" />,
-  <Medal className="w-5 h-5 text-gray-400" />,
+  <Medal className="w-5 h-5 text-muted-foreground" />,
   <Award className="w-5 h-5 text-amber-700" />,
 ];
 

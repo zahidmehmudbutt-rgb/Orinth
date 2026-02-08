@@ -2,9 +2,13 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
-// Get environment variables with fallbacks to prevent crashes
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://opphbdjjkudhrvkutjhn.supabase.co';
-const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9wcGhiZGpqa3VkaHJ2a3V0amhuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkzNjA1NzUsImV4cCI6MjA4NDkzNjU3NX0.ljYXRFWPndFY2J83U_m7WvN2TvDq2J47ZAOAsSwAtJk';
+// Get environment variables — these must be set in .env or Vercel env settings
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+
+if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
+  throw new Error("Missing Supabase environment variables. Set VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY.");
+}
 
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";

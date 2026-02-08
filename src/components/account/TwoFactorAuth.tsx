@@ -272,7 +272,7 @@ export default function TwoFactorAuth() {
               </div>
 
               <div className="flex gap-2">
-                <Button variant="outline" onClick={() => startSetup(true)}>
+                <Button variant="outline" onClick={() => { startSetup(true); }}>
                   <Key className="h-4 w-4 mr-2" />
                   {t("twoFactor.viewBackupCodes")}
                 </Button>

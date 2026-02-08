@@ -1318,5 +1318,46 @@
   },
   "homeworkCalendar": {
     "homeworkFor": "{{date}} کا ہوم ورک"
+  },
+  "resultCard": {
+    "semesterExams": "سمسٹر / فائنل امتحانات",
+    "monthlyTests": "ماہانہ / مڈ ٹرم ٹیسٹ",
+    "absent": "غیر حاضر",
+    "score": "نمبر:",
+    "overallTotal": "کل مجموعہ",
+    "percentage": "فیصد"
+  },
+  "createAnnouncement": {
+    "new": "نیا اعلان",
+    "title": "اعلان بنائیں",
+    "description": "اپنی اسکول کمیونٹی کے لیے نیا اعلان بنائیں۔",
+    "titleLabel": "عنوان",
+    "titlePlaceholder": "اعلان کا عنوان",
+    "contentLabel": "مواد",
+    "contentPlaceholder": "اپنا اعلان یہاں لکھیں...",
+    "priority": "ترجیح",
+    "low": "کم",
+    "normal": "عام",
+    "high": "زیادہ",
+    "urgent": "فوری",
+    "expiresIn": "ختم ہونے کی مدت (دن)",
+    "never": "کبھی نہیں",
+    "targetAudience": "ہدف سامعین",
+    "everyone": "سب",
+    "students": "طلباء",
+    "teachers": "اساتذہ",
+    "classTeachers": "کلاس ٹیچرز",
+    "coordinators": "کوآرڈینیٹرز",
+    "parents": "والدین",
+    "pinAnnouncement": "اس اعلان کو پن کریں (اوپر ظاہر ہوگا)",
+    "cancel": "منسوخ",
+    "creating": "بنایا جا رہا ہے...",
+    "publish": "اعلان شائع کریں",
+    "validationError": "توثیق کی خرابی",
+    "validationDesc": "براہ کرم عنوان اور مواد دونوں پُر کریں۔",
+    "created": "اعلان بنایا گیا",
+    "createdDesc": "آپ کا اعلان کامیابی سے شائع ہو گیا ہے۔",
+    "error": "خرابی",
+    "errorDesc": "اعلان نہیں بنایا جا سکا۔ یقینی بنائیں کہ عنوان اور مواد پُر ہیں۔"
   }
 }

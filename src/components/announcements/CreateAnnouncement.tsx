@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -29,13 +30,13 @@ interface CreateAnnouncementProps {
   onCreated?: () => void;
 }
 
-const audienceOptions = [
-  { value: "all", label: "Everyone" },
-  { value: "students", label: "Students" },
-  { value: "teachers", label: "Teachers" },
-  { value: "class_teachers", label: "Class Teachers" },
-  { value: "coordinators", label: "Coordinators" },
-  { value: "parents", label: "Parents" },
+const AUDIENCE_KEYS = [
+  { value: "all", key: "createAnnouncement.everyone" },
+  { value: "students", key: "createAnnouncement.students" },
+  { value: "teachers", key: "createAnnouncement.teachers" },
+  { value: "class_teachers", key: "createAnnouncement.classTeachers" },
+  { value: "coordinators", key: "createAnnouncement.coordinators" },
+  { value: "parents", key: "createAnnouncement.parents" },
 ];
 
 export default function CreateAnnouncement({ schoolId, onCreated }: CreateAnnouncementProps) {
@@ -48,6 +49,7 @@ export default function CreateAnnouncement({ schoolId, onCreated }: CreateAnnoun
   const [isPinned, setIsPinned] = useState(false);
   const [expiresInDays, setExpiresInDays] = useState<string>("");
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const handleAudienceChange = (value: string, checked: boolean) => {
     if (value === "all") {
@@ -69,8 +71,8 @@ export default function CreateAnnouncement({ schoolId, onCreated }: CreateAnnoun
     if (!title.trim() || !content.trim()) {
       toast({
         variant: "destructive",
-        title: "Validation Error",
-        description: "Please fill in both title and content.",
+        title: t("createAnnouncement.validationError"),
+        description: t("createAnnouncement.validationDesc"),
       });
       return;
     }
@@ -102,8 +104,8 @@ export default function CreateAnnouncement({ schoolId, onCreated }: CreateAnnoun
       if (error) throw error;
 
       toast({
-        title: "Announcement Created",
-        description: "Your announcement has been published successfully.",
+        title: t("createAnnouncement.created"),
+        description: t("createAnnouncement.createdDesc"),
       });
 
       // Reset form
@@ -120,8 +122,8 @@ export default function CreateAnnouncement({ schoolId, onCreated }: CreateAnnoun
       if (import.meta.env.DEV) console.error("Error creating announcement:", error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Could not create the announcement. Ensure title and content are filled in.",
+        title: t("createAnnouncement.error"),
+        description: t("createAnnouncement.errorDesc"),
       });
     } finally {
       setLoading(false);
@@ -133,76 +135,76 @@ export default function CreateAnnouncement({ schoolId, onCreated }: CreateAnnoun
       <DialogTrigger asChild>
         <Button>
           <Plus className="h-4 w-4 mr-2" />
-          New Announcement
+          {t("createAnnouncement.new")}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Megaphone className="h-5 w-5" />
-            Create Announcement
+            {t("createAnnouncement.title")}
           </DialogTitle>
           <DialogDescription>
-            Create a new announcement for your school community.
+            {t("createAnnouncement.description")}
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="title">Title</Label>
+            <Label htmlFor="title">{t("createAnnouncement.titleLabel")}</Label>
             <Input
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Announcement title"
+              placeholder={t("createAnnouncement.titlePlaceholder")}
               maxLength={200}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="content">Content</Label>
+            <Label htmlFor="content">{t("createAnnouncement.contentLabel")}</Label>
             <Textarea
               id="content"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="Write your announcement here..."
+              placeholder={t("createAnnouncement.contentPlaceholder")}
               rows={4}
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="priority">Priority</Label>
+              <Label htmlFor="priority">{t("createAnnouncement.priority")}</Label>
               <Select value={priority} onValueChange={setPriority}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="low">Low</SelectItem>
-                  <SelectItem value="normal">Normal</SelectItem>
-                  <SelectItem value="high">High</SelectItem>
-                  <SelectItem value="urgent">Urgent</SelectItem>
+                  <SelectItem value="low">{t("createAnnouncement.low")}</SelectItem>
+                  <SelectItem value="normal">{t("createAnnouncement.normal")}</SelectItem>
+                  <SelectItem value="high">{t("createAnnouncement.high")}</SelectItem>
+                  <SelectItem value="urgent">{t("createAnnouncement.urgent")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="expires">Expires In (Days)</Label>
+              <Label htmlFor="expires">{t("createAnnouncement.expiresIn")}</Label>
               <Input
                 id="expires"
                 type="number"
                 min="0"
                 value={expiresInDays}
                 onChange={(e) => setExpiresInDays(e.target.value)}
-                placeholder="Never"
+                placeholder={t("createAnnouncement.never")}
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label>Target Audience</Label>
+            <Label>{t("createAnnouncement.targetAudience")}</Label>
             <div className="grid grid-cols-2 gap-2">
-              {audienceOptions.map((option) => (
+              {AUDIENCE_KEYS.map((option) => (
                 <div key={option.value} className="flex items-center space-x-2">
                   <Checkbox
                     id={`audience-${option.value}`}
@@ -215,7 +217,7 @@ export default function CreateAnnouncement({ schoolId, onCreated }: CreateAnnoun
                     htmlFor={`audience-${option.value}`}
                     className="text-sm cursor-pointer"
                   >
-                    {option.label}
+                    {t(option.key)}
                   </label>
                 </div>
               ))}
@@ -229,22 +231,22 @@ export default function CreateAnnouncement({ schoolId, onCreated }: CreateAnnoun
               onCheckedChange={(checked) => setIsPinned(checked as boolean)}
             />
             <label htmlFor="pinned" className="text-sm cursor-pointer">
-              Pin this announcement (appears at top)
+              {t("createAnnouncement.pinAnnouncement")}
             </label>
           </div>
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-              Cancel
+              {t("createAnnouncement.cancel")}
             </Button>
             <Button type="submit" disabled={loading}>
               {loading ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Creating...
+                  {t("createAnnouncement.creating")}
                 </>
               ) : (
-                "Publish Announcement"
+                t("createAnnouncement.publish")
               )}
             </Button>
           </DialogFooter>

@@ -1318,5 +1318,46 @@
   },
   "homeworkCalendar": {
     "homeworkFor": "Homework for {{date}}"
+  },
+  "resultCard": {
+    "semesterExams": "Semester / Final Exams",
+    "monthlyTests": "Monthly / Midterm Tests",
+    "absent": "Absent",
+    "score": "Score:",
+    "overallTotal": "Overall Total",
+    "percentage": "Percentage"
+  },
+  "createAnnouncement": {
+    "new": "New Announcement",
+    "title": "Create Announcement",
+    "description": "Create a new announcement for your school community.",
+    "titleLabel": "Title",
+    "titlePlaceholder": "Announcement title",
+    "contentLabel": "Content",
+    "contentPlaceholder": "Write your announcement here...",
+    "priority": "Priority",
+    "low": "Low",
+    "normal": "Normal",
+    "high": "High",
+    "urgent": "Urgent",
+    "expiresIn": "Expires In (Days)",
+    "never": "Never",
+    "targetAudience": "Target Audience",
+    "everyone": "Everyone",
+    "students": "Students",
+    "teachers": "Teachers",
+    "classTeachers": "Class Teachers",
+    "coordinators": "Coordinators",
+    "parents": "Parents",
+    "pinAnnouncement": "Pin this announcement (appears at top)",
+    "cancel": "Cancel",
+    "creating": "Creating...",
+    "publish": "Publish Announcement",
+    "validationError": "Validation Error",
+    "validationDesc": "Please fill in both title and content.",
+    "created": "Announcement Created",
+    "createdDesc": "Your announcement has been published successfully.",
+    "error": "Error",
+    "errorDesc": "Could not create the announcement. Ensure title and content are filled in."
   }
 }

@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 interface ResultRow {
   subject: string;
@@ -51,7 +52,7 @@ const staggerItem = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.3, ease: "easeOut" },
+    transition: { duration: 0.3, ease: "easeOut" as const },
   },
 };
 
@@ -65,11 +66,12 @@ function OverallGradeBadge({ grade }: { grade: string }) {
 }
 
 export function MobileResultCards({ results, type, totalObtained, totalMax, overallPercentage, overallGrade }: MobileResultCardProps) {
+  const { t } = useTranslation();
   const headerColor = type === "semester"
     ? "from-indigo-500 to-purple-500"
     : "from-amber-500 to-orange-500";
 
-  const headerLabel = type === "semester" ? "Semester / Final Exams" : "Monthly / Midterm Tests";
+  const headerLabel = type === "semester" ? t("resultCard.semesterExams") : t("resultCard.monthlyTests");
 
   return (
     <div className="md:hidden">
@@ -105,11 +107,11 @@ export function MobileResultCards({ results, type, totalObtained, totalMax, over
               </div>
 
               {row.isAbsent ? (
-                <p className="text-gray-400 text-xs italic">Absent</p>
+                <p className="text-gray-400 text-xs italic">{t("resultCard.absent")}</p>
               ) : (
                 <div className="flex items-center gap-3 text-xs">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-slate-400">Score:</span>
+                    <span className="text-slate-400">{t("resultCard.score")}</span>
                     <span className="font-semibold text-slate-700">
                       {row.obtainedMarks ?? 0}/{row.maxMarks}
                     </span>
@@ -151,11 +153,11 @@ export function MobileResultCards({ results, type, totalObtained, totalMax, over
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs text-slate-500 font-medium">Overall Total</p>
+              <p className="text-xs text-slate-500 font-medium">{t("resultCard.overallTotal")}</p>
               <p className="font-bold text-slate-800 text-lg">{totalObtained}/{totalMax}</p>
             </div>
             <div className="text-right">
-              <p className="text-xs text-slate-500 font-medium">Percentage</p>
+              <p className="text-xs text-slate-500 font-medium">{t("resultCard.percentage")}</p>
               <p className="font-bold text-slate-800 text-lg">{overallPercentage.toFixed(1)}%</p>
             </div>
             <OverallGradeBadge grade={overallGrade} />

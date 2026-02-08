@@ -44,18 +44,36 @@ export function ChatRoom({ room, onBack }: ChatRoomProps) {
   const { t } = useTranslation();
 
   useEffect(() => {
-    loadCurrentUser();
-    loadMessages();
-    loadMembers();
+    let mounted = true;
+
+    const init = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!mounted) return;
+      if (user) setCurrentUserId(user.id);
+
+      const msgs = await getChatMessages(room.id);
+      if (!mounted) return;
+      setMessages(msgs);
+      setIsLoading(false);
+
+      const memberData = await getRoomMembers(room.id);
+      if (!mounted) return;
+      setMembers(memberData);
+    };
+
+    setIsLoading(true);
+    init();
     markRoomAsRead(room.id);
 
     // Subscribe to new messages
     channelRef.current = subscribeToMessages(room.id, (message) => {
+      if (!mounted) return;
       setMessages((prev) => [...prev, message]);
       scrollToBottom();
     });
 
     return () => {
+      mounted = false;
       if (channelRef.current) {
         unsubscribeFromMessages(channelRef.current);
       }
@@ -65,25 +83,6 @@ export function ChatRoom({ room, onBack }: ChatRoomProps) {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-
-  const loadCurrentUser = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user) {
-      setCurrentUserId(user.id);
-    }
-  };
-
-  const loadMessages = async () => {
-    setIsLoading(true);
-    const data = await getChatMessages(room.id);
-    setMessages(data);
-    setIsLoading(false);
-  };
-
-  const loadMembers = async () => {
-    const data = await getRoomMembers(room.id);
-    setMembers(data);
-  };
 
   const scrollToBottom = () => {
     setTimeout(() => {

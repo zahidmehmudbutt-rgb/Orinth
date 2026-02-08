@@ -124,7 +124,7 @@ export default function AnnouncementManager({ schoolId }: AnnouncementManagerPro
 
   const formatAudience = (audience: string[]) => {
     if (audience.includes("all")) return t("announcements.everyone");
-    return audience.map(a => a.replaceAll("_", " ")).join(", ");
+    return audience.map(a => a.replace(/_/g, " ")).join(", ");
   };
 
   return (
