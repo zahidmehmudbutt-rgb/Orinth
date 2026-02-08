@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
 import { GraduationCap, Mail, Phone, MapPin } from "lucide-react";
 import { FadeInView } from "@/components/ui/motion-wrapper";
+import { useTranslation } from "react-i18next";
 
 export const Footer = () => {
+  const { t } = useTranslation();
   return (
     <footer className="bg-gradient-footer text-white border-t border-white/10">
       <div className="container mx-auto px-4 py-12">
@@ -14,36 +16,36 @@ export const Footer = () => {
                   <GraduationCap className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-bold">School Smart Pakistan</h3>
-                  <p className="text-xs opacity-80">School Management System</p>
+                  <h3 className="font-bold">{t("footer.brandName")}</h3>
+                  <p className="text-xs opacity-80">{t("footer.brandDesc")}</p>
                 </div>
               </div>
               <p className="text-sm opacity-80 leading-relaxed">
-                Empowering Pakistani schools with modern management tools. Attendance, homework, marks, and communication - all in one platform.
+                {t("footer.tagline")}
               </p>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4">Quick Links</h4>
+              <h4 className="font-semibold mb-4">{t("footer.quickLinks")}</h4>
               <ul className="space-y-2.5 text-sm opacity-80">
-                <li><a href="#features" className="hover:opacity-100 transition-opacity">Features</a></li>
-                <li><a href="#portals" className="hover:opacity-100 transition-opacity">Portals</a></li>
-                <li><a href="#faq" className="hover:opacity-100 transition-opacity">FAQ</a></li>
+                <li><a href="#features" className="hover:opacity-100 transition-opacity">{t("header.features")}</a></li>
+                <li><a href="#portals" className="hover:opacity-100 transition-opacity">{t("header.portals")}</a></li>
+                <li><a href="#faq" className="hover:opacity-100 transition-opacity">{t("header.faq")}</a></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4">Portals</h4>
+              <h4 className="font-semibold mb-4">{t("footer.portals")}</h4>
               <ul className="space-y-2.5 text-sm opacity-80">
-                <li><Link to="/student/login" className="hover:opacity-100 transition-opacity">Student Login</Link></li>
-                <li><Link to="/teacher/login" className="hover:opacity-100 transition-opacity">Teacher Login</Link></li>
-                <li><Link to="/parent/login" className="hover:opacity-100 transition-opacity">Parent Login</Link></li>
-                <li><Link to="/principal/login" className="hover:opacity-100 transition-opacity">Principal Login</Link></li>
+                <li><Link to="/student/login" className="hover:opacity-100 transition-opacity">{t("login.studentLogin")}</Link></li>
+                <li><Link to="/teacher/login" className="hover:opacity-100 transition-opacity">{t("login.teacherLogin")}</Link></li>
+                <li><Link to="/parent/login" className="hover:opacity-100 transition-opacity">{t("login.parentLogin")}</Link></li>
+                <li><Link to="/principal/login" className="hover:opacity-100 transition-opacity">{t("login.principalLogin")}</Link></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4">Contact</h4>
+              <h4 className="font-semibold mb-4">{t("footer.contact")}</h4>
               <ul className="space-y-2.5 text-sm opacity-80">
                 <li className="flex items-center gap-2">
                   <MapPin className="w-4 h-4 shrink-0" />
@@ -63,10 +65,10 @@ export const Footer = () => {
         </FadeInView>
 
         <div className="border-t border-white/20 mt-10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm opacity-80">
-          <p>&copy; 2026 School Smart Pakistan. All rights reserved.</p>
+          <p>&copy; {t("footer.copyright")}</p>
           <div className="flex gap-6">
-            <a href="#" className="hover:opacity-100 transition-opacity">Privacy Policy</a>
-            <a href="#" className="hover:opacity-100 transition-opacity">Terms of Service</a>
+            <a href="#" className="hover:opacity-100 transition-opacity">{t("footer.privacyPolicy")}</a>
+            <a href="#" className="hover:opacity-100 transition-opacity">{t("footer.termsOfService")}</a>
           </div>
         </div>
       </div>

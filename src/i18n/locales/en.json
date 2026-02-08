@@ -247,6 +247,38 @@
     "calendar": "Academic Calendar",
     "calendarDesc": "View exam schedules, holidays, events, and important dates. Never miss a school activity or deadline."
   },
+  "header": {
+    "skipToContent": "Skip to main content",
+    "features": "Features",
+    "portals": "Portals",
+    "faq": "FAQ",
+    "login": "Login",
+    "loginPortals": "Login Portals",
+    "installApp": "Install App",
+    "installIOS": "Install on iOS",
+    "iosInstallTip": "Tap the Share button in Safari, then select \"Add to Home Screen\".",
+    "gotIt": "Got it",
+    "portal": "Portal"
+  },
+  "footer": {
+    "brandName": "School Smart Pakistan",
+    "brandDesc": "School Management System",
+    "tagline": "Empowering Pakistani schools with modern management tools. Attendance, homework, marks, and communication - all in one platform.",
+    "quickLinks": "Quick Links",
+    "portals": "Portals",
+    "contact": "Contact",
+    "copyright": "2026 School Smart Pakistan. All rights reserved.",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service"
+  },
+  "session": {
+    "expiringTitle": "Session Expiring Soon",
+    "expiringDesc": "Your session will expire in {{countdown}} seconds due to inactivity. Would you like to continue your session?",
+    "logOutNow": "Log Out Now",
+    "continueSession": "Continue Session",
+    "expired": "Session Expired",
+    "expiredDesc": "You have been logged out due to inactivity."
+  },
   "tour": {
     "helpButton": "Take a guided tour"
   }

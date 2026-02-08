@@ -2,6 +2,7 @@ import { useEffect, useCallback, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,6 +22,7 @@ export default function SessionTimeout() {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [showWarning, setShowWarning] = useState(false);
   const [countdown, setCountdown] = useState(WARNING_BEFORE_LOGOUT_SECONDS);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -47,8 +49,8 @@ export default function SessionTimeout() {
 
     toast({
       variant: "destructive",
-      title: "Session Expired",
-      description: "You have been logged out due to inactivity.",
+      title: t("session.expired"),
+      description: t("session.expiredDesc"),
     });
 
     navigate("/");
@@ -155,18 +157,17 @@ export default function SessionTimeout() {
     <AlertDialog open={showWarning} onOpenChange={setShowWarning}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Session Expiring Soon</AlertDialogTitle>
+          <AlertDialogTitle>{t("session.expiringTitle")}</AlertDialogTitle>
           <AlertDialogDescription>
-            Your session will expire in <strong>{countdown}</strong> seconds due to inactivity.
-            Would you like to continue your session?
+            {t("session.expiringDesc", { countdown })}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel onClick={handleLogout}>
-            Log Out Now
+            {t("session.logOutNow")}
           </AlertDialogCancel>
           <AlertDialogAction onClick={handleContinueSession}>
-            Continue Session
+            {t("session.continueSession")}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

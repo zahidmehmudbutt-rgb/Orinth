@@ -5,6 +5,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { Button } from "@/components/ui/button";
 import { usePWAInstall } from "@/hooks/usePWAInstall";
+import { useTranslation } from "react-i18next";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -14,22 +15,23 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 
-const navLinks = [
-  { label: "Features", href: "#features" },
-  { label: "Portals", href: "#portals" },
-  { label: "FAQ", href: "#faq" },
+const navLinkKeys = [
+  { labelKey: "header.features", href: "#features" },
+  { labelKey: "header.portals", href: "#portals" },
+  { labelKey: "header.faq", href: "#faq" },
 ];
 
-const portalLinks = [
-  { label: "Student", href: "/student/login" },
-  { label: "Teacher", href: "/teacher/login" },
-  { label: "Class Teacher", href: "/class-teacher/login" },
-  { label: "Coordinator", href: "/coordinator/login" },
-  { label: "Principal", href: "/principal/login" },
-  { label: "Parent", href: "/parent/login" },
+const portalLinkKeys = [
+  { labelKey: "roles.student", href: "/student/login" },
+  { labelKey: "roles.teacher", href: "/teacher/login" },
+  { labelKey: "roles.classTeacher", href: "/class-teacher/login" },
+  { labelKey: "roles.coordinator", href: "/coordinator/login" },
+  { labelKey: "roles.principal", href: "/principal/login" },
+  { labelKey: "roles.parent", href: "/parent/login" },
 ];
 
 export const Header = () => {
+  const { t } = useTranslation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
@@ -96,7 +98,7 @@ export const Header = () => {
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[60] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:text-sm focus:font-medium"
       >
-        Skip to main content
+        {t("header.skipToContent")}
       </a>
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
@@ -112,13 +114,13 @@ export const Header = () => {
 
         {/* Desktop Nav */}
         <nav className="hidden lg:flex items-center gap-1">
-          {navLinks.map((link) => (
+          {navLinkKeys.map((link) => (
             <a
               key={link.href}
               href={link.href}
               className="nav-link-animated px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
-              {link.label}
+              {t(link.labelKey)}
             </a>
           ))}
         </nav>
@@ -132,7 +134,7 @@ export const Header = () => {
           {!isStandalone && canInstall && (
             <Button variant="outline" size="sm" className="gap-1.5" onClick={install}>
               <Download className="w-3.5 h-3.5" />
-              Install App
+              {t("header.installApp")}
             </Button>
           )}
           {!isStandalone && isIOS && !canInstall && (
@@ -143,7 +145,7 @@ export const Header = () => {
               onClick={() => setShowIOSTip((v) => !v)}
             >
               <Share className="w-3.5 h-3.5" />
-              Install App
+              {t("header.installApp")}
             </Button>
           )}
 
@@ -151,19 +153,19 @@ export const Header = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="gap-1.5 group">
-                Login
+                {t("header.login")}
                 <ChevronDown className="w-3.5 h-3.5 transition-transform group-data-[state=open]:rotate-180" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
               <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                Login Portals
+                {t("header.loginPortals")}
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              {portalLinks.map((link) => (
+              {portalLinkKeys.map((link) => (
                 <DropdownMenuItem key={link.href} asChild>
                   <Link to={link.href} className="w-full cursor-pointer">
-                    {link.label} Portal
+                    {t(link.labelKey)} {t("header.portal")}
                   </Link>
                 </DropdownMenuItem>
               ))}
@@ -192,12 +194,12 @@ export const Header = () => {
       {/* iOS Install Tip */}
       {showIOSTip && (
         <div className="absolute top-full right-4 mt-2 w-72 bg-card border border-border rounded-xl shadow-lg p-4 z-50">
-          <p className="text-sm font-medium text-foreground mb-2">Install on iOS</p>
+          <p className="text-sm font-medium text-foreground mb-2">{t("header.installIOS")}</p>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            Tap the <Share className="w-3.5 h-3.5 inline-block mx-0.5 -mt-0.5" /> <strong>Share</strong> button in Safari, then select <strong>"Add to Home Screen"</strong>.
+            {t("header.iosInstallTip")}
           </p>
           <Button size="sm" variant="ghost" className="mt-2 text-xs h-7" onClick={() => setShowIOSTip(false)}>
-            Got it
+            {t("header.gotIt")}
           </Button>
         </div>
       )}
@@ -212,14 +214,14 @@ export const Header = () => {
           className="lg:hidden border-t border-border bg-card/95 backdrop-blur-md"
         >
           <div className="container mx-auto px-4 py-4 space-y-1">
-            {navLinks.map((link) => (
+            {navLinkKeys.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
                 className="block px-3 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
                 onClick={closeMobile}
               >
-                {link.label}
+                {t(link.labelKey)}
               </a>
             ))}
 
@@ -230,31 +232,31 @@ export const Header = () => {
                 onClick={() => { install(); closeMobile(); }}
               >
                 <Download className="w-4 h-4" />
-                Install App
+                {t("header.installApp")}
               </button>
             )}
             {!isStandalone && isIOS && !canInstall && (
               <div className="px-3 py-2.5 text-sm text-muted-foreground rounded-lg bg-muted/50">
                 <p className="font-medium text-foreground flex items-center gap-2">
                   <Download className="w-4 h-4" />
-                  Install App
+                  {t("header.installApp")}
                 </p>
                 <p className="text-xs mt-1">
-                  Tap <Share className="w-3 h-3 inline-block mx-0.5" /> Share in Safari, then "Add to Home Screen"
+                  {t("header.iosInstallTip")}
                 </p>
               </div>
             )}
 
             <div className="border-t border-border pt-3 mt-3">
-              <p className="px-3 py-1 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Login Portals</p>
-              {portalLinks.map((link) => (
+              <p className="px-3 py-1 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("header.loginPortals")}</p>
+              {portalLinkKeys.map((link) => (
                 <Link
                   key={link.href}
                   to={link.href}
                   className="block px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
                   onClick={closeMobile}
                 >
-                  {link.label}
+                  {t(link.labelKey)}
                 </Link>
               ))}
             </div>
