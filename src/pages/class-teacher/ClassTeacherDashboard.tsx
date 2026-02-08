@@ -153,8 +153,8 @@ const ClassTeacherDashboard = () => {
       if (import.meta.env.DEV) console.error('Error loading students:', error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Could not load student list. Check your connection and refresh the page.",
+        title: t("classTeacherDashboard.toastError"),
+        description: t("classTeacherDashboard.toastLoadStudentsFailed"),
       });
     }
   };
@@ -199,8 +199,8 @@ const ClassTeacherDashboard = () => {
     if (!newStudentName.trim() || !newStudentId.trim()) {
       toast({
         variant: "destructive",
-        title: "Missing Information",
-        description: "Please enter both the student's name and ID.",
+        title: t("classTeacherDashboard.toastMissingInfo"),
+        description: t("classTeacherDashboard.toastEnterNameAndId"),
       });
       return;
     }
@@ -208,8 +208,8 @@ const ClassTeacherDashboard = () => {
     if (!assignedClass?.id || !profile?.school_id) {
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Class information not found.",
+        title: t("classTeacherDashboard.toastError"),
+        description: t("classTeacherDashboard.toastClassNotFound"),
       });
       return;
     }
@@ -227,8 +227,8 @@ const ClassTeacherDashboard = () => {
       if (existing) {
         toast({
           variant: "destructive",
-          title: "Duplicate ID",
-          description: "A student with this ID already exists.",
+          title: t("classTeacherDashboard.toastDuplicateId"),
+          description: t("classTeacherDashboard.toastDuplicateIdDesc"),
         });
         setIsSubmitting(false);
         return;
@@ -281,8 +281,8 @@ const ClassTeacherDashboard = () => {
       if (studentError) throw studentError;
 
       toast({
-        title: "Student Added",
-        description: `${newStudentName} has been added. Login email: ${studentEmail}, Password: ${studentPassword}`,
+        title: t("classTeacherDashboard.toastStudentAdded"),
+        description: t("classTeacherDashboard.toastStudentAddedDesc", { name: newStudentName, email: studentEmail, password: studentPassword }),
       });
 
       setNewStudentName("");
@@ -292,8 +292,8 @@ const ClassTeacherDashboard = () => {
       if (import.meta.env.DEV) console.error('Error adding student:', error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: error instanceof Error ? error.message : "Could not add the student. The Student ID may already be in use.",
+        title: t("classTeacherDashboard.toastError"),
+        description: error instanceof Error ? error.message : t("classTeacherDashboard.toastStudentAddFailed"),
       });
     } finally {
       setIsSubmitting(false);
@@ -320,8 +320,8 @@ const ClassTeacherDashboard = () => {
       }
 
       toast({
-        title: "Student Removed",
-        description: `${student.full_name} has been removed from the class.`,
+        title: t("classTeacherDashboard.toastStudentRemoved"),
+        description: t("classTeacherDashboard.toastStudentRemovedDesc", { name: student.full_name }),
       });
 
       loadStudents();
@@ -329,8 +329,8 @@ const ClassTeacherDashboard = () => {
       if (import.meta.env.DEV) console.error('Error removing student:', error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: error instanceof Error ? error.message : "Could not remove the student. They may have linked records.",
+        title: t("classTeacherDashboard.toastError"),
+        description: error instanceof Error ? error.message : t("classTeacherDashboard.toastStudentRemoveFailed"),
       });
     }
   };
@@ -339,8 +339,8 @@ const ClassTeacherDashboard = () => {
     if (!assignedClass?.id || !profile?.school_id || !user?.id) {
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Missing required information.",
+        title: t("classTeacherDashboard.toastError"),
+        description: t("classTeacherDashboard.toastMissingRequired"),
       });
       return;
     }
@@ -384,8 +384,8 @@ const ClassTeacherDashboard = () => {
       }
 
       toast({
-        title: "Attendance Saved",
-        description: "Today's attendance has been saved successfully.",
+        title: t("classTeacherDashboard.toastAttendanceSaved"),
+        description: t("classTeacherDashboard.toastAttendanceSavedDesc"),
       });
 
       // SMS/WhatsApp notifications - disabled for now, enable when needed
@@ -421,8 +421,8 @@ const ClassTeacherDashboard = () => {
       if (import.meta.env.DEV) console.error('Error saving attendance:', error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: error instanceof Error ? error.message : "Could not save attendance. Check your connection and try again.",
+        title: t("classTeacherDashboard.toastError"),
+        description: error instanceof Error ? error.message : t("classTeacherDashboard.toastAttendanceFailed"),
       });
     } finally {
       setIsSavingAttendance(false);
@@ -437,22 +437,22 @@ const ClassTeacherDashboard = () => {
   const checklistItems = [
     {
       id: "profile",
-      label: "Complete your profile",
-      description: "Add your phone and address",
+      label: t("classTeacherDashboard.completeProfile"),
+      description: t("classTeacherDashboard.addPhoneAddress"),
       completed: profile?.first_login_complete || false,
       onClick: () => setActiveTab("account"),
     },
     {
       id: "students",
-      label: "Add your first students",
-      description: "Add students to your class",
+      label: t("classTeacherDashboard.addFirstStudents"),
+      description: t("classTeacherDashboard.addStudentsToClass"),
       completed: hasStudents,
       onClick: () => setActiveTab("students"),
     },
     {
       id: "attendance",
-      label: "Mark your first attendance",
-      description: "Start tracking daily attendance",
+      label: t("classTeacherDashboard.markFirstAttendance"),
+      description: t("classTeacherDashboard.startTrackingAttendance"),
       completed: attendanceExists,
       onClick: () => setActiveTab("attendance"),
     },
@@ -473,7 +473,7 @@ const ClassTeacherDashboard = () => {
               </div>
               <div>
                 <h1 className="text-lg font-bold">{t("classTeacherDashboard.title")}</h1>
-                <p className="text-xs opacity-80 truncate max-w-[150px] sm:max-w-none">{profile?.full_name || "Class Teacher"}</p>
+                <p className="text-xs opacity-80 truncate max-w-[150px] sm:max-w-none">{profile?.full_name || t("classTeacherDashboard.classTeacher")}</p>
               </div>
             </div>
             <div className="flex items-center gap-1 sm:gap-3">
@@ -490,9 +490,9 @@ const ClassTeacherDashboard = () => {
         <main className="container mx-auto px-4 py-6">
           <div className="bg-card rounded-xl p-8 shadow-card border border-border max-w-md mx-auto text-center">
             <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-            <h2 className="text-xl font-bold text-foreground mb-2">No Class Assigned</h2>
+            <h2 className="text-xl font-bold text-foreground mb-2">{t("classTeacherDashboard.noClassAssigned")}</h2>
             <p className="text-muted-foreground">
-              You haven't been assigned to any class yet. Please contact your coordinator or principal.
+              {t("classTeacherDashboard.noClassAssignedDesc")}
             </p>
           </div>
         </main>
@@ -511,7 +511,7 @@ const ClassTeacherDashboard = () => {
             <div>
               <h1 className="text-lg font-bold">{t("classTeacherDashboard.title")}</h1>
               <p className="text-xs opacity-80 truncate max-w-[150px] sm:max-w-none">
-                {profile?.full_name || "Class Teacher"} - {assignedClass.name}{assignedClass.section ? ` (${assignedClass.section})` : ''}
+                {profile?.full_name || t("classTeacherDashboard.classTeacher")} - {assignedClass.name}{assignedClass.section ? ` (${assignedClass.section})` : ''}
               </p>
             </div>
           </div>
@@ -545,12 +545,12 @@ const ClassTeacherDashboard = () => {
         {!hasStudents && (
           <WelcomeBanner
             icon={Sparkles}
-            title="Welcome to Your Class Dashboard!"
-            description="Get started by adding students to your class. Once added, you can mark daily attendance and manage your class roster."
+            title={t("classTeacherDashboard.welcomeTitle")}
+            description={t("classTeacherDashboard.welcomeDesc")}
             tips={[
-              "Add students using their unique Student IDs",
-              "Students will use their ID as both username and password initially",
-              "Mark attendance daily - it can be edited on the same day",
+              t("classTeacherDashboard.welcomeTip1"),
+              t("classTeacherDashboard.welcomeTip2"),
+              t("classTeacherDashboard.welcomeTip3"),
             ]}
             accentColor="bg-role-class-teacher"
             storageKey="class-teacher-welcome-dismissed"
@@ -570,7 +570,7 @@ const ClassTeacherDashboard = () => {
                   </div>
                   <div>
                     <p className="text-2xl font-bold text-foreground">{students.length}</p>
-                    <p className="text-sm text-muted-foreground">Total Students</p>
+                    <p className="text-sm text-muted-foreground">{t("classTeacherDashboard.totalStudents")}</p>
                   </div>
                 </div>
               </div>
@@ -585,7 +585,7 @@ const ClassTeacherDashboard = () => {
                   </div>
                   <div>
                     <p className="text-2xl font-bold text-foreground">{presentCount}</p>
-                    <p className="text-sm text-muted-foreground">Present Today</p>
+                    <p className="text-sm text-muted-foreground">{t("classTeacherDashboard.presentToday")}</p>
                   </div>
                 </div>
               </div>
@@ -600,7 +600,7 @@ const ClassTeacherDashboard = () => {
                   </div>
                   <div>
                     <p className="text-2xl font-bold text-foreground">{absentCount}</p>
-                    <p className="text-sm text-muted-foreground">Absent Today</p>
+                    <p className="text-sm text-muted-foreground">{t("classTeacherDashboard.absentToday")}</p>
                   </div>
                 </div>
               </div>
@@ -640,9 +640,9 @@ const ClassTeacherDashboard = () => {
               <div className="bg-card rounded-xl p-6 shadow-card border border-border max-w-2xl mx-auto">
                 <EmptyState
                   icon={Calendar}
-                  title="No Students to Mark Attendance"
-                  description="Add students to your class first, then you can mark their daily attendance."
-                  actionLabel="Add Students"
+                  title={t("classTeacherDashboard.noStudentsAttendance")}
+                  description={t("classTeacherDashboard.noStudentsAttendanceDesc")}
+                  actionLabel={t("classTeacherDashboard.addStudents")}
                   onAction={() => setActiveTab("students")}
                 />
               </div>
@@ -650,9 +650,9 @@ const ClassTeacherDashboard = () => {
               <div className="bg-card rounded-xl p-6 shadow-card border border-border max-w-2xl mx-auto" data-tour="ct-attendance">
                 <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 mb-6">
                   <div>
-                    <h2 className="text-xl font-bold text-foreground">Mark Attendance</h2>
+                    <h2 className="text-xl font-bold text-foreground">{t("classTeacherDashboard.markAttendance")}</h2>
                     {attendanceExists && (
-                      <p className="text-xs text-success mt-1">Attendance already marked for today</p>
+                      <p className="text-xs text-success mt-1">{t("classTeacherDashboard.attendanceMarkedToday")}</p>
                     )}
                   </div>
                   <span className="text-sm text-muted-foreground">
@@ -685,7 +685,7 @@ const ClassTeacherDashboard = () => {
                         <span className={`px-3 py-1 rounded-lg text-sm font-medium ${
                           isPresent ? 'bg-success text-success-foreground' : 'bg-destructive text-destructive-foreground'
                         }`}>
-                          {isPresent ? 'Present' : 'Absent'}
+                          {isPresent ? t("classTeacherDashboard.present") : t("classTeacherDashboard.absent")}
                         </span>
                       </div>
                     );
@@ -696,14 +696,14 @@ const ClassTeacherDashboard = () => {
                   className="w-full bg-role-class-teacher text-primary-foreground hover:opacity-90"
                   onClick={handleSaveAttendance}
                   loading={isSavingAttendance}
-                  loadingText="Saving..."
+                  loadingText={t("classTeacherDashboard.saving")}
                   data-tour="ct-save-attendance"
                 >
-                  {attendanceExists ? 'Update Attendance' : 'Save Attendance'}
+                  {attendanceExists ? t("classTeacherDashboard.updateAttendance") : t("classTeacherDashboard.saveAttendance")}
                 </LoadingButton>
 
                 <p className="text-xs text-muted-foreground text-center mt-4">
-                  Attendance can be edited on the same day
+                  {t("classTeacherDashboard.attendanceCanEdit")}
                 </p>
               </div>
             )}
@@ -715,14 +715,14 @@ const ClassTeacherDashboard = () => {
               <div className="bg-card rounded-xl p-6 shadow-card border border-border" data-tour="ct-add-student">
                 <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
                   <UserPlus className="w-5 h-5 text-role-class-teacher" />
-                  Add New Student
+                  {t("classTeacherDashboard.addNewStudent")}
                 </h2>
 
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label>Student Name</Label>
+                    <Label>{t("classTeacherDashboard.studentName")}</Label>
                     <Input
-                      placeholder="Enter student name"
+                      placeholder={t("classTeacherDashboard.enterStudentName")}
                       value={newStudentName}
                       onChange={(e) => setNewStudentName(e.target.value)}
                       disabled={isSubmitting}
@@ -730,9 +730,9 @@ const ClassTeacherDashboard = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Student ID</Label>
+                    <Label>{t("classTeacherDashboard.studentId")}</Label>
                     <Input
-                      placeholder="e.g., STU-006"
+                      placeholder={t("classTeacherDashboard.studentIdPlaceholder")}
                       value={newStudentId}
                       onChange={(e) => setNewStudentId(e.target.value)}
                       disabled={isSubmitting}
@@ -740,16 +740,16 @@ const ClassTeacherDashboard = () => {
                   </div>
 
                   <p className="text-sm text-muted-foreground bg-secondary/50 p-3 rounded-lg">
-                    Login email: studentid@student.school. Password: Student ID (padded to 8 chars if shorter).
+                    {t("classTeacherDashboard.loginCredentialsInfo")}
                   </p>
 
                   <LoadingButton
                     className="w-full bg-role-class-teacher text-primary-foreground hover:opacity-90"
                     onClick={handleAddStudent}
                     loading={isSubmitting}
-                    loadingText="Adding..."
+                    loadingText={t("classTeacherDashboard.adding")}
                   >
-                    Add Student
+                    {t("classTeacherDashboard.addStudent")}
                   </LoadingButton>
                 </div>
               </div>
@@ -758,17 +758,17 @@ const ClassTeacherDashboard = () => {
               <div>
                 {!hasStudents ? (
                   <OnboardingChecklist
-                    title="Getting Started"
-                    subtitle="Complete these steps to set up your class"
+                    title={t("classTeacherDashboard.gettingStarted")}
+                    subtitle={t("classTeacherDashboard.completeSteps")}
                     items={checklistItems}
                   />
                 ) : (
                   <>
                     <FadeInView className="flex justify-between items-center mb-4">
-                      <h2 className="text-xl font-bold text-foreground">Student List ({students.length})</h2>
+                      <h2 className="text-xl font-bold text-foreground">{t("classTeacherDashboard.studentListCount", { count: students.length })}</h2>
                       <Button variant="outline" size="sm" className="gap-2" onClick={() => window.print()}>
                         <Printer className="w-4 h-4" />
-                        Print List
+                        {t("classTeacherDashboard.printList")}
                       </Button>
                     </FadeInView>
 
@@ -778,7 +778,7 @@ const ClassTeacherDashboard = () => {
                           <div className="bg-card rounded-xl p-4 shadow-card border border-border flex items-center justify-between">
                           <div>
                             <p className="font-medium text-foreground">{student.full_name}</p>
-                            <p className="text-xs text-muted-foreground">ID: {student.student_id}</p>
+                            <p className="text-xs text-muted-foreground">{t("classTeacherDashboard.idPrefix", { id: student.student_id })}</p>
                           </div>
 
                           <AlertDialog>
@@ -789,18 +789,18 @@ const ClassTeacherDashboard = () => {
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                               <AlertDialogHeader>
-                                <AlertDialogTitle>Remove Student?</AlertDialogTitle>
+                                <AlertDialogTitle>{t("classTeacherDashboard.removeStudent")}</AlertDialogTitle>
                                 <AlertDialogDescription>
-                                  Are you sure you want to remove {student.full_name} from the class? This action cannot be undone.
+                                  {t("classTeacherDashboard.removeStudentConfirm", { name: student.full_name })}
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
                               <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogCancel>{t("classTeacherDashboard.cancel")}</AlertDialogCancel>
                                 <AlertDialogAction
                                   className="bg-destructive text-destructive-foreground"
                                   onClick={() => handleRemoveStudent(student)}
                                 >
-                                  Remove
+                                  {t("classTeacherDashboard.remove")}
                                 </AlertDialogAction>
                               </AlertDialogFooter>
                             </AlertDialogContent>
@@ -826,7 +826,7 @@ const ClassTeacherDashboard = () => {
 
           {/* Analytics Tab */}
           <TabsContent value="analytics" className="animate-fade-in">
-            <h2 className="text-xl font-bold text-foreground mb-6">Class Analytics</h2>
+            <h2 className="text-xl font-bold text-foreground mb-6">{t("classTeacherDashboard.classAnalytics")}</h2>
             {profile?.school_id && assignedClass && (
               <AnalyticsDashboard
                 schoolId={profile.school_id}

@@ -152,7 +152,7 @@ const StudentDashboard = () => {
         id: student.id,
         studentId: student.student_id,
         name: student.full_name,
-        className: classInfo ? `${classInfo.name}-${classInfo.section}` : "Not Assigned",
+        className: classInfo ? `${classInfo.name}-${classInfo.section}` : t("studentDashboard.notAssigned"),
         classId: student.class_id,
       });
 
@@ -168,8 +168,8 @@ const StudentDashboard = () => {
       if (import.meta.env.DEV) console.error("Error:", error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Could not load your dashboard. Check your connection and refresh the page.",
+        title: t("studentDashboard.error"),
+        description: t("studentDashboard.dashboardError"),
       });
     } finally {
       setLoading(false);
@@ -362,8 +362,8 @@ const StudentDashboard = () => {
         if (import.meta.env.DEV) console.error("Error fetching exams:", examsError);
         toast({
           variant: "destructive",
-          title: "Error",
-          description: "Could not load your exam results. Check your connection and try again.",
+          title: t("studentDashboard.error"),
+          description: t("studentDashboard.examLoadError"),
         });
         return;
       }
@@ -414,8 +414,8 @@ const StudentDashboard = () => {
       if (import.meta.env.DEV) console.error("Error fetching exam results:", error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Could not process exam results. Refresh the page to try again.",
+        title: t("studentDashboard.error"),
+        description: t("studentDashboard.examProcessError"),
       });
     }
   };
@@ -442,8 +442,8 @@ const StudentDashboard = () => {
     if (file.size > maxSize) {
       toast({
         variant: "destructive",
-        title: "File Too Large",
-        description: "Maximum file size is 10MB.",
+        title: t("studentDashboard.fileTooLarge"),
+        description: t("studentDashboard.fileTooLargeDesc"),
       });
       return;
     }
@@ -451,8 +451,8 @@ const StudentDashboard = () => {
     if (!allowedTypes.includes(file.type)) {
       toast({
         variant: "destructive",
-        title: "Invalid File Type",
-        description: "Please upload PDF, Word, or image files only.",
+        title: t("studentDashboard.invalidFileType"),
+        description: t("studentDashboard.invalidFileTypeDesc"),
       });
       return;
     }
@@ -517,8 +517,8 @@ const StudentDashboard = () => {
       }
 
       toast({
-        title: "Homework Submitted",
-        description: "Your homework has been submitted successfully.",
+        title: t("studentDashboard.homeworkSubmitted"),
+        description: t("studentDashboard.homeworkSubmittedDesc"),
       });
 
       // Refresh homework list
@@ -528,8 +528,8 @@ const StudentDashboard = () => {
       if (import.meta.env.DEV) console.error("Upload error:", error);
       toast({
         variant: "destructive",
-        title: "Upload Failed",
-        description: "Could not upload your homework. Check that the file is under 10MB and try again.",
+        title: t("studentDashboard.uploadFailed"),
+        description: t("studentDashboard.uploadFailedDesc"),
       });
     } finally {
       setUploadingId(null);
@@ -565,21 +565,21 @@ const StudentDashboard = () => {
   const fabActions = [
     {
       id: "refresh",
-      label: "Refresh Data",
+      label: t("studentDashboard.refreshData"),
       icon: RefreshCw,
       onClick: () => fetchStudentData(),
       color: "bg-blue-500 text-white",
     },
     {
       id: "homework",
-      label: "View Homework",
+      label: t("studentDashboard.viewHomework"),
       icon: BookOpen,
       onClick: () => setActiveTab("homework"),
       color: "bg-amber-500 text-white",
     },
     {
       id: "attendance",
-      label: "Check Attendance",
+      label: t("studentDashboard.checkAttendance"),
       icon: Calendar,
       onClick: () => setActiveTab("attendance"),
       color: "bg-green-500 text-white",
@@ -629,12 +629,12 @@ const StudentDashboard = () => {
         {!hasSubjects && (
           <WelcomeBanner
             icon={Sparkles}
-            title="Welcome to Your Student Portal!"
-            description="Your class teacher will add you to subjects soon. Once enrolled, you'll see your homework, attendance, and marks here."
+            title={t("studentDashboard.welcomeTitle")}
+            description={t("studentDashboard.welcomeDesc")}
             tips={[
-              "Check back regularly for homework assignments",
-              "Your attendance will be marked daily by your class teacher",
-              "View your marks after teachers grade your homework",
+              t("studentDashboard.welcomeTip1"),
+              t("studentDashboard.welcomeTip2"),
+              t("studentDashboard.welcomeTip3"),
             ]}
             accentColor="bg-primary"
             storageKey="student-welcome-dismissed"
@@ -691,15 +691,15 @@ const StudentDashboard = () => {
               <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                 <EmptyState
                   icon={BookOpen}
-                  title="No Subjects Enrolled Yet"
-                  description="Your class teacher will add you to subjects. Once enrolled, your homework assignments will appear here."
+                  title={t("studentDashboard.noSubjectsTitle")}
+                  description={t("studentDashboard.noSubjectsDesc")}
                 />
               </div>
             ) : (
               <>
                 <FadeInView className="mb-6">
-                  <h2 className="text-xl font-bold text-foreground mb-2">Your Subjects</h2>
-                  <p className="text-muted-foreground text-sm">{subjects.length} subjects enrolled</p>
+                  <h2 className="text-xl font-bold text-foreground mb-2">{t("studentDashboard.yourSubjects")}</h2>
+                  <p className="text-muted-foreground text-sm">{t("studentDashboard.subjectsEnrolled", { count: subjects.length })}</p>
                 </FadeInView>
 
                 <StaggerContainer className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
@@ -714,14 +714,14 @@ const StudentDashboard = () => {
                             </div>
                             <BookOpen className="w-5 h-5 text-primary" />
                           </div>
-                          <p className="text-sm text-muted-foreground mb-3">Teacher: {subject.teacher}</p>
+                          <p className="text-sm text-muted-foreground mb-3">{t("studentDashboard.teacherLabel", { name: subject.teacher })}</p>
                           {subject.pending > 0 ? (
                             <div className="bg-warning/10 text-warning px-3 py-1.5 rounded-lg text-sm font-medium">
-                              {subject.pending} homework pending
+                              {t("studentDashboard.homeworkPending", { count: subject.pending })}
                             </div>
                           ) : (
                             <div className="bg-success/10 text-success px-3 py-1.5 rounded-lg text-sm font-medium">
-                              All caught up!
+                              {t("studentDashboard.allCaughtUp")}
                             </div>
                           )}
                         </div>
@@ -734,7 +734,7 @@ const StudentDashboard = () => {
                   <div className="flex items-center justify-between">
                     <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
                       <Clock className="w-5 h-5 text-primary" />
-                      All Homework ({homeworks.length})
+                      {t("studentDashboard.allHomework", { count: homeworks.length })}
                     </h2>
                     <div className="flex gap-2" data-tour="student-view-toggle">
                       <Button
@@ -744,7 +744,7 @@ const StudentDashboard = () => {
                         className={homeworkView === "list" ? "bg-primary" : ""}
                       >
                         <BookOpen className="w-4 h-4 mr-1" />
-                        List
+                        {t("studentDashboard.list")}
                       </Button>
                       <Button
                         variant={homeworkView === "calendar" ? "default" : "outline"}
@@ -753,7 +753,7 @@ const StudentDashboard = () => {
                         className={homeworkView === "calendar" ? "bg-primary" : ""}
                       >
                         <CalendarDays className="w-4 h-4 mr-1" />
-                        Calendar
+                        {t("studentDashboard.calendar")}
                       </Button>
                     </div>
                   </div>
@@ -791,11 +791,11 @@ const StudentDashboard = () => {
                             </span>
                           ) : hw.status === "submitted" ? (
                             <span className="inline-flex items-center gap-1 bg-success/10 text-success px-2 py-1 rounded-lg text-xs font-medium">
-                              <CheckCircle className="w-3 h-3" /> Submitted
+                              <CheckCircle className="w-3 h-3" /> {t("studentDashboard.submitted")}
                             </span>
                           ) : (
                             <span className="inline-flex items-center gap-1 bg-warning/10 text-warning px-2 py-1 rounded-lg text-xs font-medium">
-                              <AlertCircle className="w-3 h-3" /> Pending
+                              <AlertCircle className="w-3 h-3" /> {t("studentDashboard.pending")}
                             </span>
                           )}
                         </div>
@@ -804,7 +804,7 @@ const StudentDashboard = () => {
                           <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{hw.description}</p>
                         )}
 
-                        <p className="text-sm text-muted-foreground mb-4">Due: {hw.dueDate}</p>
+                        <p className="text-sm text-muted-foreground mb-4">{t("studentDashboard.due", { date: hw.dueDate })}</p>
 
                         {hw.remarks && (
                           <p className="text-sm text-primary mb-3 italic">"{hw.remarks}"</p>
@@ -833,11 +833,11 @@ const StudentDashboard = () => {
                               className="w-full bg-gradient-primary text-primary-foreground shadow-button"
                               onClick={() => handleFileSelect(hw.id)}
                               loading={uploadingId === hw.id}
-                              loadingText="Uploading..."
+                              loadingText={t("studentDashboard.uploading")}
                               data-tour="student-upload-btn"
                             >
                               <Upload className="w-4 h-4 mr-2" />
-                              Upload Answer
+                              {t("studentDashboard.uploadAnswer")}
                             </LoadingButton>
                           </>
                         )}
@@ -849,8 +849,8 @@ const StudentDashboard = () => {
                   <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                     <EmptyState
                       icon={CheckCircle}
-                      title="No Homework Yet"
-                      description="Your teachers haven't assigned any homework yet."
+                      title={t("studentDashboard.noHomeworkTitle")}
+                      description={t("studentDashboard.noHomeworkDesc")}
                     />
                   </div>
                 )}
@@ -864,14 +864,14 @@ const StudentDashboard = () => {
               <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                 <EmptyState
                   icon={Calendar}
-                  title="No Attendance Records Yet"
-                  description="Your attendance will appear here once your class teacher starts marking daily attendance."
+                  title={t("studentDashboard.noAttendanceTitle")}
+                  description={t("studentDashboard.noAttendanceDesc")}
                 />
               </div>
             ) : (
               <>
                 <div className="bg-card rounded-xl p-6 shadow-card border border-border mb-8">
-                  <h2 className="text-xl font-bold text-foreground mb-6">Attendance Overview</h2>
+                  <h2 className="text-xl font-bold text-foreground mb-6">{t("studentDashboard.attendanceOverview")}</h2>
                   <div className="flex flex-col md:flex-row gap-8 items-center">
                     <div className="relative w-32 h-32 sm:w-40 sm:h-40">
                       <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
@@ -896,24 +896,24 @@ const StudentDashboard = () => {
                       </svg>
                       <div className="absolute inset-0 flex flex-col items-center justify-center">
                         <span className="text-2xl sm:text-3xl font-bold text-primary">{attendanceData.percentage}%</span>
-                        <span className="text-xs text-muted-foreground">Attendance</span>
+                        <span className="text-xs text-muted-foreground">{t("studentDashboard.attendanceLabel")}</span>
                       </div>
                     </div>
                     <div className="flex-1 space-y-4">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <span className="w-3 h-3 bg-primary rounded-full"></span>
-                          <span className="text-foreground">Present</span>
+                          <span className="text-foreground">{t("studentDashboard.present")}</span>
                         </div>
-                        <span className="font-semibold text-foreground">{attendanceData.present} days</span>
+                        <span className="font-semibold text-foreground">{t("studentDashboard.daysCount", { count: attendanceData.present })}</span>
                       </div>
                       <Progress value={(attendanceData.present / (attendanceData.present + attendanceData.absent)) * 100} className="h-2" />
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <span className="w-3 h-3 bg-destructive rounded-full"></span>
-                          <span className="text-foreground">Absent</span>
+                          <span className="text-foreground">{t("studentDashboard.absent")}</span>
                         </div>
-                        <span className="font-semibold text-foreground">{attendanceData.absent} days</span>
+                        <span className="font-semibold text-foreground">{t("studentDashboard.daysCount", { count: attendanceData.absent })}</span>
                       </div>
                       <Progress value={(attendanceData.absent / (attendanceData.present + attendanceData.absent)) * 100} className="h-2 [&>div]:bg-destructive" />
                     </div>
@@ -921,7 +921,7 @@ const StudentDashboard = () => {
                 </div>
 
                 <FadeInView>
-                  <h2 className="text-xl font-bold text-foreground mb-4">Daily Attendance Record</h2>
+                  <h2 className="text-xl font-bold text-foreground mb-4">{t("studentDashboard.dailyRecord")}</h2>
                 </FadeInView>
                 <StaggerContainer className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {recentAttendance.map((record, index) => (
@@ -942,7 +942,7 @@ const StudentDashboard = () => {
                               : "bg-destructive text-destructive-foreground"
                           }`}
                         >
-                          {record.status === "present" ? "Present" : "Absent"}
+                          {record.status === "present" ? t("studentDashboard.present") : t("studentDashboard.absent")}
                         </span>
                       </div>
                     </StaggerItem>
@@ -958,8 +958,8 @@ const StudentDashboard = () => {
               <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                 <EmptyState
                   icon={BarChart3}
-                  title="No Marks Available Yet"
-                  description="Your homework and exam marks will appear here after teachers grade your work."
+                  title={t("studentDashboard.noMarksTitle")}
+                  description={t("studentDashboard.noMarksDesc")}
                 />
               </div>
             ) : (
@@ -982,8 +982,8 @@ const StudentDashboard = () => {
                 {hasMarks && (
                   <>
                     <FadeInView className="mb-6">
-                      <h2 className="text-xl font-bold text-foreground mb-2">Homework Marks</h2>
-                      <p className="text-muted-foreground text-sm">Your marks for submitted homework (out of 10)</p>
+                      <h2 className="text-xl font-bold text-foreground mb-2">{t("studentDashboard.homeworkMarks")}</h2>
+                      <p className="text-muted-foreground text-sm">{t("studentDashboard.homeworkMarksDesc")}</p>
                     </FadeInView>
 
                     <StaggerContainer className="grid sm:grid-cols-2 gap-4">
@@ -999,7 +999,7 @@ const StudentDashboard = () => {
                           </div>
                           <div className="mb-3">
                             <div className="flex justify-between text-sm mb-1">
-                              <span className="text-muted-foreground">Score</span>
+                              <span className="text-muted-foreground">{t("studentDashboard.score")}</span>
                               <span className="font-semibold text-primary">{mark.marks}/{mark.maxMarks}</span>
                             </div>
                             <Progress value={(mark.marks / mark.maxMarks) * 100} className="h-3" />
@@ -1018,8 +1018,8 @@ const StudentDashboard = () => {
                 {hasExamResults && (
                   <>
                     <FadeInView className="mb-6">
-                      <h2 className="text-xl font-bold text-foreground mb-2">Exam Results</h2>
-                      <p className="text-muted-foreground text-sm">Your results from tests and exams</p>
+                      <h2 className="text-xl font-bold text-foreground mb-2">{t("studentDashboard.examResults")}</h2>
+                      <p className="text-muted-foreground text-sm">{t("studentDashboard.examResultsDesc")}</p>
                     </FadeInView>
 
                     <StaggerContainer className="grid sm:grid-cols-2 gap-4">
@@ -1032,19 +1032,19 @@ const StudentDashboard = () => {
                               <p className="text-sm text-muted-foreground">{result.subject}</p>
                             </div>
                             <span className={`text-xs px-2 py-1 rounded-full ${getExamTypeBadgeColor(result.examType)}`}>
-                              {result.examType === 'weekly_daily' ? 'Weekly' : result.examType === 'monthly_midterm' ? 'Monthly' : 'Semester'}
+                              {result.examType === 'weekly_daily' ? t("studentDashboard.weekly") : result.examType === 'monthly_midterm' ? t("studentDashboard.monthly") : t("studentDashboard.semester")}
                             </span>
                           </div>
                           <p className="text-xs text-muted-foreground mb-3">{result.examDate}</p>
                           {result.isAbsent ? (
                             <div className="bg-destructive/10 text-destructive px-3 py-2 rounded-lg text-sm">
-                              Absent
+                              {t("studentDashboard.absent")}
                             </div>
                           ) : result.marksObtained !== null ? (
                             <>
                               <div className="mb-3">
                                 <div className="flex justify-between text-sm mb-1">
-                                  <span className="text-muted-foreground">Score</span>
+                                  <span className="text-muted-foreground">{t("studentDashboard.score")}</span>
                                   <span className="font-semibold text-primary">{result.marksObtained}/{result.maxMarks}</span>
                                 </div>
                                 <Progress value={(result.marksObtained / result.maxMarks) * 100} className="h-3" />
@@ -1055,7 +1055,7 @@ const StudentDashboard = () => {
                             </>
                           ) : (
                             <div className="bg-muted/50 text-muted-foreground px-3 py-2 rounded-lg text-sm">
-                              Not yet graded
+                              {t("studentDashboard.notYetGraded")}
                             </div>
                           )}
                         </div>
@@ -1074,8 +1074,8 @@ const StudentDashboard = () => {
               <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                 <EmptyState
                   icon={Award}
-                  title="No Yearly Results Yet"
-                  description="Your semester exams and monthly test results will appear here."
+                  title={t("studentDashboard.noYearlyTitle")}
+                  description={t("studentDashboard.noYearlyDesc")}
                 />
               </div>
             ) : (
@@ -1088,7 +1088,7 @@ const StudentDashboard = () => {
                     className="gap-2"
                   >
                     <Printer className="w-4 h-4" />
-                    Print Result Card
+                    {t("studentDashboard.printResultCard")}
                   </Button>
                 </div>
                 {/* Mobile Result Cards (shown only on mobile) */}
@@ -1152,8 +1152,8 @@ const StudentDashboard = () => {
                           <Award className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" />
                         </div>
                       </div>
-                      <h1 className="text-lg sm:text-2xl font-serif font-bold tracking-wide">ACADEMIC RESULT CARD</h1>
-                      <p className="text-indigo-200 text-xs sm:text-sm mt-1">Official Academic Record</p>
+                      <h1 className="text-lg sm:text-2xl font-serif font-bold tracking-wide">{t("studentDashboard.academicResultCard")}</h1>
+                      <p className="text-indigo-200 text-xs sm:text-sm mt-1">{t("studentDashboard.officialRecord")}</p>
                     </div>
                   </div>
 
@@ -1161,19 +1161,19 @@ const StudentDashboard = () => {
                   <div className="px-4 sm:px-8 py-4 sm:py-6 border-b-2 border-dashed border-slate-300 bg-white/50">
                     <div className="grid grid-cols-2 gap-3 sm:gap-4">
                       <div>
-                        <p className="text-xs text-slate-500 uppercase tracking-wide">Student Name</p>
+                        <p className="text-xs text-slate-500 uppercase tracking-wide">{t("studentDashboard.studentName")}</p>
                         <p className="font-semibold text-slate-800 text-sm sm:text-lg">{studentData?.name}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-xs text-slate-500 uppercase tracking-wide">Class</p>
+                        <p className="text-xs text-slate-500 uppercase tracking-wide">{t("studentDashboard.class")}</p>
                         <p className="font-semibold text-slate-800 text-sm sm:text-lg">{studentData?.className}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-slate-500 uppercase tracking-wide">Student ID</p>
+                        <p className="text-xs text-slate-500 uppercase tracking-wide">{t("studentDashboard.studentId")}</p>
                         <p className="font-mono text-slate-700 text-sm">{studentData?.studentId}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-xs text-slate-500 uppercase tracking-wide">Academic Year</p>
+                        <p className="text-xs text-slate-500 uppercase tracking-wide">{t("studentDashboard.academicYear")}</p>
                         <p className="font-mono text-slate-700 text-sm">{new Date().getFullYear()}</p>
                       </div>
                     </div>
@@ -1186,19 +1186,19 @@ const StudentDashboard = () => {
                         <div className="w-7 h-7 sm:w-8 sm:h-8 bg-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
                           <Award className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
                         </div>
-                        <h2 className="text-sm sm:text-lg font-bold text-slate-800 uppercase tracking-wide">Semester / Final Examinations</h2>
+                        <h2 className="text-sm sm:text-lg font-bold text-slate-800 uppercase tracking-wide">{t("studentDashboard.semesterExams")}</h2>
                       </div>
 
                       <div className="bg-white rounded-lg border border-slate-200 overflow-x-auto">
                         <table className="w-full min-w-[560px]">
                           <thead>
                             <tr className="bg-purple-50 border-b border-purple-100">
-                              <th className="text-left py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">Subject</th>
-                              <th className="text-left py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">Exam</th>
-                              <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">Max</th>
-                              <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">Obtained</th>
+                              <th className="text-left py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">{t("studentDashboard.subject")}</th>
+                              <th className="text-left py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">{t("studentDashboard.exam")}</th>
+                              <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">{t("studentDashboard.max")}</th>
+                              <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">{t("studentDashboard.obtained")}</th>
                               <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">%</th>
-                              <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">Grade</th>
+                              <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">{t("studentDashboard.grade")}</th>
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-slate-100">
@@ -1213,7 +1213,7 @@ const StudentDashboard = () => {
                                   <td className="py-3 px-4 text-slate-600 text-sm">{result.title}</td>
                                   <td className="py-3 px-4 text-center text-slate-600">{result.maxMarks}</td>
                                   <td className="py-3 px-4 text-center font-semibold text-slate-800">
-                                    {result.isAbsent ? <span className="text-red-500">Absent</span> : result.marksObtained ?? '-'}
+                                    {result.isAbsent ? <span className="text-red-500">{t("studentDashboard.absent")}</span> : result.marksObtained ?? '-'}
                                   </td>
                                   <td className="py-3 px-4 text-center text-slate-600">
                                     {percentage !== null ? `${percentage.toFixed(1)}%` : '-'}
@@ -1228,7 +1228,7 @@ const StudentDashboard = () => {
                           {semesterResults.filter(r => r.marksObtained !== null && !r.isAbsent).length > 0 && (
                             <tfoot>
                               <tr className="bg-purple-100 border-t-2 border-purple-200">
-                                <td colSpan={2} className="py-3 px-4 font-bold text-purple-900">TOTAL</td>
+                                <td colSpan={2} className="py-3 px-4 font-bold text-purple-900">{t("studentDashboard.total")}</td>
                                 <td className="py-3 px-4 text-center font-bold text-purple-900">
                                   {semesterResults.filter(r => r.marksObtained !== null && !r.isAbsent).reduce((sum, r) => sum + r.maxMarks, 0)}
                                 </td>
@@ -1271,19 +1271,19 @@ const StudentDashboard = () => {
                         <div className="w-7 h-7 sm:w-8 sm:h-8 bg-amber-500 rounded-full flex items-center justify-center flex-shrink-0">
                           <BarChart3 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
                         </div>
-                        <h2 className="text-sm sm:text-lg font-bold text-slate-800 uppercase tracking-wide">Monthly Tests / Midterms</h2>
+                        <h2 className="text-sm sm:text-lg font-bold text-slate-800 uppercase tracking-wide">{t("studentDashboard.monthlyTests")}</h2>
                       </div>
 
                       <div className="bg-white rounded-lg border border-slate-200 overflow-x-auto">
                         <table className="w-full min-w-[560px]">
                           <thead>
                             <tr className="bg-amber-50 border-b border-amber-100">
-                              <th className="text-left py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">Subject</th>
-                              <th className="text-left py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">Test</th>
-                              <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">Max</th>
-                              <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">Obtained</th>
+                              <th className="text-left py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">{t("studentDashboard.subject")}</th>
+                              <th className="text-left py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">{t("studentDashboard.exam")}</th>
+                              <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">{t("studentDashboard.max")}</th>
+                              <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">{t("studentDashboard.obtained")}</th>
                               <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">%</th>
-                              <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">Grade</th>
+                              <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">{t("studentDashboard.grade")}</th>
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-slate-100">
@@ -1298,7 +1298,7 @@ const StudentDashboard = () => {
                                   <td className="py-3 px-4 text-slate-600 text-sm">{result.title}</td>
                                   <td className="py-3 px-4 text-center text-slate-600">{result.maxMarks}</td>
                                   <td className="py-3 px-4 text-center font-semibold text-slate-800">
-                                    {result.isAbsent ? <span className="text-red-500">Absent</span> : result.marksObtained ?? '-'}
+                                    {result.isAbsent ? <span className="text-red-500">{t("studentDashboard.absent")}</span> : result.marksObtained ?? '-'}
                                   </td>
                                   <td className="py-3 px-4 text-center text-slate-600">
                                     {percentage !== null ? `${percentage.toFixed(1)}%` : '-'}
@@ -1313,7 +1313,7 @@ const StudentDashboard = () => {
                           {monthlyResults.filter(r => r.marksObtained !== null && !r.isAbsent).length > 0 && (
                             <tfoot>
                               <tr className="bg-amber-100 border-t-2 border-amber-200">
-                                <td colSpan={2} className="py-3 px-4 font-bold text-amber-900">TOTAL</td>
+                                <td colSpan={2} className="py-3 px-4 font-bold text-amber-900">{t("studentDashboard.total")}</td>
                                 <td className="py-3 px-4 text-center font-bold text-amber-900">
                                   {monthlyResults.filter(r => r.marksObtained !== null && !r.isAbsent).reduce((sum, r) => sum + r.maxMarks, 0)}
                                 </td>
@@ -1353,7 +1353,7 @@ const StudentDashboard = () => {
                   <div className="px-4 sm:px-8 py-4 sm:py-6 bg-slate-100/50">
                     <div className="flex flex-wrap justify-between items-start gap-4">
                       <div>
-                        <p className="text-xs text-slate-500 uppercase tracking-wide mb-2">Grading Scale</p>
+                        <p className="text-xs text-slate-500 uppercase tracking-wide mb-2">{t("studentDashboard.gradingScale")}</p>
                         <div className="flex flex-wrap gap-2 text-xs">
                           <span className="px-2 py-1 bg-green-100 text-green-700 rounded">A+ (90-100%)</span>
                           <span className="px-2 py-1 bg-green-50 text-green-600 rounded">A (80-89%)</span>
@@ -1364,12 +1364,12 @@ const StudentDashboard = () => {
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-xs text-slate-500 uppercase tracking-wide mb-1">Generated On</p>
+                        <p className="text-xs text-slate-500 uppercase tracking-wide mb-1">{t("studentDashboard.generatedOn")}</p>
                         <p className="text-sm text-slate-600">{new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                       </div>
                     </div>
                     <div className="mt-6 pt-4 border-t border-slate-300 text-center">
-                      <p className="text-xs text-slate-400">This is a computer-generated document. For official records, please contact the school administration.</p>
+                      <p className="text-xs text-slate-400">{t("studentDashboard.computerGenerated")}</p>
                     </div>
                   </div>
                 </div>
@@ -1383,15 +1383,15 @@ const StudentDashboard = () => {
               <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                 <EmptyState
                   icon={Megaphone}
-                  title="No Notices Yet"
-                  description="School announcements and important updates will appear here."
+                  title={t("studentDashboard.noNoticesTitle")}
+                  description={t("studentDashboard.noNoticesDesc")}
                 />
               </div>
             ) : (
               <>
                 <FadeInView className="mb-6">
-                  <h2 className="text-xl font-bold text-foreground mb-2">School Notices</h2>
-                  <p className="text-muted-foreground text-sm">Important announcements and updates</p>
+                  <h2 className="text-xl font-bold text-foreground mb-2">{t("studentDashboard.schoolNotices")}</h2>
+                  <p className="text-muted-foreground text-sm">{t("studentDashboard.noticesDesc")}</p>
                 </FadeInView>
 
                 <StaggerContainer className="space-y-4">

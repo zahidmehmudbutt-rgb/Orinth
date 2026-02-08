@@ -163,8 +163,8 @@ const ParentDashboard = () => {
         if (import.meta.env.DEV) console.error('Error fetching children:', error);
         toast({
           variant: "destructive",
-          title: "Error",
-          description: "Could not load your children's data. Check your connection and refresh the page.",
+          title: t("parentDashboard.error"),
+          description: t("parentDashboard.loadError"),
         });
       } finally {
         setIsLoading(false);
@@ -278,8 +278,8 @@ const ParentDashboard = () => {
           if (import.meta.env.DEV) console.error('Error fetching exams:', examsError);
           toast({
             variant: "destructive",
-            title: "Error",
-            description: "Could not load exam results. Check your connection and try again.",
+            title: t("parentDashboard.error"),
+            description: t("parentDashboard.examLoadError"),
           });
           return;
         }
@@ -330,8 +330,8 @@ const ParentDashboard = () => {
         if (import.meta.env.DEV) console.error('Error fetching exam results:', error);
         toast({
           variant: "destructive",
-          title: "Error",
-          description: "Could not process exam results. Refresh the page to try again.",
+          title: t("parentDashboard.error"),
+          description: t("parentDashboard.examProcessError"),
         });
       }
     };
@@ -407,9 +407,9 @@ const ParentDashboard = () => {
           <Card>
             <CardContent className="py-12 text-center">
               <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-foreground mb-2">No Children Linked</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-2">{t("parentDashboard.noChildrenTitle")}</h3>
               <p className="text-muted-foreground">
-                No children have been linked to your account yet. Please contact the school administration.
+                {t("parentDashboard.noChildrenDesc")}
               </p>
             </CardContent>
           </Card>
@@ -419,7 +419,7 @@ const ParentDashboard = () => {
             {children.length > 1 && (
               <Card className="mb-6">
                 <CardHeader className="pb-3">
-                  <CardTitle className="text-base">Select Child</CardTitle>
+                  <CardTitle className="text-base">{t("parentDashboard.selectChild")}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="flex gap-2 flex-wrap" data-tour="parent-child-selector">
@@ -450,9 +450,9 @@ const ParentDashboard = () => {
                     <div>
                       <h2 className="text-xl font-bold">{selectedChild.full_name}</h2>
                       <p className="opacity-90">
-                        {selectedChild.class_name} {selectedChild.section && `- Section ${selectedChild.section}`}
+                        {selectedChild.class_name} {selectedChild.section && `- ${t("parentDashboard.section", { section: selectedChild.section })}`}
                       </p>
-                      <p className="opacity-70 text-sm">ID: {selectedChild.student_id}</p>
+                      <p className="opacity-70 text-sm">{t("parentDashboard.childId", { id: selectedChild.student_id })}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -497,14 +497,14 @@ const ParentDashboard = () => {
                   {/* Homework Section */}
                   <Card>
                     <CardHeader>
-                      <CardTitle>Homework & Assignments</CardTitle>
-                      <CardDescription>Recent homework and submission status</CardDescription>
+                      <CardTitle>{t("parentDashboard.homeworkTitle")}</CardTitle>
+                      <CardDescription>{t("parentDashboard.homeworkDesc")}</CardDescription>
                     </CardHeader>
                     <CardContent>
                       {homework.length === 0 ? (
                         <div className="text-center py-8 text-muted-foreground">
                           <FileText className="w-12 h-12 mx-auto mb-3 text-muted-foreground/40" />
-                          <p>No homework assignments yet</p>
+                          <p>{t("parentDashboard.noHomework")}</p>
                         </div>
                       ) : (
                         <StaggerContainer className="space-y-4">
@@ -519,34 +519,34 @@ const ParentDashboard = () => {
                                 {hw.submission?.submitted_at ? (
                                   <Badge className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">
                                     <CheckCircle2 className="w-3 h-3 mr-1" />
-                                    Submitted
+                                    {t("parentDashboard.submitted")}
                                   </Badge>
                                 ) : new Date(hw.due_date) < new Date() ? (
                                   <Badge variant="destructive">
                                     <XCircle className="w-3 h-3 mr-1" />
-                                    Overdue
+                                    {t("parentDashboard.overdue")}
                                   </Badge>
                                 ) : (
                                   <Badge variant="secondary">
                                     <Clock className="w-3 h-3 mr-1" />
-                                    Pending
+                                    {t("parentDashboard.pending")}
                                   </Badge>
                                 )}
                               </div>
                               <p className="text-sm text-muted-foreground mb-2">
-                                Due: {new Date(hw.due_date).toLocaleDateString()}
+                                {t("parentDashboard.due", { date: new Date(hw.due_date).toLocaleDateString() })}
                               </p>
                               {hw.submission?.marks !== null && hw.submission?.marks !== undefined && (
                                 <div className="mt-2 p-2 bg-muted rounded">
                                   <p className="text-sm">
-                                    <span className="font-medium">Marks:</span>{" "}
+                                    <span className="font-medium">{t("parentDashboard.marks")}</span>{" "}
                                     <span className={hw.submission.marks >= 7 ? "text-green-600 dark:text-green-400" : hw.submission.marks >= 5 ? "text-yellow-600 dark:text-yellow-400" : "text-red-600 dark:text-red-400"}>
                                       {hw.submission.marks}/10
                                     </span>
                                   </p>
                                   {hw.submission.remarks && (
                                     <p className="text-sm text-muted-foreground mt-1">
-                                      <span className="font-medium">Remarks:</span> {hw.submission.remarks}
+                                      <span className="font-medium">{t("parentDashboard.remarks")}</span> {hw.submission.remarks}
                                     </p>
                                   )}
                                 </div>
@@ -562,14 +562,14 @@ const ParentDashboard = () => {
                   {/* Exam Results Section */}
                   <Card>
                     <CardHeader>
-                      <CardTitle>Test & Exam Results</CardTitle>
-                      <CardDescription>All test and exam results</CardDescription>
+                      <CardTitle>{t("parentDashboard.examResultsTitle")}</CardTitle>
+                      <CardDescription>{t("parentDashboard.examResultsDesc")}</CardDescription>
                     </CardHeader>
                     <CardContent>
                       {!hasExamResults ? (
                         <div className="text-center py-8 text-muted-foreground">
                           <Award className="w-12 h-12 mx-auto mb-3 text-muted-foreground/40" />
-                          <p>No exam results yet</p>
+                          <p>{t("parentDashboard.noExamResults")}</p>
                         </div>
                       ) : (
                         <StaggerContainer className="space-y-4">
@@ -582,18 +582,18 @@ const ParentDashboard = () => {
                                   <p className="text-sm text-muted-foreground">{result.subject}</p>
                                 </div>
                                 <span className={`text-xs px-2 py-1 rounded-full ${getExamTypeBadgeColor(result.examType)}`}>
-                                  {result.examType === 'weekly_daily' ? 'Weekly' : result.examType === 'monthly_midterm' ? 'Monthly' : 'Semester'}
+                                  {result.examType === 'weekly_daily' ? t("parentDashboard.weekly") : result.examType === 'monthly_midterm' ? t("parentDashboard.monthly") : t("parentDashboard.semester")}
                                 </span>
                               </div>
                               <p className="text-sm text-muted-foreground mb-2">{result.examDate}</p>
                               {result.isAbsent ? (
                                 <div className="mt-2 p-2 bg-destructive/10 rounded">
-                                  <p className="text-sm text-destructive">Absent</p>
+                                  <p className="text-sm text-destructive">{t("parentDashboard.absent")}</p>
                                 </div>
                               ) : result.marksObtained !== null ? (
                                 <div className="mt-2 p-2 bg-muted rounded">
                                   <div className="flex justify-between items-center mb-2">
-                                    <span className="text-sm font-medium">Score:</span>
+                                    <span className="text-sm font-medium">{t("parentDashboard.score")}</span>
                                     <span className={`font-semibold ${
                                       (result.marksObtained / result.maxMarks) >= 0.7 ? 'text-green-600 dark:text-green-400' :
                                       (result.marksObtained / result.maxMarks) >= 0.5 ? 'text-yellow-600 dark:text-yellow-400' : 'text-red-600 dark:text-red-400'
@@ -604,13 +604,13 @@ const ParentDashboard = () => {
                                   <Progress value={(result.marksObtained / result.maxMarks) * 100} className="h-2" />
                                   {result.remarks && (
                                     <p className="text-sm text-muted-foreground mt-2">
-                                      <span className="font-medium">Remarks:</span> {result.remarks}
+                                      <span className="font-medium">{t("parentDashboard.remarks")}</span> {result.remarks}
                                     </p>
                                   )}
                                 </div>
                               ) : (
                                 <div className="mt-2 p-2 bg-muted rounded">
-                                  <p className="text-sm text-muted-foreground">Not yet graded</p>
+                                  <p className="text-sm text-muted-foreground">{t("parentDashboard.notYetGraded")}</p>
                                 </div>
                               )}
                             </div>
@@ -630,8 +630,8 @@ const ParentDashboard = () => {
                     <CardContent className="py-12">
                       <EmptyState
                         icon={Award}
-                        title="No Yearly Results Yet"
-                        description="Semester exams and monthly test results will appear here."
+                        title={t("parentDashboard.noYearlyTitle")}
+                        description={t("parentDashboard.noYearlyDesc")}
                       />
                     </CardContent>
                   </Card>
@@ -646,7 +646,7 @@ const ParentDashboard = () => {
                         data-tour="parent-print-btn"
                       >
                         <Printer className="w-4 h-4" />
-                        Print Result Card
+                        {t("parentDashboard.printResultCard")}
                       </Button>
                     </div>
                     {/* Mobile Result Cards (shown only on mobile) */}
@@ -710,8 +710,8 @@ const ParentDashboard = () => {
                               <Award className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" />
                             </div>
                           </div>
-                          <h1 className="text-lg sm:text-2xl font-serif font-bold tracking-wide">ACADEMIC RESULT CARD</h1>
-                          <p className="text-indigo-200 text-xs sm:text-sm mt-1">Official Academic Record</p>
+                          <h1 className="text-lg sm:text-2xl font-serif font-bold tracking-wide">{t("parentDashboard.academicResultCard")}</h1>
+                          <p className="text-indigo-200 text-xs sm:text-sm mt-1">{t("parentDashboard.officialRecord")}</p>
                         </div>
                       </div>
 
@@ -719,19 +719,19 @@ const ParentDashboard = () => {
                       <div className="px-4 sm:px-8 py-4 sm:py-6 border-b-2 border-dashed border-slate-300 bg-white/50">
                         <div className="grid grid-cols-2 gap-3 sm:gap-4">
                           <div>
-                            <p className="text-xs text-slate-500 uppercase tracking-wide">Student Name</p>
+                            <p className="text-xs text-slate-500 uppercase tracking-wide">{t("parentDashboard.studentName")}</p>
                             <p className="font-semibold text-slate-800 text-sm sm:text-lg">{selectedChild?.full_name}</p>
                           </div>
                           <div className="text-right">
-                            <p className="text-xs text-slate-500 uppercase tracking-wide">Class</p>
+                            <p className="text-xs text-slate-500 uppercase tracking-wide">{t("parentDashboard.class")}</p>
                             <p className="font-semibold text-slate-800 text-sm sm:text-lg">{selectedChild?.class_name} {selectedChild?.section && `- ${selectedChild.section}`}</p>
                           </div>
                           <div>
-                            <p className="text-xs text-slate-500 uppercase tracking-wide">Student ID</p>
+                            <p className="text-xs text-slate-500 uppercase tracking-wide">{t("parentDashboard.studentId")}</p>
                             <p className="font-mono text-slate-700 text-sm">{selectedChild?.student_id}</p>
                           </div>
                           <div className="text-right">
-                            <p className="text-xs text-slate-500 uppercase tracking-wide">Academic Year</p>
+                            <p className="text-xs text-slate-500 uppercase tracking-wide">{t("parentDashboard.academicYear")}</p>
                             <p className="font-mono text-slate-700 text-sm">{new Date().getFullYear()}</p>
                           </div>
                         </div>
@@ -744,19 +744,19 @@ const ParentDashboard = () => {
                             <div className="w-7 h-7 sm:w-8 sm:h-8 bg-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
                               <Award className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
                             </div>
-                            <h2 className="text-sm sm:text-lg font-bold text-slate-800 uppercase tracking-wide">Semester / Final Examinations</h2>
+                            <h2 className="text-sm sm:text-lg font-bold text-slate-800 uppercase tracking-wide">{t("parentDashboard.semesterExams")}</h2>
                           </div>
 
                           <div className="bg-white rounded-lg border border-slate-200 overflow-x-auto">
                             <table className="w-full min-w-[560px]">
                               <thead>
                                 <tr className="bg-purple-50 border-b border-purple-100">
-                                  <th className="text-left py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">Subject</th>
-                                  <th className="text-left py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">Exam</th>
-                                  <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">Max</th>
-                                  <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">Obtained</th>
-                                  <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">%</th>
-                                  <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">Grade</th>
+                                  <th className="text-left py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">{t("parentDashboard.subject")}</th>
+                                  <th className="text-left py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">{t("parentDashboard.exam")}</th>
+                                  <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">{t("parentDashboard.max")}</th>
+                                  <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">{t("parentDashboard.obtained")}</th>
+                                  <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">{t("parentDashboard.percentage")}</th>
+                                  <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-purple-900 uppercase tracking-wide">{t("parentDashboard.grade")}</th>
                                 </tr>
                               </thead>
                               <tbody className="divide-y divide-slate-100">
@@ -771,7 +771,7 @@ const ParentDashboard = () => {
                                       <td className="py-3 px-4 text-slate-600 text-sm">{result.title}</td>
                                       <td className="py-3 px-4 text-center text-slate-600">{result.maxMarks}</td>
                                       <td className="py-3 px-4 text-center font-semibold text-slate-800">
-                                        {result.isAbsent ? <span className="text-red-500">Absent</span> : result.marksObtained ?? '-'}
+                                        {result.isAbsent ? <span className="text-red-500">{t("parentDashboard.absent")}</span> : result.marksObtained ?? '-'}
                                       </td>
                                       <td className="py-3 px-4 text-center text-slate-600">
                                         {percentage !== null ? `${percentage.toFixed(1)}%` : '-'}
@@ -786,7 +786,7 @@ const ParentDashboard = () => {
                               {semesterResults.filter(r => r.marksObtained !== null && !r.isAbsent).length > 0 && (
                                 <tfoot>
                                   <tr className="bg-purple-100 border-t-2 border-purple-200">
-                                    <td colSpan={2} className="py-3 px-4 font-bold text-purple-900">TOTAL</td>
+                                    <td colSpan={2} className="py-3 px-4 font-bold text-purple-900">{t("parentDashboard.total")}</td>
                                     <td className="py-3 px-4 text-center font-bold text-purple-900">
                                       {semesterResults.filter(r => r.marksObtained !== null && !r.isAbsent).reduce((sum, r) => sum + r.maxMarks, 0)}
                                     </td>
@@ -829,19 +829,19 @@ const ParentDashboard = () => {
                             <div className="w-7 h-7 sm:w-8 sm:h-8 bg-amber-500 rounded-full flex items-center justify-center flex-shrink-0">
                               <BarChart3 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
                             </div>
-                            <h2 className="text-sm sm:text-lg font-bold text-slate-800 uppercase tracking-wide">Monthly Tests / Midterms</h2>
+                            <h2 className="text-sm sm:text-lg font-bold text-slate-800 uppercase tracking-wide">{t("parentDashboard.monthlyTests")}</h2>
                           </div>
 
                           <div className="bg-white rounded-lg border border-slate-200 overflow-x-auto">
                             <table className="w-full min-w-[560px]">
                               <thead>
                                 <tr className="bg-amber-50 border-b border-amber-100">
-                                  <th className="text-left py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">Subject</th>
-                                  <th className="text-left py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">Test</th>
-                                  <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">Max</th>
-                                  <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">Obtained</th>
-                                  <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">%</th>
-                                  <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">Grade</th>
+                                  <th className="text-left py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">{t("parentDashboard.subject")}</th>
+                                  <th className="text-left py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">{t("parentDashboard.test")}</th>
+                                  <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">{t("parentDashboard.max")}</th>
+                                  <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">{t("parentDashboard.obtained")}</th>
+                                  <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">{t("parentDashboard.percentage")}</th>
+                                  <th className="text-center py-2.5 px-3 sm:py-3 sm:px-4 text-xs font-semibold text-amber-900 uppercase tracking-wide">{t("parentDashboard.grade")}</th>
                                 </tr>
                               </thead>
                               <tbody className="divide-y divide-slate-100">
@@ -856,7 +856,7 @@ const ParentDashboard = () => {
                                       <td className="py-3 px-4 text-slate-600 text-sm">{result.title}</td>
                                       <td className="py-3 px-4 text-center text-slate-600">{result.maxMarks}</td>
                                       <td className="py-3 px-4 text-center font-semibold text-slate-800">
-                                        {result.isAbsent ? <span className="text-red-500">Absent</span> : result.marksObtained ?? '-'}
+                                        {result.isAbsent ? <span className="text-red-500">{t("parentDashboard.absent")}</span> : result.marksObtained ?? '-'}
                                       </td>
                                       <td className="py-3 px-4 text-center text-slate-600">
                                         {percentage !== null ? `${percentage.toFixed(1)}%` : '-'}
@@ -871,7 +871,7 @@ const ParentDashboard = () => {
                               {monthlyResults.filter(r => r.marksObtained !== null && !r.isAbsent).length > 0 && (
                                 <tfoot>
                                   <tr className="bg-amber-100 border-t-2 border-amber-200">
-                                    <td colSpan={2} className="py-3 px-4 font-bold text-amber-900">TOTAL</td>
+                                    <td colSpan={2} className="py-3 px-4 font-bold text-amber-900">{t("parentDashboard.total")}</td>
                                     <td className="py-3 px-4 text-center font-bold text-amber-900">
                                       {monthlyResults.filter(r => r.marksObtained !== null && !r.isAbsent).reduce((sum, r) => sum + r.maxMarks, 0)}
                                     </td>
@@ -911,7 +911,7 @@ const ParentDashboard = () => {
                       <div className="px-4 sm:px-8 py-4 sm:py-6 bg-slate-100/50">
                         <div className="flex flex-wrap justify-between items-start gap-4">
                           <div>
-                            <p className="text-xs text-slate-500 uppercase tracking-wide mb-2">Grading Scale</p>
+                            <p className="text-xs text-slate-500 uppercase tracking-wide mb-2">{t("parentDashboard.gradingScale")}</p>
                             <div className="flex flex-wrap gap-2 text-xs">
                               <span className="px-2 py-1 bg-green-100 text-green-700 rounded">A+ (90-100%)</span>
                               <span className="px-2 py-1 bg-green-50 text-green-600 rounded">A (80-89%)</span>
@@ -922,12 +922,12 @@ const ParentDashboard = () => {
                             </div>
                           </div>
                           <div className="text-right">
-                            <p className="text-xs text-slate-500 uppercase tracking-wide mb-1">Generated On</p>
+                            <p className="text-xs text-slate-500 uppercase tracking-wide mb-1">{t("parentDashboard.generatedOn")}</p>
                             <p className="text-sm text-slate-600">{new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                           </div>
                         </div>
                         <div className="mt-6 pt-4 border-t border-slate-300 text-center">
-                          <p className="text-xs text-slate-400">This is a computer-generated document. For official records, please contact the school administration.</p>
+                          <p className="text-xs text-slate-400">{t("parentDashboard.computerGenerated")}</p>
                         </div>
                       </div>
                     </div>
@@ -941,8 +941,8 @@ const ParentDashboard = () => {
                   {/* Attendance Summary */}
                   <Card>
                     <CardHeader>
-                      <CardTitle>Attendance Summary</CardTitle>
-                      <CardDescription>Last 30 days</CardDescription>
+                      <CardTitle>{t("parentDashboard.attendanceSummary")}</CardTitle>
+                      <CardDescription>{t("parentDashboard.last30Days")}</CardDescription>
                     </CardHeader>
                     <CardContent>
                       <div className="flex items-center justify-center mb-6">
@@ -975,15 +975,15 @@ const ParentDashboard = () => {
                       <div className="grid grid-cols-3 gap-4 text-center">
                         <div>
                           <p className="text-2xl font-bold text-foreground">{attendanceStats.total}</p>
-                          <p className="text-sm text-muted-foreground">Total Days</p>
+                          <p className="text-sm text-muted-foreground">{t("parentDashboard.totalDays")}</p>
                         </div>
                         <div>
                           <p className="text-2xl font-bold text-success">{attendanceStats.present}</p>
-                          <p className="text-sm text-muted-foreground">Present</p>
+                          <p className="text-sm text-muted-foreground">{t("parentDashboard.present")}</p>
                         </div>
                         <div>
                           <p className="text-2xl font-bold text-destructive">{attendanceStats.absent}</p>
-                          <p className="text-sm text-muted-foreground">Absent</p>
+                          <p className="text-sm text-muted-foreground">{t("parentDashboard.attendanceAbsent")}</p>
                         </div>
                       </div>
                     </CardContent>
@@ -992,14 +992,14 @@ const ParentDashboard = () => {
                   {/* Recent Attendance */}
                   <Card>
                     <CardHeader>
-                      <CardTitle>Recent Attendance</CardTitle>
-                      <CardDescription>Day by day record</CardDescription>
+                      <CardTitle>{t("parentDashboard.recentAttendance")}</CardTitle>
+                      <CardDescription>{t("parentDashboard.dayByDay")}</CardDescription>
                     </CardHeader>
                     <CardContent>
                       {attendance.length === 0 ? (
                         <div className="text-center py-8 text-muted-foreground">
                           <Calendar className="w-12 h-12 mx-auto mb-3 text-muted-foreground/40" />
-                          <p>No attendance records yet</p>
+                          <p>{t("parentDashboard.noAttendanceRecords")}</p>
                         </div>
                       ) : (
                         <div className="space-y-2 max-h-64 overflow-y-auto">
@@ -1013,9 +1013,9 @@ const ParentDashboard = () => {
                                 })}
                               </span>
                               {record.is_present ? (
-                                <Badge className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">Present</Badge>
+                                <Badge className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">{t("parentDashboard.present")}</Badge>
                               ) : (
-                                <Badge variant="destructive">Absent</Badge>
+                                <Badge variant="destructive">{t("parentDashboard.absent")}</Badge>
                               )}
                             </div>
                           ))}
@@ -1030,14 +1030,14 @@ const ParentDashboard = () => {
               <TabsContent value="notices">
                 <Card>
                   <CardHeader>
-                    <CardTitle>School Notices</CardTitle>
-                    <CardDescription>Announcements and updates</CardDescription>
+                    <CardTitle>{t("parentDashboard.schoolNotices")}</CardTitle>
+                    <CardDescription>{t("parentDashboard.announcementsUpdates")}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     {notices.length === 0 ? (
                       <div className="text-center py-8 text-muted-foreground">
                         <Bell className="w-12 h-12 mx-auto mb-3 text-muted-foreground/40" />
-                        <p>No notices available</p>
+                        <p>{t("parentDashboard.noNotices")}</p>
                       </div>
                     ) : (
                       <div className="space-y-4">

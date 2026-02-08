@@ -274,8 +274,8 @@ const CoordinatorDashboard = () => {
     if (customSections.includes(trimmed)) {
       toast({
         variant: "destructive",
-        title: "Duplicate Section",
-        description: `Section "${trimmed}" already exists.`,
+        title: t("coordinatorDashboard.toastDuplicateSection"),
+        description: t("coordinatorDashboard.toastDuplicateSectionDesc", { name: trimmed }),
       });
       return;
     }
@@ -290,14 +290,14 @@ const CoordinatorDashboard = () => {
       setCustomSections([...customSections, trimmed]);
       setNewSectionName("");
       toast({
-        title: "Section Added",
-        description: `Section "${trimmed}" has been created.`,
+        title: t("coordinatorDashboard.toastSectionAdded"),
+        description: t("coordinatorDashboard.toastSectionAddedDesc", { name: trimmed }),
       });
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Could not add the section. The name may already exist.",
+        title: t("coordinatorDashboard.toastError"),
+        description: t("coordinatorDashboard.toastSectionAddFailed"),
       });
     }
   };
@@ -315,8 +315,8 @@ const CoordinatorDashboard = () => {
     if (count && count > 0) {
       toast({
         variant: "destructive",
-        title: "Cannot Delete",
-        description: `Section "${sectionName}" is used by ${count} class(es). Remove those classes first.`,
+        title: t("coordinatorDashboard.toastCannotDelete"),
+        description: t("coordinatorDashboard.toastCannotDeleteDesc", { name: sectionName, count: count }),
       });
       return;
     }
@@ -334,14 +334,14 @@ const CoordinatorDashboard = () => {
       // Also remove from selected sections in add class dialog if present
       setNewClassSections(newClassSections.filter(s => s !== sectionName));
       toast({
-        title: "Section Deleted",
-        description: `Section "${sectionName}" has been removed.`,
+        title: t("coordinatorDashboard.toastSectionDeleted"),
+        description: t("coordinatorDashboard.toastSectionDeletedDesc", { name: sectionName }),
       });
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Could not delete the section. It may still be assigned to a class.",
+        title: t("coordinatorDashboard.toastError"),
+        description: t("coordinatorDashboard.toastSectionDeleteFailed"),
       });
     }
   };
@@ -544,8 +544,8 @@ const CoordinatorDashboard = () => {
     if (!newClassName || newClassSections.length === 0) {
       toast({
         variant: "destructive",
-        title: "Missing Information",
-        description: "Please select a class name and at least one section.",
+        title: t("coordinatorDashboard.toastMissingInfo"),
+        description: t("coordinatorDashboard.toastSelectSections"),
       });
       return;
     }
@@ -567,14 +567,14 @@ const CoordinatorDashboard = () => {
 
       if (error) {
         if (error.code === '23505') {
-          throw new Error("Some of these class sections already exist.");
+          throw new Error(t("coordinatorDashboard.toastSomeSectionsExist"));
         }
         throw error;
       }
 
       toast({
-        title: "Classes Created",
-        description: `Created ${newClassSections.length} section(s) for ${newClassName}.`,
+        title: t("coordinatorDashboard.toastClassesCreated"),
+        description: t("coordinatorDashboard.toastClassesCreatedDesc", { count: newClassSections.length, name: newClassName }),
       });
 
       setNewClassName("");
@@ -584,8 +584,8 @@ const CoordinatorDashboard = () => {
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Error",
-        description: error instanceof Error ? error.message : "Could not create the class. It may already exist with that section.",
+        title: t("coordinatorDashboard.toastError"),
+        description: error instanceof Error ? error.message : t("coordinatorDashboard.toastClassCreateFailed"),
       });
     } finally {
       setIsSubmitting(false);
@@ -602,16 +602,16 @@ const CoordinatorDashboard = () => {
       if (error) throw error;
 
       toast({
-        title: "Class Deleted",
-        description: `${classInfo.name}${classInfo.section ? `-${classInfo.section}` : ''} has been deleted.`,
+        title: t("coordinatorDashboard.toastClassDeleted"),
+        description: t("coordinatorDashboard.toastClassDeletedDesc", { name: classInfo.name + (classInfo.section ? `-${classInfo.section}` : '') }),
       });
 
       loadClasses();
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Error",
-        description: error instanceof Error ? error.message : "Could not delete the class. It may have students or subjects assigned.",
+        title: t("coordinatorDashboard.toastError"),
+        description: error instanceof Error ? error.message : t("coordinatorDashboard.toastClassDeleteFailed"),
       });
     }
   };
@@ -622,8 +622,8 @@ const CoordinatorDashboard = () => {
     if (!newSubjectName.trim()) {
       toast({
         variant: "destructive",
-        title: "Missing Information",
-        description: "Please enter a subject name.",
+        title: t("coordinatorDashboard.toastMissingInfo"),
+        description: t("coordinatorDashboard.toastEnterSubjectName"),
       });
       return;
     }
@@ -642,14 +642,14 @@ const CoordinatorDashboard = () => {
 
       if (error) {
         if (error.code === '23505') {
-          throw new Error("This subject already exists.");
+          throw new Error(t("coordinatorDashboard.toastSubjectAddFailed"));
         }
         throw error;
       }
 
       toast({
-        title: "Subject Added",
-        description: `${newSubjectName} has been added.`,
+        title: t("coordinatorDashboard.toastSubjectAdded"),
+        description: t("coordinatorDashboard.toastSubjectAddedDesc", { name: newSubjectName }),
       });
 
       setNewSubjectName("");
@@ -659,8 +659,8 @@ const CoordinatorDashboard = () => {
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Error",
-        description: error instanceof Error ? error.message : "Could not add the subject. It may already exist.",
+        title: t("coordinatorDashboard.toastError"),
+        description: error instanceof Error ? error.message : t("coordinatorDashboard.toastSubjectAddFailed"),
       });
     } finally {
       setIsSubmitting(false);
@@ -684,16 +684,16 @@ const CoordinatorDashboard = () => {
       if (error) throw error;
 
       toast({
-        title: "Subjects Added",
-        description: "Common subjects have been added.",
+        title: t("coordinatorDashboard.toastSubjectsAdded"),
+        description: t("coordinatorDashboard.toastSubjectsAddedDesc"),
       });
 
       loadSubjects();
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Error",
-        description: error instanceof Error ? error.message : "Could not add common subjects. Some may already exist.",
+        title: t("coordinatorDashboard.toastError"),
+        description: error instanceof Error ? error.message : t("coordinatorDashboard.toastSubjectsAddFailed"),
       });
     } finally {
       setIsSubmitting(false);
@@ -710,16 +710,16 @@ const CoordinatorDashboard = () => {
       if (error) throw error;
 
       toast({
-        title: "Subject Removed",
-        description: `${subject.name} has been removed.`,
+        title: t("coordinatorDashboard.toastSubjectRemoved"),
+        description: t("coordinatorDashboard.toastSubjectRemovedDesc", { name: subject.name }),
       });
 
       loadSubjects();
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Error",
-        description: error instanceof Error ? error.message : "Could not remove the subject. It may be assigned to classes.",
+        title: t("coordinatorDashboard.toastError"),
+        description: error instanceof Error ? error.message : t("coordinatorDashboard.toastSubjectRemoveFailed"),
       });
     }
   };
@@ -766,8 +766,8 @@ const CoordinatorDashboard = () => {
       }
 
       toast({
-        title: "Subjects Assigned",
-        description: `${selectedSubjectsToAssign.length} subject(s) assigned to the class.`,
+        title: t("coordinatorDashboard.toastSubjectsAssigned"),
+        description: t("coordinatorDashboard.toastSubjectsAssignedDesc", { count: selectedSubjectsToAssign.length }),
       });
 
       setShowAssignSubjectsDialog(false);
@@ -778,8 +778,8 @@ const CoordinatorDashboard = () => {
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Error",
-        description: error instanceof Error ? error.message : "Could not assign subjects to the class. Check your connection and try again.",
+        title: t("coordinatorDashboard.toastError"),
+        description: error instanceof Error ? error.message : t("coordinatorDashboard.toastSubjectsAssignFailed"),
       });
     } finally {
       setIsSubmitting(false);
@@ -792,8 +792,8 @@ const CoordinatorDashboard = () => {
     if (!assignTeacherClassId || !assignTeacherSubject || !assignTeacherId) {
       toast({
         variant: "destructive",
-        title: "Missing Information",
-        description: "Please select a class, subject, and teacher.",
+        title: t("coordinatorDashboard.toastMissingInfo"),
+        description: t("coordinatorDashboard.toastSelectAll"),
       });
       return;
     }
@@ -810,14 +810,14 @@ const CoordinatorDashboard = () => {
 
       if (error) {
         if (error.code === '23505') {
-          throw new Error("This teacher is already assigned to this subject in this class.");
+          throw new Error(t("coordinatorDashboard.toastTeacherAlreadyAssigned"));
         }
         throw error;
       }
 
       toast({
-        title: "Teacher Assigned",
-        description: "Teacher has been assigned to the class.",
+        title: t("coordinatorDashboard.toastTeacherAssigned"),
+        description: t("coordinatorDashboard.toastTeacherAssignedDesc"),
       });
 
       setShowAssignTeacherDialog(false);
@@ -828,8 +828,8 @@ const CoordinatorDashboard = () => {
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Error",
-        description: error instanceof Error ? error.message : "Could not assign the teacher. They may already be assigned to this class-subject.",
+        title: t("coordinatorDashboard.toastError"),
+        description: error instanceof Error ? error.message : t("coordinatorDashboard.toastTeacherAssignFailed"),
       });
     } finally {
       setIsSubmitting(false);
@@ -846,16 +846,16 @@ const CoordinatorDashboard = () => {
       if (error) throw error;
 
       toast({
-        title: "Assignment Removed",
-        description: "Teacher assignment has been removed.",
+        title: t("coordinatorDashboard.toastAssignmentRemoved"),
+        description: t("coordinatorDashboard.toastAssignmentRemovedDesc"),
       });
 
       loadTeacherAssignments();
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Error",
-        description: error instanceof Error ? error.message : "Could not remove the teacher assignment.",
+        title: t("coordinatorDashboard.toastError"),
+        description: error instanceof Error ? error.message : t("coordinatorDashboard.toastAssignmentRemoveFailed"),
       });
     }
   };
@@ -866,8 +866,8 @@ const CoordinatorDashboard = () => {
     if (!newTeacherName.trim() || !newTeacherEmail.trim() || !newTeacherPassword.trim()) {
       toast({
         variant: "destructive",
-        title: "Missing Information",
-        description: "Please fill in all required fields.",
+        title: t("coordinatorDashboard.toastMissingInfo"),
+        description: t("coordinatorDashboard.toastFillAllFields"),
       });
       return;
     }
@@ -875,8 +875,8 @@ const CoordinatorDashboard = () => {
     if (newTeacherPassword.length < 8) {
       toast({
         variant: "destructive",
-        title: "Password Too Short",
-        description: "Password must be at least 8 characters.",
+        title: t("coordinatorDashboard.toastPasswordTooShort"),
+        description: t("coordinatorDashboard.toastPasswordMin8"),
       });
       return;
     }
@@ -884,8 +884,8 @@ const CoordinatorDashboard = () => {
     if (teacherType === "class_teacher" && !selectedClassIdForTeacher) {
       toast({
         variant: "destructive",
-        title: "Missing Class",
-        description: "Please select a class for the class teacher.",
+        title: t("coordinatorDashboard.toastMissingClass"),
+        description: t("coordinatorDashboard.toastSelectClassForTeacher"),
       });
       return;
     }
@@ -911,8 +911,8 @@ const CoordinatorDashboard = () => {
 
           toast({
             variant: "destructive",
-            title: "Class Already Has a Teacher",
-            description: `${existingClass.name}${existingClass.section ? `-${existingClass.section}` : ''} is already assigned to ${existingTeacher?.full_name || 'another teacher'}.`,
+            title: t("coordinatorDashboard.toastClassHasTeacher"),
+            description: t("coordinatorDashboard.toastClassHasTeacherDesc", { class: existingClass.name + (existingClass.section ? `-${existingClass.section}` : ''), teacher: existingTeacher?.full_name || 'another teacher' }),
           });
           setIsSubmitting(false);
           return;
@@ -949,8 +949,8 @@ const CoordinatorDashboard = () => {
       }
 
       toast({
-        title: "Staff Added",
-        description: `${newTeacherName} has been added.`,
+        title: t("coordinatorDashboard.toastStaffAdded"),
+        description: t("coordinatorDashboard.toastStaffAddedDesc", { name: newTeacherName }),
       });
 
       setNewTeacherName("");
@@ -962,8 +962,8 @@ const CoordinatorDashboard = () => {
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Error",
-        description: error instanceof Error ? error.message : "Could not add staff member. The email may already be in use.",
+        title: t("coordinatorDashboard.toastError"),
+        description: error instanceof Error ? error.message : t("coordinatorDashboard.toastStaffAddFailed"),
       });
     } finally {
       setIsSubmitting(false);
@@ -985,8 +985,8 @@ const CoordinatorDashboard = () => {
       }
 
       toast({
-        title: "Staff Removed",
-        description: `${staffMember.full_name} has been removed.`,
+        title: t("coordinatorDashboard.toastStaffRemoved"),
+        description: t("coordinatorDashboard.toastStaffRemovedDesc", { name: staffMember.full_name }),
       });
 
       loadStaff();
@@ -994,8 +994,8 @@ const CoordinatorDashboard = () => {
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Error",
-        description: error instanceof Error ? error.message : "Could not remove the staff member.",
+        title: t("coordinatorDashboard.toastError"),
+        description: error instanceof Error ? error.message : t("coordinatorDashboard.toastStaffRemoveFailed"),
       });
     }
   };
@@ -1072,7 +1072,7 @@ const CoordinatorDashboard = () => {
                   </div>
                   <div>
                     <p className="text-2xl font-bold text-foreground">{classes.length}</p>
-                    <p className="text-sm text-muted-foreground">Classes</p>
+                    <p className="text-sm text-muted-foreground">{t("coordinatorDashboard.statsClasses")}</p>
                   </div>
                 </div>
               </div>
@@ -1087,7 +1087,7 @@ const CoordinatorDashboard = () => {
                   </div>
                   <div>
                     <p className="text-2xl font-bold text-foreground">{subjects.length}</p>
-                    <p className="text-sm text-muted-foreground">Subjects</p>
+                    <p className="text-sm text-muted-foreground">{t("coordinatorDashboard.statsSubjects")}</p>
                   </div>
                 </div>
               </div>
@@ -1102,7 +1102,7 @@ const CoordinatorDashboard = () => {
                   </div>
                   <div>
                     <p className="text-2xl font-bold text-foreground">{teacherCount}</p>
-                    <p className="text-sm text-muted-foreground">Teachers</p>
+                    <p className="text-sm text-muted-foreground">{t("coordinatorDashboard.statsTeachers")}</p>
                   </div>
                 </div>
               </div>
@@ -1117,7 +1117,7 @@ const CoordinatorDashboard = () => {
                   </div>
                   <div>
                     <p className="text-2xl font-bold text-foreground">{classTeacherCount}</p>
-                    <p className="text-sm text-muted-foreground">Class Teachers</p>
+                    <p className="text-sm text-muted-foreground">{t("coordinatorDashboard.statsClassTeachers")}</p>
                   </div>
                 </div>
               </div>
@@ -1185,27 +1185,27 @@ const CoordinatorDashboard = () => {
           {/* CLASSES TAB */}
           <TabsContent value="classes" className="animate-fade-in">
             <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 mb-6">
-              <h2 className="text-xl font-bold text-foreground">Classes & Sections</h2>
+              <h2 className="text-xl font-bold text-foreground">{t("coordinatorDashboard.classesSections")}</h2>
               <div className="flex gap-2">
                 {/* Manage Sections Dialog */}
                 <Dialog open={showManageSectionsDialog} onOpenChange={setShowManageSectionsDialog}>
                   <DialogTrigger asChild>
                     <Button variant="outline">
                       <Edit2 className="w-4 h-4 mr-2" />
-                      Manage Sections
+                      {t("coordinatorDashboard.manageSections")}
                     </Button>
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Manage Section Names</DialogTitle>
+                      <DialogTitle>{t("coordinatorDashboard.manageSectionNames")}</DialogTitle>
                       <DialogDescription>
-                        Add or remove section names. These will be available when creating new classes.
+                        {t("coordinatorDashboard.manageSectionsDesc")}
                       </DialogDescription>
                     </DialogHeader>
                     <div className="space-y-4 py-4">
                       <div className="flex gap-2">
                         <Input
-                          placeholder="New section name (e.g. G, Morning, Red)"
+                          placeholder={t("coordinatorDashboard.newSectionPlaceholder")}
                           value={newSectionName}
                           onChange={(e) => setNewSectionName(e.target.value)}
                           onKeyDown={(e) => {
@@ -1221,12 +1221,12 @@ const CoordinatorDashboard = () => {
                           disabled={!newSectionName.trim()}
                         >
                           <Plus className="w-4 h-4 mr-1" />
-                          Add
+                          {t("coordinatorDashboard.add")}
                         </Button>
                       </div>
                       {customSections.length === 0 ? (
                         <p className="text-sm text-muted-foreground text-center py-4">
-                          No sections defined. Add your first section above.
+                          {t("coordinatorDashboard.noSectionsDefined")}
                         </p>
                       ) : (
                         <div className="flex flex-wrap gap-2">
@@ -1250,7 +1250,7 @@ const CoordinatorDashboard = () => {
                     </div>
                     <DialogFooter>
                       <Button variant="outline" onClick={() => setShowManageSectionsDialog(false)}>
-                        Done
+                        {t("coordinatorDashboard.done")}
                       </Button>
                     </DialogFooter>
                   </DialogContent>
@@ -1260,22 +1260,22 @@ const CoordinatorDashboard = () => {
                   <DialogTrigger asChild>
                     <Button className="bg-role-coordinator text-primary-foreground" data-tour="coord-add-class">
                       <Plus className="w-4 h-4 mr-2" />
-                      Add Class
+                      {t("coordinatorDashboard.addClass")}
                     </Button>
                   </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>Create New Class</DialogTitle>
+                    <DialogTitle>{t("coordinatorDashboard.createNewClass")}</DialogTitle>
                     <DialogDescription>
-                      Select a class name and the sections you want to create.
+                      {t("coordinatorDashboard.createNewClassDesc")}
                     </DialogDescription>
                   </DialogHeader>
                   <div className="space-y-4 py-4">
                     <div className="space-y-2">
-                      <Label>Class Name</Label>
+                      <Label>{t("coordinatorDashboard.className")}</Label>
                       <Select value={newClassName} onValueChange={setNewClassName}>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select class" />
+                          <SelectValue placeholder={t("coordinatorDashboard.selectClass")} />
                         </SelectTrigger>
                         <SelectContent>
                           {CLASS_NAMES.map(name => (
@@ -1285,10 +1285,10 @@ const CoordinatorDashboard = () => {
                       </Select>
                     </div>
                     <div className="space-y-2">
-                      <Label>Sections</Label>
+                      <Label>{t("coordinatorDashboard.sections")}</Label>
                       {customSections.length === 0 ? (
                         <p className="text-sm text-muted-foreground">
-                          No sections defined. Use "Manage Sections" to add section names first.
+                          {t("coordinatorDashboard.noSectionsForClass")}
                         </p>
                       ) : (
                         <div className="flex flex-wrap gap-2">
@@ -1304,7 +1304,7 @@ const CoordinatorDashboard = () => {
                                   }
                                 }}
                               />
-                              <span>Section {section}</span>
+                              <span>{t("coordinatorDashboard.sectionLabel", { name: section })}</span>
                             </label>
                           ))}
                         </div>
@@ -1313,14 +1313,14 @@ const CoordinatorDashboard = () => {
                   </div>
                   <DialogFooter>
                     <Button variant="outline" onClick={() => setShowAddClassDialog(false)}>
-                      Cancel
+                      {t("coordinatorDashboard.cancel")}
                     </Button>
                     <LoadingButton
                       onClick={handleAddClass}
                       loading={isSubmitting}
                       className="bg-role-coordinator text-primary-foreground"
                     >
-                      Create
+                      {t("coordinatorDashboard.create")}
                     </LoadingButton>
                   </DialogFooter>
                 </DialogContent>
@@ -1332,8 +1332,8 @@ const CoordinatorDashboard = () => {
               <div className="bg-card rounded-xl p-8 shadow-card border border-border">
                 <EmptyState
                   icon={School}
-                  title="No Classes Yet"
-                  description="Create your first class to get started."
+                  title={t("coordinatorDashboard.noClassesYet")}
+                  description={t("coordinatorDashboard.noClassesYetDesc")}
                 />
               </div>
             ) : (
@@ -1348,7 +1348,7 @@ const CoordinatorDashboard = () => {
                           {cls.name}{cls.section ? `-${cls.section}` : ''}
                         </p>
                         <p className="text-sm text-muted-foreground">
-                          {cls.student_count} students, {cls.subject_count} subjects
+                          {t("coordinatorDashboard.studentsSubjectsCount", { students: cls.student_count, subjects: cls.subject_count })}
                         </p>
                       </div>
                       <AlertDialog>
@@ -1359,18 +1359,18 @@ const CoordinatorDashboard = () => {
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
-                            <AlertDialogTitle>Delete Class?</AlertDialogTitle>
+                            <AlertDialogTitle>{t("coordinatorDashboard.deleteClass")}</AlertDialogTitle>
                             <AlertDialogDescription>
-                              This will permanently delete {cls.name}{cls.section ? `-${cls.section}` : ''} and all associated data.
+                              {t("coordinatorDashboard.deleteClassDesc", { name: cls.name + (cls.section ? `-${cls.section}` : '') })}
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogCancel>{t("coordinatorDashboard.cancel")}</AlertDialogCancel>
                             <AlertDialogAction
                               className="bg-destructive text-destructive-foreground"
                               onClick={() => handleDeleteClass(cls)}
                             >
-                              Delete
+                              {t("coordinatorDashboard.delete")}
                             </AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>
@@ -1378,9 +1378,9 @@ const CoordinatorDashboard = () => {
                     </div>
                     <div className="pt-3 border-t border-border space-y-2">
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Class Teacher:</span>
+                        <span className="text-muted-foreground">{t("coordinatorDashboard.classTeacherLabel")}</span>
                         <span className="font-medium text-foreground">
-                          {cls.class_teacher_name || "Not assigned"}
+                          {cls.class_teacher_name || t("coordinatorDashboard.notAssigned")}
                         </span>
                       </div>
                       <Button
@@ -1390,7 +1390,7 @@ const CoordinatorDashboard = () => {
                         onClick={() => handleOpenAssignSubjects(cls)}
                       >
                         <BookOpen className="w-4 h-4 mr-2" />
-                        Manage Subjects
+                        {t("coordinatorDashboard.manageSubjects")}
                       </Button>
                     </div>
                   </div>
@@ -1404,15 +1404,15 @@ const CoordinatorDashboard = () => {
             <Dialog open={showAssignSubjectsDialog} onOpenChange={setShowAssignSubjectsDialog}>
               <DialogContent className="max-w-md">
                 <DialogHeader>
-                  <DialogTitle>Assign Subjects to Class</DialogTitle>
+                  <DialogTitle>{t("coordinatorDashboard.assignSubjectsToClass")}</DialogTitle>
                   <DialogDescription>
-                    Select which subjects will be taught in this class.
+                    {t("coordinatorDashboard.assignSubjectsDesc")}
                   </DialogDescription>
                 </DialogHeader>
                 <div className="max-h-[300px] overflow-y-auto space-y-2 py-4">
                   {subjects.length === 0 ? (
                     <p className="text-sm text-muted-foreground text-center py-4">
-                      No subjects available. Add subjects first.
+                      {t("coordinatorDashboard.noSubjectsAvailable")}
                     </p>
                   ) : (
                     subjects.map(subject => (
@@ -1437,14 +1437,14 @@ const CoordinatorDashboard = () => {
                 </div>
                 <DialogFooter>
                   <Button variant="outline" onClick={() => setShowAssignSubjectsDialog(false)}>
-                    Cancel
+                    {t("coordinatorDashboard.cancel")}
                   </Button>
                   <LoadingButton
                     onClick={handleAssignSubjectsToClass}
                     loading={isSubmitting}
                     className="bg-role-coordinator text-primary-foreground"
                   >
-                    Save
+                    {t("coordinatorDashboard.save")}
                   </LoadingButton>
                 </DialogFooter>
               </DialogContent>
@@ -1454,7 +1454,7 @@ const CoordinatorDashboard = () => {
           {/* SUBJECTS TAB */}
           <TabsContent value="subjects" className="animate-fade-in">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold text-foreground">Subjects</h2>
+              <h2 className="text-xl font-bold text-foreground">{t("coordinatorDashboard.subjects")}</h2>
               <div className="flex gap-2">
                 {subjects.length === 0 && (
                   <LoadingButton
@@ -1463,33 +1463,33 @@ const CoordinatorDashboard = () => {
                     loading={isSubmitting}
                   >
                     <Sparkles className="w-4 h-4 mr-2" />
-                    Add Common Subjects
+                    {t("coordinatorDashboard.addCommonSubjects")}
                   </LoadingButton>
                 )}
                 <Dialog open={showAddSubjectDialog} onOpenChange={setShowAddSubjectDialog}>
                   <DialogTrigger asChild>
                     <Button className="bg-role-coordinator text-primary-foreground">
                       <Plus className="w-4 h-4 mr-2" />
-                      Add Subject
+                      {t("coordinatorDashboard.addSubject")}
                     </Button>
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Add New Subject</DialogTitle>
+                      <DialogTitle>{t("coordinatorDashboard.addNewSubject")}</DialogTitle>
                     </DialogHeader>
                     <div className="space-y-4 py-4">
                       <div className="space-y-2">
-                        <Label>Subject Name</Label>
+                        <Label>{t("coordinatorDashboard.subjectName")}</Label>
                         <Input
-                          placeholder="e.g., Mathematics"
+                          placeholder={t("coordinatorDashboard.subjectNamePlaceholder")}
                           value={newSubjectName}
                           onChange={e => setNewSubjectName(e.target.value)}
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label>Subject Code (Optional)</Label>
+                        <Label>{t("coordinatorDashboard.subjectCode")}</Label>
                         <Input
-                          placeholder="e.g., MATH"
+                          placeholder={t("coordinatorDashboard.subjectCodePlaceholder")}
                           value={newSubjectCode}
                           onChange={e => setNewSubjectCode(e.target.value)}
                         />
@@ -1497,14 +1497,14 @@ const CoordinatorDashboard = () => {
                     </div>
                     <DialogFooter>
                       <Button variant="outline" onClick={() => setShowAddSubjectDialog(false)}>
-                        Cancel
+                        {t("coordinatorDashboard.cancel")}
                       </Button>
                       <LoadingButton
                         onClick={handleAddSubject}
                         loading={isSubmitting}
                         className="bg-role-coordinator text-primary-foreground"
                       >
-                        Add
+                        {t("coordinatorDashboard.add")}
                       </LoadingButton>
                     </DialogFooter>
                   </DialogContent>
@@ -1516,8 +1516,8 @@ const CoordinatorDashboard = () => {
               <div className="bg-card rounded-xl p-8 shadow-card border border-border">
                 <EmptyState
                   icon={BookOpen}
-                  title="No Subjects Yet"
-                  description="Add subjects that will be taught in your school."
+                  title={t("coordinatorDashboard.noSubjectsYet")}
+                  description={t("coordinatorDashboard.noSubjectsYetDesc")}
                 />
               </div>
             ) : (
@@ -1538,18 +1538,18 @@ const CoordinatorDashboard = () => {
                       </AlertDialogTrigger>
                       <AlertDialogContent>
                         <AlertDialogHeader>
-                          <AlertDialogTitle>Remove Subject?</AlertDialogTitle>
+                          <AlertDialogTitle>{t("coordinatorDashboard.removeSubject")}</AlertDialogTitle>
                           <AlertDialogDescription>
-                            This will remove {subject.name} from the subjects list.
+                            {t("coordinatorDashboard.removeSubjectDesc", { name: subject.name })}
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogCancel>{t("coordinatorDashboard.cancel")}</AlertDialogCancel>
                           <AlertDialogAction
                             className="bg-destructive text-destructive-foreground"
                             onClick={() => handleDeleteSubject(subject)}
                           >
-                            Remove
+                            {t("coordinatorDashboard.delete")}
                           </AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
@@ -1563,27 +1563,27 @@ const CoordinatorDashboard = () => {
           {/* TEACHER ASSIGNMENTS TAB */}
           <TabsContent value="assignments" className="animate-fade-in">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold text-foreground">Teacher Assignments</h2>
+              <h2 className="text-xl font-bold text-foreground">{t("coordinatorDashboard.teacherAssignments")}</h2>
               <Dialog open={showAssignTeacherDialog} onOpenChange={setShowAssignTeacherDialog}>
                 <DialogTrigger asChild>
                   <Button className="bg-role-coordinator text-primary-foreground" data-tour="coord-assign-teacher">
                     <Plus className="w-4 h-4 mr-2" />
-                    Assign Teacher
+                    {t("coordinatorDashboard.assignTeacher")}
                   </Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>Assign Teacher to Class</DialogTitle>
+                    <DialogTitle>{t("coordinatorDashboard.assignTeacherToClass")}</DialogTitle>
                     <DialogDescription>
-                      Select a class, subject, and teacher to create an assignment.
+                      {t("coordinatorDashboard.assignTeacherDesc")}
                     </DialogDescription>
                   </DialogHeader>
                   <div className="space-y-4 py-4">
                     <div className="space-y-2">
-                      <Label>Class</Label>
+                      <Label>{t("coordinatorDashboard.class")}</Label>
                       <Select value={assignTeacherClassId} onValueChange={setAssignTeacherClassId}>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select class" />
+                          <SelectValue placeholder={t("coordinatorDashboard.selectClass")} />
                         </SelectTrigger>
                         <SelectContent>
                           {classes.map(cls => (
@@ -1595,10 +1595,10 @@ const CoordinatorDashboard = () => {
                       </Select>
                     </div>
                     <div className="space-y-2">
-                      <Label>Subject</Label>
+                      <Label>{t("coordinatorDashboard.subject")}</Label>
                       <Select value={assignTeacherSubject} onValueChange={setAssignTeacherSubject}>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select subject" />
+                          <SelectValue placeholder={t("coordinatorDashboard.selectSubject")} />
                         </SelectTrigger>
                         <SelectContent>
                           {subjects.map(subject => (
@@ -1610,15 +1610,15 @@ const CoordinatorDashboard = () => {
                       </Select>
                     </div>
                     <div className="space-y-2">
-                      <Label>Teacher</Label>
+                      <Label>{t("coordinatorDashboard.teacher")}</Label>
                       <Select value={assignTeacherId} onValueChange={setAssignTeacherId}>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select teacher" />
+                          <SelectValue placeholder={t("coordinatorDashboard.selectTeacher")} />
                         </SelectTrigger>
                         <SelectContent>
                           {staff.map(teacher => (
                             <SelectItem key={teacher.user_id} value={teacher.user_id}>
-                              {teacher.full_name} ({teacher.role === 'class_teacher' ? 'Class Teacher' : 'Teacher'})
+                              {teacher.full_name} ({teacher.role === 'class_teacher' ? t("coordinatorDashboard.classTeacherRole") : t("coordinatorDashboard.teacherRole")})
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -1627,14 +1627,14 @@ const CoordinatorDashboard = () => {
                   </div>
                   <DialogFooter>
                     <Button variant="outline" onClick={() => setShowAssignTeacherDialog(false)}>
-                      Cancel
+                      {t("coordinatorDashboard.cancel")}
                     </Button>
                     <LoadingButton
                       onClick={handleAssignTeacher}
                       loading={isSubmitting}
                       className="bg-role-coordinator text-primary-foreground"
                     >
-                      Assign
+                      {t("coordinatorDashboard.assign")}
                     </LoadingButton>
                   </DialogFooter>
                 </DialogContent>
@@ -1645,8 +1645,8 @@ const CoordinatorDashboard = () => {
               <div className="bg-card rounded-xl p-8 shadow-card border border-border">
                 <EmptyState
                   icon={Link2}
-                  title="No Assignments Yet"
-                  description="Assign teachers to classes and subjects."
+                  title={t("coordinatorDashboard.noAssignmentsYet")}
+                  description={t("coordinatorDashboard.noAssignmentsYetDesc")}
                 />
               </div>
             ) : (
@@ -1679,18 +1679,18 @@ const CoordinatorDashboard = () => {
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
-                            <AlertDialogTitle>Remove Assignment?</AlertDialogTitle>
+                            <AlertDialogTitle>{t("coordinatorDashboard.removeAssignment")}</AlertDialogTitle>
                             <AlertDialogDescription>
-                              This will remove {assignment.teacher_name}'s assignment to teach {assignment.subject} in {assignment.class_name}{assignment.class_section ? `-${assignment.class_section}` : ''}.
+                              {t("coordinatorDashboard.removeAssignmentDesc", { teacher: assignment.teacher_name, subject: assignment.subject, class: assignment.class_name + (assignment.class_section ? `-${assignment.class_section}` : '') })}
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogCancel>{t("coordinatorDashboard.cancel")}</AlertDialogCancel>
                             <AlertDialogAction
                               className="bg-destructive text-destructive-foreground"
                               onClick={() => handleRemoveTeacherAssignment(assignment)}
                             >
-                              Remove
+                              {t("coordinatorDashboard.delete")}
                             </AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>
@@ -1706,10 +1706,10 @@ const CoordinatorDashboard = () => {
                   <table className="w-full">
                     <thead className="bg-secondary/50">
                       <tr>
-                        <th className="text-left p-2 sm:p-4 font-semibold text-foreground text-sm sm:text-base">Teacher</th>
-                        <th className="text-left p-2 sm:p-4 font-semibold text-foreground text-sm sm:text-base">Class</th>
-                        <th className="text-left p-2 sm:p-4 font-semibold text-foreground text-sm sm:text-base">Subject</th>
-                        <th className="text-right p-2 sm:p-4 font-semibold text-foreground text-sm sm:text-base">Actions</th>
+                        <th className="text-left p-2 sm:p-4 font-semibold text-foreground text-sm sm:text-base">{t("coordinatorDashboard.tableTeacher")}</th>
+                        <th className="text-left p-2 sm:p-4 font-semibold text-foreground text-sm sm:text-base">{t("coordinatorDashboard.tableClass")}</th>
+                        <th className="text-left p-2 sm:p-4 font-semibold text-foreground text-sm sm:text-base">{t("coordinatorDashboard.tableSubject")}</th>
+                        <th className="text-right p-2 sm:p-4 font-semibold text-foreground text-sm sm:text-base">{t("coordinatorDashboard.tableActions")}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -1729,18 +1729,18 @@ const CoordinatorDashboard = () => {
                               </AlertDialogTrigger>
                               <AlertDialogContent>
                                 <AlertDialogHeader>
-                                  <AlertDialogTitle>Remove Assignment?</AlertDialogTitle>
+                                  <AlertDialogTitle>{t("coordinatorDashboard.removeAssignment")}</AlertDialogTitle>
                                   <AlertDialogDescription>
-                                    This will remove {assignment.teacher_name}'s assignment to teach {assignment.subject} in {assignment.class_name}{assignment.class_section ? `-${assignment.class_section}` : ''}.
+                                    {t("coordinatorDashboard.removeAssignmentDesc", { teacher: assignment.teacher_name, subject: assignment.subject, class: assignment.class_name + (assignment.class_section ? `-${assignment.class_section}` : '') })}
                                   </AlertDialogDescription>
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
-                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogCancel>{t("coordinatorDashboard.cancel")}</AlertDialogCancel>
                                   <AlertDialogAction
                                     className="bg-destructive text-destructive-foreground"
                                     onClick={() => handleRemoveTeacherAssignment(assignment)}
                                   >
-                                    Remove
+                                    {t("coordinatorDashboard.delete")}
                                   </AlertDialogAction>
                                 </AlertDialogFooter>
                               </AlertDialogContent>
@@ -1763,12 +1763,12 @@ const CoordinatorDashboard = () => {
               <div className="bg-card rounded-xl p-6 shadow-card border border-border" data-tour="coord-add-staff">
                 <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
                   <UserPlus className="w-5 h-5 text-role-coordinator" />
-                  Add New Staff
+                  {t("coordinatorDashboard.addNewStaff")}
                 </h2>
 
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label>Staff Type</Label>
+                    <Label>{t("coordinatorDashboard.staffType")}</Label>
                     <div className="flex gap-4">
                       <label className="flex items-center gap-2 cursor-pointer">
                         <input
@@ -1783,7 +1783,7 @@ const CoordinatorDashboard = () => {
                           className="w-4 h-4"
                           disabled={isSubmitting}
                         />
-                        <span className="text-foreground">Teacher</span>
+                        <span className="text-foreground">{t("coordinatorDashboard.teacherRole")}</span>
                       </label>
                       <label className="flex items-center gap-2 cursor-pointer">
                         <input
@@ -1795,17 +1795,17 @@ const CoordinatorDashboard = () => {
                           className="w-4 h-4"
                           disabled={isSubmitting}
                         />
-                        <span className="text-foreground">Class Teacher</span>
+                        <span className="text-foreground">{t("coordinatorDashboard.classTeacherRole")}</span>
                       </label>
                     </div>
                   </div>
 
                   {teacherType === "class_teacher" && (
                     <div className="space-y-2">
-                      <Label>Assign to Class</Label>
+                      <Label>{t("coordinatorDashboard.assignToClass")}</Label>
                       <Select value={selectedClassIdForTeacher} onValueChange={setSelectedClassIdForTeacher} disabled={isSubmitting}>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select a class" />
+                          <SelectValue placeholder={t("coordinatorDashboard.selectAClass")} />
                         </SelectTrigger>
                         <SelectContent>
                           {classes.filter(c => !c.class_teacher_id).map((cls) => (
@@ -1816,15 +1816,15 @@ const CoordinatorDashboard = () => {
                         </SelectContent>
                       </Select>
                       {classes.filter(c => !c.class_teacher_id).length === 0 && (
-                        <p className="text-xs text-muted-foreground">All classes already have class teachers assigned.</p>
+                        <p className="text-xs text-muted-foreground">{t("coordinatorDashboard.allClassesHaveTeachers")}</p>
                       )}
                     </div>
                   )}
 
                   <div className="space-y-2">
-                    <Label>Full Name</Label>
+                    <Label>{t("coordinatorDashboard.fullName")}</Label>
                     <Input
-                      placeholder="Enter full name"
+                      placeholder={t("coordinatorDashboard.enterFullName")}
                       value={newTeacherName}
                       onChange={(e) => setNewTeacherName(e.target.value)}
                       disabled={isSubmitting}
@@ -1832,10 +1832,10 @@ const CoordinatorDashboard = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Email</Label>
+                    <Label>{t("coordinatorDashboard.email")}</Label>
                     <Input
                       type="email"
-                      placeholder="Enter email address"
+                      placeholder={t("coordinatorDashboard.enterEmail")}
                       value={newTeacherEmail}
                       onChange={(e) => setNewTeacherEmail(e.target.value)}
                       disabled={isSubmitting}
@@ -1843,10 +1843,10 @@ const CoordinatorDashboard = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Password</Label>
+                    <Label>{t("coordinatorDashboard.password")}</Label>
                     <Input
                       type="password"
-                      placeholder="Set initial password (min 8 chars)"
+                      placeholder={t("coordinatorDashboard.setInitialPassword")}
                       value={newTeacherPassword}
                       onChange={(e) => setNewTeacherPassword(e.target.value)}
                       disabled={isSubmitting}
@@ -1859,7 +1859,7 @@ const CoordinatorDashboard = () => {
                     loading={isSubmitting}
                     loadingText="Adding..."
                   >
-                    Add Staff
+                    {t("coordinatorDashboard.addStaff")}
                   </LoadingButton>
                 </div>
               </div>
@@ -1868,15 +1868,15 @@ const CoordinatorDashboard = () => {
               <div>
                 <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
                   <Users className="w-5 h-5 text-role-coordinator" />
-                  Staff Members ({staff.length})
+                  {t("coordinatorDashboard.staffMembersCount", { count: staff.length })}
                 </h2>
 
                 {staff.length === 0 ? (
                   <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                     <EmptyState
                       icon={Users}
-                      title="No Staff Yet"
-                      description="Add teachers and class teachers to your school."
+                      title={t("coordinatorDashboard.noStaffYet")}
+                      description={t("coordinatorDashboard.noStaffYetDesc")}
                     />
                   </div>
                 ) : (
@@ -1890,10 +1890,10 @@ const CoordinatorDashboard = () => {
                               <span className={`px-2 py-0.5 rounded text-xs font-medium ${
                                 member.role === "teacher" ? 'bg-role-teacher/10 text-role-teacher' : 'bg-role-class-teacher/10 text-role-class-teacher'
                               }`}>
-                                {member.role === "teacher" ? "Teacher" : "Class Teacher"}
+                                {member.role === "teacher" ? t("coordinatorDashboard.teacherRole") : t("coordinatorDashboard.classTeacherRole")}
                               </span>
                             </div>
-                            <p className="text-sm text-muted-foreground">{member.email || 'No email'}</p>
+                            <p className="text-sm text-muted-foreground">{member.email || t("coordinatorDashboard.noEmail")}</p>
                           </div>
 
                           <AlertDialog>
@@ -1904,18 +1904,18 @@ const CoordinatorDashboard = () => {
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                               <AlertDialogHeader>
-                                <AlertDialogTitle>Remove Staff Member?</AlertDialogTitle>
+                                <AlertDialogTitle>{t("coordinatorDashboard.removeStaffMember")}</AlertDialogTitle>
                                 <AlertDialogDescription>
-                                  This will deactivate {member.full_name}'s account.
+                                  {t("coordinatorDashboard.removeStaffDesc", { name: member.full_name })}
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
                               <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogCancel>{t("coordinatorDashboard.cancel")}</AlertDialogCancel>
                                 <AlertDialogAction
                                   className="bg-destructive text-destructive-foreground"
                                   onClick={() => handleRemoveStaff(member)}
                                 >
-                                  Remove
+                                  {t("coordinatorDashboard.delete")}
                                 </AlertDialogAction>
                               </AlertDialogFooter>
                             </AlertDialogContent>
@@ -1940,7 +1940,7 @@ const CoordinatorDashboard = () => {
 
           {/* ANALYTICS TAB */}
           <TabsContent value="analytics" className="animate-fade-in">
-            <h2 className="text-xl font-bold text-foreground mb-6">Section Analytics</h2>
+            <h2 className="text-xl font-bold text-foreground mb-6">{t("coordinatorDashboard.sectionAnalytics")}</h2>
             {profile?.school_id && (
               <AnalyticsDashboard schoolId={profile.school_id} role="coordinator" />
             )}

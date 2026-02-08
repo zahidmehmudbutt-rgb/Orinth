@@ -145,8 +145,8 @@ const PrincipalDashboard = () => {
       if (import.meta.env.DEV) console.error("Error:", error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Could not load dashboard data. Check your connection and refresh the page.",
+        title: t("principalDashboard.toastError"),
+        description: t("principalDashboard.toastLoadFailed"),
       });
     } finally {
       setLoading(false);
@@ -299,8 +299,8 @@ const PrincipalDashboard = () => {
     if (!newCoordinatorName.trim() || !newCoordinatorEmail.trim() || !newCoordinatorPassword.trim()) {
       toast({
         variant: "destructive",
-        title: "Missing Information",
-        description: "Please fill in the name, email, and password fields.",
+        title: t("principalDashboard.toastMissingInfo"),
+        description: t("principalDashboard.toastFillFields"),
       });
       return;
     }
@@ -308,8 +308,8 @@ const PrincipalDashboard = () => {
     if (newCoordinatorPassword.length < 8) {
       toast({
         variant: "destructive",
-        title: "Password Too Short",
-        description: "Password must be at least 8 characters.",
+        title: t("principalDashboard.toastPasswordTooShort"),
+        description: t("principalDashboard.toastPasswordMin8"),
       });
       return;
     }
@@ -350,8 +350,8 @@ const PrincipalDashboard = () => {
       }
 
       toast({
-        title: "Section Head Added",
-        description: `${newCoordinatorName} has been added successfully.`,
+        title: t("principalDashboard.toastSectionHeadAdded"),
+        description: t("principalDashboard.toastSectionHeadAddedDesc", { name: newCoordinatorName }),
       });
 
       // Reset form and refresh
@@ -364,8 +364,8 @@ const PrincipalDashboard = () => {
       if (import.meta.env.DEV) console.error("Error:", error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: error instanceof Error ? error.message : "Could not add the section head. The email may already be in use.",
+        title: t("principalDashboard.toastError"),
+        description: error instanceof Error ? error.message : t("principalDashboard.toastSectionHeadAddFailed"),
       });
     } finally {
       setIsSubmittingCoordinator(false);
@@ -385,16 +385,16 @@ const PrincipalDashboard = () => {
         .eq("role", "coordinator");
 
       toast({
-        title: "Section Head Removed",
-        description: `${name} has been removed from the system.`,
+        title: t("principalDashboard.toastSectionHeadRemoved"),
+        description: t("principalDashboard.toastSectionHeadRemovedDesc", { name: name }),
       });
 
       await fetchCoordinators(principalData.schoolId);
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Could not remove the section head. They may have active assignments.",
+        title: t("principalDashboard.toastError"),
+        description: t("principalDashboard.toastSectionHeadRemoveFailed"),
       });
     }
   };
@@ -404,15 +404,15 @@ const PrincipalDashboard = () => {
   const checklistItems = [
     {
       id: "profile",
-      label: "Complete your profile",
-      description: "Add your contact information",
+      label: t("principalDashboard.completeProfile"),
+      description: t("principalDashboard.addContactInfo"),
       completed: true,
       onClick: () => setActiveTab("account"),
     },
     {
       id: "coordinator",
-      label: "Add your first Section Head",
-      description: "Assign coordinators to manage teachers and classes",
+      label: t("principalDashboard.addFirstSectionHead"),
+      description: t("principalDashboard.assignCoordinators"),
       completed: sectionHeads.length > 0,
       onClick: () => setActiveTab("staff"),
     },
@@ -460,12 +460,12 @@ const PrincipalDashboard = () => {
         {showOnboarding && (
           <WelcomeBanner
             icon={Sparkles}
-            title="Welcome to Your School Dashboard!"
-            description="Let's get your school set up. Follow the checklist below to configure your school management system."
+            title={t("principalDashboard.welcomeTitle")}
+            description={t("principalDashboard.welcomeDesc")}
             tips={[
-              "Start by creating classes for your school",
-              "Add Section Heads who will manage teachers",
-              "View analytics once data starts flowing in",
+              t("principalDashboard.welcomeTip1"),
+              t("principalDashboard.welcomeTip2"),
+              t("principalDashboard.welcomeTip3"),
             ]}
             accentColor="bg-role-principal"
             storageKey="principal-welcome-dismissed"
@@ -524,14 +524,14 @@ const PrincipalDashboard = () => {
               <div className="bg-card rounded-xl p-6 shadow-card border border-border" data-tour="principal-add-coordinator">
                 <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
                   <UserPlus className="w-5 h-5 text-role-principal" />
-                  Add Section Head / Coordinator
+                  {t("principalDashboard.addSectionHead")}
                 </h2>
 
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label>Full Name</Label>
+                    <Label>{t("principalDashboard.fullName")}</Label>
                     <Input
-                      placeholder="Enter full name"
+                      placeholder={t("principalDashboard.enterFullName")}
                       value={newCoordinatorName}
                       onChange={(e) => setNewCoordinatorName(e.target.value)}
                       disabled={isSubmittingCoordinator}
@@ -539,10 +539,10 @@ const PrincipalDashboard = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Email</Label>
+                    <Label>{t("principalDashboard.email")}</Label>
                     <Input
                       type="email"
-                      placeholder="Enter email address"
+                      placeholder={t("principalDashboard.enterEmail")}
                       value={newCoordinatorEmail}
                       onChange={(e) => setNewCoordinatorEmail(e.target.value)}
                       disabled={isSubmittingCoordinator}
@@ -550,10 +550,10 @@ const PrincipalDashboard = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Password</Label>
+                    <Label>{t("principalDashboard.password")}</Label>
                     <Input
                       type="password"
-                      placeholder="Set initial password"
+                      placeholder={t("principalDashboard.setInitialPassword")}
                       value={newCoordinatorPassword}
                       onChange={(e) => setNewCoordinatorPassword(e.target.value)}
                       disabled={isSubmittingCoordinator}
@@ -561,9 +561,9 @@ const PrincipalDashboard = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Section (Optional)</Label>
+                    <Label>{t("principalDashboard.sectionOptional")}</Label>
                     <Input
-                      placeholder="e.g., Primary Section (1-5)"
+                      placeholder={t("principalDashboard.sectionPlaceholder")}
                       value={newCoordinatorSection}
                       onChange={(e) => setNewCoordinatorSection(e.target.value)}
                       disabled={isSubmittingCoordinator}
@@ -574,9 +574,9 @@ const PrincipalDashboard = () => {
                     className="w-full bg-role-principal text-primary-foreground hover:opacity-90"
                     onClick={handleAddCoordinator}
                     loading={isSubmittingCoordinator}
-                    loadingText="Adding..."
+                    loadingText={t("principalDashboard.adding")}
                   >
-                    Add Section Head
+                    {t("principalDashboard.addSectionHeadBtn")}
                   </LoadingButton>
                 </div>
               </div>
@@ -585,15 +585,15 @@ const PrincipalDashboard = () => {
               <div>
                 {showOnboarding ? (
                   <OnboardingChecklist
-                    title="Getting Started"
-                    subtitle="Complete these steps to set up your school"
+                    title={t("principalDashboard.gettingStarted")}
+                    subtitle={t("principalDashboard.completeSteps")}
                     items={checklistItems}
                   />
                 ) : (
                   <>
                     <FadeInView>
                       <h2 className="text-xl font-bold text-foreground mb-4">
-                        Section Heads ({sectionHeads.length})
+                        {t("principalDashboard.sectionHeadsCount", { count: sectionHeads.length })}
                       </h2>
                     </FadeInView>
                     {sectionHeads.length > 0 ? (
@@ -615,18 +615,18 @@ const PrincipalDashboard = () => {
                                 </AlertDialogTrigger>
                                 <AlertDialogContent>
                                   <AlertDialogHeader>
-                                    <AlertDialogTitle>Remove Section Head?</AlertDialogTitle>
+                                    <AlertDialogTitle>{t("principalDashboard.removeSectionHead")}</AlertDialogTitle>
                                     <AlertDialogDescription>
-                                      Are you sure you want to remove {head.name}?
+                                      {t("principalDashboard.removeSectionHeadConfirm", { name: head.name })}
                                     </AlertDialogDescription>
                                   </AlertDialogHeader>
                                   <AlertDialogFooter>
-                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogCancel>{t("principalDashboard.cancel")}</AlertDialogCancel>
                                     <AlertDialogAction
                                       className="bg-destructive text-destructive-foreground"
                                       onClick={() => handleRemoveCoordinator(head.id, head.name)}
                                     >
-                                      Remove
+                                      {t("principalDashboard.remove")}
                                     </AlertDialogAction>
                                   </AlertDialogFooter>
                                 </AlertDialogContent>
@@ -640,8 +640,8 @@ const PrincipalDashboard = () => {
                       <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                         <EmptyState
                           icon={Users}
-                          title="No Section Heads Yet"
-                          description="Add your first section head to start organizing your school staff."
+                          title={t("principalDashboard.noSectionHeadsYet")}
+                          description={t("principalDashboard.noSectionHeadsYetDesc")}
                         />
                       </div>
                     )}
@@ -658,14 +658,14 @@ const PrincipalDashboard = () => {
                 <div className="flex items-center gap-3 text-muted-foreground">
                   <School className="w-5 h-5" />
                   <p className="text-sm">
-                    Classes, sections, subjects, and teacher assignments are managed by Section Heads (Coordinators). This is a read-only overview.
+                    {t("principalDashboard.classesReadOnlyInfo")}
                   </p>
                 </div>
               </div>
 
               <FadeInView>
                 <h2 className="text-xl font-bold text-foreground mb-4">
-                  All Classes ({classes.length})
+                  {t("principalDashboard.allClassesCount", { count: classes.length })}
                 </h2>
               </FadeInView>
               {classes.length > 0 ? (
@@ -679,13 +679,13 @@ const PrincipalDashboard = () => {
                           {cls.name}-{cls.section}
                         </p>
                         <p className="text-sm text-muted-foreground">
-                          {cls.studentCount} students
+                          {t("principalDashboard.studentsCount", { count: cls.studentCount })}
                         </p>
                       </div>
                       <div className="pt-3 border-t border-border">
-                        <p className="text-xs text-muted-foreground mb-1">Class Teacher</p>
+                        <p className="text-xs text-muted-foreground mb-1">{t("principalDashboard.classTeacherLabel")}</p>
                         <p className="text-sm font-medium text-foreground">
-                          {cls.classTeacherName || "Not assigned"}
+                          {cls.classTeacherName || t("principalDashboard.notAssigned")}
                         </p>
                       </div>
                     </div>
@@ -697,8 +697,8 @@ const PrincipalDashboard = () => {
                 <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                   <EmptyState
                     icon={School}
-                    title="No Classes Yet"
-                    description="Classes will appear here once your Section Heads create them."
+                    title={t("principalDashboard.noClassesYet")}
+                    description={t("principalDashboard.noClassesYetDesc")}
                   />
                 </div>
               )}
@@ -716,7 +716,7 @@ const PrincipalDashboard = () => {
 
           {/* Analytics Tab */}
           <TabsContent value="analytics" className="animate-fade-in">
-            <h2 className="text-xl font-bold text-foreground mb-6">School Analytics Overview</h2>
+            <h2 className="text-xl font-bold text-foreground mb-6">{t("principalDashboard.schoolAnalytics")}</h2>
             {principalData?.schoolId && (
               <AnalyticsDashboard schoolId={principalData.schoolId} role="principal" />
             )}
@@ -736,8 +736,8 @@ const PrincipalDashboard = () => {
           <TabsContent value="school" className="animate-fade-in">
             <div className="max-w-3xl mx-auto">
               <div className="mb-6">
-                <h2 className="text-xl font-bold text-foreground mb-2">School Public Page</h2>
-                <p className="text-muted-foreground text-sm">Customize your school's public homepage that visitors can see</p>
+                <h2 className="text-xl font-bold text-foreground mb-2">{t("principalDashboard.schoolPublicPage")}</h2>
+                <p className="text-muted-foreground text-sm">{t("principalDashboard.schoolPublicPageDesc")}</p>
               </div>
               {principalData?.schoolId && (
                 <SchoolSettingsForm schoolId={principalData.schoolId} />

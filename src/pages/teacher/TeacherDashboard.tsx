@@ -218,8 +218,8 @@ const TeacherDashboard = () => {
       if (import.meta.env.DEV) console.error("Error:", error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Could not load your classes and assignments. Check your connection and refresh the page.",
+        title: t("teacherDashboard.error"),
+        description: t("teacherDashboard.loadError"),
       });
     } finally {
       setLoading(false);
@@ -313,8 +313,8 @@ const TeacherDashboard = () => {
       if (import.meta.env.DEV) console.error("Error in fetchHomework:", error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Could not load homework assignments. Check your connection and refresh the page.",
+        title: t("teacherDashboard.error"),
+        description: t("teacherDashboard.homeworkLoadError"),
       });
     }
   };
@@ -389,8 +389,8 @@ const TeacherDashboard = () => {
     if (!selectedClass || !selectedSubject || !homeworkTitle.trim() || !dueDate) {
       toast({
         variant: "destructive",
-        title: "Missing Information",
-        description: "Please fill in all required fields.",
+        title: t("teacherDashboard.missingInfo"),
+        description: t("teacherDashboard.fillRequiredFields"),
       });
       return;
     }
@@ -412,8 +412,8 @@ const TeacherDashboard = () => {
       if (error) throw error;
 
       toast({
-        title: "Homework Posted",
-        description: "Students can now see the new homework assignment.",
+        title: t("teacherDashboard.homeworkPosted"),
+        description: t("teacherDashboard.homeworkPostedDesc"),
       });
 
       // Reset form
@@ -430,8 +430,8 @@ const TeacherDashboard = () => {
       if (import.meta.env.DEV) console.error("Error creating homework:", error);
       toast({
         variant: "destructive",
-        title: "Homework Not Posted",
-        description: "Could not save the homework assignment. Ensure all fields are filled and try again.",
+        title: t("teacherDashboard.homeworkNotPosted"),
+        description: t("teacherDashboard.homeworkNotPostedDesc"),
       });
     } finally {
       setIsSubmitting(false);
@@ -446,8 +446,8 @@ const TeacherDashboard = () => {
     if (grade.marks && (isNaN(marksNum!) || marksNum! < 0 || marksNum! > 10)) {
       toast({
         variant: "destructive",
-        title: "Invalid Marks",
-        description: "Marks must be between 0 and 10.",
+        title: t("teacherDashboard.invalidMarks"),
+        description: t("teacherDashboard.marksRange"),
       });
       return;
     }
@@ -483,8 +483,8 @@ const TeacherDashboard = () => {
       }
 
       toast({
-        title: "Grade Saved",
-        description: `Grade saved for ${submission?.studentName || "student"}.`,
+        title: t("teacherDashboard.gradeSaved"),
+        description: t("teacherDashboard.gradeSavedDesc", { name: submission?.studentName || "student" }),
       });
 
       // Refresh submissions
@@ -494,8 +494,8 @@ const TeacherDashboard = () => {
       if (import.meta.env.DEV) console.error("Error saving grade:", error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Could not save the grade. Ensure marks are between 0-10 and try again.",
+        title: t("teacherDashboard.error"),
+        description: t("teacherDashboard.gradeError"),
       });
     } finally {
       setSavingGrade(null);
@@ -539,8 +539,8 @@ const TeacherDashboard = () => {
         if (import.meta.env.DEV) console.error("Error fetching exams:", examsError);
         toast({
           variant: "destructive",
-          title: "Error",
-          description: "Could not load exam list. Check your connection and refresh the page.",
+          title: t("teacherDashboard.error"),
+          description: t("teacherDashboard.examLoadError"),
         });
         return;
       }
@@ -606,8 +606,8 @@ const TeacherDashboard = () => {
       if (import.meta.env.DEV) console.error("Error in fetchExams:", error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Could not load exam list. Check your connection and refresh the page.",
+        title: t("teacherDashboard.error"),
+        description: t("teacherDashboard.examLoadError"),
       });
     } finally {
       setLoadingExams(false);
@@ -618,8 +618,8 @@ const TeacherDashboard = () => {
     if (!resultsClassId || !resultsSubject || !examTitle.trim() || !examDate || !maxMarks) {
       toast({
         variant: "destructive",
-        title: "Missing Information",
-        description: "Please fill in all required fields.",
+        title: t("teacherDashboard.missingInfo"),
+        description: t("teacherDashboard.fillRequiredFields"),
       });
       return;
     }
@@ -628,8 +628,8 @@ const TeacherDashboard = () => {
     if (isNaN(maxMarksNum) || maxMarksNum < 1 || maxMarksNum > 1000) {
       toast({
         variant: "destructive",
-        title: "Invalid Max Marks",
-        description: "Max marks must be between 1 and 1000.",
+        title: t("teacherDashboard.invalidMaxMarks"),
+        description: t("teacherDashboard.maxMarksRange"),
       });
       return;
     }
@@ -652,8 +652,8 @@ const TeacherDashboard = () => {
       if (error) throw error;
 
       toast({
-        title: "Exam Created",
-        description: "You can now enter marks for students.",
+        title: t("teacherDashboard.examCreated"),
+        description: t("teacherDashboard.examCreatedDesc"),
       });
 
       // Reset form
@@ -671,8 +671,8 @@ const TeacherDashboard = () => {
       if (import.meta.env.DEV) console.error("Error creating exam:", error);
       toast({
         variant: "destructive",
-        title: "Exam Not Created",
-        description: "Could not create the exam. Ensure all fields are filled correctly and try again.",
+        title: t("teacherDashboard.examNotCreated"),
+        description: t("teacherDashboard.examNotCreatedDesc"),
       });
     } finally {
       setIsCreatingExam(false);
@@ -754,8 +754,8 @@ const TeacherDashboard = () => {
       if (isNaN(marksNum) || marksNum < 0 || marksNum > exam.maxMarks) {
         toast({
           variant: "destructive",
-          title: "Invalid Marks",
-          description: `Marks must be between 0 and ${exam.maxMarks}.`,
+          title: t("teacherDashboard.invalidMarks"),
+          description: t("teacherDashboard.marksRangeMax", { max: exam.maxMarks }),
         });
         return;
       }
@@ -792,8 +792,8 @@ const TeacherDashboard = () => {
       }
 
       toast({
-        title: "Mark Saved",
-        description: `Saved for ${student.studentName}.`,
+        title: t("teacherDashboard.markSaved"),
+        description: t("teacherDashboard.markSavedDesc", { name: student.studentName }),
       });
 
       // Refresh student marks
@@ -805,8 +805,8 @@ const TeacherDashboard = () => {
       if (import.meta.env.DEV) console.error("Error saving mark:", error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Could not save the mark. Ensure marks do not exceed the maximum and try again.",
+        title: t("teacherDashboard.error"),
+        description: t("teacherDashboard.markSaveError"),
       });
     } finally {
       setSavingMark(null);
@@ -911,8 +911,10 @@ const TeacherDashboard = () => {
 
       if (successCount > 0) {
         toast({
-          title: "Marks Saved",
-          description: `Successfully saved marks for ${successCount} student${successCount > 1 ? 's' : ''}.${errorCount > 0 ? ` (${errorCount} failed)` : ''}`,
+          title: t("teacherDashboard.marksSaved"),
+          description: errorCount > 0
+            ? t("teacherDashboard.marksSavedWithErrors", { success: successCount, errors: errorCount })
+            : t("teacherDashboard.marksSavedDesc", { count: successCount }),
         });
         setHasUnsavedChanges(false);
 
@@ -948,8 +950,8 @@ const TeacherDashboard = () => {
       if (errorCount > 0 && successCount === 0) {
         toast({
           variant: "destructive",
-          title: "Save Failed",
-          description: `Could not save marks. Please check the values and try again.`,
+          title: t("teacherDashboard.saveFailed"),
+          description: t("teacherDashboard.saveFailedDesc"),
         });
       }
 
@@ -961,8 +963,8 @@ const TeacherDashboard = () => {
       if (import.meta.env.DEV) console.error("Bulk save error:", error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Could not save marks. Check that all values are valid numbers within the allowed range.",
+        title: t("teacherDashboard.error"),
+        description: t("teacherDashboard.bulkSaveError"),
       });
     } finally {
       setIsBulkSaving(false);
@@ -1002,8 +1004,8 @@ const TeacherDashboard = () => {
     if (!editingExamId || !resultsClassId || !resultsSubject || !examTitle || !maxMarks || !examDate) {
       toast({
         variant: "destructive",
-        title: "Missing Fields",
-        description: "Please fill in all required fields.",
+        title: t("teacherDashboard.missingFields"),
+        description: t("teacherDashboard.fillRequiredFields"),
       });
       return;
     }
@@ -1012,8 +1014,8 @@ const TeacherDashboard = () => {
     if (isNaN(maxMarksNum) || maxMarksNum < 1 || maxMarksNum > 1000) {
       toast({
         variant: "destructive",
-        title: "Invalid Max Marks",
-        description: "Max marks must be between 1 and 1000.",
+        title: t("teacherDashboard.invalidMaxMarks"),
+        description: t("teacherDashboard.maxMarksRange"),
       });
       return;
     }
@@ -1036,8 +1038,8 @@ const TeacherDashboard = () => {
       if (error) throw error;
 
       toast({
-        title: "Exam Updated",
-        description: "Exam details have been updated successfully.",
+        title: t("teacherDashboard.examUpdated"),
+        description: t("teacherDashboard.examUpdatedDesc"),
       });
 
       // Reset form
@@ -1055,8 +1057,8 @@ const TeacherDashboard = () => {
       if (import.meta.env.DEV) console.error("Error updating exam:", error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Could not update the exam details. Verify the fields and try again.",
+        title: t("teacherDashboard.error"),
+        description: t("teacherDashboard.examUpdateError"),
       });
     } finally {
       setIsUpdatingExam(false);
@@ -1085,8 +1087,8 @@ const TeacherDashboard = () => {
       if (error) throw error;
 
       toast({
-        title: "Exam Deleted",
-        description: "Exam and all associated marks have been deleted.",
+        title: t("teacherDashboard.examDeleted"),
+        description: t("teacherDashboard.examDeletedDesc"),
       });
 
       // Clear selection if deleted exam was selected
@@ -1100,8 +1102,8 @@ const TeacherDashboard = () => {
       if (import.meta.env.DEV) console.error("Error deleting exam:", error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Could not delete the exam. It may still have linked data — contact your coordinator if this persists.",
+        title: t("teacherDashboard.error"),
+        description: t("teacherDashboard.examDeleteError"),
       });
     } finally {
       setDeletingExamId(null);
@@ -1156,12 +1158,12 @@ const TeacherDashboard = () => {
         {!hasClasses && (
           <WelcomeBanner
             icon={Sparkles}
-            title="Welcome to Your Teacher Dashboard!"
-            description="Your Section Head will assign classes to you. Once assigned, you can start creating homework and entering marks."
+            title={t("teacherDashboard.welcomeTitle")}
+            description={t("teacherDashboard.welcomeDesc")}
             tips={[
-              "Wait for your Section Head to assign you to classes",
-              "Once assigned, create homework from the Homework tab",
-              "Use the Enter Marks tab to grade student submissions",
+              t("teacherDashboard.welcomeTip1"),
+              t("teacherDashboard.welcomeTip2"),
+              t("teacherDashboard.welcomeTip3"),
             ]}
             accentColor="bg-role-teacher"
             storageKey="teacher-welcome-dismissed"
@@ -1195,8 +1197,8 @@ const TeacherDashboard = () => {
               <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                 <EmptyState
                   icon={BookOpen}
-                  title="No Classes Assigned Yet"
-                  description="Your Section Head needs to assign you to classes before you can create homework. Contact your Section Head if you believe this is an error."
+                  title={t("teacherDashboard.noClassesTitle")}
+                  description={t("teacherDashboard.noClassesDesc")}
                 />
               </div>
             ) : (
@@ -1205,12 +1207,12 @@ const TeacherDashboard = () => {
                 <div className="bg-card rounded-xl p-6 shadow-card border border-border" data-tour="teacher-create-hw">
                   <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
                     <Plus className="w-5 h-5 text-role-teacher" />
-                    Create New Homework
+                    {t("teacherDashboard.createNewHomework")}
                   </h2>
 
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label>Select Class</Label>
+                      <Label>{t("teacherDashboard.selectClass")}</Label>
                       <Select
                         value={selectedClass}
                         onValueChange={(value) => {
@@ -1220,7 +1222,7 @@ const TeacherDashboard = () => {
                         disabled={isSubmitting}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Choose a class" />
+                          <SelectValue placeholder={t("teacherDashboard.chooseClass")} />
                         </SelectTrigger>
                         <SelectContent>
                           {uniqueClasses.map((cls) => (
@@ -1233,14 +1235,14 @@ const TeacherDashboard = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <Label>Select Subject</Label>
+                      <Label>{t("teacherDashboard.selectSubject")}</Label>
                       <Select
                         value={selectedSubject}
                         onValueChange={setSelectedSubject}
                         disabled={isSubmitting || !selectedClass}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder={selectedClass ? "Choose a subject" : "Select a class first"} />
+                          <SelectValue placeholder={selectedClass ? t("teacherDashboard.chooseSubject") : t("teacherDashboard.selectClassFirst")} />
                         </SelectTrigger>
                         <SelectContent>
                           {getSubjectsForClass(selectedClass).map((subject) => (
@@ -1253,9 +1255,9 @@ const TeacherDashboard = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <Label>Homework Title</Label>
+                      <Label>{t("teacherDashboard.homeworkTitle")}</Label>
                       <Input
-                        placeholder="e.g., Chapter 6 Exercises"
+                        placeholder={t("teacherDashboard.homeworkTitlePlaceholder")}
                         value={homeworkTitle}
                         onChange={(e) => setHomeworkTitle(e.target.value)}
                         disabled={isSubmitting}
@@ -1263,9 +1265,9 @@ const TeacherDashboard = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <Label>Description (Optional)</Label>
+                      <Label>{t("teacherDashboard.descriptionOptional")}</Label>
                       <Textarea
-                        placeholder="Enter homework details..."
+                        placeholder={t("teacherDashboard.descriptionPlaceholder")}
                         rows={4}
                         value={homeworkDescription}
                         onChange={(e) => setHomeworkDescription(e.target.value)}
@@ -1274,7 +1276,7 @@ const TeacherDashboard = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <Label>Due Date</Label>
+                      <Label>{t("teacherDashboard.dueDate")}</Label>
                       <Input
                         type="date"
                         value={dueDate}
@@ -1288,10 +1290,10 @@ const TeacherDashboard = () => {
                       className="w-full bg-role-teacher text-primary-foreground hover:opacity-90"
                       onClick={handleCreateHomework}
                       loading={isSubmitting}
-                      loadingText="Posting..."
+                      loadingText={t("teacherDashboard.posting")}
                       data-tour="teacher-post-btn"
                     >
-                      Post Homework
+                      {t("teacherDashboard.postHomework")}
                     </LoadingButton>
                   </div>
                 </div>
@@ -1299,7 +1301,7 @@ const TeacherDashboard = () => {
                 {/* Recent Homework */}
                 <div>
                   <FadeInView>
-                    <h2 className="text-xl font-bold text-foreground mb-4" data-tour="teacher-recent-hw">Recent Homework ({recentHomework.length})</h2>
+                    <h2 className="text-xl font-bold text-foreground mb-4" data-tour="teacher-recent-hw">{t("teacherDashboard.recentHomework", { count: recentHomework.length })}</h2>
                   </FadeInView>
                   {hasHomework ? (
                     <StaggerContainer className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
@@ -1319,7 +1321,7 @@ const TeacherDashboard = () => {
                           )}
                           <div className="flex items-center justify-between">
                             <span className="text-sm text-muted-foreground">
-                              {hw.submitted}/{hw.total} submitted
+                              {t("teacherDashboard.submittedCount", { submitted: hw.submitted, total: hw.total })}
                             </span>
                             <div className="w-24 h-2 bg-secondary rounded-full overflow-hidden">
                               <div
@@ -1337,8 +1339,8 @@ const TeacherDashboard = () => {
                     <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                       <EmptyState
                         icon={ClipboardList}
-                        title="No Homework Created Yet"
-                        description="Use the form on the left to create your first homework assignment."
+                        title={t("teacherDashboard.noHomeworkTitle")}
+                        description={t("teacherDashboard.noHomeworkDesc")}
                       />
                     </div>
                   )}
@@ -1352,28 +1354,28 @@ const TeacherDashboard = () => {
               <div className="bg-card rounded-xl p-6 shadow-card border border-border max-w-2xl mx-auto">
                 <EmptyState
                   icon={Users}
-                  title="No Classes Assigned Yet"
-                  description="You need to be assigned to classes before you can enter marks."
+                  title={t("teacherDashboard.noClassesTitle")}
+                  description={t("teacherDashboard.noClassesToMarkDesc")}
                 />
               </div>
             ) : !hasHomework ? (
               <div className="bg-card rounded-xl p-6 shadow-card border border-border max-w-2xl mx-auto">
                 <EmptyState
                   icon={ClipboardList}
-                  title="No Homework to Mark"
-                  description="Create homework first, then come back here to enter marks after students submit."
-                  actionLabel="Create Homework"
+                  title={t("teacherDashboard.noHomeworkToMark")}
+                  description={t("teacherDashboard.noHomeworkToMarkDesc")}
+                  actionLabel={t("teacherDashboard.createHomeworkAction")}
                   onAction={() => setActiveTab("homework")}
                 />
               </div>
             ) : (
               <div className="space-y-6">
                 <div className="bg-card rounded-xl p-6 shadow-card border border-border">
-                  <h2 className="text-xl font-bold text-foreground mb-6">Enter Homework Marks</h2>
+                  <h2 className="text-xl font-bold text-foreground mb-6">{t("teacherDashboard.enterHomeworkMarks")}</h2>
 
                   <div className="grid sm:grid-cols-2 gap-4 mb-6">
                     <div className="space-y-2">
-                      <Label>Select Class</Label>
+                      <Label>{t("teacherDashboard.selectClass")}</Label>
                       <Select
                         value={gradingClassId}
                         onValueChange={(value) => {
@@ -1383,7 +1385,7 @@ const TeacherDashboard = () => {
                         }}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Choose a class" />
+                          <SelectValue placeholder={t("teacherDashboard.chooseClass")} />
                         </SelectTrigger>
                         <SelectContent>
                           {uniqueClasses.map((cls) => (
@@ -1396,14 +1398,14 @@ const TeacherDashboard = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <Label>Select Homework</Label>
+                      <Label>{t("teacherDashboard.selectHomework")}</Label>
                       <Select
                         value={gradingHomeworkId}
                         onValueChange={setGradingHomeworkId}
                         disabled={!gradingClassId}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder={gradingClassId ? "Choose homework" : "Select a class first"} />
+                          <SelectValue placeholder={gradingClassId ? t("teacherDashboard.chooseHomework") : t("teacherDashboard.selectClassFirst")} />
                         </SelectTrigger>
                         <SelectContent>
                           {getHomeworkForClass(gradingClassId).map((hw) => (
@@ -1418,7 +1420,7 @@ const TeacherDashboard = () => {
 
                   {!gradingHomeworkId && (
                     <p className="text-sm text-muted-foreground text-center py-8">
-                      Select a class and homework to enter marks (out of 10)
+                      {t("teacherDashboard.selectClassAndHomework")}
                     </p>
                   )}
                 </div>
@@ -1427,16 +1429,16 @@ const TeacherDashboard = () => {
                 {gradingHomeworkId && (
                   <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                     <h3 className="text-lg font-semibold text-foreground mb-4">
-                      Student Submissions ({submissions.filter(s => s.submittedAt).length}/{submissions.length} submitted)
+                      {t("teacherDashboard.studentSubmissions", { submitted: submissions.filter(s => s.submittedAt).length, total: submissions.length })}
                     </h3>
 
                     {loadingSubmissions ? (
                       <div className="text-center py-8">
                         <div className="w-8 h-8 border-4 border-role-teacher border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-                        <p className="text-muted-foreground">Loading submissions...</p>
+                        <p className="text-muted-foreground">{t("teacherDashboard.loadingSubmissions")}</p>
                       </div>
                     ) : submissions.length === 0 ? (
-                      <p className="text-muted-foreground text-center py-8">No students in this class.</p>
+                      <p className="text-muted-foreground text-center py-8">{t("teacherDashboard.noStudents")}</p>
                     ) : (
                       <div className="space-y-4">
                         {submissions.map((submission) => (
@@ -1458,7 +1460,7 @@ const TeacherDashboard = () => {
                                 {submission.submittedAt ? (
                                   <div className="flex items-center gap-2 text-sm text-success">
                                     <Check className="w-4 h-4" />
-                                    Submitted {new Date(submission.submittedAt).toLocaleDateString()}
+                                    {t("teacherDashboard.submittedDate", { date: new Date(submission.submittedAt).toLocaleDateString() })}
                                     {submission.fileUrl && (
                                       <a
                                         href={submission.fileUrl}
@@ -1467,7 +1469,7 @@ const TeacherDashboard = () => {
                                         className="inline-flex items-center gap-1 text-primary hover:underline ml-2"
                                       >
                                         <FileText className="w-3 h-3" />
-                                        {submission.fileName || "View File"}
+                                        {submission.fileName || t("teacherDashboard.viewFile")}
                                         <ExternalLink className="w-3 h-3" />
                                       </a>
                                     )}
@@ -1475,7 +1477,7 @@ const TeacherDashboard = () => {
                                 ) : (
                                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                     <X className="w-4 h-4" />
-                                    Not submitted
+                                    {t("teacherDashboard.notSubmitted")}
                                   </div>
                                 )}
                               </div>
@@ -1503,7 +1505,7 @@ const TeacherDashboard = () => {
                                 </div>
                                 <div className="flex-1 min-w-0">
                                   <Input
-                                    placeholder="Remarks (optional)"
+                                    placeholder={t("teacherDashboard.remarksOptional")}
                                     value={grades[submission.studentId]?.remarks || ""}
                                     onChange={(e) =>
                                       setGrades((prev) => ({
@@ -1523,14 +1525,14 @@ const TeacherDashboard = () => {
                                   loadingText=""
                                   className="bg-role-teacher flex-shrink-0"
                                 >
-                                  Save
+                                  {t("teacherDashboard.save")}
                                 </LoadingButton>
                               </div>
                             </div>
 
                             {submission.marks !== null && (
                               <div className="mt-2 pt-2 border-t border-border/50 text-sm">
-                                <span className="text-muted-foreground">Current grade: </span>
+                                <span className="text-muted-foreground">{t("teacherDashboard.currentGrade")} </span>
                                 <span className="font-semibold text-primary">{submission.marks}/10</span>
                                 {submission.remarks && (
                                   <span className="text-muted-foreground ml-2">- "{submission.remarks}"</span>
@@ -1553,8 +1555,8 @@ const TeacherDashboard = () => {
               <div className="bg-card rounded-xl p-6 shadow-card border border-border max-w-2xl mx-auto">
                 <EmptyState
                   icon={Award}
-                  title="No Classes Assigned Yet"
-                  description="You need to be assigned to classes before you can create exams and enter results."
+                  title={t("teacherDashboard.noClassesTitle")}
+                  description={t("teacherDashboard.noClassesToResultsDesc")}
                 />
               </div>
             ) : (
@@ -1566,26 +1568,26 @@ const TeacherDashboard = () => {
                       {editingExamId ? (
                         <>
                           <Pencil className="w-5 h-5 text-role-teacher" />
-                          Edit Exam
+                          {t("teacherDashboard.editExam")}
                         </>
                       ) : (
                         <>
                           <Plus className="w-5 h-5 text-role-teacher" />
-                          Create New Exam / Test
+                          {t("teacherDashboard.createNewExam")}
                         </>
                       )}
                     </h2>
                     {editingExamId && (
                       <Button variant="ghost" size="sm" onClick={handleCancelEdit}>
                         <X className="w-4 h-4 mr-1" />
-                        Cancel
+                        {t("teacherDashboard.cancel")}
                       </Button>
                     )}
                   </div>
 
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <div className="space-y-2">
-                      <Label>Select Class</Label>
+                      <Label>{t("teacherDashboard.selectClass")}</Label>
                       <Select
                         value={resultsClassId}
                         onValueChange={(value) => {
@@ -1595,7 +1597,7 @@ const TeacherDashboard = () => {
                         disabled={isCreatingExam}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Choose a class" />
+                          <SelectValue placeholder={t("teacherDashboard.chooseClass")} />
                         </SelectTrigger>
                         <SelectContent>
                           {uniqueClasses.map((cls) => (
@@ -1608,14 +1610,14 @@ const TeacherDashboard = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <Label>Select Subject</Label>
+                      <Label>{t("teacherDashboard.selectSubject")}</Label>
                       <Select
                         value={resultsSubject}
                         onValueChange={setResultsSubject}
                         disabled={isCreatingExam || !resultsClassId}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder={resultsClassId ? "Choose a subject" : "Select a class first"} />
+                          <SelectValue placeholder={resultsClassId ? t("teacherDashboard.chooseSubject") : t("teacherDashboard.selectClassFirst")} />
                         </SelectTrigger>
                         <SelectContent>
                           {getSubjectsForClass(resultsClassId).map((subject) => (
@@ -1628,7 +1630,7 @@ const TeacherDashboard = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <Label>Test Type</Label>
+                      <Label>{t("teacherDashboard.testType")}</Label>
                       <Select
                         value={examType}
                         onValueChange={(value) => setExamType(value as ExamType)}
@@ -1638,17 +1640,17 @@ const TeacherDashboard = () => {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="weekly_daily">Weekly / Daily Test</SelectItem>
-                          <SelectItem value="monthly_midterm">Monthly Test / Midterms</SelectItem>
-                          <SelectItem value="semester_final">Semester / Final Exams</SelectItem>
+                          <SelectItem value="weekly_daily">{t("teacherDashboard.weeklyDaily")}</SelectItem>
+                          <SelectItem value="monthly_midterm">{t("teacherDashboard.monthlyMidterm")}</SelectItem>
+                          <SelectItem value="semester_final">{t("teacherDashboard.semesterFinal")}</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
 
                     <div className="space-y-2">
-                      <Label>Exam Title</Label>
+                      <Label>{t("teacherDashboard.examTitle")}</Label>
                       <Input
-                        placeholder="e.g., Unit 3 Test"
+                        placeholder={t("teacherDashboard.examTitlePlaceholder")}
                         value={examTitle}
                         onChange={(e) => setExamTitle(e.target.value)}
                         disabled={isCreatingExam}
@@ -1656,7 +1658,7 @@ const TeacherDashboard = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <Label>Max Marks (1-1000)</Label>
+                      <Label>{t("teacherDashboard.maxMarks")}</Label>
                       <Input
                         type="number"
                         min="1"
@@ -1669,7 +1671,7 @@ const TeacherDashboard = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <Label>Exam Date</Label>
+                      <Label>{t("teacherDashboard.examDate")}</Label>
                       <Input
                         type="date"
                         value={examDate}
@@ -1684,23 +1686,23 @@ const TeacherDashboard = () => {
                       className="bg-role-teacher text-primary-foreground hover:opacity-90"
                       onClick={editingExamId ? handleUpdateExam : handleCreateExam}
                       loading={isCreatingExam || isUpdatingExam}
-                      loadingText={editingExamId ? "Updating..." : "Creating..."}
+                      loadingText={editingExamId ? t("teacherDashboard.updating") : t("teacherDashboard.creating")}
                     >
                       {editingExamId ? (
                         <>
                           <Check className="w-4 h-4 mr-2" />
-                          Update Exam
+                          {t("teacherDashboard.updateExam")}
                         </>
                       ) : (
                         <>
                           <Plus className="w-4 h-4 mr-2" />
-                          Create Exam
+                          {t("teacherDashboard.createExam")}
                         </>
                       )}
                     </LoadingButton>
                     {editingExamId && (
                       <Button variant="outline" onClick={handleCancelEdit}>
-                        Cancel
+                        {t("teacherDashboard.cancel")}
                       </Button>
                     )}
                   </div>
@@ -1710,19 +1712,19 @@ const TeacherDashboard = () => {
                 <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                   <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
                     <ClipboardList className="w-5 h-5 text-role-teacher" />
-                    Recent Exams ({recentExams.length})
+                    {t("teacherDashboard.recentExams", { count: recentExams.length })}
                   </h2>
 
                   {loadingExams ? (
                     <div className="text-center py-8">
                       <div className="w-8 h-8 border-4 border-role-teacher border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-                      <p className="text-muted-foreground">Loading exams...</p>
+                      <p className="text-muted-foreground">{t("teacherDashboard.loadingExams")}</p>
                     </div>
                   ) : recentExams.length === 0 ? (
                     <EmptyState
                       icon={Award}
-                      title="No Exams Created Yet"
-                      description="Use the form above to create your first exam or test."
+                      title={t("teacherDashboard.noExamsTitle")}
+                      description={t("teacherDashboard.noExamsDesc")}
                     />
                   ) : (
                     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -1742,7 +1744,7 @@ const TeacherDashboard = () => {
                             </h3>
                             <div className="flex items-center gap-2">
                               <span className={`text-xs px-2 py-1 rounded-full ${getExamTypeBadgeColor(exam.examType)}`}>
-                                {exam.examType === 'weekly_daily' ? 'Weekly' : exam.examType === 'monthly_midterm' ? 'Monthly' : 'Semester'}
+                                {exam.examType === 'weekly_daily' ? t("teacherDashboard.weekly") : exam.examType === 'monthly_midterm' ? t("teacherDashboard.monthly") : t("teacherDashboard.semester")}
                               </span>
                             </div>
                           </div>
@@ -1758,10 +1760,10 @@ const TeacherDashboard = () => {
                           </p>
                           <div className="flex items-center justify-between">
                             <span className="text-sm text-muted-foreground">
-                              {exam.markedCount}/{exam.totalStudents} marked
+                              {t("teacherDashboard.markedCount", { marked: exam.markedCount, total: exam.totalStudents })}
                             </span>
                             <span className="text-xs text-muted-foreground">
-                              Max: {exam.maxMarks}
+                              {t("teacherDashboard.maxLabel", { max: exam.maxMarks })}
                             </span>
                           </div>
                           <div className="w-full h-2 bg-secondary rounded-full overflow-hidden mt-2">
@@ -1782,14 +1784,14 @@ const TeacherDashboard = () => {
                               className="text-muted-foreground hover:text-foreground"
                             >
                               <Pencil className="w-4 h-4 mr-1" />
-                              Edit
+                              {t("teacherDashboard.edit")}
                             </Button>
                             <Button
                               variant="ghost"
                               size="sm"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                if (confirm(`Are you sure you want to delete "${exam.title}"? This will also delete all student marks for this exam.`)) {
+                                if (confirm(t("teacherDashboard.deleteConfirm", { title: exam.title }))) {
                                   handleDeleteExam(exam.id);
                                 }
                               }}
@@ -1801,7 +1803,7 @@ const TeacherDashboard = () => {
                               ) : (
                                 <Trash2 className="w-4 h-4 mr-1" />
                               )}
-                              Delete
+                              {t("teacherDashboard.delete")}
                             </Button>
                           </div>
                         </div>
@@ -1816,30 +1818,30 @@ const TeacherDashboard = () => {
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
                       <h2 className="text-lg sm:text-xl font-bold text-foreground flex items-center gap-2 flex-wrap">
                         <FileText className="w-5 h-5 text-role-teacher flex-shrink-0" />
-                        <span>Enter Marks: {recentExams.find(e => e.id === selectedExamId)?.title}</span>
+                        <span>{t("teacherDashboard.enterMarksTitle", { title: recentExams.find(e => e.id === selectedExamId)?.title })}</span>
                         <span className="text-sm font-normal text-muted-foreground">
-                          (Max: {recentExams.find(e => e.id === selectedExamId)?.maxMarks})
+                          {t("teacherDashboard.maxMarksLabel", { max: recentExams.find(e => e.id === selectedExamId)?.maxMarks })}
                         </span>
                       </h2>
                       <LoadingButton
                         onClick={handleBulkSaveMarks}
                         loading={isBulkSaving}
-                        loadingText="Saving All..."
+                        loadingText={t("teacherDashboard.savingAll")}
                         className="bg-role-teacher flex-shrink-0 w-full sm:w-auto"
                         disabled={!hasUnsavedChanges && !studentMarks.some(s => !s.markId)}
                       >
                         <Save className="w-4 h-4 mr-2" />
-                        Save All Marks
+                        {t("teacherDashboard.saveAllMarks")}
                       </LoadingButton>
                     </div>
 
                     {loadingStudentMarks ? (
                       <div className="text-center py-8">
                         <div className="w-8 h-8 border-4 border-role-teacher border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-                        <p className="text-muted-foreground">Loading students...</p>
+                        <p className="text-muted-foreground">{t("teacherDashboard.loadingStudents")}</p>
                       </div>
                     ) : studentMarks.length === 0 ? (
-                      <p className="text-muted-foreground text-center py-8">No students in this class.</p>
+                      <p className="text-muted-foreground text-center py-8">{t("teacherDashboard.noStudents")}</p>
                     ) : (
                       <div className="space-y-4">
                         {studentMarks.map((student) => {
@@ -1865,7 +1867,7 @@ const TeacherDashboard = () => {
                                   {(student.marksObtained !== null || student.isAbsent) && (
                                     <div className="text-sm text-success flex items-center gap-1">
                                       <Check className="w-4 h-4" />
-                                      {student.isAbsent ? "Marked Absent" : `${student.marksObtained}/${exam?.maxMarks}`}
+                                      {student.isAbsent ? t("teacherDashboard.markedAbsent") : `${student.marksObtained}/${exam?.maxMarks}`}
                                     </div>
                                   )}
                                 </div>
@@ -1879,7 +1881,7 @@ const TeacherDashboard = () => {
                                       onChange={(e) => handleMarksInputChange(student.studentId, 'isAbsent', e.target.checked)}
                                       className="rounded"
                                     />
-                                    Absent
+                                    {t("teacherDashboard.absent")}
                                   </label>
 
                                   <div className="w-20 sm:w-24 flex-shrink-0">
@@ -1897,7 +1899,7 @@ const TeacherDashboard = () => {
 
                                   <div className="flex-1 min-w-0 basis-full sm:basis-auto">
                                     <Input
-                                      placeholder="Remarks (optional)"
+                                      placeholder={t("teacherDashboard.remarksOptional")}
                                       value={currentInput.remarks}
                                       onChange={(e) => handleMarksInputChange(student.studentId, 'remarks', e.target.value)}
                                     />
@@ -1910,7 +1912,7 @@ const TeacherDashboard = () => {
                                     loadingText=""
                                     className="bg-role-teacher flex-shrink-0"
                                   >
-                                    Save
+                                    {t("teacherDashboard.save")}
                                   </LoadingButton>
                                 </div>
                               </div>
