@@ -708,7 +708,7 @@ const StudentDashboard = () => {
             {!hasSubjects ? (
               <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                 <EmptyState
-                  icon={BookOpen}
+                  illustration="no-homework"
                   title={t("studentDashboard.noSubjectsTitle")}
                   description={t("studentDashboard.noSubjectsDesc")}
                 />
@@ -866,7 +866,7 @@ const StudentDashboard = () => {
                 ) : (
                   <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                     <EmptyState
-                      icon={CheckCircle}
+                      illustration="no-homework"
                       title={t("studentDashboard.noHomeworkTitle")}
                       description={t("studentDashboard.noHomeworkDesc")}
                     />
@@ -881,7 +881,7 @@ const StudentDashboard = () => {
             {!hasAttendance ? (
               <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                 <EmptyState
-                  icon={Calendar}
+                  illustration="no-attendance"
                   title={t("studentDashboard.noAttendanceTitle")}
                   description={t("studentDashboard.noAttendanceDesc")}
                 />
@@ -975,7 +975,7 @@ const StudentDashboard = () => {
             {!hasMarks && !hasExamResults ? (
               <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                 <EmptyState
-                  icon={BarChart3}
+                  illustration="no-results"
                   title={t("studentDashboard.noMarksTitle")}
                   description={t("studentDashboard.noMarksDesc")}
                 />
@@ -1091,7 +1091,7 @@ const StudentDashboard = () => {
             {!hasYearlyResults ? (
               <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                 <EmptyState
-                  icon={Award}
+                  illustration="no-results"
                   title={t("studentDashboard.noYearlyTitle")}
                   description={t("studentDashboard.noYearlyDesc")}
                 />
@@ -1409,7 +1409,7 @@ const StudentDashboard = () => {
             {!hasNotices ? (
               <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                 <EmptyState
-                  icon={Megaphone}
+                  illustration="no-notifications"
                   title={t("studentDashboard.noNoticesTitle")}
                   description={t("studentDashboard.noNoticesDesc")}
                 />

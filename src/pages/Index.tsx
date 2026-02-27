@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet-async";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { RoleCard } from "@/components/RoleCard";
@@ -47,41 +48,32 @@ const FAQ_COUNT = 12;
 
 const Index = () => {
   const { t } = useTranslation();
-  const [stats, setStats] = useState<Stats>({ students: 0, teachers: 0, classes: 0, schools: 0 });
-  const [isLoading, setIsLoading] = useState(true);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [showAllFaqs, setShowAllFaqs] = useState(false);
 
-  const faqs = Array.from({ length: FAQ_COUNT }, (_, i) => ({
-    q: t(`landing.faq${i + 1}q`),
-    a: t(`landing.faq${i + 1}a`),
-  }));
-
-  useEffect(() => {
-    fetchStats();
-  }, []);
-
-  const fetchStats = async () => {
-    try {
+  const { data: stats = { students: 0, teachers: 0, classes: 0, schools: 0 }, isLoading } = useQuery<Stats>({
+    queryKey: ["landing-stats"],
+    queryFn: async () => {
       const [studentsResult, teachersResult, classesResult, schoolsResult] = await Promise.all([
         supabase.from("students").select("id", { count: "exact", head: true }),
         supabase.from("user_roles").select("id", { count: "exact", head: true }).in("role", ["teacher", "class_teacher"]),
         supabase.from("classes").select("id", { count: "exact", head: true }),
         supabase.from("schools").select("id", { count: "exact", head: true }).eq("is_active", true),
       ]);
-
-      setStats({
+      return {
         students: studentsResult.count || 0,
         teachers: teachersResult.count || 0,
         classes: classesResult.count || 0,
         schools: schoolsResult.count || 0,
-      });
-    } catch (error) {
-      if (import.meta.env.DEV) console.error("Error fetching stats:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+      };
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
+  const faqs = Array.from({ length: FAQ_COUNT }, (_, i) => ({
+    q: t(`landing.faq${i + 1}q`),
+    a: t(`landing.faq${i + 1}a`),
+  }));
 
   const statsData = [
     { icon: Users, value: stats.students.toLocaleString(), label: t("landing.students") },
@@ -92,7 +84,19 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Helmet><title>School Smart Pakistan — School Management System</title></Helmet>
+      <Helmet>
+        <title>School Smart Pakistan — Complete School Management System</title>
+        <meta name="description" content="School Smart Pakistan is a complete school management system for Pakistani schools. Manage students, teachers, attendance, homework, exams, and more with role-based dashboards for principals, teachers, students, and parents." />
+        <meta name="keywords" content="school management system, Pakistan, school software, attendance management, homework tracking, student portal, teacher dashboard, parent portal, school ERP" />
+        <meta property="og:title" content="School Smart Pakistan — Complete School Management System" />
+        <meta property="og:description" content="A modern, comprehensive school management platform designed for Pakistani schools. Role-based dashboards, real-time chat, attendance tracking, and more." />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="/og-image.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="School Smart Pakistan" />
+        <meta name="twitter:description" content="Complete School Management System for Pakistani Schools" />
+        <link rel="canonical" href="https://school-smart-pakistan.vercel.app/" />
+      </Helmet>
       <Header />
 
       {/* Hero Section */}

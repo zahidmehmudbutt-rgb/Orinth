@@ -1,7 +1,8 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, memo, useRef } from "react";
 import type { CSSProperties, ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 import { Bell, Check, CheckCheck, BookOpen, Calendar, GraduationCap, Megaphone, X } from "lucide-react";
+import { useAnnounce } from "@/hooks/useAnnounce";
 import { List } from "react-window";
 import { Button } from "@/components/ui/button";
 import {
@@ -83,16 +84,26 @@ function NotificationRow(props: { index: number; style: CSSProperties; ariaAttri
   );
 }
 
-export function NotificationCenter({ className }: NotificationCenterProps) {
+export const NotificationCenter = memo(function NotificationCenter({ className }: NotificationCenterProps) {
   const { t } = useTranslation();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const announce = useAnnounce();
+  const prevUnreadRef = useRef(0);
 
   useEffect(() => {
     loadUnreadCount();
   }, []);
+
+  // Announce new notifications to screen readers
+  useEffect(() => {
+    if (unreadCount > prevUnreadRef.current && prevUnreadRef.current !== 0) {
+      announce(t("notifications.newNotification", { count: unreadCount }));
+    }
+    prevUnreadRef.current = unreadCount;
+  }, [unreadCount, announce, t]);
 
   useEffect(() => {
     if (isOpen) {
@@ -129,16 +140,17 @@ export function NotificationCenter({ className }: NotificationCenterProps) {
     if (success) {
       setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
       setUnreadCount(0);
+      announce(t("notifications.allMarkedRead"));
     }
   };
 
-  const formatTime = (dateString: string) => {
+  const formatTime = useCallback((dateString: string) => {
     try {
       return formatDistanceToNow(new Date(dateString), { addSuffix: true });
     } catch {
       return t("notifications.recently");
     }
-  };
+  }, [t]);
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -238,4 +250,4 @@ export function NotificationCenter({ className }: NotificationCenterProps) {
       </PopoverContent>
     </Popover>
   );
-}
+});

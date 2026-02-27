@@ -942,7 +942,9 @@
     "title": "اطلاعات",
     "markAllRead": "سب پڑھا ہوا نشان لگائیں",
     "noNotifications": "ابھی تک کوئی اطلاع نہیں",
-    "recently": "حال ہی میں"
+    "recently": "حال ہی میں",
+    "newNotification": "آپ کے پاس {{count}} نئی اطلاع(ات) ہیں",
+    "allMarkedRead": "تمام اطلاعات پڑھی ہوئی نشان لگا دی گئیں"
   },
   "welcomeBanner": {
     "quickTips": "فوری تجاویز:"

@@ -942,7 +942,9 @@
     "title": "Notifications",
     "markAllRead": "Mark all read",
     "noNotifications": "No notifications yet",
-    "recently": "recently"
+    "recently": "recently",
+    "newNotification": "You have {{count}} unread notification(s)",
+    "allMarkedRead": "All notifications marked as read"
   },
   "welcomeBanner": {
     "quickTips": "Quick tips:"

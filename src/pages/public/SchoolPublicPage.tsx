@@ -167,7 +167,16 @@ const SchoolPublicPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Helmet><title>School Profile — School Smart Pakistan</title></Helmet>
+      <Helmet>
+        <title>{school.name} — School Smart Pakistan</title>
+        <meta name="description" content={`${school.name} school profile on School Smart Pakistan. View announcements, stats, and contact information.${school.address ? ` Located at ${school.address}.` : ""}`} />
+        <meta property="og:title" content={`${school.name} — School Smart Pakistan`} />
+        <meta property="og:description" content={`${school.name} — View school announcements, student & teacher stats, and contact details.`} />
+        <meta property="og:type" content="profile" />
+        {school.logo_url && <meta property="og:image" content={school.logo_url} />}
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content={`${school.name} — School Smart Pakistan`} />
+      </Helmet>
       {/* Hero Section */}
       <header className="relative bg-primary text-primary-foreground py-16 md:py-24">
         <div className="absolute inset-0 bg-black/10"></div>

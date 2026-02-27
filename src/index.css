@@ -812,6 +812,61 @@ html::-webkit-scrollbar-thumb:hover {
   ::-webkit-scrollbar {
     display: none !important;
   }
+
+  /* Print-friendly tables */
+  table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+  }
+
+  table th,
+  table td {
+    border: 1px solid #ddd !important;
+    padding: 6px 8px !important;
+    font-size: 10pt !important;
+    color: #333 !important;
+  }
+
+  table th {
+    background-color: #f5f5f5 !important;
+    font-weight: 600 !important;
+  }
+
+  table tr:nth-child(even) {
+    background-color: #fafafa !important;
+  }
+
+  /* Print-friendly cards */
+  .card,
+  [class*="rounded-xl"],
+  [class*="rounded-2xl"] {
+    border: 1px solid #ddd !important;
+    box-shadow: none !important;
+    break-inside: avoid;
+  }
+
+  /* Print-friendly badges */
+  .badge,
+  [class*="badge"] {
+    border: 1px solid #ccc !important;
+    padding: 1px 6px !important;
+  }
+
+  /* Show print-specific content */
+  .print-only {
+    display: block !important;
+  }
+
+  /* Hide print content in normal view */
+  .screen-only {
+    display: none !important;
+  }
+
+  /* Avoid page breaks inside important sections */
+  .no-break {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
 }
 
 /* RTL Support for Urdu language */

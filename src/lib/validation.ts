@@ -91,8 +91,8 @@ export function validateName(name: string): { valid: boolean; error?: string } {
     return { valid: false, error: "Name is too long" };
   }
 
-  // Check for invalid characters (allow letters, spaces, hyphens, apostrophes)
-  if (!/^[a-zA-Z\s\-'.]+$/.test(trimmed)) {
+  // Check for invalid characters (allow Unicode letters for Urdu/Arabic support, spaces, hyphens, apostrophes)
+  if (!/^[\p{L}\s\-'.]+$/u.test(trimmed)) {
     return { valid: false, error: "Name contains invalid characters" };
   }
 

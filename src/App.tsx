@@ -15,6 +15,7 @@ import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import { PWAUpdatePrompt } from "@/components/pwa/PWAUpdatePrompt";
 import { PWAInstallPrompt } from "@/components/pwa/PWAInstallPrompt";
+import { KeyboardShortcuts } from "@/components/ui/KeyboardShortcuts";
 import { OnlineGuard } from "@/components/pwa/OnlineGuard";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { Analytics } from "@vercel/analytics/react";
@@ -56,6 +57,7 @@ const App = () => (
         <div aria-live="polite" aria-atomic="true" className="sr-only" id="aria-live-announcements" />
         <PWAUpdatePrompt />
         <PWAInstallPrompt />
+        <KeyboardShortcuts />
         <BrowserRouter>
         <SessionTimeout />
         <Suspense fallback={<FullPageLoader />}>

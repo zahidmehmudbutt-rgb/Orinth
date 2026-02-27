@@ -643,7 +643,7 @@ const PrincipalDashboard = () => {
                     ) : (
                       <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                         <EmptyState
-                          icon={Users}
+                          illustration="no-students"
                           title={t("principalDashboard.noSectionHeadsYet")}
                           description={t("principalDashboard.noSectionHeadsYetDesc")}
                         />
@@ -700,7 +700,7 @@ const PrincipalDashboard = () => {
               ) : (
                 <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                   <EmptyState
-                    icon={School}
+                    illustration="no-data"
                     title={t("principalDashboard.noClassesYet")}
                     description={t("principalDashboard.noClassesYetDesc")}
                   />

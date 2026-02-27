@@ -134,11 +134,14 @@ describe("validateName", () => {
     expect(result.error).toBe("Name contains invalid characters");
   });
 
-  it("rejects names with Urdu characters (regex only allows English letters)", () => {
-    // The current regex ^[a-zA-Z\s\-'.]+$ does not include Unicode/Urdu chars
+  it("accepts names with Urdu characters", () => {
     const result = validateName("\u0627\u062D\u0645\u062F");
-    expect(result.valid).toBe(false);
-    expect(result.error).toBe("Name contains invalid characters");
+    expect(result.valid).toBe(true);
+  });
+
+  it("accepts names with mixed English and Urdu characters", () => {
+    const result = validateName("Ahmed \u0627\u062D\u0645\u062F");
+    expect(result.valid).toBe(true);
   });
 
   it("rejects names longer than 100 characters", () => {

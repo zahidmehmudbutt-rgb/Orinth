@@ -2,7 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { GraduationCap, User, Lock, ArrowLeft, Loader2, AlertCircle, BookOpen, Award, Users } from "lucide-react";
+import { GraduationCap, User, Lock, ArrowLeft, Loader2, AlertCircle, BookOpen, Award, Users, Eye, EyeOff } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,7 @@ import { useLoginRateLimit } from "@/hooks/useLoginRateLimit";
 
 const StudentLogin = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useTranslation();
@@ -283,13 +284,23 @@ const StudentLogin = () => {
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                     <Input
                       id="password"
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       placeholder={t("login.enterPassword")}
                       {...register("password")}
-                      className={`pl-10 h-12 bg-background/50 dark:bg-background/30 ${errors.password ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                      className={`pl-10 pr-12 h-12 bg-background/50 dark:bg-background/30 ${errors.password ? 'border-destructive focus-visible:ring-destructive' : ''}`}
                       disabled={isLoading}
                       autoComplete="current-password"
                     />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-foreground"
+                      onClick={() => setShowPassword(!showPassword)}
+                      tabIndex={-1}
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </Button>
                   </div>
                   {errors.password && (
                     <p className="text-sm text-destructive flex items-center gap-1">

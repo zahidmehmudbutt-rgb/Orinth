@@ -3,6 +3,17 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { LogOut, BookOpen, Plus, Users, Settings, Sparkles, ClipboardList, FileText, ExternalLink, Check, X, Award, Calendar, Save, Pencil, Trash2 } from "lucide-react";
 import { NotificationCenter } from "@/components/notifications/NotificationCenter";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { GroupChat } from "@/components/chat";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageToggle } from "@/components/LanguageToggle";
@@ -1202,7 +1213,7 @@ const TeacherDashboard = () => {
             {!hasClasses ? (
               <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                 <EmptyState
-                  icon={BookOpen}
+                  illustration="no-students"
                   title={t("teacherDashboard.noClassesTitle")}
                   description={t("teacherDashboard.noClassesDesc")}
                 />
@@ -1345,7 +1356,7 @@ const TeacherDashboard = () => {
                   ) : (
                     <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                       <EmptyState
-                        icon={ClipboardList}
+                        illustration="no-homework"
                         title={t("teacherDashboard.noHomeworkTitle")}
                         description={t("teacherDashboard.noHomeworkDesc")}
                       />
@@ -1360,7 +1371,7 @@ const TeacherDashboard = () => {
             {!hasClasses ? (
               <div className="bg-card rounded-xl p-6 shadow-card border border-border max-w-2xl mx-auto">
                 <EmptyState
-                  icon={Users}
+                  illustration="no-students"
                   title={t("teacherDashboard.noClassesTitle")}
                   description={t("teacherDashboard.noClassesToMarkDesc")}
                 />
@@ -1368,7 +1379,7 @@ const TeacherDashboard = () => {
             ) : !hasHomework ? (
               <div className="bg-card rounded-xl p-6 shadow-card border border-border max-w-2xl mx-auto">
                 <EmptyState
-                  icon={ClipboardList}
+                  illustration="no-homework"
                   title={t("teacherDashboard.noHomeworkToMark")}
                   description={t("teacherDashboard.noHomeworkToMarkDesc")}
                   actionLabel={t("teacherDashboard.createHomeworkAction")}
@@ -1565,7 +1576,7 @@ const TeacherDashboard = () => {
             {!hasClasses ? (
               <div className="bg-card rounded-xl p-6 shadow-card border border-border max-w-2xl mx-auto">
                 <EmptyState
-                  icon={Award}
+                  illustration="no-results"
                   title={t("teacherDashboard.noClassesTitle")}
                   description={t("teacherDashboard.noClassesToResultsDesc")}
                 />
@@ -1733,7 +1744,7 @@ const TeacherDashboard = () => {
                     </div>
                   ) : recentExams.length === 0 ? (
                     <EmptyState
-                      icon={Award}
+                      illustration="no-results"
                       title={t("teacherDashboard.noExamsTitle")}
                       description={t("teacherDashboard.noExamsDesc")}
                     />
@@ -1801,25 +1812,41 @@ const TeacherDashboard = () => {
                               <Pencil className="w-4 h-4 mr-1" />
                               {t("teacherDashboard.edit")}
                             </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                if (confirm(t("teacherDashboard.deleteConfirm", { title: exam.title }))) {
-                                  handleDeleteExam(exam.id);
-                                }
-                              }}
-                              disabled={deletingExamId === exam.id}
-                              className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                            >
-                              {deletingExamId === exam.id ? (
-                                <span className="animate-spin">⏳</span>
-                              ) : (
-                                <Trash2 className="w-4 h-4 mr-1" />
-                              )}
-                              {t("teacherDashboard.delete")}
-                            </Button>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={(e) => e.stopPropagation()}
+                                  disabled={deletingExamId === exam.id}
+                                  className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                                >
+                                  {deletingExamId === exam.id ? (
+                                    <span className="animate-spin">⏳</span>
+                                  ) : (
+                                    <Trash2 className="w-4 h-4 mr-1" />
+                                  )}
+                                  {t("teacherDashboard.delete")}
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>{t("teacherDashboard.deleteExamTitle")}</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    {t("teacherDashboard.deleteConfirm", { title: exam.title })}
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
+                                  <AlertDialogAction
+                                    onClick={() => handleDeleteExam(exam.id)}
+                                    className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+                                  >
+                                    {t("teacherDashboard.delete")}
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
                           </div>
                         </div>
                       ))}

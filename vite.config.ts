@@ -101,6 +101,18 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
-    // Let Rollup handle chunk splitting automatically to avoid circular dependency issues
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          "vendor-react": ["react", "react-dom", "react-router-dom"],
+          "vendor-ui": ["@radix-ui/react-dialog", "@radix-ui/react-popover", "@radix-ui/react-tabs", "@radix-ui/react-dropdown-menu", "@radix-ui/react-select"],
+          "vendor-charts": ["recharts"],
+          "vendor-pdf": ["jspdf", "html2canvas"],
+          "vendor-forms": ["react-hook-form", "@hookform/resolvers", "zod"],
+          "vendor-motion": ["framer-motion"],
+          "vendor-i18n": ["i18next", "react-i18next"],
+        },
+      },
+    },
   },
 }));

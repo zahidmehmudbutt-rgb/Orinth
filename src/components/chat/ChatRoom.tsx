@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import type { CSSProperties, ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 import { getDateLocale } from "@/lib/utils/date-locale";
@@ -181,7 +181,7 @@ export function ChatRoom({ room, onBack }: ChatRoomProps) {
     }
   };
 
-  const getInitials = (name: string) => {
+  const getInitials = useCallback((name: string) => {
     return name
       .split(" ")
       .filter(Boolean)
@@ -189,16 +189,16 @@ export function ChatRoom({ room, onBack }: ChatRoomProps) {
       .join("")
       .toUpperCase()
       .slice(0, 2);
-  };
+  }, []);
 
-  const formatTime = (dateString: string) => {
+  const formatTime = useCallback((dateString: string) => {
     try {
       const date = new Date(dateString);
       return date.toLocaleTimeString(getDateLocale(), { hour: "2-digit", minute: "2-digit" });
     } catch {
       return "";
     }
-  };
+  }, []);
 
   const getRoleBadgeColor = (role: string) => {
     switch (role) {
