@@ -35,7 +35,8 @@
     "profileInfo": "اکاؤنٹ کی معلومات",
     "language": "زبان",
     "english": "English",
-    "urdu": "اردو"
+    "urdu": "اردو",
+    "scrollToTop": "اوپر جائیں"
   },
   "landing": {
     "heroTitle": "پاکستان کا سب سے سمارٹ اسکول مینجمنٹ سسٹم",
@@ -791,7 +792,9 @@
     "installIOS": "iOS پر انسٹال کریں",
     "iosInstallTip": "سفاری میں شیئر بٹن دبائیں، پھر \"ہوم اسکرین میں شامل کریں\" منتخب کریں۔",
     "gotIt": "سمجھ آ گیا",
-    "portal": "پورٹل"
+    "portal": "پورٹل",
+    "toggleMenu": "مینو ٹوگل کریں",
+    "mobileNav": "موبائل نیویگیشن"
   },
   "footer": {
     "brandName": "اسکول سمارٹ پاکستان",
@@ -1435,5 +1438,36 @@
     "parseError": "CSV فائل پارس کرنے میں ناکامی",
     "imported": "درآمد شدہ",
     "failed": "ناکام"
+  },
+  "fileDropZone": {
+    "dragDrop": "فائل یہاں ڈراپ کریں، یا براؤز کرنے کے لیے کلک کریں",
+    "maxSize": "زیادہ سے زیادہ فائل سائز: {{size}}MB",
+    "tooLarge": "فائل سائز کی حد سے زیادہ ہے",
+    "uploading": "اپ لوڈ ہو رہا ہے...",
+    "submit": "فائل اپ لوڈ کریں"
+  },
+  "passwordInput": {
+    "showPassword": "پاس ورڈ دکھائیں",
+    "hidePassword": "پاس ورڈ چھپائیں",
+    "strength": "پاس ورڈ کی مضبوطی",
+    "strong": "مضبوط",
+    "medium": "درمیانہ",
+    "weak": "کمزور",
+    "minChars": "8+ حروف",
+    "uppercase": "بڑے حروف",
+    "lowercase": "چھوٹے حروف",
+    "number": "نمبر",
+    "special": "خاص حروف"
+  },
+  "keyboardShortcuts": {
+    "title": "کی بورڈ شارٹ کٹس",
+    "description": "دستیاب کی بورڈ شارٹ کٹس کا فوری حوالہ۔",
+    "closeDialogs": "ڈائیلاگ / ماڈلز بند کریں",
+    "showHelp": "شارٹ کٹس کی مدد دکھائیں",
+    "quickSearch": "فوری تلاش",
+    "nextElement": "اگلے عنصر پر جائیں",
+    "prevElement": "پچھلے عنصر پر جائیں",
+    "confirmSubmit": "تصدیق / جمع کرائیں",
+    "navigateLists": "فہرستوں میں تشریف لے جائیں"
   }
 }

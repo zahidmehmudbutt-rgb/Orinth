@@ -1,4 +1,5 @@
 import { forwardRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Eye, EyeOff, Lock, AlertCircle, CheckCircle2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,7 +13,7 @@ interface PasswordInputProps extends Omit<React.ComponentProps<"input">, "type">
   showIcon?: boolean;
 }
 
-function getStrength(password: string): { score: number; label: string; color: string } {
+function getStrength(password: string, t: (key: string) => string): { score: number; label: string; color: string } {
   let score = 0;
   if (password.length >= 8) score++;
   if (password.length >= 12) score++;
@@ -21,18 +22,19 @@ function getStrength(password: string): { score: number; label: string; color: s
   if (/[0-9]/.test(password)) score++;
   if (/[^a-zA-Z0-9]/.test(password)) score++;
 
-  if (score >= 5) return { score, label: "Strong", color: "bg-green-500" };
-  if (score >= 3) return { score, label: "Medium", color: "bg-yellow-500" };
-  return { score, label: "Weak", color: "bg-red-500" };
+  if (score >= 5) return { score, label: t("passwordInput.strong"), color: "bg-green-500" };
+  if (score >= 3) return { score, label: t("passwordInput.medium"), color: "bg-yellow-500" };
+  return { score, label: t("passwordInput.weak"), color: "bg-red-500" };
 }
 
 export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
   ({ label, error, showStrength = false, showIcon = true, id, className, value, ...props }, ref) => {
     const [visible, setVisible] = useState(false);
+    const { t } = useTranslation();
     const fieldId = id || "password";
     const errorId = `${fieldId}-error`;
     const passwordValue = typeof value === "string" ? value : "";
-    const strength = showStrength && passwordValue ? getStrength(passwordValue) : null;
+    const strength = showStrength && passwordValue ? getStrength(passwordValue, t) : null;
 
     return (
       <div className="space-y-2">
@@ -63,7 +65,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
             className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-foreground"
             onClick={() => setVisible(!visible)}
             tabIndex={-1}
-            aria-label={visible ? "Hide password" : "Show password"}
+            aria-label={visible ? t("passwordInput.hidePassword") : t("passwordInput.showPassword")}
           >
             {visible ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
           </Button>
@@ -83,15 +85,15 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
               ))}
             </div>
             <p className={cn("text-xs", strength.score >= 5 ? "text-green-500" : strength.score >= 3 ? "text-yellow-600" : "text-red-500")}>
-              Password strength: {strength.label}
+              {t("passwordInput.strength")}: {strength.label}
             </p>
             <div className="grid grid-cols-2 gap-1 text-xs">
               {[
-                { check: passwordValue.length >= 8, text: "8+ characters" },
-                { check: /[A-Z]/.test(passwordValue), text: "Uppercase letter" },
-                { check: /[a-z]/.test(passwordValue), text: "Lowercase letter" },
-                { check: /[0-9]/.test(passwordValue), text: "Number" },
-                { check: /[^a-zA-Z0-9]/.test(passwordValue), text: "Special character" },
+                { check: passwordValue.length >= 8, text: t("passwordInput.minChars") },
+                { check: /[A-Z]/.test(passwordValue), text: t("passwordInput.uppercase") },
+                { check: /[a-z]/.test(passwordValue), text: t("passwordInput.lowercase") },
+                { check: /[0-9]/.test(passwordValue), text: t("passwordInput.number") },
+                { check: /[^a-zA-Z0-9]/.test(passwordValue), text: t("passwordInput.special") },
               ].map((req) => (
                 <span key={req.text} className={cn("flex items-center gap-1", req.check ? "text-green-600" : "text-muted-foreground")}>
                   {req.check ? <CheckCircle2 className="w-3 h-3" /> : <AlertCircle className="w-3 h-3" />}

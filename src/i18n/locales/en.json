@@ -35,7 +35,8 @@
     "profileInfo": "Account Information",
     "language": "Language",
     "english": "English",
-    "urdu": "اردو"
+    "urdu": "اردو",
+    "scrollToTop": "Scroll to top"
   },
   "landing": {
     "heroTitle": "Pakistan's Smartest School Management System",
@@ -791,7 +792,9 @@
     "installIOS": "Install on iOS",
     "iosInstallTip": "Tap the Share button in Safari, then select \"Add to Home Screen\".",
     "gotIt": "Got it",
-    "portal": "Portal"
+    "portal": "Portal",
+    "toggleMenu": "Toggle menu",
+    "mobileNav": "Mobile navigation"
   },
   "footer": {
     "brandName": "School Smart Pakistan",
@@ -1435,5 +1438,36 @@
     "parseError": "Failed to parse CSV file",
     "imported": "imported",
     "failed": "failed"
+  },
+  "fileDropZone": {
+    "dragDrop": "Drag & drop a file here, or click to browse",
+    "maxSize": "Max file size: {{size}}MB",
+    "tooLarge": "File exceeds size limit",
+    "uploading": "Uploading...",
+    "submit": "Upload File"
+  },
+  "passwordInput": {
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "strength": "Password strength",
+    "strong": "Strong",
+    "medium": "Medium",
+    "weak": "Weak",
+    "minChars": "8+ characters",
+    "uppercase": "Uppercase letter",
+    "lowercase": "Lowercase letter",
+    "number": "Number",
+    "special": "Special character"
+  },
+  "keyboardShortcuts": {
+    "title": "Keyboard Shortcuts",
+    "description": "Quick reference for available keyboard shortcuts.",
+    "closeDialogs": "Close dialogs / modals",
+    "showHelp": "Show shortcuts help",
+    "quickSearch": "Quick search",
+    "nextElement": "Navigate to next element",
+    "prevElement": "Navigate to previous element",
+    "confirmSubmit": "Confirm / Submit",
+    "navigateLists": "Navigate lists"
   }
 }

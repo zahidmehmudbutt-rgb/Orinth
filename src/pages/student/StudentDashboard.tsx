@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { GraduationCap, LogOut, BookOpen, Calendar, BarChart3, Megaphone, Clock, Upload, CheckCircle, AlertCircle, Settings, Sparkles, FileText, Download, Award, Printer, CalendarDays, RefreshCw } from "lucide-react";
+import { GraduationCap, LogOut, BookOpen, Calendar, BarChart3, Megaphone, Clock, CheckCircle, AlertCircle, Settings, Sparkles, FileText, Download, Award, Printer, CalendarDays, RefreshCw } from "lucide-react";
 import { NotificationCenter } from "@/components/notifications/NotificationCenter";
 import { GroupChat } from "@/components/chat";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -16,7 +16,6 @@ import { useToast } from "@/hooks/use-toast";
 import AccountSettings from "@/components/account/AccountSettings";
 import { WelcomeBanner } from "@/components/onboarding/WelcomeBanner";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { LoadingButton } from "@/components/ui/LoadingButton";
 import { supabase } from "@/integrations/supabase/client";
 import { DashboardSkeleton } from "@/components/ui/skeleton-loader";
 import { MobileNav } from "@/components/ui/mobile-nav";
@@ -37,6 +36,7 @@ import { Leaderboard } from "@/components/leaderboard/Leaderboard";
 import { getDateLocale } from "@/lib/utils/date-locale";
 import { exportToPDF } from "@/lib/utils/pdf-export";
 import { ExportButton } from "@/components/ui/ExportButton";
+import { FileDropZone } from "@/components/ui/FileDropZone";
 
 interface StudentData {
   id: string;
@@ -44,6 +44,9 @@ interface StudentData {
   name: string;
   className: string;
   classId: string;
+  schoolName?: string;
+  schoolAddress?: string;
+  schoolLogo?: string;
 }
 
 interface Subject {
@@ -104,7 +107,8 @@ const StudentDashboard = () => {
   const [marks, setMarks] = useState<Mark[]>([]);
   const [notices, setNotices] = useState<Notice[]>([]);
   const [examResults, setExamResults] = useState<ExamResult[]>([]);
-  const fileInputRefs = useRef<{ [key: string]: HTMLInputElement | null }>({});
+  const calendarFileRef = useRef<HTMLInputElement>(null);
+  const [calendarUploadId, setCalendarUploadId] = useState<string | null>(null);
 
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -139,6 +143,7 @@ const StudentDashboard = () => {
           student_id,
           full_name,
           class_id,
+          school_id,
           classes (
             id,
             name,
@@ -155,12 +160,26 @@ const StudentDashboard = () => {
 
       const classInfo = student.classes as { id: string; name: string; section: string } | null;
 
+      // Fetch school info for report card branding
+      let schoolInfo: { name?: string; address?: string; logo_url?: string } = {};
+      if (student.school_id) {
+        const { data: school } = await supabase
+          .from("schools")
+          .select("name, address, logo_url")
+          .eq("id", student.school_id)
+          .maybeSingle();
+        if (school) schoolInfo = school;
+      }
+
       setStudentData({
         id: student.id,
         studentId: student.student_id,
         name: student.full_name,
         className: classInfo ? `${classInfo.name}-${classInfo.section}` : t("studentDashboard.notAssigned"),
         classId: student.class_id,
+        schoolName: schoolInfo.name,
+        schoolAddress: schoolInfo.address,
+        schoolLogo: schoolInfo.logo_url,
       });
 
       // Fetch all data in parallel
@@ -432,11 +451,9 @@ const StudentDashboard = () => {
     navigate("/");
   };
 
-  const handleFileSelect = (homeworkId: string) => {
-    const input = fileInputRefs.current[homeworkId];
-    if (input) {
-      input.click();
-    }
+  const handleCalendarFileSelect = (homeworkId: string) => {
+    setCalendarUploadId(homeworkId);
+    calendarFileRef.current?.click();
   };
 
   const handleUpload = async (homeworkId: string, file: File) => {
@@ -779,21 +796,34 @@ const StudentDashboard = () => {
                 </FadeInView>
 
                 {homeworkView === "calendar" ? (
-                  <HomeworkCalendar
-                    homework={homeworks.map(hw => ({
-                      id: hw.id,
-                      title: hw.title,
-                      subject: hw.subject,
-                      dueDate: hw.dueDateRaw,
-                      status: hw.status,
-                    }))}
-                    onSelectHomework={(hw) => {
-                      const homework = homeworks.find(h => h.id === hw.id);
-                      if (homework && homework.status === "pending") {
-                        handleFileSelect(hw.id);
-                      }
-                    }}
-                  />
+                  <>
+                    <HomeworkCalendar
+                      homework={homeworks.map(hw => ({
+                        id: hw.id,
+                        title: hw.title,
+                        subject: hw.subject,
+                        dueDate: hw.dueDateRaw,
+                        status: hw.status,
+                      }))}
+                      onSelectHomework={(hw) => {
+                        const homework = homeworks.find(h => h.id === hw.id);
+                        if (homework && homework.status === "pending") {
+                          handleCalendarFileSelect(hw.id);
+                        }
+                      }}
+                    />
+                    <input
+                      type="file"
+                      ref={calendarFileRef}
+                      className="hidden"
+                      accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file && calendarUploadId) handleUpload(calendarUploadId, file);
+                        if (calendarFileRef.current) calendarFileRef.current.value = "";
+                      }}
+                    />
+                  </>
                 ) : hasHomework ? (
                   <StaggerContainer className="grid sm:grid-cols-2 gap-4">
                     {homeworks.map((hw) => (
@@ -837,28 +867,15 @@ const StudentDashboard = () => {
                         )}
 
                         {hw.status === "pending" && (
-                          <>
-                            <input
-                              type="file"
-                              ref={(el) => (fileInputRefs.current[hw.id] = el)}
-                              className="hidden"
-                              accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif"
-                              onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) handleUpload(hw.id, file);
-                              }}
-                            />
-                            <LoadingButton
-                              className="w-full bg-gradient-primary text-primary-foreground shadow-button"
-                              onClick={() => handleFileSelect(hw.id)}
+                          <div data-tour="student-upload-btn">
+                            <FileDropZone
+                              onFileSelect={(file) => handleUpload(hw.id, file)}
                               loading={uploadingId === hw.id}
                               loadingText={t("studentDashboard.uploading")}
-                              data-tour="student-upload-btn"
-                            >
-                              <Upload className="w-4 h-4 mr-2" />
-                              {t("studentDashboard.uploadAnswer")}
-                            </LoadingButton>
-                          </>
+                              accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif"
+                              maxSizeMB={10}
+                            />
+                          </div>
                         )}
                       </div>
                       </StaggerItem>
@@ -1182,7 +1199,7 @@ const StudentDashboard = () => {
 
                 {/* Result Card / Certificate (hidden on mobile, visible for print) */}
                 <div id="result-card-content" className="hidden md:block print:!block bg-gradient-to-br from-slate-50 to-slate-100 rounded-lg shadow-xl border-4 border-double border-slate-300 overflow-hidden print:shadow-none print:border-2">
-                  {/* Certificate Header */}
+                  {/* Certificate Header with School Branding */}
                   <div className="bg-gradient-to-r from-indigo-900 via-purple-900 to-indigo-900 text-white px-4 sm:px-8 py-5 sm:py-6 text-center relative">
                     <div className="absolute top-0 left-0 w-full h-full opacity-10">
                       <div className="absolute top-2 left-2 w-12 sm:w-16 h-12 sm:h-16 border-2 border-white rounded-full"></div>
@@ -1191,10 +1208,20 @@ const StudentDashboard = () => {
                     </div>
                     <div className="relative">
                       <div className="flex justify-center mb-3">
-                        <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white/20 rounded-full flex items-center justify-center border-2 border-white/30">
-                          <Award className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" />
-                        </div>
+                        {studentData?.schoolLogo ? (
+                          <img src={studentData.schoolLogo} alt="" className="w-14 h-14 sm:w-18 sm:h-18 rounded-full object-cover border-2 border-white/30 bg-white/10" />
+                        ) : (
+                          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white/20 rounded-full flex items-center justify-center border-2 border-white/30">
+                            <Award className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" />
+                          </div>
+                        )}
                       </div>
+                      {studentData?.schoolName && (
+                        <h2 className="text-base sm:text-xl font-serif font-bold tracking-wide mb-0.5">{studentData.schoolName}</h2>
+                      )}
+                      {studentData?.schoolAddress && (
+                        <p className="text-indigo-200 text-xs mb-2">{studentData.schoolAddress}</p>
+                      )}
                       <h1 className="text-lg sm:text-2xl font-serif font-bold tracking-wide">{t("studentDashboard.academicResultCard")}</h1>
                       <p className="text-indigo-200 text-xs sm:text-sm mt-1">{t("studentDashboard.officialRecord")}</p>
                     </div>
@@ -1398,12 +1425,11 @@ const StudentDashboard = () => {
                       <div>
                         <p className="text-xs text-slate-500 uppercase tracking-wide mb-2">{t("studentDashboard.gradingScale")}</p>
                         <div className="flex flex-wrap gap-2 text-xs">
-                          <span className="px-2 py-1 bg-green-100 text-green-700 rounded">A+ (90-100%)</span>
-                          <span className="px-2 py-1 bg-green-50 text-green-600 rounded">A (80-89%)</span>
-                          <span className="px-2 py-1 bg-blue-50 text-blue-600 rounded">B (70-79%)</span>
-                          <span className="px-2 py-1 bg-yellow-50 text-yellow-600 rounded">C (60-69%)</span>
-                          <span className="px-2 py-1 bg-orange-50 text-orange-600 rounded">D (50-59%)</span>
-                          <span className="px-2 py-1 bg-red-50 text-red-600 rounded">F (Below 50%)</span>
+                          {GRADING_SCALE.map((g) => (
+                            <span key={g.grade} className={`px-2 py-1 rounded ${g.color}`}>
+                              {g.grade} ({g.range})
+                            </span>
+                          ))}
                         </div>
                       </div>
                       <div className="text-right">
@@ -1413,6 +1439,9 @@ const StudentDashboard = () => {
                     </div>
                     <div className="mt-6 pt-4 border-t border-slate-300 text-center">
                       <p className="text-xs text-slate-400">{t("studentDashboard.computerGenerated")}</p>
+                      {studentData?.schoolName && (
+                        <p className="text-xs text-slate-500 mt-1 font-medium">{studentData.schoolName}</p>
+                      )}
                     </div>
                   </div>
                 </div>

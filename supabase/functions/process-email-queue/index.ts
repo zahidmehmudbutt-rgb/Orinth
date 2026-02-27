@@ -20,88 +20,105 @@ const corsHeaders = {
 const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
 let lastExecutionTime = 0;
 
+// Branded email layout wrapper
+function brandedEmail(
+  data: Record<string, unknown>,
+  headerGradient: string,
+  subtitle: string,
+  bodyContent: string,
+): string {
+  const schoolName = escapeHtml(String(data.school_name || 'School Smart Pakistan'));
+  const schoolLogo = data.school_logo ? String(data.school_logo) : '';
+  const schoolAddress = data.school_address ? escapeHtml(String(data.school_address)) : '';
+
+  const logoHtml = schoolLogo
+    ? `<img src="${escapeHtml(schoolLogo)}" alt="" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.3);margin-bottom:8px;" />`
+    : '';
+
+  return `<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background: #f3f4f6; }
+      .wrapper { max-width: 600px; margin: 0 auto; padding: 24px 16px; }
+      .card { background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+      .header { background: ${headerGradient}; color: white; padding: 28px 24px; text-align: center; }
+      .header h1 { margin: 0; font-size: 20px; font-weight: 700; letter-spacing: 0.5px; }
+      .header p { margin: 4px 0 0 0; font-size: 13px; opacity: 0.9; }
+      .content { padding: 24px; }
+      .highlight { background: #e8f4ff; padding: 16px; border-radius: 8px; margin: 16px 0; }
+      .alert { background: #fef2f2; border-left: 4px solid #DC2626; padding: 16px; margin: 16px 0; border-radius: 0 8px 8px 0; }
+      .grade-box { background: #fafafa; border: 2px solid; padding: 20px; border-radius: 10px; margin: 16px 0; text-align: center; }
+      .remarks { background: #f0f9ff; padding: 16px; border-radius: 8px; margin: 16px 0; }
+      .footer { text-align: center; padding: 20px 24px; border-top: 1px solid #e5e7eb; }
+      .footer p { margin: 0; font-size: 12px; color: #9ca3af; }
+      .footer .brand { font-weight: 600; color: #6b7280; }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="card">
+        <div class="header">
+          ${logoHtml}
+          <h1>${schoolName}</h1>
+          <p>${subtitle}</p>
+        </div>
+        <div class="content">
+          ${bodyContent}
+        </div>
+        <div class="footer">
+          ${schoolAddress ? `<p style="margin-bottom:8px;color:#6b7280;">${schoolAddress}</p>` : ''}
+          <p>Powered by <span class="brand">School Smart Pakistan</span></p>
+          <p style="margin-top:4px;">This is an automated notification.</p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>`;
+}
+
 // Email templates
 const templates: Record<string, (data: Record<string, unknown>) => { subject: string; html: string }> = {
   homework_assigned: (data) => ({
     subject: `New Homework Assigned: ${String(data.homework_title || 'Assignment')}`,
-    html: `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <style>
-            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: linear-gradient(135deg, #0066FF, #0052CC); color: white; padding: 20px; border-radius: 8px 8px 0 0; }
-            .content { background: #f9f9f9; padding: 20px; border-radius: 0 0 8px 8px; }
-            .highlight { background: #e8f4ff; padding: 15px; border-radius: 8px; margin: 15px 0; }
-            .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
-          </style>
-        </head>
-        <body>
-          <div class="container">
-            <div class="header">
-              <h1 style="margin: 0;">School Smart Pakistan</h1>
-              <p style="margin: 5px 0 0 0;">New Homework Notification</p>
-            </div>
-            <div class="content">
-              <p>Dear ${escapeHtml(String(data.parent_name || 'Parent'))},</p>
-              <p>A new homework assignment has been given to <strong>${escapeHtml(String(data.student_name || 'your child'))}</strong>.</p>
-              <div class="highlight">
-                <p><strong>Subject:</strong> ${escapeHtml(String(data.subject || 'N/A'))}</p>
-                <p><strong>Assignment:</strong> ${escapeHtml(String(data.homework_title || 'N/A'))}</p>
-                <p><strong>Due Date:</strong> ${escapeHtml(String(data.due_date || 'N/A'))}</p>
-                <p><strong>Assigned By:</strong> ${escapeHtml(String(data.teacher_name || 'Teacher'))}</p>
-              </div>
-              <p>Please ensure your child completes and submits this assignment before the due date.</p>
-              <p>Best regards,<br>School Smart Pakistan</p>
-            </div>
-            <div class="footer">
-              <p>This is an automated message from School Smart Pakistan.</p>
-            </div>
-          </div>
-        </body>
-      </html>
-    `,
+    html: brandedEmail(
+      data,
+      'linear-gradient(135deg, #0066FF, #0052CC)',
+      'New Homework Notification',
+      `
+        <p>Dear ${escapeHtml(String(data.parent_name || 'Parent'))},</p>
+        <p>A new homework assignment has been given to <strong>${escapeHtml(String(data.student_name || 'your child'))}</strong>.</p>
+        <div class="highlight">
+          <p style="margin:0 0 8px 0;"><strong>Subject:</strong> ${escapeHtml(String(data.subject || 'N/A'))}</p>
+          <p style="margin:0 0 8px 0;"><strong>Assignment:</strong> ${escapeHtml(String(data.homework_title || 'N/A'))}</p>
+          <p style="margin:0 0 8px 0;"><strong>Due Date:</strong> ${escapeHtml(String(data.due_date || 'N/A'))}</p>
+          <p style="margin:0;"><strong>Assigned By:</strong> ${escapeHtml(String(data.teacher_name || 'Teacher'))}</p>
+        </div>
+        <p>Please ensure your child completes and submits this assignment before the due date.</p>
+        <p>Best regards,<br><strong>${escapeHtml(String(data.school_name || 'School Smart Pakistan'))}</strong></p>
+      `,
+    ),
   }),
 
   attendance_alert: (data) => ({
     subject: `Attendance Alert: ${String(data.student_name || 'Student')} was absent`,
-    html: `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <style>
-            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: linear-gradient(135deg, #DC2626, #B91C1C); color: white; padding: 20px; border-radius: 8px 8px 0 0; }
-            .content { background: #f9f9f9; padding: 20px; border-radius: 0 0 8px 8px; }
-            .alert { background: #fef2f2; border-left: 4px solid #DC2626; padding: 15px; margin: 15px 0; }
-            .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
-          </style>
-        </head>
-        <body>
-          <div class="container">
-            <div class="header">
-              <h1 style="margin: 0;">School Smart Pakistan</h1>
-              <p style="margin: 5px 0 0 0;">Attendance Alert</p>
-            </div>
-            <div class="content">
-              <p>Dear ${escapeHtml(String(data.parent_name || 'Parent'))},</p>
-              <div class="alert">
-                <p><strong>${escapeHtml(String(data.student_name || 'Your child'))}</strong> was marked <strong>ABSENT</strong> today.</p>
-                <p><strong>Date:</strong> ${escapeHtml(String(data.date || 'N/A'))}</p>
-                <p><strong>Class:</strong> ${escapeHtml(String(data.class_name || 'N/A'))}</p>
-              </div>
-              <p>If you believe this is an error, please contact the class teacher.</p>
-              <p>Best regards,<br>School Smart Pakistan</p>
-            </div>
-            <div class="footer">
-              <p>This is an automated message from School Smart Pakistan.</p>
-            </div>
-          </div>
-        </body>
-      </html>
-    `,
+    html: brandedEmail(
+      data,
+      'linear-gradient(135deg, #DC2626, #B91C1C)',
+      'Attendance Alert',
+      `
+        <p>Dear ${escapeHtml(String(data.parent_name || 'Parent'))},</p>
+        <div class="alert">
+          <p style="margin:0 0 8px 0;"><strong>${escapeHtml(String(data.student_name || 'Your child'))}</strong> was marked <strong>ABSENT</strong> today.</p>
+          <p style="margin:0 0 8px 0;"><strong>Date:</strong> ${escapeHtml(String(data.date || 'N/A'))}</p>
+          <p style="margin:0;"><strong>Class:</strong> ${escapeHtml(String(data.class_name || 'N/A'))}</p>
+        </div>
+        <p>If you believe this is an error, please contact the class teacher.</p>
+        <p>Best regards,<br><strong>${escapeHtml(String(data.school_name || 'School Smart Pakistan'))}</strong></p>
+      `,
+    ),
   }),
 
   grades_published: (data) => {
@@ -111,52 +128,29 @@ const templates: Record<string, (data: Record<string, unknown>) => { subject: st
     const performanceColor = percentage >= 70 ? '#16A34A' : percentage >= 50 ? '#F59E0B' : '#DC2626';
     return {
       subject: `Grades Published: ${String(data.homework_title || 'Assignment')}`,
-      html: `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <style>
-              body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-              .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-              .header { background: linear-gradient(135deg, #16A34A, #15803D); color: white; padding: 20px; border-radius: 8px 8px 0 0; }
-              .content { background: #f9f9f9; padding: 20px; border-radius: 0 0 8px 8px; }
-              .grade-box { background: white; border: 2px solid ${performanceColor}; padding: 20px; border-radius: 8px; margin: 15px 0; text-align: center; }
-              .grade { font-size: 36px; font-weight: bold; color: ${performanceColor}; }
-              .remarks { background: #f0f9ff; padding: 15px; border-radius: 8px; margin: 15px 0; }
-              .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
-            </style>
-          </head>
-          <body>
-            <div class="container">
-              <div class="header">
-                <h1 style="margin: 0;">School Smart Pakistan</h1>
-                <p style="margin: 5px 0 0 0;">Grades Published</p>
-              </div>
-              <div class="content">
-                <p>Dear ${escapeHtml(String(data.parent_name || 'Parent'))},</p>
-                <p>Grades have been published for <strong>${escapeHtml(String(data.student_name || 'your child'))}</strong>'s homework.</p>
-                <div class="grade-box">
-                  <p style="margin: 0; color: #666;">Subject: ${escapeHtml(String(data.subject || 'N/A'))}</p>
-                  <p style="margin: 5px 0; font-weight: bold;">${escapeHtml(String(data.homework_title || 'Assignment'))}</p>
-                  <p class="grade">${marks}/${maxMarks}</p>
-                  <p style="margin: 0; color: ${performanceColor};">${percentage}%</p>
-                </div>
-                ${data.remarks ? `
-                <div class="remarks">
-                  <p style="margin: 0;"><strong>Teacher's Remarks:</strong></p>
-                  <p style="margin: 5px 0 0 0;">${escapeHtml(String(data.remarks))}</p>
-                </div>
-                ` : ''}
-                <p>Keep encouraging your child's academic progress!</p>
-                <p>Best regards,<br>School Smart Pakistan</p>
-              </div>
-              <div class="footer">
-                <p>This is an automated message from School Smart Pakistan.</p>
-              </div>
-            </div>
-          </body>
-        </html>
-      `,
+      html: brandedEmail(
+        data,
+        'linear-gradient(135deg, #16A34A, #15803D)',
+        'Grades Published',
+        `
+          <p>Dear ${escapeHtml(String(data.parent_name || 'Parent'))},</p>
+          <p>Grades have been published for <strong>${escapeHtml(String(data.student_name || 'your child'))}</strong>'s homework.</p>
+          <div class="grade-box" style="border-color: ${performanceColor};">
+            <p style="margin: 0; color: #666;">Subject: ${escapeHtml(String(data.subject || 'N/A'))}</p>
+            <p style="margin: 5px 0; font-weight: bold;">${escapeHtml(String(data.homework_title || 'Assignment'))}</p>
+            <p style="font-size: 36px; font-weight: bold; color: ${performanceColor}; margin: 8px 0;">${marks}/${maxMarks}</p>
+            <p style="margin: 0; color: ${performanceColor};">${percentage}%</p>
+          </div>
+          ${data.remarks ? `
+          <div class="remarks">
+            <p style="margin: 0;"><strong>Teacher's Remarks:</strong></p>
+            <p style="margin: 5px 0 0 0;">${escapeHtml(String(data.remarks))}</p>
+          </div>
+          ` : ''}
+          <p>Keep encouraging your child's academic progress!</p>
+          <p>Best regards,<br><strong>${escapeHtml(String(data.school_name || 'School Smart Pakistan'))}</strong></p>
+        `,
+      ),
     };
   },
 };

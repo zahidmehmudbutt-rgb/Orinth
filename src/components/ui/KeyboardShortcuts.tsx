@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { Keyboard } from "lucide-react";
 import {
   Dialog,
@@ -10,17 +11,17 @@ import {
 
 interface Shortcut {
   keys: string[];
-  description: string;
+  descriptionKey: string;
 }
 
 const shortcuts: Shortcut[] = [
-  { keys: ["Esc"], description: "Close dialogs / modals" },
-  { keys: ["Shift", "?"], description: "Show shortcuts help" },
-  { keys: ["Ctrl", "K"], description: "Quick search" },
-  { keys: ["Tab"], description: "Navigate to next element" },
-  { keys: ["Shift", "Tab"], description: "Navigate to previous element" },
-  { keys: ["Enter"], description: "Confirm / Submit" },
-  { keys: ["\u2191", "\u2193"], description: "Navigate lists" },
+  { keys: ["Esc"], descriptionKey: "keyboardShortcuts.closeDialogs" },
+  { keys: ["Shift", "?"], descriptionKey: "keyboardShortcuts.showHelp" },
+  { keys: ["Ctrl", "K"], descriptionKey: "keyboardShortcuts.quickSearch" },
+  { keys: ["Tab"], descriptionKey: "keyboardShortcuts.nextElement" },
+  { keys: ["Shift", "Tab"], descriptionKey: "keyboardShortcuts.prevElement" },
+  { keys: ["Enter"], descriptionKey: "keyboardShortcuts.confirmSubmit" },
+  { keys: ["\u2191", "\u2193"], descriptionKey: "keyboardShortcuts.navigateLists" },
 ];
 
 function KeyBadge({ children }: { children: string }) {
@@ -33,12 +34,11 @@ function KeyBadge({ children }: { children: string }) {
 
 export function KeyboardShortcuts() {
   const [open, setOpen] = useState(false);
+  const { t } = useTranslation();
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
-      // Shift + ? (which is Shift + /)
       if (e.shiftKey && e.key === "?") {
-        // Don't trigger when typing in inputs/textareas
         const target = e.target as HTMLElement;
         if (
           target.tagName === "INPUT" ||
@@ -66,20 +66,20 @@ export function KeyboardShortcuts() {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Keyboard className="h-5 w-5" />
-            Keyboard Shortcuts
+            {t("keyboardShortcuts.title")}
           </DialogTitle>
           <DialogDescription>
-            Quick reference for available keyboard shortcuts.
+            {t("keyboardShortcuts.description")}
           </DialogDescription>
         </DialogHeader>
 
         <div className="grid gap-3 py-2">
           {shortcuts.map((shortcut) => (
             <div
-              key={shortcut.description}
+              key={shortcut.descriptionKey}
               className="flex items-center justify-between gap-4"
             >
-              <span className="text-sm">{shortcut.description}</span>
+              <span className="text-sm">{t(shortcut.descriptionKey)}</span>
               <div className="flex shrink-0 items-center gap-1">
                 {shortcut.keys.map((key, i) => (
                   <span key={i} className="flex items-center gap-1">

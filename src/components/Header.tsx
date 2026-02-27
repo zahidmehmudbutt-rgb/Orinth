@@ -181,7 +181,7 @@ export const Header = () => {
             ref={hamburgerRef}
             variant="ghost"
             size="icon"
-            aria-label="Toggle menu"
+            aria-label={t("header.toggleMenu")}
             aria-expanded={mobileOpen}
             aria-controls="mobile-menu"
             onClick={() => setMobileOpen(!mobileOpen)}
@@ -210,7 +210,7 @@ export const Header = () => {
           ref={mobileMenuRef}
           id="mobile-menu"
           role="navigation"
-          aria-label="Mobile navigation"
+          aria-label={t("header.mobileNav")}
           className="lg:hidden border-t border-border bg-card/95 backdrop-blur-md"
         >
           <div className="container mx-auto px-4 py-4 space-y-1">
