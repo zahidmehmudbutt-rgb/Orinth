@@ -36,6 +36,7 @@ import { PerformanceTrends } from "@/components/performance/PerformanceTrends";
 import { Leaderboard } from "@/components/leaderboard/Leaderboard";
 import { getDateLocale } from "@/lib/utils/date-locale";
 import { exportToPDF } from "@/lib/utils/pdf-export";
+import { ExportButton } from "@/components/ui/ExportButton";
 
 interface StudentData {
   id: string;
@@ -1036,8 +1037,23 @@ const StudentDashboard = () => {
                 {hasExamResults && (
                   <>
                     <FadeInView className="mb-6">
-                      <h2 className="text-xl font-bold text-foreground mb-2">{t("studentDashboard.examResults")}</h2>
-                      <p className="text-muted-foreground text-sm">{t("studentDashboard.examResultsDesc")}</p>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h2 className="text-xl font-bold text-foreground mb-2">{t("studentDashboard.examResults")}</h2>
+                          <p className="text-muted-foreground text-sm">{t("studentDashboard.examResultsDesc")}</p>
+                        </div>
+                        <ExportButton
+                          data={examResults.map(r => ({
+                            [t("studentDashboard.subject")]: r.subject,
+                            [t("studentDashboard.exam")]: r.title,
+                            [t("studentDashboard.marks")]: r.isAbsent ? t("studentDashboard.absent") : `${r.marksObtained}/${r.maxMarks}`,
+                            [t("studentDashboard.date")]: r.examDate,
+                          }))}
+                          fileName="exam-results"
+                          columns={[t("studentDashboard.subject"), t("studentDashboard.exam"), t("studentDashboard.marks"), t("studentDashboard.date")]}
+                          pdfTitle={t("studentDashboard.examResults")}
+                        />
+                      </div>
                     </FadeInView>
 
                     <StaggerContainer className="grid sm:grid-cols-2 gap-4">

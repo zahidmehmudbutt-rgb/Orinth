@@ -39,6 +39,8 @@ import type { ExamType, ExamItem, StudentMarkEntry } from "@/types/exam";
 import { EXAM_TYPE_LABELS } from "@/types/exam";
 import { getExamTypeBadgeColor } from "@/utils/exam";
 import { getDateLocale } from "@/lib/utils/date-locale";
+import { ExportButton } from "@/components/ui/ExportButton";
+import { TableSkeleton } from "@/components/ui/SkeletonVariants";
 import { useTour } from "@/hooks/useTour";
 import { TourHelpButton } from "@/components/onboarding/TourHelpButton";
 import { getTeacherTourSteps } from "@/components/onboarding/tour-configs";
@@ -1319,7 +1321,23 @@ const TeacherDashboard = () => {
                 {/* Recent Homework */}
                 <div>
                   <FadeInView>
-                    <h2 className="text-xl font-bold text-foreground mb-4" data-tour="teacher-recent-hw">{t("teacherDashboard.recentHomework", { count: recentHomework.length })}</h2>
+                    <div className="flex items-center justify-between mb-4">
+                      <h2 className="text-xl font-bold text-foreground" data-tour="teacher-recent-hw">{t("teacherDashboard.recentHomework", { count: recentHomework.length })}</h2>
+                      {hasHomework && (
+                        <ExportButton
+                          data={recentHomework.map(hw => ({
+                            [t("teacherDashboard.subject")]: hw.subject,
+                            [t("teacherDashboard.title")]: hw.title,
+                            [t("teacherDashboard.class")]: hw.className,
+                            [t("teacherDashboard.dueDate")]: hw.dueDate,
+                            [t("teacherDashboard.submitted")]: `${hw.submitted}/${hw.total}`,
+                          }))}
+                          fileName="homework-list"
+                          columns={[t("teacherDashboard.subject"), t("teacherDashboard.title"), t("teacherDashboard.class"), t("teacherDashboard.dueDate"), t("teacherDashboard.submitted")]}
+                          pdfTitle={t("teacherDashboard.recentHomework", { count: recentHomework.length })}
+                        />
+                      )}
+                    </div>
                   </FadeInView>
                   {hasHomework ? (
                     <StaggerContainer className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
@@ -1451,10 +1469,7 @@ const TeacherDashboard = () => {
                     </h3>
 
                     {loadingSubmissions ? (
-                      <div className="text-center py-8">
-                        <div className="w-8 h-8 border-4 border-role-teacher border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-                        <p className="text-muted-foreground">{t("teacherDashboard.loadingSubmissions")}</p>
-                      </div>
+                      <TableSkeleton rows={4} columns={3} />
                     ) : submissions.length === 0 ? (
                       <p className="text-muted-foreground text-center py-8">{t("teacherDashboard.noStudents")}</p>
                     ) : (
@@ -1738,10 +1753,7 @@ const TeacherDashboard = () => {
                   </h2>
 
                   {loadingExams ? (
-                    <div className="text-center py-8">
-                      <div className="w-8 h-8 border-4 border-role-teacher border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-                      <p className="text-muted-foreground">{t("teacherDashboard.loadingExams")}</p>
-                    </div>
+                    <TableSkeleton rows={3} columns={4} />
                   ) : recentExams.length === 0 ? (
                     <EmptyState
                       illustration="no-results"
@@ -1878,10 +1890,7 @@ const TeacherDashboard = () => {
                     </div>
 
                     {loadingStudentMarks ? (
-                      <div className="text-center py-8">
-                        <div className="w-8 h-8 border-4 border-role-teacher border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-                        <p className="text-muted-foreground">{t("teacherDashboard.loadingStudents")}</p>
-                      </div>
+                      <TableSkeleton rows={5} columns={3} />
                     ) : studentMarks.length === 0 ? (
                       <p className="text-muted-foreground text-center py-8">{t("teacherDashboard.noStudents")}</p>
                     ) : (

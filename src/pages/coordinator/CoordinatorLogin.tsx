@@ -2,7 +2,8 @@ import { Helmet } from "react-helmet-async";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { GraduationCap, Mail, Lock, ArrowLeft, BookMarked, Loader2, AlertCircle, Settings, Users, BarChart3, Eye, EyeOff } from "lucide-react";
+import { GraduationCap, Mail, ArrowLeft, BookMarked, Loader2, AlertCircle, Settings, Users, BarChart3 } from "lucide-react";
+import { PasswordInput } from "@/components/ui/PasswordInput";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,7 +17,7 @@ const CoordinatorLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const navigate = useNavigate();
@@ -229,35 +230,15 @@ const CoordinatorLogin = () => {
                       {t("common.forgotPassword")}
                     </Link>
                   </div>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                    <Input
-                      id="password"
-                      type={showPassword ? "text" : "password"}
-                      placeholder={t("login.enterPassword")}
-                      value={password}
-                      onChange={(e) => handlePasswordChange(e.target.value)}
-                      className={`pl-10 pr-12 h-12 bg-background/50 dark:bg-background/30 ${passwordError ? 'border-destructive focus-visible:ring-destructive' : ''}`}
-                      disabled={isLoading}
-                      autoComplete="current-password"
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-foreground"
-                      onClick={() => setShowPassword(!showPassword)}
-                      tabIndex={-1}
-                    >
-                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </Button>
-                  </div>
-                  {passwordError && (
-                    <p className="text-sm text-destructive flex items-center gap-1">
-                      <AlertCircle className="w-3 h-3" />
-                      {passwordError}
-                    </p>
-                  )}
+                  <PasswordInput
+                    id="password"
+                    placeholder={t("login.enterPassword")}
+                    value={password}
+                    onChange={(e) => handlePasswordChange(e.target.value)}
+                    error={passwordError}
+                    disabled={isLoading}
+                    autoComplete="current-password"
+                  />
                 </div>
 
                 <Button
