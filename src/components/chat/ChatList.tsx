@@ -68,7 +68,10 @@ export function ChatList({ onSelectRoom, selectedRoomId }: ChatListProps) {
           {rooms.map((room) => (
             <div
               key={room.id}
+              role="button"
+              tabIndex={0}
               onClick={() => onSelectRoom(room)}
+              onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onSelectRoom(room); } }}
               className={`p-4 cursor-pointer hover:bg-muted/50 transition-colors ${
                 selectedRoomId === room.id ? "bg-muted" : ""
               }`}

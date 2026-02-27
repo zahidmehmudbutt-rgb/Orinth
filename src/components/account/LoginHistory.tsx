@@ -143,7 +143,7 @@ export default function LoginHistory() {
         ) : (
           <>
           {/* Mobile Card View */}
-          <div className="md:hidden space-y-3 max-h-[400px] overflow-y-auto" role="region" aria-label="Login history" tabIndex={0}>
+          <div className="md:hidden space-y-3 max-h-[400px] overflow-y-auto" role="region" aria-label="Login history">
             {history.map((record) => (
               <div key={record.id} className="border border-border rounded-lg p-3 space-y-2">
                 <div className="flex items-center justify-between">

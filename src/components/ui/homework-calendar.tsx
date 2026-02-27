@@ -129,10 +129,13 @@ export function HomeworkCalendar({ homework, onSelectDate, onSelectHomework }: H
               {dayHomework.slice(0, 2).map((hw) => (
                 <div
                   key={hw.id}
+                  role="button"
+                  tabIndex={0}
                   onClick={(e) => {
                     e.stopPropagation();
                     onSelectHomework?.(hw);
                   }}
+                  onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.stopPropagation(); e.preventDefault(); onSelectHomework?.(hw); } }}
                   className={cn(
                     "text-[10px] sm:text-xs px-1.5 py-0.5 rounded truncate flex items-center gap-1 cursor-pointer hover:opacity-80",
                     getStatusColor(hw.status),
@@ -222,8 +225,11 @@ export function HomeworkCalendar({ homework, onSelectDate, onSelectHomework }: H
             {selectedDateHomework.map((hw) => (
               <div
                 key={hw.id}
+                role="button"
+                tabIndex={0}
                 className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-pointer"
                 onClick={() => onSelectHomework?.(hw)}
+                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onSelectHomework?.(hw); } }}
               >
                 <div>
                   <p className="font-medium text-sm text-foreground">{hw.title}</p>
