@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { useTranslation } from "react-i18next";
 import { MessageSquare, Users } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -9,7 +9,7 @@ interface ChatListProps {
   selectedRoomId?: string;
 }
 
-export function ChatList({ onSelectRoom, selectedRoomId }: ChatListProps) {
+export const ChatList = memo(function ChatList({ onSelectRoom, selectedRoomId }: ChatListProps) {
   const [rooms, setRooms] = useState<ChatRoom[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { t } = useTranslation();
@@ -102,4 +102,4 @@ export function ChatList({ onSelectRoom, selectedRoomId }: ChatListProps) {
       </ScrollArea>
     </div>
   );
-}
+});

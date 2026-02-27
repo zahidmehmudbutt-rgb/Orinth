@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 
@@ -65,7 +66,7 @@ function OverallGradeBadge({ grade }: { grade: string }) {
   );
 }
 
-export function MobileResultCards({ results, type, totalObtained, totalMax, overallPercentage, overallGrade }: MobileResultCardProps) {
+export const MobileResultCards = memo(function MobileResultCards({ results, type, totalObtained, totalMax, overallPercentage, overallGrade }: MobileResultCardProps) {
   const { t } = useTranslation();
   const headerColor = type === "semester"
     ? "from-indigo-500 to-purple-500"
@@ -166,4 +167,4 @@ export function MobileResultCards({ results, type, totalObtained, totalMax, over
       </motion.div>
     </div>
   );
-}
+});

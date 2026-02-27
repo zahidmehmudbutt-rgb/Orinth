@@ -28,6 +28,7 @@ export default defineConfig(({ mode }) => ({
         display: "standalone",
         start_url: "/",
         scope: "/",
+        categories: ["education", "productivity"],
         icons: [
           {
             src: "pwa-192x192.png",
@@ -44,6 +45,26 @@ export default defineConfig(({ mode }) => ({
             sizes: "512x512",
             type: "image/png",
             purpose: "maskable",
+          },
+        ],
+        shortcuts: [
+          {
+            name: "Student Login",
+            short_name: "Student",
+            url: "/student/login",
+            icons: [{ src: "pwa-192x192.png", sizes: "192x192" }],
+          },
+          {
+            name: "Teacher Login",
+            short_name: "Teacher",
+            url: "/teacher/login",
+            icons: [{ src: "pwa-192x192.png", sizes: "192x192" }],
+          },
+          {
+            name: "Parent Login",
+            short_name: "Parent",
+            url: "/parent/login",
+            icons: [{ src: "pwa-192x192.png", sizes: "192x192" }],
           },
         ],
       },

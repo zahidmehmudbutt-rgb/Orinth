@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Trophy, Medal, Award, TrendingUp } from "lucide-react";
@@ -24,7 +24,7 @@ const RANK_ICONS = [
   <Award className="w-5 h-5 text-amber-700" />,
 ];
 
-export function Leaderboard({ classId, currentStudentId, className }: LeaderboardProps) {
+export const Leaderboard = memo(function Leaderboard({ classId, currentStudentId, className }: LeaderboardProps) {
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
@@ -180,4 +180,4 @@ export function Leaderboard({ classId, currentStudentId, className }: Leaderboar
       </CardContent>
     </Card>
   );
-}
+});

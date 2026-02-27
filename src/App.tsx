@@ -18,6 +18,7 @@ import { PWAInstallPrompt } from "@/components/pwa/PWAInstallPrompt";
 import { KeyboardShortcuts } from "@/components/ui/KeyboardShortcuts";
 import { OnlineGuard } from "@/components/pwa/OnlineGuard";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { RouteErrorBoundary } from "@/components/RouteErrorBoundary";
 import { Analytics } from "@vercel/analytics/react";
 
 // Lazy-loaded dashboards
@@ -70,7 +71,9 @@ const App = () => (
             <Route path="/student/login" element={<StudentLogin />} />
             <Route path="/student/dashboard" element={
               <ProtectedRoute requiredRole="student">
-                <StudentDashboard />
+                <RouteErrorBoundary section="Student Dashboard">
+                  <StudentDashboard />
+                </RouteErrorBoundary>
               </ProtectedRoute>
             } />
 
@@ -78,7 +81,9 @@ const App = () => (
             <Route path="/teacher/login" element={<TeacherLogin />} />
             <Route path="/teacher/dashboard" element={
               <ProtectedRoute requiredRole="teacher">
-                <TeacherDashboard />
+                <RouteErrorBoundary section="Teacher Dashboard">
+                  <TeacherDashboard />
+                </RouteErrorBoundary>
               </ProtectedRoute>
             } />
 
@@ -86,7 +91,9 @@ const App = () => (
             <Route path="/class-teacher/login" element={<ClassTeacherLogin />} />
             <Route path="/class-teacher/dashboard" element={
               <ProtectedRoute requiredRole="class_teacher">
-                <ClassTeacherDashboard />
+                <RouteErrorBoundary section="Class Teacher Dashboard">
+                  <ClassTeacherDashboard />
+                </RouteErrorBoundary>
               </ProtectedRoute>
             } />
 
@@ -94,7 +101,9 @@ const App = () => (
             <Route path="/coordinator/login" element={<CoordinatorLogin />} />
             <Route path="/coordinator/dashboard" element={
               <ProtectedRoute requiredRole="coordinator">
-                <CoordinatorDashboard />
+                <RouteErrorBoundary section="Coordinator Dashboard">
+                  <CoordinatorDashboard />
+                </RouteErrorBoundary>
               </ProtectedRoute>
             } />
 
@@ -102,7 +111,9 @@ const App = () => (
             <Route path="/principal/login" element={<PrincipalLogin />} />
             <Route path="/principal/dashboard" element={
               <ProtectedRoute requiredRole="principal">
-                <PrincipalDashboard />
+                <RouteErrorBoundary section="Principal Dashboard">
+                  <PrincipalDashboard />
+                </RouteErrorBoundary>
               </ProtectedRoute>
             } />
 
@@ -110,7 +121,9 @@ const App = () => (
             <Route path="/parent/login" element={<ParentLogin />} />
             <Route path="/parent/dashboard" element={
               <ProtectedRoute requiredRole="parent">
-                <ParentDashboard />
+                <RouteErrorBoundary section="Parent Dashboard">
+                  <ParentDashboard />
+                </RouteErrorBoundary>
               </ProtectedRoute>
             } />
 

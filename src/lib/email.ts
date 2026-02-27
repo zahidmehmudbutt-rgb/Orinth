@@ -3,6 +3,16 @@
 
 import { supabase } from "@/integrations/supabase/client";
 
+/** Escape HTML to prevent XSS in email templates */
+function esc(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 export interface EmailTemplate {
   to: string;
   subject: string;
@@ -71,14 +81,14 @@ export function homeworkAssignedEmail(
               <p style="margin: 5px 0 0 0;">New Homework Notification</p>
             </div>
             <div class="content">
-              <p>Dear ${parentName},</p>
-              <p>A new homework assignment has been given to <strong>${studentName}</strong>.</p>
+              <p>Dear ${esc(parentName)},</p>
+              <p>A new homework assignment has been given to <strong>${esc(studentName)}</strong>.</p>
 
               <div class="highlight">
-                <p><strong>Subject:</strong> ${subject}</p>
-                <p><strong>Assignment:</strong> ${homeworkTitle}</p>
-                <p><strong>Due Date:</strong> ${dueDate}</p>
-                <p><strong>Assigned By:</strong> ${teacherName}</p>
+                <p><strong>Subject:</strong> ${esc(subject)}</p>
+                <p><strong>Assignment:</strong> ${esc(homeworkTitle)}</p>
+                <p><strong>Due Date:</strong> ${esc(dueDate)}</p>
+                <p><strong>Assigned By:</strong> ${esc(teacherName)}</p>
               </div>
 
               <p>Please ensure your child completes and submits this assignment before the due date.</p>
@@ -105,7 +115,7 @@ export function attendanceAlertEmail(
 ): EmailTemplate {
   return {
     to: parentEmail,
-    subject: `Attendance Alert: ${studentName} was absent`,
+    subject: `Attendance Alert: ${esc(studentName)} was absent`,
     html: `
       <!DOCTYPE html>
       <html>
@@ -126,12 +136,12 @@ export function attendanceAlertEmail(
               <p style="margin: 5px 0 0 0;">Attendance Alert</p>
             </div>
             <div class="content">
-              <p>Dear ${parentName},</p>
+              <p>Dear ${esc(parentName)},</p>
 
               <div class="alert">
-                <p><strong>${studentName}</strong> was marked <strong>ABSENT</strong> today.</p>
-                <p><strong>Date:</strong> ${date}</p>
-                <p><strong>Class:</strong> ${className}</p>
+                <p><strong>${esc(studentName)}</strong> was marked <strong>ABSENT</strong> today.</p>
+                <p><strong>Date:</strong> ${esc(date)}</p>
+                <p><strong>Class:</strong> ${esc(className)}</p>
               </div>
 
               <p>If you believe this is an error, please contact the class teacher.</p>
@@ -164,7 +174,7 @@ export function gradesPublishedEmail(
 
   return {
     to: parentEmail,
-    subject: `Grades Published: ${homeworkTitle}`,
+    subject: `Grades Published: ${esc(homeworkTitle)}`,
     html: `
       <!DOCTYPE html>
       <html>
@@ -187,12 +197,12 @@ export function gradesPublishedEmail(
               <p style="margin: 5px 0 0 0;">Grades Published</p>
             </div>
             <div class="content">
-              <p>Dear ${parentName},</p>
-              <p>Grades have been published for <strong>${studentName}</strong>'s homework.</p>
+              <p>Dear ${esc(parentName)},</p>
+              <p>Grades have been published for <strong>${esc(studentName)}</strong>'s homework.</p>
 
               <div class="grade-box">
-                <p style="margin: 0; color: #666;">Subject: ${subject}</p>
-                <p style="margin: 5px 0; font-weight: bold;">${homeworkTitle}</p>
+                <p style="margin: 0; color: #666;">Subject: ${esc(subject)}</p>
+                <p style="margin: 5px 0; font-weight: bold;">${esc(homeworkTitle)}</p>
                 <p class="grade">${marks}/${maxMarks}</p>
                 <p style="margin: 0; color: ${performanceColor};">${percentage}%</p>
               </div>
@@ -200,7 +210,7 @@ export function gradesPublishedEmail(
               ${teacherRemarks ? `
               <div class="remarks">
                 <p style="margin: 0;"><strong>Teacher's Remarks:</strong></p>
-                <p style="margin: 5px 0 0 0;">${teacherRemarks}</p>
+                <p style="margin: 5px 0 0 0;">${esc(teacherRemarks)}</p>
               </div>
               ` : ''}
 
@@ -228,7 +238,7 @@ export function newNoticeEmail(
 ): EmailTemplate {
   return {
     to: email,
-    subject: `School Notice: ${noticeTitle}`,
+    subject: `School Notice: ${esc(noticeTitle)}`,
     html: `
       <!DOCTYPE html>
       <html>
@@ -245,21 +255,21 @@ export function newNoticeEmail(
         <body>
           <div class="container">
             <div class="header">
-              <h1 style="margin: 0;">${schoolName}</h1>
+              <h1 style="margin: 0;">${esc(schoolName)}</h1>
               <p style="margin: 5px 0 0 0;">School Notice</p>
             </div>
             <div class="content">
-              <p>Dear ${recipientName},</p>
+              <p>Dear ${esc(recipientName)},</p>
               <p>A new notice has been posted:</p>
 
               <div class="notice">
-                <h2 style="margin: 0 0 10px 0; color: #7C3AED;">${noticeTitle}</h2>
-                <p style="margin: 0; white-space: pre-wrap;">${noticeContent}</p>
+                <h2 style="margin: 0 0 10px 0; color: #7C3AED;">${esc(noticeTitle)}</h2>
+                <p style="margin: 0; white-space: pre-wrap;">${esc(noticeContent)}</p>
               </div>
 
               <p>Please log in to the portal for more details.</p>
 
-              <p>Best regards,<br>${schoolName}</p>
+              <p>Best regards,<br>${esc(schoolName)}</p>
             </div>
             <div class="footer">
               <p>This is an automated message from School Smart Pakistan.</p>
@@ -282,7 +292,7 @@ export function welcomeEmail(
 ): EmailTemplate {
   return {
     to: email,
-    subject: `Welcome to ${schoolName} - Your Account is Ready`,
+    subject: `Welcome to ${esc(schoolName)} - Your Account is Ready`,
     html: `
       <!DOCTYPE html>
       <html>
@@ -304,17 +314,17 @@ export function welcomeEmail(
               <p style="margin: 5px 0 0 0;">Your account has been created</p>
             </div>
             <div class="content">
-              <p>Dear ${name},</p>
-              <p>Your account has been created for <strong>${schoolName}</strong> as a <strong>${role}</strong>.</p>
+              <p>Dear ${esc(name)},</p>
+              <p>Your account has been created for <strong>${esc(schoolName)}</strong> as a <strong>${esc(role)}</strong>.</p>
 
               <div class="credentials">
-                <p><strong>Email:</strong> ${email}</p>
-                ${tempPassword ? `<p><strong>Temporary Password:</strong> ${tempPassword}</p>` : ''}
+                <p><strong>Email:</strong> ${esc(email)}</p>
+                ${tempPassword ? `<p><strong>Temporary Password:</strong> ${esc(tempPassword)}</p>` : ''}
                 <p style="color: #666; font-size: 12px;">Please change your password after first login.</p>
               </div>
 
               <p>
-                <a href="${loginUrl}" class="button" style="color: white;">Login to Your Account</a>
+                <a href="${esc(loginUrl)}" class="button" style="color: white;">Login to Your Account</a>
               </p>
 
               <p>If you have any questions, please contact your school administrator.</p>

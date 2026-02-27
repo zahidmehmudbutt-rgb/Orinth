@@ -828,7 +828,8 @@
   "offline": {
     "title": "You're Offline",
     "description": "Please check your internet connection and try again.",
-    "tryAgain": "Try Again"
+    "tryAgain": "Try Again",
+    "banner": "You are offline. Some features may be unavailable."
   },
   "pwa": {
     "installTitle": "Install School Smart",
@@ -1023,7 +1024,10 @@
     "title": "Something went wrong",
     "description": "An unexpected error occurred. Please try refreshing the page or go back to the home page.",
     "refreshPage": "Refresh Page",
-    "home": "Home"
+    "home": "Home",
+    "sectionError": "Something went wrong",
+    "sectionErrorDesc": "The {{section}} section encountered an error.",
+    "tryAgain": "Try Again"
   },
   "roleCard": {
     "enterPortal": "Enter Portal"

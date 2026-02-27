@@ -361,36 +361,33 @@ const CoordinatorDashboard = () => {
 
       if (error) throw error;
 
-      // Get class teacher names and student counts
-      const classesWithDetails = await Promise.all((data || []).map(async (cls) => {
-        let class_teacher_name = null;
-        if (cls.class_teacher_id) {
-          const { data: teacherProfile } = await supabase
-            .from('profiles')
-            .select('full_name')
-            .eq('id', cls.class_teacher_id)
-            .single();
-          class_teacher_name = teacherProfile?.full_name || null;
-        }
+      // Batch fetch teacher names, student counts, and subject counts
+      const classIds = (data || []).map(c => c.id);
+      const teacherIds = (data || []).map(c => c.class_teacher_id).filter(Boolean) as string[];
 
-        // Get student count
-        const { count: studentCount } = await supabase
-          .from('students')
-          .select('*', { count: 'exact', head: true })
-          .eq('class_id', cls.id);
+      const [teacherProfiles, studentRows, subjectRows] = await Promise.all([
+        teacherIds.length > 0
+          ? supabase.from('profiles').select('id, full_name').in('id', teacherIds).then(r => r.data)
+          : Promise.resolve([]),
+        classIds.length > 0
+          ? supabase.from('students').select('class_id').in('class_id', classIds).then(r => r.data)
+          : Promise.resolve([]),
+        classIds.length > 0
+          ? supabase.from('class_subjects').select('class_id').in('class_id', classIds).then(r => r.data)
+          : Promise.resolve([]),
+      ]);
 
-        // Get subject count
-        const { count: subjectCount } = await supabase
-          .from('class_subjects')
-          .select('*', { count: 'exact', head: true })
-          .eq('class_id', cls.id);
+      const teacherMap = new Map((teacherProfiles || []).map(p => [p.id, p.full_name]));
+      const studentCountMap = new Map<string, number>();
+      (studentRows || []).forEach(s => studentCountMap.set(s.class_id, (studentCountMap.get(s.class_id) || 0) + 1));
+      const subjectCountMap = new Map<string, number>();
+      (subjectRows || []).forEach(s => subjectCountMap.set(s.class_id, (subjectCountMap.get(s.class_id) || 0) + 1));
 
-        return {
-          ...cls,
-          class_teacher_name,
-          student_count: studentCount || 0,
-          subject_count: subjectCount || 0,
-        };
+      const classesWithDetails = (data || []).map(cls => ({
+        ...cls,
+        class_teacher_name: cls.class_teacher_id ? teacherMap.get(cls.class_teacher_id) || null : null,
+        student_count: studentCountMap.get(cls.id) || 0,
+        subject_count: subjectCountMap.get(cls.id) || 0,
       }));
 
       setClasses(classesWithDetails);
@@ -470,23 +467,21 @@ const CoordinatorDashboard = () => {
 
       if (error) throw error;
 
-      // Get teacher names
-      const assignmentsWithNames = await Promise.all((data as TeacherClassJoinResult[] || []).map(async (assignment) => {
-        const { data: teacherProfile } = await supabase
-          .from('profiles')
-          .select('full_name')
-          .eq('id', assignment.teacher_id)
-          .single();
+      // Batch fetch teacher names
+      const assignmentTeacherIds = [...new Set((data as TeacherClassJoinResult[] || []).map(a => a.teacher_id))];
+      const { data: assignmentProfiles } = assignmentTeacherIds.length > 0
+        ? await supabase.from('profiles').select('id, full_name').in('id', assignmentTeacherIds)
+        : { data: [] };
+      const assignmentTeacherMap = new Map((assignmentProfiles || []).map(p => [p.id, p.full_name]));
 
-        return {
-          id: assignment.id,
-          teacher_id: assignment.teacher_id,
-          teacher_name: teacherProfile?.full_name || 'Unknown',
-          class_id: assignment.class_id,
-          class_name: assignment.classes.name,
-          class_section: assignment.classes.section,
-          subject: assignment.subject,
-        };
+      const assignmentsWithNames = (data as TeacherClassJoinResult[] || []).map(assignment => ({
+        id: assignment.id,
+        teacher_id: assignment.teacher_id,
+        teacher_name: assignmentTeacherMap.get(assignment.teacher_id) || 'Unknown',
+        class_id: assignment.class_id,
+        class_name: assignment.classes.name,
+        class_section: assignment.classes.section,
+        subject: assignment.subject,
       }));
 
       setTeacherAssignments(assignmentsWithNames);

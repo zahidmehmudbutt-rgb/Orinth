@@ -310,48 +310,52 @@ export default function AnalyticsDashboard({ schoolId, userRole, classId }: Anal
           .select("id, name, section")
           .eq("school_id", schoolId);
 
-        const classComparisonData = await Promise.all(
-          (classesData || []).slice(0, 6).map(async (cls) => {
-            // Get attendance for this class
-            const { data: classAttendance } = await supabase
-              .from("attendance")
-              .select("is_present")
-              .eq("class_id", cls.id)
-              .gte("date", startDate);
+        // Batch fetch attendance and marks for all classes (avoid N+1)
+        const topClasses = (classesData || []).slice(0, 6);
+        const topClassIds = topClasses.map(c => c.id);
 
-            const classPresent = classAttendance?.filter((a) => a.is_present).length || 0;
-            const classTotal = classAttendance?.length || 1;
+        const [allClassAttendance, allClassMarks] = await Promise.all([
+          topClassIds.length > 0
+            ? supabase.from("attendance").select("class_id, is_present").in("class_id", topClassIds).gte("date", startDate).then(r => r.data)
+            : Promise.resolve([]),
+          topClassIds.length > 0
+            ? supabase.from("student_exam_marks").select("marks_obtained, is_absent, exam_results!inner(max_marks, class_id)").in("exam_results.class_id", topClassIds).then(r => r.data)
+            : Promise.resolve([]),
+        ]);
 
-            // Get average marks for this class
-            const { data: classMarksRaw } = await supabase
-              .from("student_exam_marks")
-              .select("marks_obtained, is_absent, exam_results!inner(max_marks, class_id)")
-              .eq("exam_results.class_id", cls.id);
+        // Build attendance map
+        const attendanceMap = new Map<string, { present: number; total: number }>();
+        (allClassAttendance || []).forEach((a: { class_id: string; is_present: boolean }) => {
+          if (!attendanceMap.has(a.class_id)) attendanceMap.set(a.class_id, { present: 0, total: 0 });
+          const stats = attendanceMap.get(a.class_id)!;
+          stats.total++;
+          if (a.is_present) stats.present++;
+        });
 
-            let avgMarks = 0;
-            if (classMarksRaw && classMarksRaw.length > 0) {
-              const validMarks = classMarksRaw.filter(m =>
-                !m.is_absent && m.marks_obtained != null
-              );
-              if (validMarks.length > 0) {
-                const totalPct = validMarks.reduce(
-                  (sum, m) => {
-                    const exam = m.exam_results as unknown as { max_marks: number };
-                    return sum + ((m.marks_obtained as number) / exam.max_marks) * 100;
-                  },
-                  0
-                );
-                avgMarks = Math.round(totalPct / validMarks.length);
-              }
-            }
+        // Build marks map
+        const marksMap = new Map<string, { marks_obtained: number; max_marks: number }[]>();
+        (allClassMarks || []).forEach((m: { marks_obtained: number | null; is_absent: boolean; exam_results: unknown }) => {
+          const exam = m.exam_results as unknown as { max_marks: number; class_id: string };
+          if (!marksMap.has(exam.class_id)) marksMap.set(exam.class_id, []);
+          if (!m.is_absent && m.marks_obtained != null) {
+            marksMap.get(exam.class_id)!.push({ marks_obtained: m.marks_obtained, max_marks: exam.max_marks });
+          }
+        });
 
-            return {
-              class: `${cls.name}${cls.section ? ` ${cls.section}` : ""}`,
-              attendance: Math.round((classPresent / classTotal) * 100),
-              marks: avgMarks,
-            };
-          })
-        );
+        const classComparisonData = topClasses.map(cls => {
+          const attStats = attendanceMap.get(cls.id) || { present: 0, total: 1 };
+          const classMarks = marksMap.get(cls.id) || [];
+          let avgMarks = 0;
+          if (classMarks.length > 0) {
+            const totalPct = classMarks.reduce((sum, m) => sum + (m.marks_obtained / m.max_marks) * 100, 0);
+            avgMarks = Math.round(totalPct / classMarks.length);
+          }
+          return {
+            class: `${cls.name}${cls.section ? ` ${cls.section}` : ""}`,
+            attendance: Math.round((attStats.present / attStats.total) * 100),
+            marks: avgMarks,
+          };
+        });
 
         setClassComparison(classComparisonData);
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
@@ -49,7 +49,7 @@ interface SchoolCardProps {
   onToggleStatus: (school: School) => void;
 }
 
-export function SchoolCard({ school, onUpdate, onToggleStatus }: SchoolCardProps) {
+export const SchoolCard = memo(function SchoolCard({ school, onUpdate, onToggleStatus }: SchoolCardProps) {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
@@ -310,4 +310,4 @@ export function SchoolCard({ school, onUpdate, onToggleStatus }: SchoolCardProps
       </CardContent>
     </Card>
   );
-}
+});

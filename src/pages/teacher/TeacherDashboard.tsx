@@ -206,27 +206,30 @@ const TeacherDashboard = () => {
         .eq("teacher_id", user.id);
 
       if (teacherClasses) {
-        // Get student counts for each class
-        const classInfoPromises = teacherClasses.map(async (tc) => {
-          const classData = tc.classes as { id: string; name: string; section: string } | null;
-          if (!classData) return null;
+        // Batch fetch student counts for all classes
+        const classIds = teacherClasses
+          .map(tc => (tc.classes as { id: string } | null)?.id)
+          .filter(Boolean) as string[];
+        const { data: studentRows } = classIds.length > 0
+          ? await supabase.from("students").select("class_id").in("class_id", classIds)
+          : { data: [] };
+        const studentCountMap = new Map<string, number>();
+        (studentRows || []).forEach(s => studentCountMap.set(s.class_id, (studentCountMap.get(s.class_id) || 0) + 1));
 
-          const { count } = await supabase
-            .from("students")
-            .select("id", { count: "exact", head: true })
-            .eq("class_id", classData.id);
-
-          return {
-            id: classData.id,
-            name: classData.name,
-            section: classData.section,
-            subject: tc.subject,
-            studentCount: count || 0,
-          };
-        });
-
-        const classInfoResults = await Promise.all(classInfoPromises);
-        setClasses(classInfoResults.filter((c): c is ClassInfo => c !== null));
+        const classInfoResults = teacherClasses
+          .map(tc => {
+            const classData = tc.classes as { id: string; name: string; section: string } | null;
+            if (!classData) return null;
+            return {
+              id: classData.id,
+              name: classData.name,
+              section: classData.section,
+              subject: tc.subject,
+              studentCount: studentCountMap.get(classData.id) || 0,
+            };
+          })
+          .filter((c): c is ClassInfo => c !== null);
+        setClasses(classInfoResults);
       }
 
       // Get homework

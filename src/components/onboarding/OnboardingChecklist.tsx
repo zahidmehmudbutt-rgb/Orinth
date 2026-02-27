@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Check, Circle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
@@ -17,7 +18,7 @@ interface OnboardingChecklistProps {
   className?: string;
 }
 
-export function OnboardingChecklist({ title, subtitle, items, className }: OnboardingChecklistProps) {
+export const OnboardingChecklist = memo(function OnboardingChecklist({ title, subtitle, items, className }: OnboardingChecklistProps) {
   const { t } = useTranslation();
   const completedCount = items.filter(item => item.completed).length;
   const progress = (completedCount / items.length) * 100;
@@ -84,4 +85,4 @@ export function OnboardingChecklist({ title, subtitle, items, className }: Onboa
       </div>
     </div>
   );
-}
+});

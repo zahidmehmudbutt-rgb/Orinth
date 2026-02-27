@@ -103,6 +103,25 @@ describe("validateNewPassword", () => {
     expect(result.valid).toBe(false);
     expect(result.error).toBe("Password is too long");
   });
+
+  it("rejects common passwords like 'password123'", () => {
+    const result = validateNewPassword("password123");
+    expect(result.valid).toBe(false);
+    expect(result.error).toContain("too common");
+    expect(result.strength).toBe("weak");
+  });
+
+  it("rejects common passwords case-insensitively", () => {
+    const result = validateNewPassword("Password1");
+    expect(result.valid).toBe(false);
+    expect(result.error).toContain("too common");
+  });
+
+  it("rejects 'admin123' as a common password", () => {
+    const result = validateNewPassword("admin123");
+    expect(result.valid).toBe(false);
+    expect(result.error).toContain("too common");
+  });
 });
 
 // ── validateName ───────────────────────────────────────────────

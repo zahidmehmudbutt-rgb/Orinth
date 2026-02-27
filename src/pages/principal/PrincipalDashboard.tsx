@@ -200,23 +200,22 @@ const PrincipalDashboard = () => {
       
       const teacherMap = new Map((teacherProfiles || []).map(p => [p.id, p.full_name]));
 
-      const classesWithCounts = await Promise.all(
-        data.map(async (cls) => {
-          const { count } = await supabase
-            .from("students")
-            .select("id", { count: "exact", head: true })
-            .eq("class_id", cls.id);
+      // Batch fetch student counts for all classes
+      const classIds = data.map(c => c.id);
+      const { data: studentRows } = classIds.length > 0
+        ? await supabase.from("students").select("class_id").in("class_id", classIds)
+        : { data: [] };
+      const studentCountMap = new Map<string, number>();
+      (studentRows || []).forEach(s => studentCountMap.set(s.class_id, (studentCountMap.get(s.class_id) || 0) + 1));
 
-          return {
-            id: cls.id,
-            name: cls.name,
-            section: cls.section || "",
-            classTeacherId: cls.class_teacher_id,
-            classTeacherName: cls.class_teacher_id ? teacherMap.get(cls.class_teacher_id) || null : null,
-            studentCount: count || 0,
-          };
-        })
-      );
+      const classesWithCounts = data.map(cls => ({
+        id: cls.id,
+        name: cls.name,
+        section: cls.section || "",
+        classTeacherId: cls.class_teacher_id,
+        classTeacherName: cls.class_teacher_id ? teacherMap.get(cls.class_teacher_id) || null : null,
+        studentCount: studentCountMap.get(cls.id) || 0,
+      }));
       setClasses(classesWithCounts);
     }
   };

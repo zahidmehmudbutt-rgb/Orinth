@@ -2,9 +2,9 @@
  * Validation utilities for form inputs
  */
 
-// Email validation
+// Email validation — stricter pattern requiring valid TLD structure
 export function isValidEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z]{2,})+$/;
   return emailRegex.test(email.trim());
 }
 
@@ -43,9 +43,26 @@ export function validatePassword(password: string): { valid: boolean; error?: st
   return { valid: true };
 }
 
+// Top common passwords to reject
+const COMMON_PASSWORDS = new Set([
+  "password", "12345678", "123456789", "1234567890", "qwerty123",
+  "password1", "password123", "iloveyou", "sunshine", "princess",
+  "football", "charlie", "access14", "abc12345", "trustno1",
+  "letmein1", "dragon12", "master12", "monkey12", "shadow12",
+  "qwerty12", "michael1", "jennifer", "abcdef12", "12341234",
+  "baseball", "iloveu12", "welcome1", "admin123", "login123",
+  "pass1234", "test1234", "guest123", "changeme", "school12",
+  "student1", "teacher1", "pakistan1", "lahore12", "karachi1",
+]);
+
 export function validateNewPassword(password: string): { valid: boolean; error?: string; strength?: "weak" | "medium" | "strong" } {
   const result = validatePassword(password);
   if (!result.valid) return result;
+
+  // Check against common passwords
+  if (COMMON_PASSWORDS.has(password.toLowerCase())) {
+    return { valid: false, error: "This password is too common. Please choose a stronger password.", strength: "weak" };
+  }
 
   // Check password strength
   let strength: "weak" | "medium" | "strong" = "weak";
