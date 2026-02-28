@@ -83,7 +83,7 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col lg:mx-auto lg:max-w-[80%] lg:border-x lg:border-border/50">
+    <div className="min-h-screen flex flex-col homepage-narrow">
       <Helmet>
         <title>School Smart Pakistan — Complete School Management System</title>
         <meta name="description" content="School Smart Pakistan is a complete school management system for Pakistani schools. Manage students, teachers, attendance, homework, exams, and more with role-based dashboards for principals, teachers, students, and parents." />
