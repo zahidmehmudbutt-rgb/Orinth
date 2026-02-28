@@ -155,7 +155,7 @@ const Index = () => {
         </div>
 
         {/* Wave divider into Stats section */}
-        <WaveDivider fill="hsl(var(--card))" />
+        <WaveDivider />
       </section>
 
       {/* Stats Bar */}
@@ -204,7 +204,7 @@ const Index = () => {
             ))}
           </StaggerContainer>
         </div>
-        <WaveDivider fill="hsl(var(--card))" />
+        <WaveDivider />
       </section>
 
       {/* Features Section */}
