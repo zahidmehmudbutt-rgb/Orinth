@@ -387,12 +387,12 @@
     position: absolute;
     border-radius: 50%;
     filter: blur(80px);
-    opacity: 0.15;
+    opacity: 0.22;
     animation: blob-float 20s infinite ease-in-out;
   }
 
   .dark .hero-blob {
-    opacity: 0.12;
+    opacity: 0.18;
     filter: blur(100px);
   }
 
@@ -518,21 +518,23 @@
 
   /* Enhanced glassmorphism with stronger depth */
   .glass-deep {
-    @apply backdrop-blur-2xl border border-white/25;
-    background: hsl(var(--card) / 0.75);
+    @apply backdrop-blur-2xl border border-white/30;
+    background: hsl(var(--card) / 0.7);
     box-shadow:
-      var(--shadow-card),
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.1),
+      0 2px 8px hsl(199, 30%, 75%, 0.15),
+      0 8px 32px -4px hsl(199, 30%, 75%, 0.25),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.2),
       inset 0 -1px 0 0 rgba(0, 0, 0, 0.05);
   }
 
   .dark .glass-deep {
-    @apply border-white/[0.12];
-    background: hsl(var(--card) / 0.6);
+    @apply border-white/[0.15];
+    background: hsl(var(--card) / 0.55);
     box-shadow:
-      var(--shadow-card),
-      inset 0 1px 0 0 hsl(199, 80%, 60%, 0.08),
-      inset 0 -1px 0 0 rgba(0, 0, 0, 0.2);
+      0 2px 8px hsl(0, 0%, 0%, 0.3),
+      0 8px 32px -4px hsl(199, 80%, 50%, 0.12),
+      inset 0 1px 0 0 hsl(199, 80%, 60%, 0.12),
+      inset 0 -1px 0 0 rgba(0, 0, 0, 0.3);
   }
 
   /* Animated gradient border — spinning conic gradient */
@@ -546,7 +548,7 @@
     position: absolute;
     inset: -1px;
     border-radius: inherit;
-    padding: 1.5px;
+    padding: 2px;
     background: conic-gradient(
       from 0deg,
       hsl(var(--primary)),
@@ -573,7 +575,7 @@
     position: absolute;
     inset: -1px;
     border-radius: inherit;
-    padding: 1.5px;
+    padding: 2px;
     background: conic-gradient(
       from 0deg,
       hsl(var(--primary)),
@@ -587,7 +589,7 @@
     mask-composite: exclude;
     animation: border-rotate 4s linear infinite;
     z-index: -1;
-    opacity: 0;
+    opacity: 0.3;
     transition: opacity 0.4s ease;
   }
 
@@ -597,12 +599,12 @@
 
   /* Dot grid background */
   .bg-dot-grid {
-    background-image: radial-gradient(circle, hsl(var(--primary) / 0.12) 1px, transparent 1px);
-    background-size: 24px 24px;
+    background-image: radial-gradient(circle, hsl(var(--primary) / 0.25) 1.2px, transparent 1.2px);
+    background-size: 28px 28px;
   }
 
   .dark .bg-dot-grid {
-    background-image: radial-gradient(circle, hsl(var(--primary) / 0.08) 1px, transparent 1px);
+    background-image: radial-gradient(circle, hsl(var(--primary) / 0.18) 1.2px, transparent 1.2px);
   }
 
   /* Animated gradient text sweep */
@@ -622,19 +624,19 @@
 
   /* Card hover glow */
   .card-hover-glow {
-    transition: box-shadow 0.4s ease;
+    transition: box-shadow 0.4s ease, transform 0.3s ease;
   }
 
   .card-hover-glow:hover {
     box-shadow:
-      0 4px 20px -4px hsl(var(--primary) / 0.2),
-      0 0 40px -8px hsl(var(--primary) / 0.1);
+      0 8px 30px -4px hsl(var(--primary) / 0.35),
+      0 0 60px -8px hsl(var(--primary) / 0.2);
   }
 
   .dark .card-hover-glow:hover {
     box-shadow:
-      0 4px 20px -4px hsl(var(--primary) / 0.25),
-      0 0 50px -8px hsl(var(--primary) / 0.15);
+      0 8px 30px -4px hsl(var(--primary) / 0.4),
+      0 0 80px -8px hsl(var(--primary) / 0.25);
   }
 
   /* CTA button glow ring */
@@ -645,21 +647,21 @@
   .btn-glow::after {
     content: '';
     position: absolute;
-    inset: -3px;
+    inset: -6px;
     border-radius: inherit;
     background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
-    filter: blur(12px);
+    filter: blur(18px);
     opacity: 0;
     transition: opacity 0.3s ease;
     z-index: -1;
   }
 
   .btn-glow:hover::after {
-    opacity: 0.4;
+    opacity: 0.6;
   }
 
   .dark .btn-glow:hover::after {
-    opacity: 0.5;
+    opacity: 0.7;
   }
 
   /* Improved shimmer-wave skeleton loader */
@@ -699,18 +701,18 @@
 
   /* Input focus glow */
   .input-glow:focus-within {
-    --glow-color: hsl(var(--primary) / 0.15);
+    --glow-color: hsl(var(--primary) / 0.2);
   }
 
   .input-glow:focus-within input,
   .input-glow:focus-within textarea {
-    border-color: hsl(var(--primary) / 0.5);
-    box-shadow: 0 0 0 3px var(--glow-color, hsl(var(--primary) / 0.15));
+    border-color: hsl(var(--primary) / 0.6) !important;
+    box-shadow: 0 0 0 4px var(--glow-color, hsl(var(--primary) / 0.2)), 0 0 20px -4px hsl(var(--primary) / 0.15) !important;
   }
 
   .dark .input-glow:focus-within input,
   .dark .input-glow:focus-within textarea {
-    box-shadow: 0 0 0 3px hsl(var(--primary) / 0.2);
+    box-shadow: 0 0 0 4px hsl(var(--primary) / 0.25), 0 0 25px -4px hsl(var(--primary) / 0.2) !important;
   }
 }
 
@@ -790,10 +792,12 @@
 
 @keyframes glow-breathe {
   0%, 100% {
-    box-shadow: 0 0 20px hsl(var(--primary) / 0.15), 0 0 60px hsl(var(--primary) / 0.05);
+    box-shadow: 0 0 30px hsl(var(--primary) / 0.25), 0 0 80px hsl(var(--primary) / 0.1);
+    opacity: 0.2;
   }
   50% {
-    box-shadow: 0 0 40px hsl(var(--primary) / 0.25), 0 0 80px hsl(var(--primary) / 0.1);
+    box-shadow: 0 0 60px hsl(var(--primary) / 0.4), 0 0 120px hsl(var(--primary) / 0.2);
+    opacity: 0.35;
   }
 }
 
@@ -812,10 +816,10 @@
     transform: translate(0, 0) scale(1) rotate(0deg);
   }
   33% {
-    transform: translate(30px, -30px) scale(1.08) rotate(5deg);
+    transform: translate(50px, -50px) scale(1.15) rotate(8deg);
   }
   66% {
-    transform: translate(-20px, 20px) scale(0.95) rotate(-3deg);
+    transform: translate(-40px, 35px) scale(0.9) rotate(-5deg);
   }
 }
 

@@ -189,8 +189,8 @@ const NotFound = () => {
 
       {/* Gradient blobs */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute w-[500px] h-[500px] -top-40 -right-40 rounded-full bg-primary/5 blur-[100px] animate-[mesh-drift_20s_ease-in-out_infinite]" />
-        <div className="absolute w-[400px] h-[400px] -bottom-32 -left-32 rounded-full bg-accent/5 blur-[100px] animate-[mesh-drift_25s_ease-in-out_infinite_-8s]" />
+        <div className="absolute w-[600px] h-[600px] -top-40 -right-40 rounded-full bg-primary/10 blur-[120px] animate-[mesh-drift_20s_ease-in-out_infinite]" />
+        <div className="absolute w-[500px] h-[500px] -bottom-32 -left-32 rounded-full bg-accent/10 blur-[120px] animate-[mesh-drift_25s_ease-in-out_infinite_-8s]" />
       </div>
       {/* Dot grid background */}
       <div className="pointer-events-none absolute inset-0 bg-dot-grid" />

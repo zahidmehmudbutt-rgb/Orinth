@@ -27,8 +27,8 @@ export function SmartHeader({ children, className, hideOnScroll = true }: SmartH
     >
       {/* Animated mesh blob overlays */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute w-[300px] h-[300px] -top-40 -right-20 rounded-full bg-white/5 blur-[60px] animate-[mesh-drift_20s_ease-in-out_infinite]" />
-        <div className="absolute w-[200px] h-[200px] -bottom-24 -left-12 rounded-full bg-white/5 blur-[60px] animate-[mesh-drift_25s_ease-in-out_infinite_-8s]" />
+        <div className="absolute w-[400px] h-[400px] -top-48 -right-20 rounded-full bg-white/10 blur-[80px] animate-[mesh-drift_20s_ease-in-out_infinite]" />
+        <div className="absolute w-[300px] h-[300px] -bottom-32 -left-16 rounded-full bg-white/8 blur-[70px] animate-[mesh-drift_25s_ease-in-out_infinite_-8s]" />
       </div>
       <div className="relative z-10">
         {children}

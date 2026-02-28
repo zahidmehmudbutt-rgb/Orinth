@@ -140,7 +140,7 @@ const Index = () => {
             </FadeIn>
             <FadeIn delay={0.3}>
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-primary rounded-3xl blur-3xl opacity-20 dark:opacity-25 -z-10 scale-95 animate-glow-breathe" />
+                <div className="absolute -inset-4 bg-gradient-primary rounded-3xl blur-[60px] opacity-25 dark:opacity-30 -z-10 scale-100 animate-glow-breathe" />
                 <div className="rounded-3xl overflow-hidden shadow-card-hover border border-white/20 dark:border-white/[0.08]">
                   <img
                     src={heroImage}
@@ -231,7 +231,7 @@ const Index = () => {
                 <div className="relative bg-card/80 dark:bg-card/70 backdrop-blur-xl rounded-xl p-6 border border-white/20 dark:border-white/[0.08] shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 h-full group overflow-hidden dark:hover:border-primary/20 card-hover-glow">
                   {/* Gradient border glow on hover */}
                   <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10 bg-gradient-to-br from-primary/10 via-transparent to-accent/10 dark:from-primary/15 dark:to-accent/15" />
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 dark:bg-primary/15 flex items-center justify-center mb-4 group-hover:bg-primary/20 group-hover:scale-110 group-hover:shadow-[0_0_20px_hsl(var(--primary)/0.3)] transition-all duration-300">
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 dark:bg-primary/15 flex items-center justify-center mb-4 group-hover:bg-primary/25 group-hover:scale-110 group-hover:shadow-[0_0_30px_hsl(var(--primary)/0.4)] transition-all duration-300">
                     <feature.icon className="w-6 h-6 text-primary" />
                   </div>
                   <h3 className="text-lg font-semibold text-foreground mb-2">{t(feature.titleKey)}</h3>
