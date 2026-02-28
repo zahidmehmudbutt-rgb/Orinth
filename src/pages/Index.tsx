@@ -7,7 +7,7 @@ import { RoleCard } from "@/components/RoleCard";
 import { StatsCard } from "@/components/StatsCard";
 import { Testimonials } from "@/components/Testimonials";
 import { ScrollToTop } from "@/components/ScrollToTop";
-import { WaveDivider, CurveDivider } from "@/components/ui/section-divider";
+import { WaveDivider } from "@/components/ui/section-divider";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Users, BookOpen, GraduationCap, Award, UserCheck, BookMarked, Crown, UserPlus,
@@ -179,7 +179,6 @@ const Index = () => {
             ))}
           </div>
         </div>
-        <CurveDivider fill="hsl(var(--background))" />
       </section>
 
       {/* Portal Selection */}
@@ -239,7 +238,6 @@ const Index = () => {
             ))}
           </StaggerContainer>
         </div>
-        <CurveDivider fill="hsl(var(--background))" />
       </section>
 
       {/* Testimonials Section */}
