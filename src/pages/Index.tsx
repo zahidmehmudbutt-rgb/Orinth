@@ -7,7 +7,7 @@ import { RoleCard } from "@/components/RoleCard";
 import { StatsCard } from "@/components/StatsCard";
 import { Testimonials } from "@/components/Testimonials";
 import { ScrollToTop } from "@/components/ScrollToTop";
-import { WaveDivider, CurveDivider } from "@/components/ui/section-divider";
+
 import { supabase } from "@/integrations/supabase/client";
 import {
   Users, BookOpen, GraduationCap, Award, UserCheck, BookMarked, Crown, UserPlus,
@@ -156,8 +156,6 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Wave divider into Stats section */}
-        <WaveDivider fill="hsl(var(--card))" />
       </section>
 
       {/* Stats Bar */}
@@ -206,7 +204,6 @@ const Index = () => {
             ))}
           </StaggerContainer>
         </div>
-        <WaveDivider fill="hsl(var(--card))" />
       </section>
 
       {/* Features Section */}
@@ -240,7 +237,6 @@ const Index = () => {
             ))}
           </StaggerContainer>
         </div>
-        <CurveDivider fill="hsl(var(--background))" />
       </section>
 
       {/* Testimonials Section */}
