@@ -83,7 +83,7 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col lg:mx-auto lg:max-w-[80%] lg:border-x lg:border-border/50">
       <Helmet>
         <title>School Smart Pakistan — Complete School Management System</title>
         <meta name="description" content="School Smart Pakistan is a complete school management system for Pakistani schools. Manage students, teachers, attendance, homework, exams, and more with role-based dashboards for principals, teachers, students, and parents." />
@@ -117,10 +117,10 @@ const Index = () => {
                   <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                   {t("landing.welcomeBadge")}
                 </div>
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-foreground mb-6 leading-[1.1] tracking-tight">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-[2.7rem] font-extrabold text-foreground mb-6 leading-[1.1] tracking-tight">
                   {t("landing.heroTitle")}
                 </h1>
-                <p className="text-lg lg:text-xl text-muted-foreground mb-8 max-w-lg leading-relaxed">
+                <p className="text-sm lg:text-base text-muted-foreground mb-8 max-w-lg leading-relaxed">
                   {t("landing.heroSubtitle")}
                 </p>
                 <div className="flex flex-wrap gap-4">
