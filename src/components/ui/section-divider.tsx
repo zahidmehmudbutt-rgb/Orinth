@@ -14,24 +14,11 @@ export const WaveDivider = ({ flip = false, className = "" }: Omit<SectionDivide
     aria-hidden="true"
   >
     <svg
-      className="relative block w-full h-[42px] sm:h-[62px]"
+      className="relative block w-full h-[42px] sm:h-[62px] dark:drop-shadow-[0_-4px_6px_rgba(0,0,0,0.6)]"
       viewBox="0 0 1200 62"
       preserveAspectRatio="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <defs>
-        <linearGradient id="wave-edge" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" className="[stop-color:hsl(var(--primary)/0.3)] dark:[stop-color:hsl(var(--primary)/0.5)]" />
-          <stop offset="40%" className="[stop-color:hsl(var(--primary)/0.05)] dark:[stop-color:hsl(var(--primary)/0.1)]" />
-          <stop offset="100%" stopColor="transparent" />
-        </linearGradient>
-      </defs>
-      {/* Glow edge behind the wave — visible in dark mode */}
-      <path
-        d="M0,28 C200,58 400,-2 600,28 C800,58 1000,-2 1200,28 L1200,62 L0,62 Z"
-        fill="url(#wave-edge)"
-      />
-      {/* Main wave fill — exact match to next section */}
       <path
         d="M0,30 C200,60 400,0 600,30 C800,60 1000,0 1200,30 L1200,62 L0,62 Z"
         fill="currentColor"
