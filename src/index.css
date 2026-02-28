@@ -154,7 +154,7 @@
   /* Homepage: narrow content, full-width backgrounds */
   @media (min-width: 1024px) {
     .homepage-narrow .container {
-      max-width: 70%;
+      max-width: 91%;
     }
   }
 
