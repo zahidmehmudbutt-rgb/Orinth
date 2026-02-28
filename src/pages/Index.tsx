@@ -113,7 +113,7 @@ const Index = () => {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <FadeIn delay={0.1}>
               <div>
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 dark:bg-primary/15 border border-primary/20 dark:border-primary/30 text-primary text-sm font-medium mb-6 backdrop-blur-sm">
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 dark:bg-primary/15 border border-primary/20 dark:border-primary/30 text-primary text-xs font-medium mb-5 backdrop-blur-sm">
                   <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                   {t("landing.welcomeBadge")}
                 </div>
@@ -124,13 +124,13 @@ const Index = () => {
                   {t("landing.heroSubtitle")}
                 </p>
                 <div className="flex flex-wrap gap-4">
-                  <Button asChild size="lg" className="btn-gradient-animated text-white shadow-button hover:shadow-lg hover:-translate-y-0.5 transition-all h-12 px-8 text-base">
+                  <Button asChild size="default" className="btn-gradient-animated text-white shadow-button hover:shadow-lg hover:-translate-y-0.5 transition-all h-10 px-6 text-sm">
                     <a href="#portals">
                       {t("landing.getStarted")}
-                      <ArrowRight className="w-4 h-4 ml-2" />
+                      <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
                     </a>
                   </Button>
-                  <Button asChild variant="outline" size="lg" className="h-12 px-8 text-base backdrop-blur-sm">
+                  <Button asChild variant="outline" size="default" className="h-10 px-6 text-sm backdrop-blur-sm">
                     <a href="#features">{t("landing.learnMore")}</a>
                   </Button>
                 </div>
@@ -163,7 +163,7 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <FadeInView>
             <div className="text-center mb-10">
-              <h2 className="text-2xl lg:text-3xl font-extrabold text-foreground">
+              <h2 className="text-xl lg:text-2xl font-extrabold text-foreground">
                 {t("landing.portalOverview")}
               </h2>
             </div>
@@ -186,11 +186,11 @@ const Index = () => {
         <div className="container mx-auto px-4 relative z-10">
           <FadeInView>
             <div className="text-center mb-14">
-              <span className="inline-block px-4 py-1.5 bg-primary/10 dark:bg-primary/15 text-primary rounded-full text-sm font-medium mb-4 backdrop-blur-sm border border-transparent dark:border-primary/20">{t("landing.loginAs")}</span>
-              <h2 className="text-3xl lg:text-4xl font-extrabold text-foreground mb-4">
+              <span className="inline-block px-3 py-1 bg-primary/10 dark:bg-primary/15 text-primary rounded-full text-xs font-medium mb-3 backdrop-blur-sm border border-transparent dark:border-primary/20">{t("landing.loginAs")}</span>
+              <h2 className="text-2xl lg:text-3xl font-extrabold text-foreground mb-3">
                 {t("landing.accessPortal")}
               </h2>
-              <p className="text-muted-foreground max-w-xl mx-auto">
+              <p className="text-sm text-muted-foreground max-w-xl mx-auto">
                 {t("landing.selectRoleDesc")}
               </p>
             </div>
@@ -212,11 +212,11 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <FadeInView>
             <div className="text-center mb-14 max-w-2xl mx-auto">
-              <span className="inline-block px-4 py-1.5 bg-primary/10 dark:bg-primary/15 text-primary rounded-full text-sm font-medium mb-4 border border-transparent dark:border-primary/20">{t("landing.portalFeatures")}</span>
-              <h2 className="text-3xl lg:text-4xl font-extrabold text-foreground mb-4">
+              <span className="inline-block px-3 py-1 bg-primary/10 dark:bg-primary/15 text-primary rounded-full text-xs font-medium mb-3 border border-transparent dark:border-primary/20">{t("landing.portalFeatures")}</span>
+              <h2 className="text-2xl lg:text-3xl font-extrabold text-foreground mb-3">
                 {t("landing.whatYouCanDo")}
               </h2>
-              <p className="text-muted-foreground text-lg">
+              <p className="text-muted-foreground text-base">
                 {t("landing.portalFeaturesDesc")}
               </p>
             </div>
@@ -231,8 +231,8 @@ const Index = () => {
                   <div className="w-12 h-12 rounded-xl bg-primary/10 dark:bg-primary/15 flex items-center justify-center mb-4 group-hover:bg-primary/20 group-hover:scale-110 transition-all duration-300">
                     <feature.icon className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="text-lg font-semibold text-foreground mb-2">{t(feature.titleKey)}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{t(feature.descKey)}</p>
+                  <h3 className="text-base font-semibold text-foreground mb-1.5">{t(feature.titleKey)}</h3>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{t(feature.descKey)}</p>
                 </div>
               </StaggerItem>
             ))}
@@ -248,11 +248,11 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <FadeInView>
             <div className="text-center mb-14 max-w-2xl mx-auto">
-              <span className="inline-block px-4 py-1.5 bg-primary/10 dark:bg-primary/15 text-primary rounded-full text-sm font-medium mb-4 border border-transparent dark:border-primary/20">{t("landing.helpSupport")}</span>
-              <h2 className="text-3xl lg:text-4xl font-extrabold text-foreground mb-4">
+              <span className="inline-block px-3 py-1 bg-primary/10 dark:bg-primary/15 text-primary rounded-full text-xs font-medium mb-3 border border-transparent dark:border-primary/20">{t("landing.helpSupport")}</span>
+              <h2 className="text-2xl lg:text-3xl font-extrabold text-foreground mb-3">
                 {t("landing.faqTitle")}
               </h2>
-              <p className="text-muted-foreground text-lg">
+              <p className="text-muted-foreground text-base">
                 {t("landing.faqCommonIssues")}
               </p>
             </div>
@@ -266,12 +266,12 @@ const Index = () => {
                     className="w-full flex items-center justify-between p-5 text-left hover:bg-muted/50 transition-colors"
                     onClick={() => setOpenFaq(openFaq === i ? null : i)}
                   >
-                    <span className="font-medium text-foreground pr-4">{faq.q}</span>
+                    <span className="font-medium text-sm text-foreground pr-4">{faq.q}</span>
                     <ChevronDown className={`w-5 h-5 text-muted-foreground shrink-0 transition-transform duration-200 ${openFaq === i ? "rotate-180" : ""}`} />
                   </button>
                   {openFaq === i && (
                     <div className="px-5 pb-5 -mt-1">
-                      <p className="text-muted-foreground text-sm leading-relaxed">{faq.a}</p>
+                      <p className="text-muted-foreground text-xs leading-relaxed">{faq.a}</p>
                     </div>
                   )}
                 </div>
