@@ -159,23 +159,3 @@ export function PageTransition({
     </motion.div>
   );
 }
-
-// Glow card with hover lift
-export function GlowCard({
-  children,
-  className,
-}: {
-  children: ReactNode;
-  className?: string;
-}) {
-  const shouldReduceMotion = useReducedMotion();
-  return (
-    <motion.div
-      whileHover={shouldReduceMotion ? {} : { y: -4 }}
-      transition={{ type: "spring", stiffness: 300, damping: 20 }}
-      className={`card-hover-glow ${className || ""}`}
-    >
-      {children}
-    </motion.div>
-  );
-}

@@ -131,11 +131,9 @@ const ClassTeacherLogin = () => {
       <div className="hidden md:flex md:w-1/2 bg-role-class-teacher noise-overlay relative overflow-hidden items-center justify-center p-12">
         {/* Animated blobs */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute w-[600px] h-[600px] -top-24 -right-24 rounded-full bg-white/30 blur-[100px] animate-[mesh-drift_15s_ease-in-out_infinite]" />
-          <div className="absolute w-[500px] h-[500px] -bottom-16 -left-16 rounded-full bg-black/15 blur-[100px] animate-[mesh-drift_18s_ease-in-out_infinite_-5s]" />
-          <div className="absolute w-[400px] h-[400px] top-1/3 left-1/4 rounded-full bg-white/20 blur-[80px] animate-[mesh-drift_20s_ease-in-out_infinite_-10s]" />
+          <div className="absolute w-[400px] h-[400px] -top-24 -right-24 rounded-full bg-white/10 blur-[80px] animate-[blob-float_20s_ease-in-out_infinite]" />
+          <div className="absolute w-[300px] h-[300px] -bottom-16 -left-16 rounded-full bg-white/10 blur-[80px] animate-[blob-float_25s_ease-in-out_infinite_-7s]" />
         </div>
-        <div className="absolute inset-0 bg-dot-grid opacity-20 pointer-events-none" />
         <div className="relative z-10 text-white max-w-md">
           <FadeIn delay={0.2}>
             <div className="w-16 h-16 bg-white/15 rounded-2xl flex items-center justify-center mb-8 backdrop-blur-md border border-white/20 shadow-[0_0_30px_rgba(255,255,255,0.1)]">
@@ -192,7 +190,7 @@ const ClassTeacherLogin = () => {
               {t("common.backToHome")}
             </Link>
 
-            <div className="glass-deep rounded-2xl shadow-card-hover p-8 card-hover-glow">
+            <div className="bg-card/80 dark:bg-card/70 backdrop-blur-xl rounded-2xl border border-white/20 dark:border-white/[0.08] shadow-card-hover p-8">
               <div className="mb-8">
                 <div className="w-14 h-14 bg-role-class-teacher rounded-xl flex items-center justify-center mb-4 md:hidden shadow-lg">
                   <UserCheck className="w-7 h-7 text-white" />
@@ -204,7 +202,7 @@ const ClassTeacherLogin = () => {
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="space-y-2">
                   <Label htmlFor="email">{t("common.email")}</Label>
-                  <div className="relative input-glow">
+                  <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                     <Input
                       id="email"
@@ -245,7 +243,7 @@ const ClassTeacherLogin = () => {
 
                 <Button
                   type="submit"
-                  className="w-full h-12 bg-role-class-teacher text-white font-medium hover:opacity-90 hover:-translate-y-0.5 transition-all btn-glow"
+                  className="w-full h-12 bg-role-class-teacher text-white font-medium hover:opacity-90 hover:-translate-y-0.5 transition-all"
                   disabled={isLocked || isLoading}
                 >
                   {isLocked ? (

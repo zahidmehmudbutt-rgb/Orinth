@@ -7,10 +7,8 @@ import { useTranslation } from "react-i18next";
 export const Footer = memo(function Footer() {
   const { t } = useTranslation();
   return (
-    <footer className="bg-gradient-footer text-white border-t border-white/10 relative">
-      {/* Dot grid overlay */}
-      <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.18) 1.2px, transparent 1.2px)', backgroundSize: '28px 28px' }} />
-      <div className="container mx-auto px-4 py-12 relative z-10">
+    <footer className="bg-gradient-footer text-white border-t border-white/10">
+      <div className="container mx-auto px-4 py-12">
         <FadeInView>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div>

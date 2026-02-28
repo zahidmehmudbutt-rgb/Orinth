@@ -4,7 +4,7 @@ function Skeleton({ className, ...props }: React.HTMLAttributes<HTMLDivElement>)
   return (
     <div
       className={cn(
-        "shimmer-wave rounded-lg",
+        "shimmer rounded-lg",
         className
       )}
       {...props}

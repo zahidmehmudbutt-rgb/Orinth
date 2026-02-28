@@ -187,13 +187,8 @@ const NotFound = () => {
         <title>Page Not Found — School Smart Pakistan</title>
       </Helmet>
 
-      {/* Gradient blobs */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute w-[600px] h-[600px] -top-40 -right-40 rounded-full bg-primary/10 blur-[120px] animate-[mesh-drift_20s_ease-in-out_infinite]" />
-        <div className="absolute w-[500px] h-[500px] -bottom-32 -left-32 rounded-full bg-accent/10 blur-[120px] animate-[mesh-drift_25s_ease-in-out_infinite_-8s]" />
-      </div>
-      {/* Dot grid background */}
-      <div className="pointer-events-none absolute inset-0 bg-dot-grid" />
+      {/* Subtle background gradient overlay */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-primary/[0.02] via-transparent to-primary/[0.02]" />
 
       <FadeIn className="relative z-10 flex flex-col items-center text-center max-w-lg">
         {/* Illustration */}
@@ -202,7 +197,7 @@ const NotFound = () => {
         </div>
 
         {/* Heading */}
-        <h1 className="text-3xl sm:text-4xl font-bold heading-gradient mb-3">
+        <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-3">
           {t("notFound.title", "Page Not Found")}
         </h1>
 
@@ -216,7 +211,7 @@ const NotFound = () => {
 
         {/* Action buttons */}
         <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-          <Button asChild size="lg" className="btn-glow">
+          <Button asChild size="lg">
             <Link to="/" className="inline-flex items-center gap-2">
               <Home className="w-4 h-4" />
               {t("notFound.backHome", "Go Home")}

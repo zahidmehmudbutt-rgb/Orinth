@@ -92,7 +92,7 @@ export const Header = () => {
   const closeMobile = useCallback(() => setMobileOpen(false), []);
 
   return (
-    <header className={`w-full bg-card/80 dark:bg-card/70 backdrop-blur-xl border-b sticky top-0 z-50 transition-all duration-300 ${scrolled ? "border-border dark:border-white/[0.08] shadow-card-hover" : "border-transparent"}`}>
+    <header className={`w-full bg-card/80 dark:bg-card/70 backdrop-blur-md border-b sticky top-0 z-50 transition-all duration-300 ${scrolled ? "border-border dark:border-white/[0.08] shadow-card" : "border-transparent"}`}>
       {/* Skip to main content - visible on focus for keyboard users */}
       <a
         href="#main-content"
