@@ -40,13 +40,13 @@ export function ExportButton({
     toast.success("CSV exported successfully");
   };
 
-  const handleExportPDF = () => {
+  const handleExportPDF = async () => {
     if (data.length === 0) {
       toast.error("No data to export");
       return;
     }
 
-    exportTableToPDF(data, fileName, {
+    await exportTableToPDF(data, fileName, {
       title: pdfTitle,
       columns,
       schoolName,

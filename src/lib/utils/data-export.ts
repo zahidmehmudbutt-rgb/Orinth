@@ -1,5 +1,3 @@
-import jsPDF from "jspdf";
-
 /**
  * Export data as a CSV file and trigger download
  */
@@ -32,7 +30,7 @@ export function exportToCSV(
 /**
  * Export data as a styled PDF table
  */
-export function exportTableToPDF(
+export async function exportTableToPDF(
   data: Record<string, unknown>[],
   fileName: string,
   options: {
@@ -42,9 +40,10 @@ export function exportTableToPDF(
     schoolName?: string;
     generatedDate?: string;
   }
-): void {
+): Promise<void> {
   if (data.length === 0) return;
 
+  const { default: jsPDF } = await import("jspdf");
   const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
   const pageWidth = pdf.internal.pageSize.getWidth();
   const pageHeight = pdf.internal.pageSize.getHeight();
@@ -142,7 +141,7 @@ export function exportTableToPDF(
 /**
  * Export attendance data as a formatted PDF report
  */
-export function exportAttendanceReport(
+export async function exportAttendanceReport(
   data: {
     studentName: string;
     studentId: string;
@@ -153,8 +152,8 @@ export function exportAttendanceReport(
   }[],
   fileName: string,
   options: { className: string; schoolName?: string; dateRange?: string }
-): void {
-  exportTableToPDF(
+): Promise<void> {
+  await exportTableToPDF(
     data.map((d) => ({
       ...d,
       percentage: `${d.percentage.toFixed(1)}%`,
@@ -181,12 +180,12 @@ export function exportAttendanceReport(
 /**
  * Export student list as CSV/PDF
  */
-export function exportStudentList(
+export async function exportStudentList(
   students: { name: string; studentId: string; email?: string; class?: string; status?: string }[],
   fileName: string,
   format: "csv" | "pdf",
   schoolName?: string
-): void {
+): Promise<void> {
   const columns = [
     { key: "name", label: "Student Name", width: 3 },
     { key: "studentId", label: "Student ID", width: 2 },
@@ -198,7 +197,7 @@ export function exportStudentList(
   if (format === "csv") {
     exportToCSV(students, fileName, columns);
   } else {
-    exportTableToPDF(students, fileName, {
+    await exportTableToPDF(students, fileName, {
       title: "Student List",
       schoolName,
       columns,
@@ -209,7 +208,7 @@ export function exportStudentList(
 /**
  * Export exam results as PDF
  */
-export function exportResultSheet(
+export async function exportResultSheet(
   results: {
     studentName: string;
     studentId: string;
@@ -220,8 +219,8 @@ export function exportResultSheet(
   }[],
   fileName: string,
   options: { examTitle: string; subject: string; className: string; schoolName?: string }
-): void {
-  exportTableToPDF(
+): Promise<void> {
+  await exportTableToPDF(
     results.map((r) => ({
       ...r,
       percentage: `${r.percentage.toFixed(1)}%`,

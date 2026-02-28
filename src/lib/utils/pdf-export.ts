@@ -1,6 +1,3 @@
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
-
 /**
  * Export an HTML element to a PDF file.
  * @param elementId - The DOM id of the element to capture
@@ -9,6 +6,11 @@ import html2canvas from "html2canvas";
 export async function exportToPDF(elementId: string, fileName: string): Promise<void> {
   const element = document.getElementById(elementId);
   if (!element) return;
+
+  const [{ default: jsPDF }, { default: html2canvas }] = await Promise.all([
+    import("jspdf"),
+    import("html2canvas"),
+  ]);
 
   // Temporarily make the element visible if it's in a scrollable container
   const canvas = await html2canvas(element, {
