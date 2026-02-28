@@ -20,12 +20,19 @@ export function SmartHeader({ children, className, hideOnScroll = true }: SmartH
       animate={{ y: shouldHide ? -100 : 0 }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
       className={cn(
-        "w-full sticky top-0 z-50 transition-shadow",
+        "w-full sticky top-0 z-50 transition-shadow relative overflow-hidden",
         !isAtTop && "shadow-md",
         className
       )}
     >
-      {children}
+      {/* Animated mesh blob overlays */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute w-[300px] h-[300px] -top-40 -right-20 rounded-full bg-white/5 blur-[60px] animate-[mesh-drift_20s_ease-in-out_infinite]" />
+        <div className="absolute w-[200px] h-[200px] -bottom-24 -left-12 rounded-full bg-white/5 blur-[60px] animate-[mesh-drift_25s_ease-in-out_infinite_-8s]" />
+      </div>
+      <div className="relative z-10">
+        {children}
+      </div>
     </motion.header>
   );
 }

@@ -102,6 +102,8 @@ const Index = () => {
       {/* Hero Section */}
       <main id="main-content">
       <section className="relative bg-gradient-hero min-h-[85vh] flex items-center py-16 lg:py-24 overflow-hidden noise-overlay">
+        {/* Dot grid overlay */}
+        <div className="absolute inset-0 bg-dot-grid pointer-events-none z-0" />
         {/* Animated mesh gradient blobs */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="hero-blob" />
@@ -124,7 +126,7 @@ const Index = () => {
                   {t("landing.heroSubtitle")}
                 </p>
                 <div className="flex flex-wrap gap-4">
-                  <Button asChild size="lg" className="btn-gradient-animated text-white shadow-button hover:shadow-lg hover:-translate-y-0.5 transition-all h-12 px-8 text-base">
+                  <Button asChild size="lg" className="btn-gradient-animated btn-glow text-white shadow-button hover:shadow-lg hover:-translate-y-0.5 transition-all h-12 px-8 text-base">
                     <a href="#portals">
                       {t("landing.getStarted")}
                       <ArrowRight className="w-4 h-4 ml-2" />
@@ -138,7 +140,7 @@ const Index = () => {
             </FadeIn>
             <FadeIn delay={0.3}>
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-primary rounded-3xl blur-3xl opacity-20 dark:opacity-25 -z-10 scale-95" />
+                <div className="absolute inset-0 bg-gradient-primary rounded-3xl blur-3xl opacity-20 dark:opacity-25 -z-10 scale-95 animate-glow-breathe" />
                 <div className="rounded-3xl overflow-hidden shadow-card-hover border border-white/20 dark:border-white/[0.08]">
                   <img
                     src={heroImage}
@@ -188,7 +190,7 @@ const Index = () => {
           <FadeInView>
             <div className="text-center mb-14">
               <span className="inline-block px-4 py-1.5 bg-primary/10 dark:bg-primary/15 text-primary rounded-full text-sm font-medium mb-4 backdrop-blur-sm border border-transparent dark:border-primary/20">{t("landing.loginAs")}</span>
-              <h2 className="text-3xl lg:text-4xl font-extrabold text-foreground mb-4">
+              <h2 className="text-3xl lg:text-4xl font-extrabold heading-gradient mb-4">
                 {t("landing.accessPortal")}
               </h2>
               <p className="text-muted-foreground max-w-xl mx-auto">
@@ -214,7 +216,7 @@ const Index = () => {
           <FadeInView>
             <div className="text-center mb-14 max-w-2xl mx-auto">
               <span className="inline-block px-4 py-1.5 bg-primary/10 dark:bg-primary/15 text-primary rounded-full text-sm font-medium mb-4 border border-transparent dark:border-primary/20">{t("landing.portalFeatures")}</span>
-              <h2 className="text-3xl lg:text-4xl font-extrabold text-foreground mb-4">
+              <h2 className="text-3xl lg:text-4xl font-extrabold heading-gradient mb-4">
                 {t("landing.whatYouCanDo")}
               </h2>
               <p className="text-muted-foreground text-lg">
@@ -226,10 +228,10 @@ const Index = () => {
           <StaggerContainer className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
             {featureConfigs.map((feature) => (
               <StaggerItem key={feature.titleKey}>
-                <div className="relative bg-card/80 dark:bg-card/70 backdrop-blur-xl rounded-xl p-6 border border-white/20 dark:border-white/[0.08] shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 h-full group overflow-hidden dark:hover:border-primary/20">
+                <div className="relative bg-card/80 dark:bg-card/70 backdrop-blur-xl rounded-xl p-6 border border-white/20 dark:border-white/[0.08] shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 h-full group overflow-hidden dark:hover:border-primary/20 card-hover-glow">
                   {/* Gradient border glow on hover */}
                   <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10 bg-gradient-to-br from-primary/10 via-transparent to-accent/10 dark:from-primary/15 dark:to-accent/15" />
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 dark:bg-primary/15 flex items-center justify-center mb-4 group-hover:bg-primary/20 group-hover:scale-110 transition-all duration-300">
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 dark:bg-primary/15 flex items-center justify-center mb-4 group-hover:bg-primary/20 group-hover:scale-110 group-hover:shadow-[0_0_20px_hsl(var(--primary)/0.3)] transition-all duration-300">
                     <feature.icon className="w-6 h-6 text-primary" />
                   </div>
                   <h3 className="text-lg font-semibold text-foreground mb-2">{t(feature.titleKey)}</h3>
