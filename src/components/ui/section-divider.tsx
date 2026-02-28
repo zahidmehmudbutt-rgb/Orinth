@@ -14,7 +14,7 @@ export const WaveDivider = ({ fill = "hsl(var(--card))", flip = false, className
     aria-hidden="true"
   >
     <svg
-      className="relative block w-full h-[40px] sm:h-[60px] drop-shadow-[0_-2px_4px_rgba(0,0,0,0.15)] dark:drop-shadow-[0_-2px_6px_rgba(0,0,0,0.5)]"
+      className="relative block w-full h-[40px] sm:h-[60px]"
       viewBox="0 0 1200 60"
       preserveAspectRatio="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -22,7 +22,6 @@ export const WaveDivider = ({ fill = "hsl(var(--card))", flip = false, className
       <path
         d="M0,30 C200,60 400,0 600,30 C800,60 1000,0 1200,30 L1200,60 L0,60 Z"
         fill={fill}
-        className="dark:fill-[hsl(215,30%,16%)]"
       />
     </svg>
   </div>
