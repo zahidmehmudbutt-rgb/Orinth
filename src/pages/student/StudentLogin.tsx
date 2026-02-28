@@ -174,9 +174,9 @@ const StudentLogin = () => {
       <div className="hidden md:flex md:w-1/2 bg-role-student relative overflow-hidden items-center justify-center p-12 noise-overlay">
         {/* Animated blobs */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute w-[500px] h-[500px] -top-24 -right-24 rounded-full bg-white/20 blur-[100px] animate-[mesh-drift_15s_ease-in-out_infinite]" />
-          <div className="absolute w-[400px] h-[400px] -bottom-16 -left-16 rounded-full bg-white/15 blur-[100px] animate-[mesh-drift_18s_ease-in-out_infinite_-5s]" />
-          <div className="absolute w-[300px] h-[300px] top-1/3 left-1/4 rounded-full bg-white/10 blur-[80px] animate-[mesh-drift_20s_ease-in-out_infinite_-10s]" />
+          <div className="absolute w-[600px] h-[600px] -top-24 -right-24 rounded-full bg-white/30 blur-[100px] animate-[mesh-drift_15s_ease-in-out_infinite]" />
+          <div className="absolute w-[500px] h-[500px] -bottom-16 -left-16 rounded-full bg-black/15 blur-[100px] animate-[mesh-drift_18s_ease-in-out_infinite_-5s]" />
+          <div className="absolute w-[400px] h-[400px] top-1/3 left-1/4 rounded-full bg-white/20 blur-[80px] animate-[mesh-drift_20s_ease-in-out_infinite_-10s]" />
         </div>
         {/* Dot grid */}
         <div className="absolute inset-0 bg-dot-grid opacity-20 pointer-events-none" />
