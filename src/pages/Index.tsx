@@ -181,7 +181,6 @@ const Index = () => {
             ))}
           </div>
         </div>
-        <CurveDivider fill="hsl(var(--background))" />
       </section>
 
       {/* Portal Selection */}
