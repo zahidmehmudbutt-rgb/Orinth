@@ -722,7 +722,7 @@ const StudentDashboard = () => {
 
           <SwipeableTabContent activeTab={activeTab} tabOrder={["homework", "attendance", "marks", "yearly", "notices", "account"]} onTabChange={setActiveTab}>
           {/* Homework Tab */}
-          <TabsContent value="homework" className="animate-fade-in">
+          <TabsContent value="homework" forceMount className="data-[state=inactive]:hidden animate-fade-in">
             {!hasSubjects ? (
               <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                 <EmptyState
@@ -895,7 +895,7 @@ const StudentDashboard = () => {
           </TabsContent>
 
           {/* Attendance Tab */}
-          <TabsContent value="attendance" className="animate-fade-in">
+          <TabsContent value="attendance" forceMount className="data-[state=inactive]:hidden animate-fade-in">
             {!hasAttendance ? (
               <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                 <EmptyState
@@ -989,7 +989,7 @@ const StudentDashboard = () => {
           </TabsContent>
 
           {/* Marks Tab */}
-          <TabsContent value="marks" className="animate-fade-in">
+          <TabsContent value="marks" forceMount className="data-[state=inactive]:hidden animate-fade-in">
             {!hasMarks && !hasExamResults ? (
               <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                 <EmptyState
@@ -1120,7 +1120,7 @@ const StudentDashboard = () => {
           </TabsContent>
 
           {/* Yearly Results Tab */}
-          <TabsContent value="yearly" className="animate-fade-in">
+          <TabsContent value="yearly" forceMount className="data-[state=inactive]:hidden animate-fade-in">
             {!hasYearlyResults ? (
               <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                 <EmptyState
@@ -1450,7 +1450,7 @@ const StudentDashboard = () => {
           </TabsContent>
 
           {/* Notices Tab */}
-          <TabsContent value="notices" className="animate-fade-in">
+          <TabsContent value="notices" forceMount className="data-[state=inactive]:hidden animate-fade-in">
             {!hasNotices ? (
               <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                 <EmptyState
@@ -1484,7 +1484,7 @@ const StudentDashboard = () => {
           </TabsContent>
 
           {/* Account Tab */}
-          <TabsContent value="account" className="animate-fade-in">
+          <TabsContent value="account" forceMount className="data-[state=inactive]:hidden animate-fade-in">
             <div className="max-w-2xl mx-auto">
               <div className="mb-6">
                 <h2 className="text-xl font-bold text-foreground mb-2">{t("common.accountSettings")}</h2>

@@ -1188,7 +1188,7 @@ const CoordinatorDashboard = () => {
 
           <SwipeableTabContent activeTab={activeTab} tabOrder={["classes", "subjects", "assignments", "staff", "announcements", "analytics", "account"]} onTabChange={setActiveTab}>
           {/* CLASSES TAB */}
-          <TabsContent value="classes" className="animate-fade-in">
+          <TabsContent value="classes" forceMount className="data-[state=inactive]:hidden animate-fade-in">
             <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 mb-6">
               <h2 className="text-xl font-bold text-foreground">{t("coordinatorDashboard.classesSections")}</h2>
               <div className="flex gap-2">
@@ -1457,7 +1457,7 @@ const CoordinatorDashboard = () => {
           </TabsContent>
 
           {/* SUBJECTS TAB */}
-          <TabsContent value="subjects" className="animate-fade-in">
+          <TabsContent value="subjects" forceMount className="data-[state=inactive]:hidden animate-fade-in">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold text-foreground">{t("coordinatorDashboard.subjects")}</h2>
               <div className="flex gap-2">
@@ -1566,7 +1566,7 @@ const CoordinatorDashboard = () => {
           </TabsContent>
 
           {/* TEACHER ASSIGNMENTS TAB */}
-          <TabsContent value="assignments" className="animate-fade-in">
+          <TabsContent value="assignments" forceMount className="data-[state=inactive]:hidden animate-fade-in">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold text-foreground">{t("coordinatorDashboard.teacherAssignments")}</h2>
               <Dialog open={showAssignTeacherDialog} onOpenChange={setShowAssignTeacherDialog}>
@@ -1762,7 +1762,7 @@ const CoordinatorDashboard = () => {
           </TabsContent>
 
           {/* STAFF TAB */}
-          <TabsContent value="staff" className="animate-fade-in">
+          <TabsContent value="staff" forceMount className="data-[state=inactive]:hidden animate-fade-in">
             <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
               {/* Add Staff Form */}
               <div className="bg-card rounded-xl p-6 shadow-card border border-border" data-tour="coord-add-staff">
@@ -1935,7 +1935,7 @@ const CoordinatorDashboard = () => {
           </TabsContent>
 
           {/* ANNOUNCEMENTS TAB */}
-          <TabsContent value="announcements" className="animate-fade-in">
+          <TabsContent value="announcements" forceMount className="data-[state=inactive]:hidden animate-fade-in">
             <div className="max-w-4xl mx-auto">
               {profile?.school_id && (
                 <AnnouncementManager schoolId={profile.school_id} />
@@ -1944,7 +1944,7 @@ const CoordinatorDashboard = () => {
           </TabsContent>
 
           {/* ANALYTICS TAB */}
-          <TabsContent value="analytics" className="animate-fade-in">
+          <TabsContent value="analytics" forceMount className="data-[state=inactive]:hidden animate-fade-in">
             <h2 className="text-xl font-bold text-foreground mb-6">{t("coordinatorDashboard.sectionAnalytics")}</h2>
             {profile?.school_id && (
               <AnalyticsDashboard schoolId={profile.school_id} userRole="coordinator" />
@@ -1952,7 +1952,7 @@ const CoordinatorDashboard = () => {
           </TabsContent>
 
           {/* ACCOUNT TAB */}
-          <TabsContent value="account" className="animate-fade-in">
+          <TabsContent value="account" forceMount className="data-[state=inactive]:hidden animate-fade-in">
             <div className="max-w-2xl mx-auto space-y-6">
               <div className="mb-6">
                 <h2 className="text-xl font-bold text-foreground mb-2">{t("common.accountSettings")}</h2>

@@ -518,7 +518,7 @@ const ParentDashboard = () => {
 
               <SwipeableTabContent activeTab={activeTab} tabOrder={["academics", "yearly", "attendance", "notices", "settings"]} onTabChange={setActiveTab}>
               {/* Academics Tab */}
-              <TabsContent value="academics">
+              <TabsContent value="academics" forceMount className="data-[state=inactive]:hidden">
                 <div className="space-y-6">
                   {/* Performance Trends */}
                   <PerformanceTrends
@@ -695,7 +695,7 @@ const ParentDashboard = () => {
               </TabsContent>
 
               {/* Yearly Results Tab */}
-              <TabsContent value="yearly">
+              <TabsContent value="yearly" forceMount className="data-[state=inactive]:hidden">
                 {!hasYearlyResults ? (
                   <Card>
                     <CardContent className="py-12">
@@ -1016,7 +1016,7 @@ const ParentDashboard = () => {
               </TabsContent>
 
               {/* Attendance Tab */}
-              <TabsContent value="attendance">
+              <TabsContent value="attendance" forceMount className="data-[state=inactive]:hidden">
                 <div className="grid gap-6 md:grid-cols-2">
                   {/* Attendance Summary */}
                   <Card>
@@ -1107,7 +1107,7 @@ const ParentDashboard = () => {
               </TabsContent>
 
               {/* Notices Tab */}
-              <TabsContent value="notices">
+              <TabsContent value="notices" forceMount className="data-[state=inactive]:hidden">
                 <Card>
                   <CardHeader>
                     <CardTitle>{t("parentDashboard.schoolNotices")}</CardTitle>
@@ -1139,7 +1139,7 @@ const ParentDashboard = () => {
               </TabsContent>
 
               {/* Settings Tab */}
-              <TabsContent value="settings">
+              <TabsContent value="settings" forceMount className="data-[state=inactive]:hidden">
                 <div className="max-w-2xl mx-auto space-y-6">
                   <EmailPreferences />
                   <PushNotificationToggle />

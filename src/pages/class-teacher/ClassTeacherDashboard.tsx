@@ -732,7 +732,7 @@ const ClassTeacherDashboard = () => {
           </TabsList>
 
           <SwipeableTabContent activeTab={activeTab} tabOrder={["attendance", "students", "announcements", "analytics", "account"]} onTabChange={setActiveTab}>
-          <TabsContent value="attendance" className="animate-fade-in">
+          <TabsContent value="attendance" forceMount className="data-[state=inactive]:hidden animate-fade-in">
             {!hasStudents ? (
               <div className="bg-card rounded-xl p-6 shadow-card border border-border max-w-2xl mx-auto">
                 <EmptyState
@@ -818,7 +818,7 @@ const ClassTeacherDashboard = () => {
             )}
           </TabsContent>
 
-          <TabsContent value="students" className="animate-fade-in">
+          <TabsContent value="students" forceMount className="data-[state=inactive]:hidden animate-fade-in">
             <div className="grid lg:grid-cols-2 gap-8">
               {/* Add Student */}
               <div className="bg-card rounded-xl p-6 shadow-card border border-border" data-tour="ct-add-student">
@@ -946,7 +946,7 @@ const ClassTeacherDashboard = () => {
           </TabsContent>
 
           {/* Announcements Tab */}
-          <TabsContent value="announcements" className="animate-fade-in">
+          <TabsContent value="announcements" forceMount className="data-[state=inactive]:hidden animate-fade-in">
             <div className="max-w-4xl mx-auto">
               {profile?.school_id && (
                 <AnnouncementManager schoolId={profile.school_id} />
@@ -955,7 +955,7 @@ const ClassTeacherDashboard = () => {
           </TabsContent>
 
           {/* Analytics Tab */}
-          <TabsContent value="analytics" className="animate-fade-in">
+          <TabsContent value="analytics" forceMount className="data-[state=inactive]:hidden animate-fade-in">
             <h2 className="text-xl font-bold text-foreground mb-6">{t("classTeacherDashboard.classAnalytics")}</h2>
             {profile?.school_id && assignedClass && (
               <AnalyticsDashboard
@@ -970,7 +970,7 @@ const ClassTeacherDashboard = () => {
           </TabsContent>
 
           {/* Account Tab */}
-          <TabsContent value="account" className="animate-fade-in">
+          <TabsContent value="account" forceMount className="data-[state=inactive]:hidden animate-fade-in">
             <div className="max-w-2xl mx-auto space-y-6">
               <div className="mb-6">
                 <h2 className="text-xl font-bold text-foreground mb-2">{t("common.accountSettings")}</h2>

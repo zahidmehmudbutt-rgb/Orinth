@@ -1214,7 +1214,7 @@ const TeacherDashboard = () => {
           </TabsList>
 
           <SwipeableTabContent activeTab={activeTab} tabOrder={["homework", "marks", "results", "account"]} onTabChange={setActiveTab}>
-          <TabsContent value="homework" className="animate-fade-in">
+          <TabsContent value="homework" forceMount className="data-[state=inactive]:hidden animate-fade-in">
             {!hasClasses ? (
               <div className="bg-card rounded-xl p-6 shadow-card border border-border">
                 <EmptyState
@@ -1388,7 +1388,7 @@ const TeacherDashboard = () => {
             )}
           </TabsContent>
 
-          <TabsContent value="marks" className="animate-fade-in">
+          <TabsContent value="marks" forceMount className="data-[state=inactive]:hidden animate-fade-in">
             {!hasClasses ? (
               <div className="bg-card rounded-xl p-6 shadow-card border border-border max-w-2xl mx-auto">
                 <EmptyState
@@ -1590,7 +1590,7 @@ const TeacherDashboard = () => {
           </TabsContent>
 
           {/* Results Tab */}
-          <TabsContent value="results" className="animate-fade-in">
+          <TabsContent value="results" forceMount className="data-[state=inactive]:hidden animate-fade-in">
             {!hasClasses ? (
               <div className="bg-card rounded-xl p-6 shadow-card border border-border max-w-2xl mx-auto">
                 <EmptyState
@@ -1982,7 +1982,7 @@ const TeacherDashboard = () => {
           </TabsContent>
 
           {/* Account Tab */}
-          <TabsContent value="account" className="animate-fade-in">
+          <TabsContent value="account" forceMount className="data-[state=inactive]:hidden animate-fade-in">
             <div className="max-w-2xl mx-auto">
               <div className="mb-6">
                 <h2 className="text-xl font-bold text-foreground mb-2">{t("common.accountSettings")}</h2>

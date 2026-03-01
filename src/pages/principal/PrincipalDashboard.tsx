@@ -523,7 +523,7 @@ const PrincipalDashboard = () => {
 
           <SwipeableTabContent activeTab={activeTab} tabOrder={["staff", "classes", "announcements", "analytics", "school", "account"]} onTabChange={setActiveTab}>
           {/* Staff Tab */}
-          <TabsContent value="staff" className="animate-fade-in">
+          <TabsContent value="staff" forceMount className="data-[state=inactive]:hidden animate-fade-in">
             <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
               {/* Add Section Head Form */}
               <div className="bg-card rounded-xl p-6 shadow-card border border-border" data-tour="principal-add-coordinator">
@@ -657,7 +657,7 @@ const PrincipalDashboard = () => {
           </TabsContent>
 
           {/* Classes Tab - Read Only View */}
-          <TabsContent value="classes" className="animate-fade-in">
+          <TabsContent value="classes" forceMount className="data-[state=inactive]:hidden animate-fade-in">
             <div className="max-w-4xl mx-auto">
               <div className="bg-card rounded-xl p-6 shadow-card border border-border mb-6">
                 <div className="flex items-center gap-3 text-muted-foreground">
@@ -711,7 +711,7 @@ const PrincipalDashboard = () => {
           </TabsContent>
 
           {/* Announcements Tab */}
-          <TabsContent value="announcements" className="animate-fade-in">
+          <TabsContent value="announcements" forceMount className="data-[state=inactive]:hidden animate-fade-in">
             <div className="max-w-4xl mx-auto">
               {principalData?.schoolId && (
                 <AnnouncementManager schoolId={principalData.schoolId} />
@@ -720,7 +720,7 @@ const PrincipalDashboard = () => {
           </TabsContent>
 
           {/* Analytics Tab */}
-          <TabsContent value="analytics" className="animate-fade-in">
+          <TabsContent value="analytics" forceMount className="data-[state=inactive]:hidden animate-fade-in">
             <h2 className="text-xl font-bold text-foreground mb-6">{t("principalDashboard.schoolAnalytics")}</h2>
             {principalData?.schoolId && (
               <AnalyticsDashboard schoolId={principalData.schoolId} userRole="principal" />
@@ -738,7 +738,7 @@ const PrincipalDashboard = () => {
           */}
 
           {/* School Public Page Tab */}
-          <TabsContent value="school" className="animate-fade-in">
+          <TabsContent value="school" forceMount className="data-[state=inactive]:hidden animate-fade-in">
             <div className="max-w-3xl mx-auto">
               <div className="mb-6">
                 <h2 className="text-xl font-bold text-foreground mb-2">{t("principalDashboard.schoolPublicPage")}</h2>
@@ -750,7 +750,7 @@ const PrincipalDashboard = () => {
             </div>
           </TabsContent>
 
-          <TabsContent value="account" className="animate-fade-in">
+          <TabsContent value="account" forceMount className="data-[state=inactive]:hidden animate-fade-in">
             <div className="max-w-2xl mx-auto space-y-6">
               <div className="mb-6">
                 <h2 className="text-xl font-bold text-foreground mb-2">{t("common.accountSettings")}</h2>
