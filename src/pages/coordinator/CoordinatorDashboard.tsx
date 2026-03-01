@@ -165,6 +165,13 @@ const CoordinatorDashboard = () => {
   const [teacherType, setTeacherType] = useState<"teacher" | "class_teacher">("teacher");
   const [selectedClassIdForTeacher, setSelectedClassIdForTeacher] = useState("");
 
+  // Edit staff state
+  const [editingStaff, setEditingStaff] = useState<StaffMember | null>(null);
+  const [editStaffName, setEditStaffName] = useState("");
+  const [editStaffEmail, setEditStaffEmail] = useState("");
+  const [editStaffPassword, setEditStaffPassword] = useState("");
+  const [showEditStaffDialog, setShowEditStaffDialog] = useState(false);
+
   // Classes state
   const [classes, setClasses] = useState<ClassInfo[]>([]);
   const [newClassName, setNewClassName] = useState("");
@@ -1001,6 +1008,96 @@ const CoordinatorDashboard = () => {
         title: t("coordinatorDashboard.toastError"),
         description: error instanceof Error ? error.message : t("coordinatorDashboard.toastStaffRemoveFailed"),
       });
+    }
+  };
+
+  const openEditStaffDialog = (member: StaffMember) => {
+    setEditingStaff(member);
+    setEditStaffName(member.full_name);
+    setEditStaffEmail(member.email || "");
+    setEditStaffPassword("");
+    setShowEditStaffDialog(true);
+  };
+
+  const handleEditStaff = async () => {
+    if (!editingStaff || !profile?.school_id) return;
+
+    const emailChanged = editStaffEmail.trim().toLowerCase() !== (editingStaff.email || "").toLowerCase();
+    const nameChanged = editStaffName.trim() !== editingStaff.full_name;
+    const passwordProvided = editStaffPassword.length > 0;
+
+    if (!emailChanged && !nameChanged && !passwordProvided) {
+      toast({
+        variant: "destructive",
+        title: t("coordinatorDashboard.toastError"),
+        description: t("coordinatorDashboard.toastNoChanges"),
+      });
+      return;
+    }
+
+    if (editStaffName.trim().length < 2) {
+      toast({
+        variant: "destructive",
+        title: t("coordinatorDashboard.toastMissingInfo"),
+        description: t("coordinatorDashboard.toastNameTooShort"),
+      });
+      return;
+    }
+
+    if (passwordProvided && editStaffPassword.length < 8) {
+      toast({
+        variant: "destructive",
+        title: t("coordinatorDashboard.toastPasswordTooShort"),
+        description: t("coordinatorDashboard.toastPasswordMin8"),
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData.session?.access_token;
+      if (!accessToken) throw new Error("Not authenticated");
+
+      const body: Record<string, string> = {
+        userId: editingStaff.user_id,
+        schoolId: profile.school_id,
+      };
+      if (emailChanged) body.email = editStaffEmail.trim();
+      if (nameChanged) body.fullName = editStaffName.trim();
+      if (passwordProvided) body.password = editStaffPassword;
+
+      const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/update-school-user`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+          'apikey': import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+        },
+        body: JSON.stringify(body),
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || `Failed to update user (${res.status})`);
+      }
+
+      toast({
+        title: t("coordinatorDashboard.toastStaffUpdated"),
+        description: t("coordinatorDashboard.toastStaffUpdatedDesc", { name: editStaffName.trim() }),
+      });
+
+      setShowEditStaffDialog(false);
+      setEditingStaff(null);
+      loadStaff();
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: t("coordinatorDashboard.toastError"),
+        description: error instanceof Error ? error.message : t("coordinatorDashboard.toastStaffUpdateFailed"),
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -1901,30 +1998,40 @@ const CoordinatorDashboard = () => {
                             <p className="text-sm text-muted-foreground">{member.email || t("coordinatorDashboard.noEmail")}</p>
                           </div>
 
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10">
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>{t("coordinatorDashboard.removeStaffMember")}</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  {t("coordinatorDashboard.removeStaffDesc", { name: member.full_name })}
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>{t("coordinatorDashboard.cancel")}</AlertDialogCancel>
-                                <AlertDialogAction
-                                  className="bg-destructive text-destructive-foreground"
-                                  onClick={() => handleRemoveStaff(member)}
-                                >
-                                  {t("coordinatorDashboard.delete")}
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
+                          <div className="flex items-center gap-1">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="text-muted-foreground hover:text-foreground hover:bg-muted"
+                              onClick={() => openEditStaffDialog(member)}
+                            >
+                              <Edit2 className="w-4 h-4" />
+                            </Button>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10">
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>{t("coordinatorDashboard.removeStaffMember")}</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    {t("coordinatorDashboard.removeStaffDesc", { name: member.full_name })}
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>{t("coordinatorDashboard.cancel")}</AlertDialogCancel>
+                                  <AlertDialogAction
+                                    className="bg-destructive text-destructive-foreground"
+                                    onClick={() => handleRemoveStaff(member)}
+                                  >
+                                    {t("coordinatorDashboard.delete")}
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -1932,6 +2039,68 @@ const CoordinatorDashboard = () => {
                 )}
               </div>
             </div>
+
+            {/* Edit Staff Dialog */}
+            <Dialog open={showEditStaffDialog} onOpenChange={(open) => {
+              setShowEditStaffDialog(open);
+              if (!open) setEditingStaff(null);
+            }}>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>{t("coordinatorDashboard.editStaffMember")}</DialogTitle>
+                  <DialogDescription>
+                    {t("coordinatorDashboard.editStaffDesc", { name: editingStaff?.full_name })}
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                  <div className="space-y-2">
+                    <Label>{t("coordinatorDashboard.fullName")}</Label>
+                    <Input
+                      placeholder={t("coordinatorDashboard.enterFullName")}
+                      value={editStaffName}
+                      onChange={(e) => setEditStaffName(e.target.value)}
+                      disabled={isSubmitting}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>{t("coordinatorDashboard.email")}</Label>
+                    <Input
+                      type="email"
+                      placeholder={t("coordinatorDashboard.enterEmail")}
+                      value={editStaffEmail}
+                      onChange={(e) => setEditStaffEmail(e.target.value)}
+                      disabled={isSubmitting}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>{t("coordinatorDashboard.newPassword")}</Label>
+                    <Input
+                      type="password"
+                      placeholder={t("coordinatorDashboard.newPasswordPlaceholder")}
+                      value={editStaffPassword}
+                      onChange={(e) => setEditStaffPassword(e.target.value)}
+                      disabled={isSubmitting}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      {t("coordinatorDashboard.passwordOptionalHint")}
+                    </p>
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setShowEditStaffDialog(false)} disabled={isSubmitting}>
+                    {t("coordinatorDashboard.cancel")}
+                  </Button>
+                  <LoadingButton
+                    className="bg-role-coordinator text-primary-foreground hover:opacity-90"
+                    onClick={handleEditStaff}
+                    loading={isSubmitting}
+                    loadingText={t("coordinatorDashboard.save")}
+                  >
+                    {t("coordinatorDashboard.save")}
+                  </LoadingButton>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </TabsContent>
 
           {/* ANNOUNCEMENTS TAB */}
