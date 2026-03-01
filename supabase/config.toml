@@ -2,3 +2,6 @@ project_id = "opphbdjjkudhrvkutjhn"
 
 [functions.create-school-user]
 verify_jwt = false
+
+[functions.update-school-user]
+verify_jwt = false
