@@ -86,17 +86,17 @@ export default function SessionTimeout() {
     if (timeoutMinutes === null || forceRefresh) {
       timeoutMinutes = DEFAULT_TIMEOUT_MINUTES;
       try {
-        const { data: prefs } = await supabase
+        const { data: prefs, error } = await supabase
           .from("user_preferences")
           .select("session_timeout_minutes")
           .eq("user_id", session.user.id)
           .single();
 
-        if (prefs?.session_timeout_minutes) {
+        if (!error && prefs?.session_timeout_minutes) {
           timeoutMinutes = prefs.session_timeout_minutes;
         }
       } catch {
-        // Use default if preferences don't exist
+        // Use default if table/preferences don't exist
       }
       cachedTimeoutMinutesRef.current = timeoutMinutes;
     }

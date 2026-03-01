@@ -63,10 +63,14 @@ export default function TwoFactorAuth() {
         .eq("user_id", user.id)
         .single();
 
-      if (error && error.code !== "PGRST116") throw error;
+      // PGRST116 = no rows, 406/42P01 = table doesn't exist — all treated as "not set up"
+      if (error) {
+        setSettings({ is_enabled: false, backup_codes: null, last_used_at: null });
+        return;
+      }
       setSettings(data || { is_enabled: false, backup_codes: null, last_used_at: null });
-    } catch (error) {
-      if (import.meta.env.DEV) console.error("Error fetching 2FA settings:", error);
+    } catch {
+      setSettings({ is_enabled: false, backup_codes: null, last_used_at: null });
     } finally {
       setLoading(false);
     }

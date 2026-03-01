@@ -370,14 +370,20 @@ export default function AnalyticsDashboard({ schoolId, userRole, classId }: Anal
         // Build teacher workload data (join through classes to filter by school)
         const { data: teacherClassesRaw } = await supabase
           .from("teacher_classes")
-          .select("teacher_id, classes!inner(school_id), profiles!teacher_classes_teacher_id_fkey(full_name)")
+          .select("teacher_id, classes!inner(school_id)")
           .eq("classes.school_id", schoolId);
 
         if (teacherClassesRaw) {
+          // Get unique teacher IDs and fetch their profiles separately
+          const teacherIds = [...new Set(teacherClassesRaw.map(tc => tc.teacher_id))];
+          const { data: teacherProfiles } = teacherIds.length > 0
+            ? await supabase.from("profiles").select("id, full_name").in("id", teacherIds)
+            : { data: [] };
+          const profileMap = new Map((teacherProfiles || []).map(p => [p.id, p.full_name]));
+
           const teacherMap: Record<string, { name: string; classes: number }> = {};
           teacherClassesRaw.forEach((tc) => {
-            const profile = tc.profiles as unknown as { full_name: string } | null;
-            const name = profile?.full_name || "Unknown";
+            const name = profileMap.get(tc.teacher_id) || "Unknown";
             if (!teacherMap[tc.teacher_id]) {
               teacherMap[tc.teacher_id] = { name, classes: 0 };
             }
