@@ -118,13 +118,13 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
     // Check if user is a host, principal, coordinator, or class_teacher
+    // Fetch ALL matching roles (not just one) to pick the highest-privilege role
     const { data: callerRoles, error: roleError } = await supabaseAdmin
       .from('user_roles')
       .select('id, role, school_id')
       .eq('user_id', user.id)
       .in('role', ['host', 'principal', 'coordinator', 'class_teacher'])
-      .eq('is_active', true)
-      .limit(1);
+      .eq('is_active', true);
 
     if (roleError) {
       console.error("Role query error:", roleError);
@@ -134,14 +134,18 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    const callerRole = callerRoles && callerRoles.length > 0 ? callerRoles[0] : null;
-
-    if (!callerRole) {
+    if (!callerRoles || callerRoles.length === 0) {
       return new Response(
         JSON.stringify({ success: false, error: "You do not have permission to create users. Required role: principal, coordinator, or class_teacher." }),
         { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
+
+    // Pick the highest-privilege role (host > principal > coordinator > class_teacher)
+    const rolePriority: Record<string, number> = { host: 4, principal: 3, coordinator: 2, class_teacher: 1 };
+    const callerRole = callerRoles.reduce((best, current) =>
+      (rolePriority[current.role] || 0) > (rolePriority[best.role] || 0) ? current : best
+    );
 
     const isHost = callerRole.role === 'host';
     const isPrincipal = callerRole.role === 'principal';
