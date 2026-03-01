@@ -320,7 +320,7 @@ const PrincipalDashboard = () => {
 
     setIsSubmittingCoordinator(true);
     try {
-      // Use the edge function to create the user (preserves current session)
+      // Use direct fetch to call edge function for reliable error handling
       const { data: sessionData } = await supabase.auth.getSession();
       const accessToken = sessionData.session?.access_token;
 
@@ -328,27 +328,29 @@ const PrincipalDashboard = () => {
         throw new Error("Not authenticated");
       }
 
-      const response = await supabase.functions.invoke('create-school-user', {
-        body: {
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+
+      const res = await fetch(`${supabaseUrl}/functions/v1/create-school-user`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+          'apikey': supabaseAnonKey,
+        },
+        body: JSON.stringify({
           email: newCoordinatorEmail.toLowerCase().trim(),
           password: newCoordinatorPassword,
           fullName: newCoordinatorName.trim(),
           role: 'coordinator',
           schoolId: principalData.schoolId,
-        },
+        }),
       });
 
-      // Handle edge function errors
-      if (response.error) {
-        // Try to extract error message from the response
-        let errorData = null;
-        try { errorData = response.error.context?.body ? JSON.parse(new TextDecoder().decode(response.error.context.body)) : null; } catch { /* ignore parse errors */ }
-        const errorMessage = errorData?.error || response.error.message || "Failed to create user";
-        throw new Error(errorMessage);
-      }
+      const data = await res.json();
 
-      if (!response.data?.success) {
-        throw new Error(response.data?.error || "Failed to create user");
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || `Failed to create user (${res.status})`);
       }
 
       toast({

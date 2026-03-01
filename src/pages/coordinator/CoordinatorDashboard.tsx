@@ -917,27 +917,33 @@ const CoordinatorDashboard = () => {
         }
       }
 
-      const response = await supabase.functions.invoke('create-school-user', {
-        body: {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData.session?.access_token;
+      if (!accessToken) throw new Error("Not authenticated");
+
+      const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-school-user`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+          'apikey': import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+        },
+        body: JSON.stringify({
           email: newTeacherEmail.toLowerCase().trim(),
           password: newTeacherPassword,
           fullName: newTeacherName.trim(),
           role: teacherType,
           schoolId: profile.school_id,
-        },
+        }),
       });
 
-      if (response.error) {
-        let errorData = null;
-        try { errorData = response.error.context?.body ? JSON.parse(new TextDecoder().decode(response.error.context.body)) : null; } catch { /* ignore parse errors */ }
-        throw new Error(errorData?.error || response.error.message || "Failed to create user");
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || `Failed to create user (${res.status})`);
       }
 
-      if (!response.data?.success) {
-        throw new Error(response.data?.error || "Failed to create user");
-      }
-
-      const userId = response.data.userId;
+      const userId = data.userId;
 
       if (teacherType === "class_teacher" && selectedClassIdForTeacher && userId) {
         await supabase
