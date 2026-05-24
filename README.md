@@ -1,4 +1,4 @@
-# School Smart Pakistan
+# Edunest
 
 A comprehensive school management system designed for Pakistani schools.
 
