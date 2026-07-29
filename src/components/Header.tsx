@@ -92,7 +92,7 @@ export const Header = () => {
   const closeMobile = useCallback(() => setMobileOpen(false), []);
 
   return (
-    <header className={`w-full bg-card/80 dark:bg-card/70 backdrop-blur-md border-b sticky top-0 z-50 transition-all duration-300 ${scrolled ? "border-border dark:border-white/[0.08] shadow-card" : "border-transparent"}`}>
+    <header className={`w-full bg-card border-b sticky top-0 z-50 transition-all duration-300 ${scrolled ? "border-border dark:border-white/[0.08] shadow-card" : "border-transparent"}`}>
       {/* Skip to main content - visible on focus for keyboard users */}
       <a
         href="#main-content"
@@ -103,7 +103,7 @@ export const Header = () => {
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-3 shrink-0">
-          <div className="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center">
+          <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
             <GraduationCap className="w-6 h-6 text-white" />
           </div>
           <div className="hidden sm:block">
@@ -211,7 +211,7 @@ export const Header = () => {
           id="mobile-menu"
           role="navigation"
           aria-label={t("header.mobileNav")}
-          className="lg:hidden border-t border-border bg-card/95 backdrop-blur-md"
+          className="lg:hidden border-t border-border bg-card/95"
         >
           <div className="container mx-auto px-4 py-4 space-y-1">
             {navLinkKeys.map((link) => (

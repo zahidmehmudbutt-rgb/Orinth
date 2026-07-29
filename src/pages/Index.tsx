@@ -7,7 +7,7 @@ import { RoleCard } from "@/components/RoleCard";
 import { StatsCard } from "@/components/StatsCard";
 import { Testimonials } from "@/components/Testimonials";
 import { ScrollToTop } from "@/components/ScrollToTop";
-import { WaveDivider } from "@/components/ui/section-divider";
+import { ProductPreview } from "@/components/ProductPreview";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Users, BookOpen, GraduationCap, Award, UserCheck, BookMarked, Crown, UserPlus,
@@ -17,7 +17,6 @@ import {
 import { FadeIn, FadeInView, StaggerContainer, StaggerItem } from "@/components/ui/motion-wrapper";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
-import heroImage from "@/assets/hero-classroom.jpg";
 
 const roleConfigs = [
   { titleKey: "roles.student", descKey: "roleDescriptions.student", icon: Users, href: "/student/login", colorClass: "bg-role-student" },
@@ -101,65 +100,49 @@ const Index = () => {
 
       {/* Hero Section */}
       <main id="main-content">
-      <section className="relative bg-gradient-hero min-h-[85vh] flex items-center py-16 lg:py-24 overflow-hidden noise-overlay">
-        {/* Animated mesh gradient blobs */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="hero-blob" />
-          <div className="hero-blob" />
-          <div className="hero-blob" />
-        </div>
+      <section className="relative overflow-hidden">
+        {/* Fine grid backdrop, masked to fade out — replaces the animated blobs */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,hsl(var(--border))_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--border))_1px,transparent_1px)] bg-[size:56px_56px] opacity-40 [mask-image:radial-gradient(ellipse_at_50%_0%,black,transparent_75%)]"
+        />
 
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="container mx-auto px-4 pt-16 pb-16 lg:pt-24 lg:pb-24">
+          <div className="grid lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] gap-12 lg:gap-16 items-center">
             <FadeIn delay={0.1}>
-              <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 dark:bg-primary/15 border border-primary/20 dark:border-primary/30 text-primary text-xs font-medium mb-5 backdrop-blur-sm">
-                  <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+              <div className="max-w-xl">
+                <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground mb-6">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--success))]" />
                   {t("landing.welcomeBadge")}
                 </div>
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-[2.7rem] font-extrabold text-foreground mb-6 leading-[1.1] tracking-tight">
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-foreground mb-6 leading-[1.04] tracking-[-0.03em]">
                   {t("landing.heroTitle")}
                 </h1>
-                <p className="text-sm lg:text-base text-muted-foreground mb-8 max-w-lg leading-relaxed">
+                <p className="text-base lg:text-lg text-muted-foreground mb-8 leading-relaxed">
                   {t("landing.heroSubtitle")}
                 </p>
-                <div className="flex flex-wrap gap-4">
-                  <Button asChild size="default" className="btn-gradient-animated text-white shadow-button hover:shadow-lg hover:-translate-y-0.5 transition-all h-10 px-6 text-sm">
+                <div className="flex flex-wrap gap-3">
+                  <Button asChild size="lg" className="h-11 px-6 text-sm font-semibold">
                     <a href="#portals">
                       {t("landing.getStarted")}
-                      <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
+                      <ArrowRight className="w-4 h-4 ml-1.5" />
                     </a>
                   </Button>
-                  <Button asChild variant="outline" size="default" className="h-10 px-6 text-sm backdrop-blur-sm">
+                  <Button asChild variant="outline" size="lg" className="h-11 px-6 text-sm font-semibold">
                     <a href="#features">{t("landing.learnMore")}</a>
                   </Button>
                 </div>
               </div>
             </FadeIn>
-            <FadeIn delay={0.3}>
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-primary rounded-3xl blur-3xl opacity-20 dark:opacity-25 -z-10 scale-95" />
-                <div className="rounded-3xl overflow-hidden shadow-card-hover border border-white/20 dark:border-white/[0.08]">
-                  <img
-                    src={heroImage}
-                    alt="Students in classroom"
-                    className="w-full h-auto object-cover"
-                    loading="eager"
-                    decoding="async"
-                    fetchPriority="high"
-                  />
-                </div>
-              </div>
+            <FadeIn delay={0.25}>
+              <ProductPreview />
             </FadeIn>
           </div>
         </div>
-
-        {/* Wave divider into Stats section */}
-        <WaveDivider />
       </section>
 
       {/* Stats Bar */}
-      <section className="py-16 pt-24 bg-card relative">
+      <section className="py-14 lg:py-16 bg-background relative">
         <div className="container mx-auto px-4">
           <FadeInView>
             <div className="text-center mb-10">
@@ -182,11 +165,11 @@ const Index = () => {
       </section>
 
       {/* Portal Selection */}
-      <section id="portals" className="py-20 pt-24 bg-gradient-hero relative noise-overlay">
+      <section id="portals" className="py-20 lg:py-24 bg-background relative">
         <div className="container mx-auto px-4 relative z-10">
           <FadeInView>
             <div className="text-center mb-14">
-              <span className="inline-block px-3 py-1 bg-primary/10 dark:bg-primary/15 text-primary rounded-full text-xs font-medium mb-3 backdrop-blur-sm border border-transparent dark:border-primary/20">{t("landing.loginAs")}</span>
+              <span className="inline-block px-3 py-1 bg-primary/10 dark:bg-primary/15 text-primary rounded-full text-xs font-medium mb-3 border border-transparent dark:border-primary/20">{t("landing.loginAs")}</span>
               <h2 className="text-2xl lg:text-3xl font-extrabold text-foreground mb-3">
                 {t("landing.accessPortal")}
               </h2>
@@ -204,11 +187,10 @@ const Index = () => {
             ))}
           </StaggerContainer>
         </div>
-        <WaveDivider />
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 pt-24 bg-card relative">
+      <section id="features" className="py-20 lg:py-24 bg-background relative">
         <div className="container mx-auto px-4">
           <FadeInView>
             <div className="text-center mb-14 max-w-2xl mx-auto">
@@ -222,16 +204,15 @@ const Index = () => {
             </div>
           </FadeInView>
 
-          <StaggerContainer className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          {/* Six features across three columns — two even rows */}
+          <StaggerContainer className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-6xl mx-auto">
             {featureConfigs.map((feature) => (
               <StaggerItem key={feature.titleKey}>
-                <div className="relative bg-card/80 dark:bg-card/70 backdrop-blur-xl rounded-xl p-6 border border-white/20 dark:border-white/[0.08] shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 h-full group overflow-hidden dark:hover:border-primary/20">
-                  {/* Gradient border glow on hover */}
-                  <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10 bg-gradient-to-br from-primary/10 via-transparent to-accent/10 dark:from-primary/15 dark:to-accent/15" />
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 dark:bg-primary/15 flex items-center justify-center mb-4 group-hover:bg-primary/20 group-hover:scale-110 transition-all duration-300">
-                    <feature.icon className="w-6 h-6 text-primary" />
+                <div className="h-full rounded-xl border border-border bg-card p-6 transition-colors duration-200 hover:border-primary/40">
+                  <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                    <feature.icon className="w-4 h-4 text-primary" />
                   </div>
-                  <h3 className="text-base font-semibold text-foreground mb-1.5">{t(feature.titleKey)}</h3>
+                  <h3 className="text-lg font-semibold text-foreground mb-2 tracking-tight">{t(feature.titleKey)}</h3>
                   <p className="text-xs text-muted-foreground leading-relaxed">{t(feature.descKey)}</p>
                 </div>
               </StaggerItem>
@@ -244,7 +225,7 @@ const Index = () => {
       <Testimonials />
 
       {/* FAQ Section */}
-      <section id="faq" className="py-20 bg-card relative">
+      <section id="faq" className="py-20 lg:py-24 bg-background relative">
         <div className="container mx-auto px-4">
           <FadeInView>
             <div className="text-center mb-14 max-w-2xl mx-auto">
@@ -261,7 +242,7 @@ const Index = () => {
           <div className="max-w-3xl mx-auto space-y-3">
             {(showAllFaqs ? faqs : faqs.slice(0, 5)).map((faq, i) => (
               <FadeInView key={i} delay={i * 0.03}>
-                <div className="bg-card/80 dark:bg-card/70 backdrop-blur-xl rounded-xl border border-white/20 dark:border-white/[0.08] overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 dark:hover:border-primary/15">
+                <div className="bg-card rounded-xl border border-border overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 dark:hover:border-primary/15">
                   <button
                     className="w-full flex items-center justify-between p-5 text-left hover:bg-muted/50 transition-colors"
                     onClick={() => setOpenFaq(openFaq === i ? null : i)}

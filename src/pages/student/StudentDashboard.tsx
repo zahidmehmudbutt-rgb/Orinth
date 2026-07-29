@@ -572,7 +572,7 @@ const StudentDashboard = () => {
   };
 
   if (loading) {
-    return <DashboardSkeleton roleColor="bg-gradient-primary" />;
+    return <DashboardSkeleton roleColor="bg-primary" />;
   }
 
   const hasSubjects = subjects.length > 0;
@@ -622,10 +622,10 @@ const StudentDashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-hero">
+    <div className="min-h-screen bg-background">
       <Helmet><title>Student Dashboard — Orinth</title></Helmet>
       {/* Smart Header - hides on scroll down */}
-      <SmartHeader className="bg-gradient-primary text-primary-foreground" data-tour="student-header">
+      <SmartHeader className="bg-primary text-primary-foreground" data-tour="student-header">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-primary-foreground/20 rounded-lg flex items-center justify-center">

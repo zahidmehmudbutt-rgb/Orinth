@@ -60,7 +60,7 @@ export const Testimonials = () => {
         </FadeInView>
 
         <div className="max-w-3xl mx-auto">
-          <div className="relative bg-card/80 dark:bg-card/70 backdrop-blur-xl rounded-2xl border border-white/20 dark:border-white/[0.08] shadow-card-hover p-8 sm:p-10 min-h-[260px] flex flex-col justify-center dark:shadow-[0_2px_6px_hsl(0,0%,0%,0.35),0_12px_36px_-6px_hsl(199,80%,50%,0.12)]">
+          <div className="relative bg-card rounded-xl border border-border p-8 sm:p-10 min-h-[260px] flex flex-col justify-center">
             {/* Quote icon */}
             <Quote className="w-10 h-10 text-primary/20 dark:text-primary/30 absolute top-6 left-6" />
 

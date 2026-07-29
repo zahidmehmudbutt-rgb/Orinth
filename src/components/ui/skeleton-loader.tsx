@@ -14,7 +14,7 @@ function Skeleton({ className, ...props }: React.HTMLAttributes<HTMLDivElement>)
 
 export function DashboardSkeleton({ roleColor = "bg-primary" }: { roleColor?: string }) {
   return (
-    <div className="min-h-screen bg-gradient-hero">
+    <div className="min-h-screen bg-background">
       {/* Header skeleton */}
       <header className={`w-full ${roleColor} sticky top-0 z-50`}>
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">

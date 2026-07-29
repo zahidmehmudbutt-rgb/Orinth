@@ -98,7 +98,7 @@ const ResetPassword = () => {
 
   if (isCheckingSession) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-hero">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
           <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-3" />
           <p className="text-muted-foreground text-sm">{t("resetPassword.verifying")}</p>
@@ -109,7 +109,7 @@ const ResetPassword = () => {
 
   if (!isValidSession) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-hero relative overflow-hidden px-4">
+      <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden px-4">
         <div className="floating-shapes"><div className="floating-shape" /><div className="floating-shape" /><div className="floating-shape" /></div>
         <FadeIn className="w-full max-w-md relative z-10">
           <div className="bg-card rounded-2xl shadow-card-hover border border-border p-8 text-center">
@@ -120,7 +120,7 @@ const ResetPassword = () => {
             <p className="text-muted-foreground mb-6">
               {t("resetPassword.invalidLinkDesc")}
             </p>
-            <Button onClick={() => navigate("/auth/forgot-password")} className="w-full bg-gradient-primary text-white shadow-button">
+            <Button onClick={() => navigate("/auth/forgot-password")} className="w-full bg-primary text-primary-foreground">
               {t("resetPassword.requestNewLink")}
             </Button>
           </div>
@@ -131,7 +131,7 @@ const ResetPassword = () => {
 
   if (isSuccess) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-hero relative overflow-hidden px-4">
+      <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden px-4">
         <div className="floating-shapes"><div className="floating-shape" /><div className="floating-shape" /><div className="floating-shape" /></div>
         <FadeIn className="w-full max-w-md relative z-10">
           <div className="bg-card rounded-2xl shadow-card-hover border border-border p-8 text-center">
@@ -156,11 +156,11 @@ const ResetPassword = () => {
     <div className="min-h-screen flex flex-col lg:flex-row">
       <Helmet><title>Reset Password — Orinth</title></Helmet>
       {/* Left panel - Branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-primary relative overflow-hidden items-center justify-center p-12">
+      <div className="hidden lg:flex lg:w-1/2 bg-primary relative overflow-hidden items-center justify-center p-12">
         <div className="floating-shapes"><div className="floating-shape" /><div className="floating-shape" /><div className="floating-shape" /></div>
         <div className="relative z-10 text-white max-w-md">
           <FadeIn delay={0.2}>
-            <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mb-8 backdrop-blur-sm">
+            <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mb-8">
               <KeyRound className="w-8 h-8" />
             </div>
             <h1 className="text-4xl font-bold mb-4">{t("resetPassword.createNewPassword")}</h1>
@@ -179,10 +179,10 @@ const ResetPassword = () => {
 
       {/* Right panel - Form */}
       <div className="flex-1 flex flex-col bg-background">
-        <header className="w-full bg-card/80 backdrop-blur-md border-b border-border lg:hidden">
+        <header className="w-full bg-card/80 border-b border-border lg:hidden">
           <div className="container mx-auto px-4 py-4">
             <Link to="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
                 <GraduationCap className="w-6 h-6 text-white" />
               </div>
               <div>
@@ -251,7 +251,7 @@ const ResetPassword = () => {
                 <Button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full h-12 bg-gradient-primary text-white shadow-button hover:opacity-90"
+                  className="w-full h-12 bg-primary text-primary-foreground hover:opacity-90"
                 >
                   {isLoading ? (
                     <>

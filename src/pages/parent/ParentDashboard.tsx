@@ -403,7 +403,7 @@ const ParentDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-hero">
+    <div className="min-h-screen bg-background">
       <Helmet><title>Parent Dashboard — Orinth</title></Helmet>
       {/* Header */}
       <header className="w-full bg-role-parent text-primary-foreground sticky top-0 z-50" data-tour="parent-header">

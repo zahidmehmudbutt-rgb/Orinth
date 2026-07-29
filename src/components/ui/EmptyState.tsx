@@ -161,7 +161,7 @@ export function EmptyState({
       <p className="text-muted-foreground max-w-sm mb-6">{description}</p>
       <div className="flex flex-col sm:flex-row gap-3">
         {actionLabel && onAction && (
-          <Button onClick={onAction} className="bg-gradient-primary text-primary-foreground">
+          <Button onClick={onAction} className="bg-primary text-primary-foreground">
             {actionLabel}
           </Button>
         )}

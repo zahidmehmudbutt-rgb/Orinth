@@ -121,7 +121,7 @@ const FirstLoginSetup = ({ onComplete }: FirstLoginSetupProps) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-hero px-4 py-12">
+    <div className="min-h-screen flex items-center justify-center bg-background px-4 py-12">
       <div className="w-full max-w-md">
         <div className="bg-card rounded-2xl shadow-card border border-border p-8">
           {/* Progress Indicator */}
@@ -189,7 +189,7 @@ const FirstLoginSetup = ({ onComplete }: FirstLoginSetupProps) => {
                 <Button
                   onClick={handlePasswordSubmit}
                   disabled={isLoading}
-                  className="w-full bg-gradient-primary text-primary-foreground shadow-button"
+                  className="w-full bg-primary text-primary-foreground"
                 >
                   {isLoading ? (
                     <>
@@ -258,7 +258,7 @@ const FirstLoginSetup = ({ onComplete }: FirstLoginSetupProps) => {
                 <Button
                   onClick={handleProfileSubmit}
                   disabled={isLoading}
-                  className="w-full bg-gradient-primary text-primary-foreground shadow-button"
+                  className="w-full bg-primary text-primary-foreground"
                 >
                   {isLoading ? (
                     <>

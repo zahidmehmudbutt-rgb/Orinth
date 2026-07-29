@@ -171,15 +171,10 @@ const StudentLogin = () => {
     <div className="min-h-screen flex flex-col md:flex-row">
       <Helmet><title>Student Login — Orinth</title></Helmet>
       {/* Left panel - Branding */}
-      <div className="hidden md:flex md:w-1/2 bg-role-student relative overflow-hidden items-center justify-center p-12 noise-overlay">
-        {/* Animated blobs */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute w-[400px] h-[400px] -top-24 -right-24 rounded-full bg-white/10 blur-[80px] animate-[blob-float_20s_ease-in-out_infinite]" />
-          <div className="absolute w-[300px] h-[300px] -bottom-16 -left-16 rounded-full bg-white/10 blur-[80px] animate-[blob-float_25s_ease-in-out_infinite_-7s]" />
-        </div>
+      <div className="hidden md:flex md:w-1/2 bg-role-student relative overflow-hidden items-center justify-center p-12">
         <div className="relative z-10 text-white max-w-md">
           <FadeIn delay={0.2}>
-            <div className="w-16 h-16 bg-white/15 rounded-2xl flex items-center justify-center mb-8 backdrop-blur-md border border-white/20 shadow-[0_0_30px_rgba(255,255,255,0.1)]">
+            <div className="w-16 h-16 bg-white/15 rounded-xl flex items-center justify-center mb-8">
               <GraduationCap className="w-8 h-8" />
             </div>
             <h1 className="text-4xl font-extrabold mb-4 tracking-tight">{t("login.studentPortal")}</h1>
@@ -188,19 +183,19 @@ const StudentLogin = () => {
             </p>
             <div className="space-y-4">
               <div className="flex items-center gap-3 text-sm">
-                <div className="w-9 h-9 rounded-lg bg-white/10 backdrop-blur-sm border border-white/10 flex items-center justify-center">
+                <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center">
                   <BookOpen className="w-4 h-4" />
                 </div>
                 <span className="opacity-90">{t("login.viewHomework")}</span>
               </div>
               <div className="flex items-center gap-3 text-sm">
-                <div className="w-9 h-9 rounded-lg bg-white/10 backdrop-blur-sm border border-white/10 flex items-center justify-center">
+                <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center">
                   <Award className="w-4 h-4" />
                 </div>
                 <span className="opacity-90">{t("login.checkMarks")}</span>
               </div>
               <div className="flex items-center gap-3 text-sm">
-                <div className="w-9 h-9 rounded-lg bg-white/10 backdrop-blur-sm border border-white/10 flex items-center justify-center">
+                <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center">
                   <Users className="w-4 h-4" />
                 </div>
                 <span className="opacity-90">{t("login.stayConnectedTeachers")}</span>
@@ -211,11 +206,11 @@ const StudentLogin = () => {
       </div>
 
       {/* Right panel - Login form */}
-      <div className="flex-1 flex flex-col bg-gradient-hero dark:bg-gradient-hero">
-        <header className="w-full bg-card/80 dark:bg-card/70 backdrop-blur-md border-b border-border dark:border-white/[0.08] md:hidden">
+      <div className="flex-1 flex flex-col bg-background">
+        <header className="w-full bg-card border-b border-border md:hidden">
           <div className="container mx-auto px-4 py-4 flex items-center justify-between">
             <Link to="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
                 <GraduationCap className="w-6 h-6 text-white" />
               </div>
               <div>
@@ -236,7 +231,7 @@ const StudentLogin = () => {
               {t("common.backToHome")}
             </Link>
 
-            <div className="bg-card/80 dark:bg-card/70 backdrop-blur-xl rounded-2xl border border-white/20 dark:border-white/[0.08] shadow-card-hover p-8">
+            <div className="bg-card rounded-xl border border-border p-8">
               <div className="mb-8">
                 <div className="w-14 h-14 bg-role-student rounded-xl flex items-center justify-center mb-4 md:hidden shadow-lg">
                   <User className="w-7 h-7 text-white" />

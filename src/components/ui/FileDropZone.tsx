@@ -158,7 +158,7 @@ export function FileDropZone({
 
       {selectedFile && !isOverSize && (
         <LoadingButton
-          className="w-full bg-gradient-primary text-primary-foreground shadow-button"
+          className="w-full bg-primary text-primary-foreground"
           onClick={handleSubmit}
           loading={loading}
           loadingText={loadingText || t("fileDropZone.uploading")}

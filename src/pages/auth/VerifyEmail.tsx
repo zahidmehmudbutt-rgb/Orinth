@@ -59,7 +59,7 @@ const VerifyEmail = () => {
 
   if (isVerifying) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-hero relative overflow-hidden">
+      <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden">
         <div className="floating-shapes"><div className="floating-shape" /><div className="floating-shape" /><div className="floating-shape" /></div>
         <div className="text-center relative z-10">
           <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto mb-4" />
@@ -70,7 +70,7 @@ const VerifyEmail = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-hero relative overflow-hidden px-4">
+    <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden px-4">
       <Helmet><title>Verify Email — Orinth</title></Helmet>
       <div className="floating-shapes"><div className="floating-shape" /><div className="floating-shape" /><div className="floating-shape" /></div>
       <FadeIn className="w-full max-w-md relative z-10">
@@ -86,7 +86,7 @@ const VerifyEmail = () => {
               </p>
               <Button
                 onClick={() => navigate("/")}
-                className="w-full bg-gradient-primary text-white shadow-button"
+                className="w-full bg-primary text-primary-foreground"
               >
                 {t("verifyEmail.goHome")}
               </Button>
@@ -102,7 +102,7 @@ const VerifyEmail = () => {
               </p>
               <Button
                 onClick={() => navigate("/")}
-                className="w-full bg-gradient-primary text-white shadow-button"
+                className="w-full bg-primary text-primary-foreground"
               >
                 {t("verifyEmail.goHome")}
               </Button>

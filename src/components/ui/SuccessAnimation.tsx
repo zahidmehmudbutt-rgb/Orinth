@@ -35,7 +35,7 @@ export function SuccessAnimation({
   return (
     <div
       className={cn(
-        "fixed inset-0 z-50 flex items-center justify-center bg-background/60 backdrop-blur-sm animate-in fade-in duration-300",
+        "fixed inset-0 z-50 flex items-center justify-center bg-background/60 animate-in fade-in duration-300",
         className
       )}
     >
