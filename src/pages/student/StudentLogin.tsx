@@ -4,6 +4,8 @@ import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { GraduationCap, User, Lock, ArrowLeft, Loader2, AlertCircle, BookOpen, Award, Users } from "lucide-react";
 import { PasswordInput } from "@/components/ui/PasswordInput";
+import { DemoCredentialField } from "@/components/DemoCredentialField";
+import { DEMO_CREDENTIALS } from "@/lib/demo-credentials";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -26,6 +28,7 @@ const StudentLogin = () => {
 
   const {
     register,
+    setValue,
     handleSubmit,
     formState: { errors },
   } = useForm<StudentLoginFormData>({
@@ -35,6 +38,12 @@ const StudentLogin = () => {
       password: "",
     },
   });
+
+  const demo = DEMO_CREDENTIALS.student;
+  const fillDemoCredentials = () => {
+    setValue("studentId", demo.identifier, { shouldValidate: true });
+    setValue("password", demo.password, { shouldValidate: true });
+  };
 
   const onSubmit = async (formData: StudentLoginFormData) => {
     if (checkLocked()) {
@@ -245,7 +254,7 @@ const StudentLogin = () => {
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                 <div className="space-y-2">
                   <Label htmlFor="studentId">{t("login.studentId")}</Label>
-                  <div className="relative">
+                  <DemoCredentialField credential={demo} onFill={fillDemoCredentials}>
                     <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                     <Input
                       id="studentId"
@@ -256,7 +265,7 @@ const StudentLogin = () => {
                       disabled={isLoading}
                       autoComplete="username"
                     />
-                  </div>
+                  </DemoCredentialField>
                   {errors.studentId && (
                     <p className="text-sm text-destructive flex items-center gap-1">
                       <AlertCircle className="w-3 h-3" />
@@ -275,7 +284,9 @@ const StudentLogin = () => {
                       {t("common.forgotPassword")}
                     </Link>
                   </div>
-                  <PasswordInput
+                  <DemoCredentialField credential={demo} onFill={fillDemoCredentials}>
+
+                    <PasswordInput
                     id="password"
                     placeholder={t("login.enterPassword")}
                     {...register("password")}
@@ -283,6 +294,8 @@ const StudentLogin = () => {
                     disabled={isLoading}
                     autoComplete="current-password"
                   />
+
+                  </DemoCredentialField>
                 </div>
 
                 <Button

@@ -4,6 +4,8 @@ import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { GraduationCap, Mail, ArrowLeft, Users, Loader2, AlertCircle, Eye, Bell, TrendingUp } from "lucide-react";
 import { PasswordInput } from "@/components/ui/PasswordInput";
+import { DemoCredentialField } from "@/components/DemoCredentialField";
+import { DEMO_CREDENTIALS } from "@/lib/demo-credentials";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -32,6 +34,14 @@ const ParentLogin = () => {
 
   const handlePasswordChange = (value: string) => {
     setPassword(value);
+    setPasswordError("");
+  };
+
+  const demo = DEMO_CREDENTIALS.parent;
+  const fillDemoCredentials = () => {
+    setEmail(demo.identifier);
+    setPassword(demo.password);
+    setEmailError("");
     setPasswordError("");
   };
 
@@ -202,7 +212,7 @@ const ParentLogin = () => {
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="space-y-2">
                   <Label htmlFor="email">{t("common.email")}</Label>
-                  <div className="relative">
+                  <DemoCredentialField credential={demo} onFill={fillDemoCredentials}>
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                     <Input
                       id="email"
@@ -214,7 +224,7 @@ const ParentLogin = () => {
                       disabled={isLoading}
                       autoComplete="email"
                     />
-                  </div>
+                  </DemoCredentialField>
                   {emailError && (
                     <p className="text-sm text-destructive flex items-center gap-1">
                       <AlertCircle className="w-3 h-3" />
@@ -233,7 +243,9 @@ const ParentLogin = () => {
                       {t("common.forgotPassword")}
                     </Link>
                   </div>
-                  <PasswordInput
+                  <DemoCredentialField credential={demo} onFill={fillDemoCredentials}>
+
+                    <PasswordInput
                     id="password"
                     placeholder={t("login.enterPassword")}
                     value={password}
@@ -242,6 +254,8 @@ const ParentLogin = () => {
                     disabled={isLoading}
                     autoComplete="current-password"
                   />
+
+                  </DemoCredentialField>
                 </div>
 
                 <Button
