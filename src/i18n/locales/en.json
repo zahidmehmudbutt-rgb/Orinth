@@ -808,13 +808,13 @@
     "mobileNav": "Mobile navigation"
   },
   "footer": {
-    "brandName": "Orinth",
+    "brandName": "School Management System",
     "brandDesc": "School Management System",
     "tagline": "Empowering Pakistani schools with modern management tools. Attendance, homework, marks, and communication - all in one platform.",
     "quickLinks": "Quick Links",
     "portals": "Portals",
     "contact": "Contact",
-    "copyright": "2026 Orinth. All rights reserved.",
+    "copyright": "2026 School Management System. All rights reserved.",
     "privacyPolicy": "Privacy Policy",
     "termsOfService": "Terms of Service",
     "location": "Lahore, Pakistan",
@@ -843,15 +843,15 @@
     "banner": "You are offline. Some features may be unavailable."
   },
   "pwa": {
-    "installTitle": "Install Orinth",
+    "installTitle": "Install School Management System",
     "installDesc": "Install for quick access and offline support",
     "install": "Install",
     "notNow": "Not now",
     "dismissInstall": "Dismiss install prompt",
     "offlineReady": "App ready for offline use",
-    "offlineReadyDesc": "Orinth can now work offline.",
+    "offlineReadyDesc": "School Management System can now work offline.",
     "updateAvailable": "Update available",
-    "updateAvailableDesc": "A new version of Orinth is available.",
+    "updateAvailableDesc": "A new version of School Management System is available.",
     "update": "Update"
   },
   "leaderboard": {

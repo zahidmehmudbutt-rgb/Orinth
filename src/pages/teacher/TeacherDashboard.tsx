@@ -1146,7 +1146,7 @@ const TeacherDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Helmet><title>Teacher Dashboard — Orinth</title></Helmet>
+      <Helmet><title>Teacher Dashboard — School Management System</title></Helmet>
       <header className="w-full bg-role-teacher text-primary-foreground sticky top-0 z-50" data-tour="teacher-header">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">

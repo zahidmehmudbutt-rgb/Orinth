@@ -178,7 +178,7 @@ const StudentLogin = () => {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
-      <Helmet><title>Student Login — Orinth</title></Helmet>
+      <Helmet><title>Student Login — School Management System</title></Helmet>
       {/* Left panel - Branding */}
       <div className="hidden md:flex md:w-1/2 bg-role-student relative overflow-hidden items-center justify-center p-12">
         <div className="relative z-10 text-white max-w-md">

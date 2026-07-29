@@ -168,14 +168,14 @@ const SchoolPublicPage = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>{school.name} — Orinth</title>
-        <meta name="description" content={`${school.name} school profile on Orinth. View announcements, stats, and contact information.${school.address ? ` Located at ${school.address}.` : ""}`} />
-        <meta property="og:title" content={`${school.name} — Orinth`} />
+        <title>{school.name} — School Management System</title>
+        <meta name="description" content={`${school.name} school profile on School Management System. View announcements, stats, and contact information.${school.address ? ` Located at ${school.address}.` : ""}`} />
+        <meta property="og:title" content={`${school.name} — School Management System`} />
         <meta property="og:description" content={`${school.name} — View school announcements, student & teacher stats, and contact details.`} />
         <meta property="og:type" content="profile" />
         {school.logo_url && <meta property="og:image" content={school.logo_url} />}
         <meta name="twitter:card" content="summary" />
-        <meta name="twitter:title" content={`${school.name} — Orinth`} />
+        <meta name="twitter:title" content={`${school.name} — School Management System`} />
       </Helmet>
       {/* Hero Section */}
       <header className="relative bg-primary text-primary-foreground py-16 md:py-24">
@@ -364,7 +364,7 @@ const SchoolPublicPage = () => {
           <p className="opacity-60 text-sm mt-2">
             {t("schoolPublicPage.poweredBy")}{" "}
             <Link to="/" className="hover:underline">
-              Orinth
+              School Management System
             </Link>
           </p>
         </div>

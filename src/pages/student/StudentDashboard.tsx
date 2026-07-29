@@ -623,7 +623,7 @@ const StudentDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Helmet><title>Student Dashboard — Orinth</title></Helmet>
+      <Helmet><title>Student Dashboard — School Management System</title></Helmet>
       {/* Smart Header - hides on scroll down */}
       <SmartHeader className="bg-primary text-primary-foreground" data-tour="student-header">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">

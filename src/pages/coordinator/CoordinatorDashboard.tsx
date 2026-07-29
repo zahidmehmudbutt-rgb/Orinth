@@ -1123,7 +1123,7 @@ const CoordinatorDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Helmet><title>Coordinator Dashboard — Orinth</title></Helmet>
+      <Helmet><title>Coordinator Dashboard — School Management System</title></Helmet>
       {/* Header */}
       <header className="w-full bg-role-coordinator text-primary-foreground sticky top-0 z-50" data-tour="coord-header">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">

@@ -136,7 +136,7 @@ const CoordinatorLogin = () => {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
-      <Helmet><title>Coordinator Login — Orinth</title></Helmet>
+      <Helmet><title>Coordinator Login — School Management System</title></Helmet>
       {/* Left panel - Branding */}
       <div className="hidden md:flex md:w-1/2 bg-role-coordinator relative overflow-hidden items-center justify-center p-12">
         <div className="relative z-10 text-white max-w-md">

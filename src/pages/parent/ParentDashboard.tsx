@@ -404,7 +404,7 @@ const ParentDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Helmet><title>Parent Dashboard — Orinth</title></Helmet>
+      <Helmet><title>Parent Dashboard — School Management System</title></Helmet>
       {/* Header */}
       <header className="w-full bg-role-parent text-primary-foreground sticky top-0 z-50" data-tour="parent-header">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">

@@ -71,7 +71,7 @@ const VerifyEmail = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden px-4">
-      <Helmet><title>Verify Email — Orinth</title></Helmet>
+      <Helmet><title>Verify Email — School Management System</title></Helmet>
       <div className="floating-shapes"><div className="floating-shape" /><div className="floating-shape" /><div className="floating-shape" /></div>
       <FadeIn className="w-full max-w-md relative z-10">
         <div className="bg-card rounded-2xl shadow-card-hover border border-border p-8 text-center">

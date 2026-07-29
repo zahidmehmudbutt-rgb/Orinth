@@ -7,7 +7,7 @@ const Offline = () => {
   const { t } = useTranslation();
   return (
     <div className="flex min-h-screen items-center justify-center bg-background relative overflow-hidden">
-      <Helmet><title>Offline — Orinth</title></Helmet>
+      <Helmet><title>Offline — School Management System</title></Helmet>
       <div className="floating-shapes">
         <div className="floating-shape" />
         <div className="floating-shape" />

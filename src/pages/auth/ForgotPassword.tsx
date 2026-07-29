@@ -96,7 +96,7 @@ const ForgotPassword = () => {
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
-      <Helmet><title>Forgot Password — Orinth</title></Helmet>
+      <Helmet><title>Forgot Password — School Management System</title></Helmet>
       {/* Left panel - Branding */}
       <div className="hidden lg:flex lg:w-1/2 bg-primary relative overflow-hidden items-center justify-center p-12">
         <div className="floating-shapes">

@@ -1,11 +1,11 @@
-# Orinth
+# School Management System
 
 A complete school management platform with seven role-based portals, built as a
 progressive web app with offline support and bilingual English / Urdu interfaces.
 
 ## Overview
 
-Orinth covers the full operational surface of a school — enrolment, attendance,
+School Management System covers the full operational surface of a school — enrolment, attendance,
 homework, grading, messaging, announcements, and analytics — giving each type of
 user a dashboard tailored to their role rather than one shared admin panel.
 
@@ -52,8 +52,8 @@ user a dashboard tailored to their role rather than one shared admin panel.
 ### Installation
 
 ```bash
-git clone https://github.com/zahidmehmudbutt-rgb/Orinth.git
-cd Orinth
+git clone https://github.com/zahidmehmudbutt-rgb/school-management-system.git
+cd school-management-system
 npm install
 cp .env.example .env
 npm run dev

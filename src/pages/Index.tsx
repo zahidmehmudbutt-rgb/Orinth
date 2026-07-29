@@ -84,17 +84,17 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col homepage-narrow">
       <Helmet>
-        <title>Orinth — Complete School Management Platform</title>
-        <meta name="description" content="Orinth is a complete school management platform. Manage students, teachers, attendance, homework, exams, and more with role-based dashboards for principals, coordinators, teachers, students, and parents." />
+        <title>School Management System — Complete School Management Platform</title>
+        <meta name="description" content="School Management System is a complete school management platform. Manage students, teachers, attendance, homework, exams, and more with role-based dashboards for principals, coordinators, teachers, students, and parents." />
         <meta name="keywords" content="school management system, student information system, school software, attendance management, homework tracking, student portal, teacher dashboard, parent portal, school ERP" />
-        <meta property="og:title" content="Orinth — Complete School Management Platform" />
+        <meta property="og:title" content="School Management System — Complete School Management Platform" />
         <meta property="og:description" content="A modern, comprehensive school management platform. Role-based dashboards, real-time messaging, attendance tracking, and analytics." />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="/og-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Orinth" />
+        <meta name="twitter:title" content="School Management System" />
         <meta name="twitter:description" content="Complete school management platform with seven role-based portals" />
-        <link rel="canonical" href="https://orinth.vercel.app/" />
+        <link rel="canonical" href="https://school-management-system.vercel.app/" />
       </Helmet>
       <Header />
 
