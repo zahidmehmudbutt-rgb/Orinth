@@ -154,7 +154,7 @@ const ResetPassword = () => {
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
-      <Helmet><title>Reset Password — School Smart Pakistan</title></Helmet>
+      <Helmet><title>Reset Password — Orinth</title></Helmet>
       {/* Left panel - Branding */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-primary relative overflow-hidden items-center justify-center p-12">
         <div className="floating-shapes"><div className="floating-shape" /><div className="floating-shape" /><div className="floating-shape" /></div>

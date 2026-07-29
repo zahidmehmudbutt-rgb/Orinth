@@ -77,7 +77,7 @@ export function homeworkAssignedEmail(
         <body>
           <div class="container">
             <div class="header">
-              <h1 style="margin: 0;">School Smart Pakistan</h1>
+              <h1 style="margin: 0;">Orinth</h1>
               <p style="margin: 5px 0 0 0;">New Homework Notification</p>
             </div>
             <div class="content">
@@ -93,10 +93,10 @@ export function homeworkAssignedEmail(
 
               <p>Please ensure your child completes and submits this assignment before the due date.</p>
 
-              <p>Best regards,<br>School Smart Pakistan</p>
+              <p>Best regards,<br>Orinth</p>
             </div>
             <div class="footer">
-              <p>This is an automated message from School Smart Pakistan.</p>
+              <p>This is an automated message from Orinth.</p>
             </div>
           </div>
         </body>
@@ -132,7 +132,7 @@ export function attendanceAlertEmail(
         <body>
           <div class="container">
             <div class="header">
-              <h1 style="margin: 0;">School Smart Pakistan</h1>
+              <h1 style="margin: 0;">Orinth</h1>
               <p style="margin: 5px 0 0 0;">Attendance Alert</p>
             </div>
             <div class="content">
@@ -146,10 +146,10 @@ export function attendanceAlertEmail(
 
               <p>If you believe this is an error, please contact the class teacher.</p>
 
-              <p>Best regards,<br>School Smart Pakistan</p>
+              <p>Best regards,<br>Orinth</p>
             </div>
             <div class="footer">
-              <p>This is an automated message from School Smart Pakistan.</p>
+              <p>This is an automated message from Orinth.</p>
             </div>
           </div>
         </body>
@@ -193,7 +193,7 @@ export function gradesPublishedEmail(
         <body>
           <div class="container">
             <div class="header">
-              <h1 style="margin: 0;">School Smart Pakistan</h1>
+              <h1 style="margin: 0;">Orinth</h1>
               <p style="margin: 5px 0 0 0;">Grades Published</p>
             </div>
             <div class="content">
@@ -216,10 +216,10 @@ export function gradesPublishedEmail(
 
               <p>Keep encouraging your child's academic progress!</p>
 
-              <p>Best regards,<br>School Smart Pakistan</p>
+              <p>Best regards,<br>Orinth</p>
             </div>
             <div class="footer">
-              <p>This is an automated message from School Smart Pakistan.</p>
+              <p>This is an automated message from Orinth.</p>
             </div>
           </div>
         </body>
@@ -272,7 +272,7 @@ export function newNoticeEmail(
               <p>Best regards,<br>${esc(schoolName)}</p>
             </div>
             <div class="footer">
-              <p>This is an automated message from School Smart Pakistan.</p>
+              <p>This is an automated message from Orinth.</p>
             </div>
           </div>
         </body>
@@ -310,7 +310,7 @@ export function welcomeEmail(
         <body>
           <div class="container">
             <div class="header">
-              <h1 style="margin: 0;">Welcome to School Smart Pakistan</h1>
+              <h1 style="margin: 0;">Welcome to Orinth</h1>
               <p style="margin: 5px 0 0 0;">Your account has been created</p>
             </div>
             <div class="content">
@@ -329,10 +329,10 @@ export function welcomeEmail(
 
               <p>If you have any questions, please contact your school administrator.</p>
 
-              <p>Best regards,<br>School Smart Pakistan Team</p>
+              <p>Best regards,<br>Orinth Team</p>
             </div>
             <div class="footer">
-              <p>This is an automated message from School Smart Pakistan.</p>
+              <p>This is an automated message from Orinth.</p>
             </div>
           </div>
         </body>

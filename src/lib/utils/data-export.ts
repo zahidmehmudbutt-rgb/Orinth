@@ -133,7 +133,7 @@ export async function exportTableToPDF(
   pdf.setFontSize(7);
   pdf.setTextColor(150, 150, 150);
   pdf.text(`Total Records: ${data.length}`, margin, y);
-  pdf.text("School Smart Pakistan", pageWidth - margin, y, { align: "right" });
+  pdf.text("Orinth", pageWidth - margin, y, { align: "right" });
 
   pdf.save(`${fileName}.pdf`);
 }

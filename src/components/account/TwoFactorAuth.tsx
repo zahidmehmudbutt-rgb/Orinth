@@ -109,8 +109,8 @@ export default function TwoFactorAuth() {
     setVerificationCode("");
 
     const totp = new OTPAuth.TOTP({
-      issuer: "School Smart Pakistan",
-      label: "School Smart",
+      issuer: "Orinth",
+      label: "Orinth",
       algorithm: "SHA1",
       digits: 6,
       period: 30,
@@ -134,8 +134,8 @@ export default function TwoFactorAuth() {
 
     try {
       const totp = new OTPAuth.TOTP({
-        issuer: "School Smart Pakistan",
-        label: "School Smart",
+        issuer: "Orinth",
+        label: "Orinth",
         algorithm: "SHA1",
         digits: 6,
         period: 30,

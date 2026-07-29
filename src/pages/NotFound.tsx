@@ -184,7 +184,7 @@ const NotFound = () => {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4 relative overflow-hidden">
       <Helmet>
-        <title>Page Not Found — School Smart Pakistan</title>
+        <title>Page Not Found — Orinth</title>
       </Helmet>
 
       {/* Subtle background gradient overlay */}

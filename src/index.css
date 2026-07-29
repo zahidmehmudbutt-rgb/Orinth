@@ -2,104 +2,104 @@
 @tailwind components;
 @tailwind utilities;
 
-/* School Portal Design System - Clean Professional Blue Theme */
+/* School Portal Design System - Orinth Design System — Indigo / Amber */
 
 @layer base {
   :root {
     /* Core backgrounds */
-    --background: 200 20% 98%;
-    --foreground: 215 25% 15%;
+    --background: 240 20% 99%;
+    --foreground: 240 25% 12%;
 
     /* Cards and surfaces */
     --card: 0 0% 100%;
-    --card-foreground: 215 25% 15%;
+    --card-foreground: 240 25% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 15%;
+    --popover-foreground: 240 25% 12%;
 
     /* Primary - Vibrant Blue */
-    --primary: 199 89% 48%;
+    --primary: 243 75% 59%;
     --primary-foreground: 0 0% 100%;
 
     /* Secondary - Soft Blue */
-    --secondary: 200 60% 94%;
-    --secondary-foreground: 199 89% 35%;
+    --secondary: 243 45% 96%;
+    --secondary-foreground: 243 60% 42%;
 
     /* Muted */
-    --muted: 200 20% 96%;
-    --muted-foreground: 215 15% 45%;
+    --muted: 240 15% 96%;
+    --muted-foreground: 240 10% 46%;
 
     /* Accent - Cyan */
-    --accent: 186 100% 42%;
+    --accent: 22 92% 56%;
     --accent-foreground: 0 0% 100%;
 
     /* Status Colors */
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
     
-    --success: 142 76% 36%;
+    --success: 152 62% 40%;
     --success-foreground: 0 0% 100%;
     
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
 
     /* Role Colors */
-    --role-student: 199 89% 48%;
-    --role-teacher: 25 95% 53%;
-    --role-class-teacher: 280 80% 55%;
-    --role-coordinator: 142 76% 36%;
-    --role-principal: 215 25% 27%;
-    --role-parent: 270 70% 50%;
+    --role-student: 243 75% 59%;
+    --role-teacher: 22 92% 56%;
+    --role-class-teacher: 280 65% 58%;
+    --role-coordinator: 152 62% 40%;
+    --role-principal: 240 25% 24%;
+    --role-parent: 330 68% 54%;
 
     /* Borders and inputs */
-    --border: 200 20% 90%;
-    --input: 200 20% 90%;
-    --ring: 199 89% 48%;
+    --border: 240 15% 90%;
+    --input: 240 15% 90%;
+    --ring: 243 75% 59%;
 
-    --radius: 0.75rem;
+    --radius: 0.625rem;
 
     /* Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(200, 20%, 98%) 0%, hsl(199, 60%, 95%) 50%, hsl(186, 50%, 93%) 100%);
-    --gradient-card-hover: linear-gradient(180deg, hsl(0, 0%, 100%) 0%, hsl(200, 30%, 98%) 100%);
-    --gradient-primary: linear-gradient(135deg, hsl(199, 89%, 48%) 0%, hsl(186, 100%, 42%) 100%);
-    --gradient-footer: linear-gradient(180deg, hsl(199, 89%, 48%) 0%, hsl(215, 70%, 35%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(240, 20%, 99%) 0%, hsl(243, 50%, 96%) 50%, hsl(270, 45%, 96%) 100%);
+    --gradient-card-hover: linear-gradient(180deg, hsl(0, 0%, 100%) 0%, hsl(243, 30%, 98%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(243, 75%, 59%) 0%, hsl(270, 60%, 58%) 100%);
+    --gradient-footer: linear-gradient(180deg, hsl(243, 75%, 59%) 0%, hsl(262, 60%, 42%) 100%);
 
     /* Shadows - layered for depth */
-    --shadow-card: 0 1px 3px hsl(199, 30%, 75%, 0.12), 0 4px 20px -4px hsl(199, 30%, 75%, 0.2);
-    --shadow-card-hover: 0 2px 6px hsl(199, 40%, 60%, 0.15), 0 12px 36px -6px hsl(199, 40%, 60%, 0.3);
-    --shadow-button: 0 2px 8px -2px hsl(199, 89%, 48%, 0.3), 0 4px 16px -2px hsl(199, 89%, 48%, 0.2);
+    --shadow-card: 0 1px 3px hsl(243, 30%, 70%, 0.12), 0 4px 20px -4px hsl(243, 30%, 70%, 0.2);
+    --shadow-card-hover: 0 2px 6px hsl(243, 40%, 58%, 0.15), 0 12px 36px -6px hsl(243, 40%, 58%, 0.3);
+    --shadow-button: 0 2px 8px -2px hsl(243, 75%, 59%, 0.3), 0 4px 16px -2px hsl(243, 75%, 59%, 0.2);
 
     /* Sidebar */
     --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 199 89% 48%;
+    --sidebar-foreground: 240 20% 26%;
+    --sidebar-primary: 243 75% 59%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 200 30% 95%;
-    --sidebar-accent-foreground: 215 25% 15%;
-    --sidebar-border: 200 20% 90%;
-    --sidebar-ring: 199 89% 48%;
+    --sidebar-accent: 243 40% 95%;
+    --sidebar-accent-foreground: 240 25% 12%;
+    --sidebar-border: 240 15% 90%;
+    --sidebar-ring: 243 75% 59%;
   }
 
   .dark {
-    --background: 220 25% 7%;
-    --foreground: 200 20% 95%;
+    --background: 240 24% 8%;
+    --foreground: 240 20% 96%;
 
-    --card: 215 30% 12%;
-    --card-foreground: 200 20% 95%;
+    --card: 240 22% 13%;
+    --card-foreground: 240 20% 96%;
 
-    --popover: 215 30% 12%;
-    --popover-foreground: 200 20% 95%;
+    --popover: 240 22% 13%;
+    --popover-foreground: 240 20% 96%;
 
-    --primary: 199 89% 58%;
+    --primary: 243 80% 68%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 215 30% 16%;
-    --secondary-foreground: 200 20% 95%;
+    --secondary: 240 20% 18%;
+    --secondary-foreground: 240 20% 96%;
 
-    --muted: 215 25% 16%;
-    --muted-foreground: 200 15% 60%;
+    --muted: 240 18% 17%;
+    --muted-foreground: 240 12% 62%;
 
-    --accent: 186 100% 55%;
+    --accent: 22 92% 60%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 62% 50%;
@@ -111,29 +111,29 @@
     --warning: 38 92% 55%;
     --warning-foreground: 0 0% 0%;
 
-    --border: 215 25% 18%;
-    --input: 215 25% 18%;
-    --ring: 199 89% 58%;
+    --border: 240 18% 20%;
+    --input: 240 18% 20%;
+    --ring: 243 80% 68%;
 
     /* Richer dark gradient with subtle color tint */
-    --gradient-hero: linear-gradient(135deg, hsl(220, 25%, 8%) 0%, hsl(215, 35%, 11%) 40%, hsl(220, 30%, 14%) 100%);
-    --gradient-card-hover: linear-gradient(180deg, hsl(215, 30%, 14%) 0%, hsl(215, 35%, 16%) 100%);
-    --gradient-primary: linear-gradient(135deg, hsl(199, 89%, 58%) 0%, hsl(186, 100%, 55%) 100%);
-    --gradient-footer: linear-gradient(180deg, hsl(215, 35%, 14%) 0%, hsl(220, 30%, 6%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(240, 24%, 9%) 0%, hsl(243, 28%, 13%) 40%, hsl(250, 26%, 16%) 100%);
+    --gradient-card-hover: linear-gradient(180deg, hsl(240, 22%, 15%) 0%, hsl(243, 26%, 18%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(243, 80%, 68%) 0%, hsl(270, 70%, 66%) 100%);
+    --gradient-footer: linear-gradient(180deg, hsl(243, 26%, 16%) 0%, hsl(240, 26%, 7%) 100%);
 
     /* Colored glow shadows for dark mode depth */
-    --shadow-card: 0 1px 3px hsl(0, 0%, 0%, 0.3), 0 4px 20px -4px hsl(199, 80%, 50%, 0.08);
-    --shadow-card-hover: 0 2px 6px hsl(0, 0%, 0%, 0.35), 0 12px 36px -6px hsl(199, 80%, 50%, 0.15);
-    --shadow-button: 0 2px 8px -2px hsl(199, 89%, 58%, 0.35), 0 4px 16px -2px hsl(199, 89%, 58%, 0.2);
+    --shadow-card: 0 1px 3px hsl(0, 0%, 0%, 0.3), 0 4px 20px -4px hsl(243, 80%, 60%, 0.08);
+    --shadow-card-hover: 0 2px 6px hsl(0, 0%, 0%, 0.35), 0 12px 36px -6px hsl(243, 80%, 60%, 0.15);
+    --shadow-button: 0 2px 8px -2px hsl(243, 80%, 68%, 0.35), 0 4px 16px -2px hsl(243, 80%, 68%, 0.2);
 
-    --sidebar-background: 220 25% 7%;
-    --sidebar-foreground: 200 20% 95%;
-    --sidebar-primary: 199 89% 58%;
+    --sidebar-background: 240 24% 8%;
+    --sidebar-foreground: 240 20% 96%;
+    --sidebar-primary: 243 80% 68%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 215 30% 16%;
-    --sidebar-accent-foreground: 200 20% 95%;
-    --sidebar-border: 215 25% 18%;
-    --sidebar-ring: 199 89% 58%;
+    --sidebar-accent: 240 20% 18%;
+    --sidebar-accent-foreground: 240 20% 96%;
+    --sidebar-border: 240 18% 20%;
+    --sidebar-ring: 243 80% 68%;
   }
 }
 
@@ -331,11 +331,11 @@
   }
 
   .dark .btn-gradient-animated {
-    box-shadow: 0 0 20px hsl(199, 89%, 58%, 0.25), 0 4px 16px -2px hsl(199, 89%, 58%, 0.2);
+    box-shadow: 0 0 20px hsl(243, 80%, 68%, 0.25), 0 4px 16px -2px hsl(243, 80%, 68%, 0.2);
   }
 
   .dark .btn-gradient-animated:hover {
-    box-shadow: 0 0 30px hsl(199, 89%, 58%, 0.35), 0 8px 24px -2px hsl(199, 89%, 58%, 0.25);
+    box-shadow: 0 0 30px hsl(243, 80%, 68%, 0.35), 0 8px 24px -2px hsl(243, 80%, 68%, 0.25);
   }
 
   /* Glassmorphism card enhancement */
@@ -345,7 +345,7 @@
 
   .dark .glass-card {
     @apply bg-card/70 border-white/[0.08];
-    box-shadow: var(--shadow-card), inset 0 1px 0 0 hsl(199, 80%, 60%, 0.06);
+    box-shadow: var(--shadow-card), inset 0 1px 0 0 hsl(243, 80%, 66%, 0.06);
   }
 
   /* Dark mode glassmorphism border helper */
@@ -355,7 +355,7 @@
 
   .dark .dark-glass-border {
     @apply border-white/[0.08];
-    box-shadow: inset 0 1px 0 0 hsl(199, 80%, 60%, 0.05);
+    box-shadow: inset 0 1px 0 0 hsl(243, 80%, 66%, 0.05);
   }
 
   /* Shimmer skeleton loader */
@@ -384,7 +384,7 @@
     background: linear-gradient(
       90deg,
       transparent 0%,
-      hsl(199, 80%, 60%, 0.08) 50%,
+      hsl(243, 80%, 66%, 0.08) 50%,
       transparent 100%
     );
   }
@@ -427,7 +427,7 @@
     height: 300px;
     top: 30%;
     left: 40%;
-    background: hsl(199, 89%, 65%);
+    background: hsl(243, 80%, 72%);
     animation-delay: -14s;
     animation-duration: 30s;
   }
@@ -500,9 +500,9 @@
   .dark .heading-gradient {
     background-image: linear-gradient(
       to right,
-      hsl(199, 89%, 65%),
-      hsl(186, 100%, 60%),
-      hsl(199, 89%, 65%)
+      hsl(243, 80%, 72%),
+      hsl(270, 70%, 70%),
+      hsl(243, 80%, 72%)
     );
     background-size: 200% 100%;
     -webkit-background-clip: text;
@@ -621,7 +621,7 @@ html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
   scrollbar-width: thin;
-  scrollbar-color: hsl(199, 89%, 48%, 0.3) transparent;
+  scrollbar-color: hsl(243, 75%, 59%, 0.3) transparent;
 }
 
 html::-webkit-scrollbar {
@@ -633,24 +633,24 @@ html::-webkit-scrollbar-track {
 }
 
 html::-webkit-scrollbar-thumb {
-  background: hsl(199, 89%, 48%, 0.3);
+  background: hsl(243, 75%, 59%, 0.3);
   border-radius: 4px;
 }
 
 html::-webkit-scrollbar-thumb:hover {
-  background: hsl(199, 89%, 48%, 0.5);
+  background: hsl(243, 75%, 59%, 0.5);
 }
 
 .dark {
-  scrollbar-color: hsl(199, 89%, 58%, 0.25) transparent;
+  scrollbar-color: hsl(243, 80%, 68%, 0.25) transparent;
 }
 
 .dark::-webkit-scrollbar-thumb {
-  background: hsl(199, 89%, 58%, 0.25);
+  background: hsl(243, 80%, 68%, 0.25);
 }
 
 .dark::-webkit-scrollbar-thumb:hover {
-  background: hsl(199, 89%, 58%, 0.4);
+  background: hsl(243, 80%, 68%, 0.4);
 }
 
 /* Prevent accidental horizontal overflow - only on #root, not body (preserves inner overflow-x-auto) */

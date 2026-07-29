@@ -126,7 +126,7 @@ const CoordinatorLogin = () => {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
-      <Helmet><title>Coordinator Login — School Smart Pakistan</title></Helmet>
+      <Helmet><title>Coordinator Login — Orinth</title></Helmet>
       {/* Left panel - Branding */}
       <div className="hidden md:flex md:w-1/2 bg-role-coordinator noise-overlay relative overflow-hidden items-center justify-center p-12">
         {/* Animated blobs */}
