@@ -55,6 +55,10 @@ export function DemoCredentialField({ credential, onFill, children }: DemoCreden
           </p>
           <button
             type="button"
+            // Keep focus on the input. Safari does not focus buttons on click, so
+            // without this the wrapper would see focus leave, close the dropdown
+            // on mousedown, and the click would never land.
+            onMouseDown={(e) => e.preventDefault()}
             onClick={() => {
               onFill();
               setOpen(false);
