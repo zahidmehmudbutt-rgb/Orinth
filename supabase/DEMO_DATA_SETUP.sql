@@ -124,12 +124,12 @@ BEGIN
     UPDATE public.profiles SET school_id = v_school_id WHERE id = v_parent_id;
 
     -- Update profile names
-    UPDATE public.profiles SET full_name = 'Dr. Ahmad Khan (Principal)' WHERE id = v_principal_id;
-    UPDATE public.profiles SET full_name = 'Ms. Fatima Malik (Coordinator)' WHERE id = v_coordinator_id;
-    UPDATE public.profiles SET full_name = 'Mr. Hassan Ali (Class Teacher)' WHERE id = v_classteacher_id;
-    UPDATE public.profiles SET full_name = 'Mr. Usman Ahmed (Teacher)' WHERE id = v_teacher_id;
-    UPDATE public.profiles SET full_name = 'Ahmed Hassan (Student)' WHERE id = v_student_user_id;
-    UPDATE public.profiles SET full_name = 'Mr. Hassan Senior (Parent)' WHERE id = v_parent_id;
+    UPDATE public.profiles SET full_name = 'Dr. James Whitmore (Principal)' WHERE id = v_principal_id;
+    UPDATE public.profiles SET full_name = 'Ms. Sarah Bennett (Coordinator)' WHERE id = v_coordinator_id;
+    UPDATE public.profiles SET full_name = 'Mr. Daniel Foster (Class Teacher)' WHERE id = v_classteacher_id;
+    UPDATE public.profiles SET full_name = 'Mr. Michael Harding (Teacher)' WHERE id = v_teacher_id;
+    UPDATE public.profiles SET full_name = 'Oliver Bennett (Student)' WHERE id = v_student_user_id;
+    UPDATE public.profiles SET full_name = 'Mr. David Bennett (Parent)' WHERE id = v_parent_id;
 
     RAISE NOTICE 'Roles assigned successfully';
 
@@ -165,24 +165,24 @@ BEGIN
 
     -- Main demo student (linked to student@demo.com)
     INSERT INTO public.students (id, user_id, school_id, class_id, student_id, full_name)
-    VALUES (gen_random_uuid(), v_student_user_id, v_school_id, v_class_10a_id, 'DEMO001', 'Ahmed Hassan')
+    VALUES (gen_random_uuid(), v_student_user_id, v_school_id, v_class_10a_id, 'DEMO001', 'Oliver Bennett')
     RETURNING id INTO v_student1_id;
 
     -- Additional students for realistic data
     INSERT INTO public.students (id, school_id, class_id, student_id, full_name)
-    VALUES (gen_random_uuid(), v_school_id, v_class_10a_id, 'DEMO002', 'Sara Khan')
+    VALUES (gen_random_uuid(), v_school_id, v_class_10a_id, 'DEMO002', 'Chloe Walker')
     RETURNING id INTO v_student2_id;
 
     INSERT INTO public.students (id, school_id, class_id, student_id, full_name)
-    VALUES (gen_random_uuid(), v_school_id, v_class_10a_id, 'DEMO003', 'Ali Raza')
+    VALUES (gen_random_uuid(), v_school_id, v_class_10a_id, 'DEMO003', 'Lucas Reid')
     RETURNING id INTO v_student3_id;
 
     INSERT INTO public.students (id, school_id, class_id, student_id, full_name)
-    VALUES (gen_random_uuid(), v_school_id, v_class_10a_id, 'DEMO004', 'Ayesha Tariq')
+    VALUES (gen_random_uuid(), v_school_id, v_class_10a_id, 'DEMO004', 'Grace Sullivan')
     RETURNING id INTO v_student4_id;
 
     INSERT INTO public.students (id, school_id, class_id, student_id, full_name)
-    VALUES (gen_random_uuid(), v_school_id, v_class_10b_id, 'DEMO005', 'Zain Abbas')
+    VALUES (gen_random_uuid(), v_school_id, v_class_10b_id, 'DEMO005', 'Noah Fletcher')
     RETURNING id INTO v_student5_id;
 
     RAISE NOTICE 'Students created';
@@ -252,7 +252,7 @@ BEGIN
 
     -- Last 14 days of attendance for all students
     FOR i IN 0..13 LOOP
-        -- Student 1 (Ahmed) - Present most days
+        -- Student 1 (Oliver) - Present most days
         INSERT INTO public.attendance (school_id, class_id, student_id, date, is_present, marked_by)
         VALUES (v_school_id, v_class_10a_id, v_student1_id, CURRENT_DATE - i,
                 CASE WHEN i IN (3, 10) THEN false ELSE true END, v_classteacher_id);
@@ -261,12 +261,12 @@ BEGIN
         INSERT INTO public.attendance (school_id, class_id, student_id, date, is_present, marked_by)
         VALUES (v_school_id, v_class_10a_id, v_student2_id, CURRENT_DATE - i, true, v_classteacher_id);
 
-        -- Student 3 (Ali) - Some absences
+        -- Student 3 (Lucas) - Some absences
         INSERT INTO public.attendance (school_id, class_id, student_id, date, is_present, marked_by)
         VALUES (v_school_id, v_class_10a_id, v_student3_id, CURRENT_DATE - i,
                 CASE WHEN i IN (1, 5, 8, 12) THEN false ELSE true END, v_classteacher_id);
 
-        -- Student 4 (Ayesha) - Mostly present
+        -- Student 4 (Grace) - Mostly present
         INSERT INTO public.attendance (school_id, class_id, student_id, date, is_present, marked_by)
         VALUES (v_school_id, v_class_10a_id, v_student4_id, CURRENT_DATE - i,
                 CASE WHEN i = 7 THEN false ELSE true END, v_classteacher_id);

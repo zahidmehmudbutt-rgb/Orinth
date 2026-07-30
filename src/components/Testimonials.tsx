@@ -5,11 +5,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 
 const testimonialConfigs = [
-  { name: "Ayesha Khan", roleKey: "testimonials.item1Role", textKey: "testimonials.item1Text", rating: 5 },
-  { name: "Mohammad Usman", roleKey: "testimonials.item2Role", textKey: "testimonials.item2Text", rating: 5 },
-  { name: "Fatima Riaz", roleKey: "testimonials.item3Role", textKey: "testimonials.item3Text", rating: 5 },
-  { name: "Ali Ahmed", roleKey: "testimonials.item4Role", textKey: "testimonials.item4Text", rating: 4 },
-  { name: "Saima Nazir", roleKey: "testimonials.item5Role", textKey: "testimonials.item5Text", rating: 5 },
+  { name: "Emma Whitfield", roleKey: "testimonials.item1Role", textKey: "testimonials.item1Text", rating: 5 },
+  { name: "Thomas Reid", roleKey: "testimonials.item2Role", textKey: "testimonials.item2Text", rating: 5 },
+  { name: "Sophie Marsh", roleKey: "testimonials.item3Role", textKey: "testimonials.item3Text", rating: 5 },
+  { name: "Daniel Foster", roleKey: "testimonials.item4Role", textKey: "testimonials.item4Text", rating: 4 },
+  { name: "Isla Bennett", roleKey: "testimonials.item5Role", textKey: "testimonials.item5Text", rating: 5 },
 ];
 
 export const Testimonials = () => {

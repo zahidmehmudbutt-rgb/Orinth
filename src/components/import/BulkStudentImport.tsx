@@ -56,7 +56,7 @@ export function BulkStudentImport({
   const [parseError, setParseError] = useState<string | null>(null);
 
   const downloadTemplate = () => {
-    const csvContent = "full_name,student_id,email,phone\nAhmed Ali,STU001,ahmed@example.com,03001234567\nFatima Khan,STU002,,\n";
+    const csvContent = "full_name,student_id,email,phone\nOliver Bennett,STU001,oliver@example.com,0412345678\nGrace Sullivan,STU002,,\n";
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");

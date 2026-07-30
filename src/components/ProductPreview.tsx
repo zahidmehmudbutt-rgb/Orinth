@@ -29,9 +29,9 @@ const bars = [62, 74, 58, 88, 71, 94, 80, 67, 91, 76, 85, 70];
 const weekdays = ["M", "T", "W", "T", "F", "M", "T", "W", "T", "F", "M", "T"];
 
 const roster = [
-  { name: "Ayesha Khan", cls: "8-B", status: "Present", tone: "bg-[hsl(var(--success))]/12 text-[hsl(var(--success))]" },
-  { name: "Bilal Ahmed", cls: "8-B", status: "Late", tone: "bg-[hsl(var(--warning))]/14 text-[hsl(var(--warning))]" },
-  { name: "Fatima Noor", cls: "8-B", status: "Present", tone: "bg-[hsl(var(--success))]/12 text-[hsl(var(--success))]" },
+  { name: "Grace Sullivan", cls: "8-B", status: "Present", tone: "bg-[hsl(var(--success))]/12 text-[hsl(var(--success))]" },
+  { name: "Lucas Reid", cls: "8-B", status: "Late", tone: "bg-[hsl(var(--warning))]/14 text-[hsl(var(--warning))]" },
+  { name: "Chloe Walker", cls: "8-B", status: "Present", tone: "bg-[hsl(var(--success))]/12 text-[hsl(var(--success))]" },
 ];
 
 export const ProductPreview = () => (
