@@ -1,8 +1,12 @@
 // Script to create demo users in Supabase
 // Run with: node scripts/create-demo-users.js
 
-const SUPABASE_URL = 'https://opphbdjjkudhrvkutjhn.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9wcGhiZGpqa3VkaHJ2a3V0amhuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkzNjA1NzUsImV4cCI6MjA4NDkzNjU3NX0.ljYXRFWPndFY2J83U_m7WvN2TvDq2J47ZAOAsSwAtJk';
+const SUPABASE_URL = 'https://dbigqgtkfrnbjhhjjcbr.supabase.co';
+const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_PUBLISHABLE_KEY || process.env.SUPABASE_ANON_KEY;
+
+if (!SUPABASE_ANON_KEY) {
+  throw new Error('Set VITE_SUPABASE_PUBLISHABLE_KEY or SUPABASE_ANON_KEY before running this script.');
+}
 
 const demoUsers = [
   { email: 'principal@demo.com', password: 'Demo123$', name: 'Dr. Ahmad Khan (Principal)' },

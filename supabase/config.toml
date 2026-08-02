@@ -1,4 +1,4 @@
-project_id = "opphbdjjkudhrvkutjhn"
+project_id = "dbigqgtkfrnbjhhjjcbr"
 
 [functions.create-school-user]
 verify_jwt = false
