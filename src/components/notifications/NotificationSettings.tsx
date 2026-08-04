@@ -343,7 +343,7 @@ export function NotificationSettings({ schoolId }: NotificationSettingsProps) {
                     <li>Keep your credentials secure - never share them</li>
                     <li>Twilio charges per message sent (check their pricing)</li>
                     <li>For WhatsApp, you need to set up a WhatsApp Business account with Twilio</li>
-                    <li>Pakistani numbers should be in format: +923XXXXXXXXX</li>
+                    <li>Include a country code for international numbers, e.g. +61400123456</li>
                   </ul>
                 </div>
               </div>

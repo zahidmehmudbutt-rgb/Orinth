@@ -108,7 +108,6 @@ export const Header = () => {
           </div>
           <div className="hidden sm:block">
             <h1 className="text-lg font-bold text-foreground leading-tight">School Management System</h1>
-            <p className="text-xs text-muted-foreground leading-tight">Pakistan</p>
           </div>
         </Link>
 

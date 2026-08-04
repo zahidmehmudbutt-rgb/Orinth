@@ -182,37 +182,43 @@ describe("validatePhone", () => {
     expect(validatePhone("")).toEqual({ valid: true });
   });
 
-  it("accepts 03XX-XXXXXXX format (11 digits)", () => {
+  it("accepts a national number with a trunk prefix", () => {
     expect(validatePhone("03001234567")).toEqual({ valid: true });
   });
 
-  it("accepts formatted 03XX with dashes", () => {
-    // cleaned: 03001234567 (11 digits starting with 03)
-    expect(validatePhone("0300-1234567")).toEqual({ valid: true });
+  it("accepts a number formatted with dashes", () => {
+    expect(validatePhone("0400-123-456")).toEqual({ valid: true });
   });
 
-  it("accepts +923XXXXXXXXX format (12 digits)", () => {
-    expect(validatePhone("+923001234567")).toEqual({ valid: true });
+  it("accepts an international number with a country code", () => {
+    expect(validatePhone("+61400123456")).toEqual({ valid: true });
   });
 
-  it("accepts 10-digit number starting with 3", () => {
-    expect(validatePhone("3001234567")).toEqual({ valid: true });
+  it("accepts a number formatted with spaces and parentheses", () => {
+    expect(validatePhone("+1 (415) 555-0142")).toEqual({ valid: true });
   });
 
-  it("rejects numbers with wrong prefix", () => {
-    const result = validatePhone("05001234567");
+  it("accepts numbers from any country, not one fixed format", () => {
+    // The validator is deliberately country-agnostic; a prefix that would be
+    // invalid in one country is perfectly ordinary in another.
+    expect(validatePhone("05001234567")).toEqual({ valid: true });
+  });
+
+  it("rejects numbers that are too short to be dialled", () => {
+    const result = validatePhone("12345");
     expect(result.valid).toBe(false);
-    expect(result.error).toContain("valid Pakistani phone number");
+    expect(result.error).toContain("valid phone number");
   });
 
-  it("rejects numbers that are too short", () => {
-    const result = validatePhone("0300123");
-    expect(result.valid).toBe(false);
+  it("accepts the longest number E.164 permits", () => {
+    // 15 digits is the E.164 maximum, so this is the boundary case, not a reject.
+    expect(validatePhone("030012345678901")).toEqual({ valid: true });
   });
 
-  it("rejects numbers that are too long", () => {
-    const result = validatePhone("030012345678901");
+  it("rejects numbers longer than E.164 permits", () => {
+    const result = validatePhone("0300123456789012");
     expect(result.valid).toBe(false);
+    expect(result.error).toContain("valid phone number");
   });
 });
 

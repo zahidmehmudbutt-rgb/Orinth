@@ -148,7 +148,7 @@ const DEFAULT_SECTIONS = ["A", "B", "C", "D", "E", "F"];
 const COMMON_SUBJECTS = [
   "English", "Urdu", "Mathematics", "Science", "Social Studies",
   "Islamiat", "Computer Science", "Physics", "Chemistry", "Biology",
-  "Pakistan Studies", "General Knowledge", "Art", "Physical Education"
+  "Social Studies", "General Knowledge", "Art", "Physical Education"
 ];
 
 const CoordinatorDashboard = () => {

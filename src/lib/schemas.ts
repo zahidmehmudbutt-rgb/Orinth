@@ -18,7 +18,7 @@ export const phoneSchema = z
   .string()
   .regex(
     /^(0[3][0-9]{2}[-]?[0-9]{7}|(\+?92)?3[0-9]{9})$/,
-    "Invalid Pakistani phone number"
+    "Invalid phone number"
   )
   .optional()
   .or(z.literal(""));

@@ -52,7 +52,7 @@ const COMMON_PASSWORDS = new Set([
   "qwerty12", "michael1", "jennifer", "abcdef12", "12341234",
   "baseball", "iloveu12", "welcome1", "admin123", "login123",
   "pass1234", "test1234", "guest123", "changeme", "school12",
-  "student1", "teacher1", "pakistan1", "lahore12", "karachi1",
+  "student1", "teacher1", "school123", "classroom", "homework1",
 ]);
 
 export function validateNewPassword(password: string): { valid: boolean; error?: string; strength?: "weak" | "medium" | "strong" } {
@@ -116,7 +116,15 @@ export function validateName(name: string): { valid: boolean; error?: string } {
   return { valid: true };
 }
 
-// Phone validation (Pakistani format)
+// Phone validation.
+//
+// Deliberately country-agnostic: a school running this could be anywhere, and a
+// format locked to one country silently rejects every legitimate number from
+// outside it. Accepts national and international forms by length, which is the
+// widest rule that still catches typos.
+//
+// Range follows E.164 — at most 15 digits — with a floor of 7, the shortest
+// national subscriber number in general use.
 export function validatePhone(phone: string): { valid: boolean; error?: string } {
   if (!phone) {
     return { valid: true }; // Phone is optional
@@ -124,20 +132,14 @@ export function validatePhone(phone: string): { valid: boolean; error?: string }
 
   const cleaned = phone.replace(/\D/g, "");
 
-  // Pakistani mobile numbers: 03XX-XXXXXXX (11 digits) or 923XXXXXXXXX (12 digits)
-  if (cleaned.length === 11 && cleaned.startsWith("03")) {
+  if (cleaned.length >= 7 && cleaned.length <= 15) {
     return { valid: true };
   }
 
-  if (cleaned.length === 12 && cleaned.startsWith("92")) {
-    return { valid: true };
-  }
-
-  if (cleaned.length === 10 && cleaned.startsWith("3")) {
-    return { valid: true };
-  }
-
-  return { valid: false, error: "Please enter a valid Pakistani phone number (e.g., 03XX-XXXXXXX)" };
+  return {
+    valid: false,
+    error: "Please enter a valid phone number (7–15 digits, with or without a country code)",
+  };
 }
 
 // Student ID validation
