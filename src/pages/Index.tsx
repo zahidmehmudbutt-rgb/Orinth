@@ -7,6 +7,7 @@ import { RoleCard } from "@/components/RoleCard";
 import { StatsCard } from "@/components/StatsCard";
 import { Testimonials } from "@/components/Testimonials";
 import { ScrollToTop } from "@/components/ScrollToTop";
+import { DemoBanner } from "@/components/DemoBanner";
 import { ProductPreview } from "@/components/ProductPreview";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -96,6 +97,7 @@ const Index = () => {
         <meta name="twitter:description" content="Complete school management platform with seven role-based portals" />
         <link rel="canonical" href="https://school-management-system.vercel.app/" />
       </Helmet>
+      <DemoBanner />
       <Header />
 
       {/* Hero Section */}
