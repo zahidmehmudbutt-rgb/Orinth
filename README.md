@@ -3,6 +3,16 @@
 A complete school management platform with seven role-based portals, built as a
 progressive web app with offline support and bilingual English / Urdu interfaces.
 
+## Live demo
+
+**https://school-management-system-two-roan.vercel.app**
+
+Open any portal and tap the email field — the demo login fills itself in.
+
+![Landing page](docs/screenshots/school-landing.png)
+
+![Principal dashboard](docs/screenshots/school-dashboard.png)
+
 ## Overview
 
 School Management System covers the full operational surface of a school — enrolment, attendance,
